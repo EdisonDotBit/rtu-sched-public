@@ -1,5 +1,9 @@
-import React from "react";
+import React from 'react'
 
-export default function LoginAdmin() {
-    return <div>LoginAdmin</div>;
+function LoginAdmin() {
+  return (
+    <div>LoginAdmin</div>
+  )
 }
+
+export default LoginAdmin

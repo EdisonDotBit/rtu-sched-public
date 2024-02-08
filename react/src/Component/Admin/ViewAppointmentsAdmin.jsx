@@ -1,5 +1,9 @@
-import React from "react";
+import React from 'react'
 
-export default function ViewAppointmentsAdmin() {
-    return <div>ViewAppointmentsAdmin</div>;
+function ViewAppointmentsAdmin() {
+  return (
+    <div>ViewAppointmentsAdmin</div>
+  )
 }
+
+export default ViewAppointmentsAdmin

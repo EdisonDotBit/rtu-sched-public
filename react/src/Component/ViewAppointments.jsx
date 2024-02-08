@@ -1,5 +1,9 @@
-import React from "react";
+import React from 'react'
 
-export default function ViewAppointments() {
-    return <div>ViewAppointments</div>;
+function ViewAppointments() {
+  return (
+    <div>ViewAppointments</div>
+  )
 }
+
+export default ViewAppointments

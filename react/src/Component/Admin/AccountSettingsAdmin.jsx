@@ -1,5 +1,9 @@
-import React from "react";
+import React from 'react'
 
-export default function AccountSettingsAdmin() {
-    return <div>AccountSettingsAdmin</div>;
+function AccountSettingsAdmin() {
+  return (
+    <div>AccountSettingsAdmin</div>
+  )
 }
+
+export default AccountSettingsAdmin

@@ -1,5 +1,9 @@
-import React from "react";
+import React from 'react'
 
-export default function SubNav() {
-    return <div>SubNav</div>;
+function SubNav() {
+  return (
+    <div>SubNav</div>
+  )
 }
+
+export default SubNav
