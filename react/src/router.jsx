@@ -6,11 +6,12 @@ import StudentLayout from "./StudentLayout.jsx";
 import Dashboard from "./Component/Dashboard.jsx";
 import SetAppointment from "./Component/SetAppointment.jsx";
 import ViewAppointments from "./Component/ViewAppointments.jsx";
+import SelectBranch from "./Component/SelectBranch.jsx";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <App />,
+        element: <SelectBranch />,
     },
     {
         path: "/guest",
