@@ -1,7 +1,15 @@
-import React from "react";
-import Footer from "./component/subcomponent/footer";
+import React, { useState } from "react";
+import { Outlet } from "react-router-dom";
 
 function StudentLayout() {
+    // State to track whether the sidebar is open or closed
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    // Function to toggle the sidebar state
+    const toggleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    };
+
     return (
         <>
             <div className="flex flex-col h-lvh">
@@ -147,31 +155,11 @@ function StudentLayout() {
                                 </button>
                             </div>
                         </div>
-                        <div className="p-4 bg-white flex-1 rounded-lg m-4">
-                            <div className="flex justify-between bg-[#194F90] text-white h-[50px] xl:text-xl sm:text-base">
-                                <button className="bg-[#123A69] flex-1 hover:text-white hover:bg-[#123A69]">
-                                    RTU Branch
-                                </button>
-
-                                <button className="hover:text-white flex-1 hover:bg-[#123A69]">
-                                    Select Office
-                                </button>
-
-                                <button className="hover:text-white flex-1 hover:bg-[#123A69]">
-                                    Purpose, Date & Time
-                                </button>
-
-                                <button className="hover:text-white flex-1 flex-1hover:bg-[#123A69]">
-                                    Confirmation
-                                </button>
-                            </div>
-                        </div>
+                        <div className="p-4 bg-white flex-1 rounded-lg m-4"></div>
                     </div>
                 </div>
-
                 <footer className="footer flex text-center justify-center text-sm items-center h-12 border-t w-screen px-6 py-1">
                     <p>
-                        {" "}
                         Copyright © 2024 - All right reserved by Rizal
                         Technological University
                     </p>
