@@ -137,7 +137,7 @@ function StudentLayout() {
                                     Purpose, Date & Time
                                 </button>
 
-                                <button className="hover:text-white flex-1 hover:bg-[#123A69]">
+                                <button className="hover:text-white flex-1hover:bg-[#123A69]">
                                     Confirmation
                                 </button>
                             </div>
