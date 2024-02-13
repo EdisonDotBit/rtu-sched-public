@@ -7,12 +7,6 @@ function StudentLayout() {
             <div className="flex flex-col h-lvh">
                 <div className="flex flex-1 bg-gray-100">
                     {/* Sidebar */}
-<<<<<<< Updated upstream
-                    <div className="hidden md:flex flex-col w-64 bg-gray-800">
-                        <div className="flex items-center justify-center h-16 bg-gray-900">
-                            <span className="text-white font-bold uppercase">
-                                RTU Online Appointment
-=======
                     <div
                         className={`md:flex flex-col w-64 bg-[#194F90] ${
                             isSidebarOpen ? "" : "hidden"
@@ -35,7 +29,6 @@ function StudentLayout() {
                             </svg>
                             <span className="text-white font-bold uppercase mr-2">
                                 STUDENT ACCOUNT
->>>>>>> Stashed changes
                             </span>
                         </div>
                         <div className="flex flex-col flex-1 overflow-y-auto">
@@ -108,14 +101,10 @@ function StudentLayout() {
                     <div className="flex flex-col flex-1 overflow-y-auto">
                         <div className="flex items-center justify-between h-16 bg-white border-b border-gray-200">
                             <div className="flex items-center px-4">
-<<<<<<< Updated upstream
-                                <button className="text-gray-500 focus:outline-none focus:text-gray-700">
-=======
                                 <button
                                     className="text-gray-500 focus:outline-none hover:text-[#123A69] md:hidden"
                                     onClick={toggleSidebar}
                                 >
->>>>>>> Stashed changes
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         className="h-6 w-6"
@@ -133,18 +122,6 @@ function StudentLayout() {
                                 </button>
                             </div>
                             <div>
-<<<<<<< Updated upstream
-                                <h1 className="bold text-xl">Student</h1>
-                            </div>
-                            <div className="flex items-center pr-4">
-                                <button className="flex items-center text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-6 w-6"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-=======
                                 <img
                                     className="w-[200px]"
                                     src="./src/Component/Subcomponent/Asset/rtu-logo.png"
@@ -160,22 +137,13 @@ function StudentLayout() {
                                         strokeWidth={1.5}
                                         stroke="currentColor"
                                         className="w-8 h-8"
->>>>>>> Stashed changes
                                     >
                                         <path
                                             strokeLinecap="round"
                                             strokeLinejoin="round"
-<<<<<<< Updated upstream
-                                            strokeWidth="2"
-                                            d="M12 19l-7-7 7-7m5 14l7-7-7-7"
-                                        />
-                                    </svg>
-                                    Logout
-=======
                                             d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
                                         />
                                     </svg>
->>>>>>> Stashed changes
                                 </button>
                             </div>
                         </div>
