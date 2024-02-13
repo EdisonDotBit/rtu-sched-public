@@ -1,16 +1,42 @@
-import React from "react";
-import Footer from "./component/subcomponent/footer";
+import React, { useState } from "react";
+import { Outlet } from "react-router-dom";
 
 function StudentLayout() {
+    // State to track whether the sidebar is open or closed
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    // Function to toggle the sidebar state
+    const toggleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    };
+
     return (
         <>
             <div className="flex flex-col h-lvh">
                 <div className="flex flex-1 bg-gray-100">
                     {/* Sidebar */}
-                    <div className="hidden md:flex flex-col w-64 bg-gray-800">
-                        <div className="flex items-center justify-center h-16 bg-gray-900">
-                            <span className="text-white font-bold uppercase">
-                                RTU Online Appointment
+                    <div
+                        className={`md:flex flex-col w-64 bg-[#194F90] ${
+                            isSidebarOpen ? "" : "hidden"
+                        }`}
+                    >
+                        <div className="flex items-center justify-center gap-2 h-[100px] bg-[#194F90] text-white">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="w-12 h-12"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                                />
+                            </svg>
+                            <span className="text-white font-bold uppercase mr-2">
+                                STUDENT ACCOUNT
                             </span>
                         </div>
                         <div className="flex flex-col flex-1 overflow-y-auto">
@@ -83,7 +109,10 @@ function StudentLayout() {
                     <div className="flex flex-col flex-1 overflow-y-auto">
                         <div className="flex items-center justify-between h-16 bg-white border-b border-gray-200">
                             <div className="flex items-center px-4">
-                                <button className="text-gray-500 focus:outline-none focus:text-gray-700">
+                                <button
+                                    className="text-gray-500 focus:outline-none hover:text-[#123A69] md:hidden"
+                                    onClick={toggleSidebar}
+                                >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         className="h-6 w-6"
@@ -101,35 +130,49 @@ function StudentLayout() {
                                 </button>
                             </div>
                             <div>
-                                <h1 className="bold text-xl">Student</h1>
+                                <img
+                                    className="w-[200px]"
+                                    src="./src/Component/Subcomponent/Asset/rtu-logo.png"
+                                    alt=""
+                                />
                             </div>
                             <div className="flex items-center pr-4">
-                                <button className="flex items-center text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700">
+                                <button className="flex items-center text-gray-500 hover:text-[#123A69] focus:outline-none">
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
-                                        className="h-6 w-6"
                                         fill="none"
                                         viewBox="0 0 24 24"
+                                        strokeWidth={1.5}
                                         stroke="currentColor"
+                                        className="w-8 h-8"
                                     >
                                         <path
                                             strokeLinecap="round"
                                             strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M12 19l-7-7 7-7m5 14l7-7-7-7"
+                                            d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
                                         />
                                     </svg>
-                                    Logout
                                 </button>
                             </div>
                         </div>
                         <div className="p-4 bg-white flex-1 rounded-lg m-4">
-                            <h1 className="text-2xl font-bold">
-                                Welcome to my dashboard!
-                            </h1>
-                            <p className="mt-2 text-gray-600">
-                                This is an example dashboard using Tailwind CSS.
-                            </p>
+                            <div className="flex justify-between bg-[#194F90] text-white h-[50px] xl:text-xl sm:text-base">
+                                <button className="bg-[#123A69] flex-1 hover:text-white hover:bg-[#123A69]">
+                                    RTU Branch
+                                </button>
+
+                                <button className="hover:text-white flex-1 hover:bg-[#123A69]">
+                                    Select Office
+                                </button>
+
+                                <button className="hover:text-white flex-1 hover:bg-[#123A69]">
+                                    Purpose, Date & Time
+                                </button>
+
+                                <button className="hover:text-white flex-1 flex-1hover:bg-[#123A69]">
+                                    Confirmation
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

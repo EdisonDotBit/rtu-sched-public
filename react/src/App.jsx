@@ -1,14 +1,9 @@
-import './App.css'
-
 function App() {
-
-  return (
-    <>
-      <div className='text-3xl font-bold underline'>
-        QWEQWE
-      </div>
-    </>
-  )
+    return (
+        <>
+            <div className="flex h-screen bg-gray-100"></div>
+        </>
+    );
 }
 
-export default App
+export default App;
