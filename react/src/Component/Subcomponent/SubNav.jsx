@@ -14,15 +14,15 @@ function SubNav() {
               Select Office
             </button>
 
-                                    <button className="hover:text-white hover:bg-[#123A69] w-[300px]">
-                                        Purpose, Date & Time
-                                    </button>
+            <button className="hover:text-white hover:bg-[#123A69] w-[300px]">
+              Purpose, Date & Time
+            </button>
 
-                                    <button className="hover:text-white hover:bg-[#123A69] w-[300px]">
-                                        Confirmation
-                                    </button>
-                            </div>
-                        </div>
+            <button className="hover:text-white hover:bg-[#123A69] w-[300px]">
+              Confirmation
+            </button>
+          </div>
+       </div>
     </>
   )
 }
