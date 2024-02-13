@@ -132,7 +132,7 @@ function StudentLayout() {
                             <div>
                                 <img
                                     className="w-[200px]"
-                                    src="./src/Component/Subcomponent/Asset/rtu-logo.png"
+                                    src="../src/Component/Subcomponent/Asset/rtu-logo.png"
                                     alt=""
                                 />
                             </div>
@@ -155,7 +155,9 @@ function StudentLayout() {
                                 </button>
                             </div>
                         </div>
-                        <div className="p-4 bg-white flex-1 rounded-lg m-4"></div>
+                        <div className="p-4 bg-white flex-1 rounded-lg m-4">
+                            <Outlet />
+                        </div>
                     </div>
                 </div>
                 <footer className="footer flex text-center justify-center text-sm items-center h-12 border-t w-screen px-6 py-1">
