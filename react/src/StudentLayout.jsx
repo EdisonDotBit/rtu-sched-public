@@ -1,5 +1,5 @@
-import React from "react";
-import Footer from "./component/subcomponent/footer";
+import React, { useState } from "react";
+import { Outlet } from "react-router-dom";
 
 function StudentLayout() {
     return (
