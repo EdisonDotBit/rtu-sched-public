@@ -7,11 +7,12 @@ import Dashboard from "./Component/Dashboard.jsx";
 import SetAppointment from "./Component/SetAppointment.jsx";
 import ViewAppointments from "./Component/ViewAppointments.jsx";
 import SelectBranch from "./Component/SelectBranch.jsx";
+import SelectOffice from "./Component/SelectOffice.jsx";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <SelectBranch />,
+        element: <SelectOffice />,
     },
     {
         path: "/guest",
