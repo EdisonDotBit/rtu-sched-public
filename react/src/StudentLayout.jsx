@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
 function StudentLayout() {
     // State to track whether the sidebar is open or closed
@@ -25,24 +25,24 @@ function StudentLayout() {
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
-                                stroke-width="1.5"
+                                strokeWidth="1.5"
                                 stroke="currentColor"
-                                class="w-12 h-12"
+                                className="w-12 h-12"
                             >
                                 <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
                                     d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
                                 />
                             </svg>
                             <span className="text-white font-bold uppercase mr-2">
-                                STUDENT ACCOUNT
+                                STUDENT
                             </span>
                         </div>
                         <div className="flex flex-col flex-1 overflow-y-auto">
                             <nav className="flex-1 bg-[#194F90]">
-                                <a
-                                    href="#"
+                                <Link
+                                    to="/student/dashboard"
                                     className="flex items-center px-4 py-6 text-white hover:text-white bg-[#123A69]"
                                 >
                                     <svg
@@ -60,9 +60,9 @@ function StudentLayout() {
                                         />
                                     </svg>
                                     Dashboard
-                                </a>
-                                <a
-                                    href="#"
+                                </Link>
+                                <Link
+                                    to="/student/set-appointment"
                                     className="flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69]"
                                 >
                                     <svg
@@ -80,9 +80,9 @@ function StudentLayout() {
                                         />
                                     </svg>
                                     Set Appointment
-                                </a>
-                                <a
-                                    href="#"
+                                </Link>
+                                <Link
+                                    to="/student/view-appointment"
                                     className="flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69]"
                                 >
                                     <svg
@@ -100,7 +100,7 @@ function StudentLayout() {
                                         />
                                     </svg>
                                     View Appointment
-                                </a>
+                                </Link>
                             </nav>
                         </div>
                     </div>

@@ -20,14 +20,14 @@ const Purpose = () => {
     };
 
     return (
-        <div className="mx-auto max-w-xl p-4 w-96">
-            <h1 className="flex justify-start text-3xl">Purpose</h1>
+        <div className="mx-auto max-w-xl p-4 w-2/3">
+            <h1 className="flex justify-center text-3xl mb-5">Purpose</h1>
             {dropdowns.map((dropdown, index) => (
                 <div
                     key={dropdown.id}
-                    className="flex justify-start items-center mb-4"
+                    className="flex justify-start items-center mb-4 ml-5"
                 >
-                    <select className="py-2 px-3 border rounded-md mr-2 w-2/3">
+                    <select className="py-2 px-3 border rounded-md mr-2 w-4/6">
                         {options.map((option) => (
                             <option key={option}>{option}</option>
                         ))}
@@ -45,7 +45,7 @@ const Purpose = () => {
             {dropdowns.length < 3 && (
                 <button
                     onClick={addDropdown}
-                    className="flex justify-start bg-blue-500 text-white py-2 px-4 rounded-md w-1/3"
+                    className="flex justify-center bg-blue-500 text-white py-2 px-4 rounded-md w-2/3 ml-5"
                 >
                     Add Purpose
                 </button>

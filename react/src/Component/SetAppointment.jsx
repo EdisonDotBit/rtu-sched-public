@@ -1,9 +1,15 @@
-import React from 'react'
-
+import React from "react";
+import { Outlet } from "react-router-dom";
 function SetAppointment() {
-  return (
-    <div>SetAppointment</div>
-  )
+    return (
+        <>
+            {" "}
+            <div>
+                {" "}
+                <Outlet />
+            </div>
+        </>
+    );
 }
 
-export default SetAppointment
+export default SetAppointment;

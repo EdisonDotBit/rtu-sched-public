@@ -7,11 +7,12 @@ import Dashboard from "./Component/Dashboard.jsx";
 import SetAppointment from "./Component/SetAppointment.jsx";
 import ViewAppointments from "./Component/ViewAppointments.jsx";
 import Calendar from "./Component/Subcomponent/Calendar.jsx";
+import InputDetails from "./Component/InputDetails.jsx";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <Calendar />,
+        element: <InputDetails />,
     },
     {
         path: "/guest",
@@ -25,7 +26,6 @@ const router = createBrowserRouter([
                 path: "",
                 element: <Dashboard />,
             },
-
             {
                 path: "dashboard",
                 element: <Dashboard />,
@@ -33,6 +33,20 @@ const router = createBrowserRouter([
             {
                 path: "set-appointment",
                 element: <SetAppointment />,
+                children: [
+                    {
+                        path: "",
+                        element: <Calendar />,
+                    },
+                    {
+                        path: "branch",
+                        element: <Calendar />,
+                    },
+                    {
+                        path: "details-input",
+                        element: <InputDetails />,
+                    },
+                ],
             },
             {
                 path: "view-appointment",
