@@ -12,7 +12,7 @@ function StudentLayout() {
 
     return (
         <>
-            <div className="flex flex-col h-lvh">
+            <div className="flex flex-col h-lvh font-poppins">
                 <div className="flex flex-1 bg-gray-100">
                     {/* Sidebar */}
                     <div
@@ -106,57 +106,7 @@ function StudentLayout() {
                     </div>
 
                     {/* Main content */}
-                    <div className="flex flex-col flex-1 overflow-y-auto">
-                        <div className="flex items-center justify-between h-16 bg-white border-b border-gray-200">
-                            <div className="flex items-center px-4">
-                                <button
-                                    className="text-gray-500 focus:outline-none hover:text-[#123A69] md:hidden"
-                                    onClick={toggleSidebar}
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-6 w-6"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M4 6h16M4 12h16M4 18h16"
-                                        />
-                                    </svg>
-                                </button>
-                            </div>
-                            <div>
-                                <img
-                                    className="w-[200px]"
-                                    src="./src/Component/Subcomponent/Asset/rtu-logo.png"
-                                    alt=""
-                                />
-                            </div>
-                            <div className="flex items-center pr-4">
-                                <button className="flex items-center text-gray-500 hover:text-[#123A69] focus:outline-none">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth={1.5}
-                                        stroke="currentColor"
-                                        className="w-8 h-8"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
-                                        />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                        <div className="p-4 bg-white flex-1 rounded-lg m-4"></div>
-                    </div>
+                    <div></div>
                 </div>
                 <footer className="footer flex text-center justify-center text-sm items-center h-12 border-t w-screen px-6 py-1">
                     <p>
