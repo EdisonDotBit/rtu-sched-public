@@ -10,6 +10,7 @@ import SelectBranch from "./Component/SelectBranch.jsx";
 import SelectOffice from "./Component/SelectOffice.jsx";
 import Calendar from "./Component/Subcomponent/Calendar.jsx";
 import InputDetails from "./Component/InputDetails.jsx";
+import Confirmation from "./Component/Subcomponent/Confirmation.jsx";
 
 const router = createBrowserRouter([
     {
