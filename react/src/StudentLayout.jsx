@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
+import Qwe from "./Component/Subcomponent/Asset/rtu-logo.png";
 
 function StudentLayout() {
     // State to track whether the sidebar is open or closed
@@ -12,7 +13,7 @@ function StudentLayout() {
 
     return (
         <>
-            <div className="flex flex-col h-lvh font-poppins">
+            <div className="flex flex-col h-screen font-poppins">
                 <div className="flex flex-1 bg-gray-100">
                     {/* Sidebar */}
                     <div
@@ -105,8 +106,8 @@ function StudentLayout() {
                         </div>
                     </div>
 
-                    {/* Main content */}
-                    <div className="flex flex-col flex-1 overflow-y-auto">
+                    {/* Header */}
+                    <div className="flex flex-col flex-1">
                         <div className="flex items-center justify-between h-16 bg-white border-b border-gray-200">
                             <div className="flex items-center px-4">
                                 <button
@@ -130,11 +131,7 @@ function StudentLayout() {
                                 </button>
                             </div>
                             <div>
-                                <img
-                                    className="w-[200px]"
-                                    src="../src/Component/Subcomponent/Asset/rtu-logo.png"
-                                    alt=""
-                                />
+                                <img className="w-[200px]" src={Qwe} alt="" />
                             </div>
                             <div className="flex items-center pr-4">
                                 <button className="flex items-center text-gray-500 hover:text-[#123A69] focus:outline-none">
@@ -155,7 +152,8 @@ function StudentLayout() {
                                 </button>
                             </div>
                         </div>
-                        <div className="p-4 bg-white flex-1 rounded-lg m-4">
+                        {/* Main content */}
+                        <div className="p-4 bg-white rounded-lg m-4 overflow-y-auto flex-1">
                             <Outlet />
                         </div>
                     </div>

@@ -69,6 +69,17 @@ const Calendar = () => {
                 className += " text-red-500"; // Add red color
             }
 
+            // Add a class to highlight the clicked date
+            if (
+                selectedDate &&
+                selectedDate ===
+                    `${currentDate.getFullYear()}-${
+                        currentDate.getMonth() + 1
+                    }-${day}`
+            ) {
+                className += " bg-blue-200"; // Change background color to blue
+            }
+
             calendarDays.push(
                 <td key={day} className={className}>
                     <button

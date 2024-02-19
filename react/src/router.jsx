@@ -1,6 +1,4 @@
 import { createBrowserRouter } from "react-router-dom";
-import Login from "./Component/Login.jsx";
-import App from "./App.jsx";
 import GuestLayout from "./GuestLayout.jsx";
 import StudentLayout from "./StudentLayout.jsx";
 import Dashboard from "./Component/Dashboard.jsx";
@@ -8,14 +6,13 @@ import SetAppointment from "./Component/SetAppointment.jsx";
 import ViewAppointments from "./Component/ViewAppointments.jsx";
 import SelectBranch from "./Component/SelectBranch.jsx";
 import SelectOffice from "./Component/SelectOffice.jsx";
-import Calendar from "./Component/Subcomponent/Calendar.jsx";
 import InputDetails from "./Component/InputDetails.jsx";
 import Confirmation from "./Component/Subcomponent/Confirmation.jsx";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <InputDetails />,
+        element: <SelectBranch />,
     },
     {
         path: "/guest",
@@ -38,16 +35,24 @@ const router = createBrowserRouter([
                 element: <SetAppointment />,
                 children: [
                     {
-                        path: "",
-                        element: <Calendar />,
+                        path: "confirmation",
+                        element: <SelectBranch />,
                     },
                     {
                         path: "branch",
-                        element: <Calendar />,
+                        element: <SelectBranch />,
                     },
                     {
-                        path: "details-input",
+                        path: "office",
+                        element: <SelectOffice />,
+                    },
+                    {
+                        path: "input-details",
                         element: <InputDetails />,
+                    },
+                    {
+                        path: "confirmation",
+                        element: <Confirmation />,
                     },
                 ],
             },

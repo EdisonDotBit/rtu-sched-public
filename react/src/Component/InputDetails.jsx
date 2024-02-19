@@ -7,10 +7,7 @@ import FormDetails from "./Subcomponent/FormDetails";
 function InputDetails() {
     return (
         <>
-            <div className="w-full">
-                <div>
-                    <SubNav />
-                </div>
+            <div className="w-full h-[500px]">
                 <div className="flex flex-col justify-center">
                     <div>
                         <h1 className="flex justify-center text-2xl m underline">
@@ -18,12 +15,6 @@ function InputDetails() {
                         </h1>
                     </div>
                     <div className="flex flex-col justify-center">
-                        <div className="flex justify-center text-xl py-5">
-                            Select Date
-                        </div>
-                        <div>
-                            <Calendar />
-                        </div>
                         <div className="flex justify-center items-center">
                             <Purpose />
                         </div>
