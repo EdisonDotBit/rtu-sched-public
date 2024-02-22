@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
+import Qwe from "./Component/Subcomponent/Asset/rtu-logo.png";
 
 function StudentLayout() {
     // State to track whether the sidebar is open or closed
@@ -12,7 +13,7 @@ function StudentLayout() {
 
     return (
         <>
-            <div className="flex flex-col h-lvh font-poppins">
+            <div className="flex flex-col h-screen font-poppins">
                 <div className="flex flex-1 bg-gray-100">
                     {/* Sidebar */}
                     <div
@@ -25,24 +26,24 @@ function StudentLayout() {
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
-                                stroke-width="1.5"
+                                strokeWidth="1.5"
                                 stroke="currentColor"
-                                class="w-12 h-12"
+                                className="w-12 h-12"
                             >
                                 <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
                                     d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
                                 />
                             </svg>
                             <span className="text-white font-bold uppercase mr-2">
-                                STUDENT ACCOUNT
+                                STUDENT
                             </span>
                         </div>
                         <div className="flex flex-col flex-1 overflow-y-auto">
                             <nav className="flex-1 bg-[#194F90]">
-                                <a
-                                    href="#"
+                                <Link
+                                    to="/student/dashboard"
                                     className="flex items-center px-4 py-6 text-white hover:text-white bg-[#123A69]"
                                 >
                                     <svg
@@ -60,9 +61,9 @@ function StudentLayout() {
                                         />
                                     </svg>
                                     Dashboard
-                                </a>
-                                <a
-                                    href="#"
+                                </Link>
+                                <Link
+                                    to="/student/set-appointment"
                                     className="flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69]"
                                 >
                                     <svg
@@ -80,9 +81,9 @@ function StudentLayout() {
                                         />
                                     </svg>
                                     Set Appointment
-                                </a>
-                                <a
-                                    href="#"
+                                </Link>
+                                <Link
+                                    to="/student/view-appointment"
                                     className="flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69]"
                                 >
                                     <svg
@@ -100,13 +101,62 @@ function StudentLayout() {
                                         />
                                     </svg>
                                     View Appointment
-                                </a>
+                                </Link>
                             </nav>
                         </div>
                     </div>
 
-                    {/* Main content */}
-                    <div></div>
+                    {/* Header */}
+                    <div className="flex flex-col flex-1">
+                        <div className="flex items-center justify-between h-16 bg-white border-b border-gray-200">
+                            <div className="flex items-center px-4">
+                                <button
+                                    className="text-gray-500 focus:outline-none hover:text-[#123A69] md:hidden"
+                                    onClick={toggleSidebar}
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-6 w-6"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M4 6h16M4 12h16M4 18h16"
+                                        />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div>
+                                <img className="w-[200px]" src={Qwe} alt="" />
+                            </div>
+                            <div className="flex items-center pr-4">
+                                <button className="flex items-center text-gray-500 hover:text-[#123A69] focus:outline-none">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth={1.5}
+                                        stroke="currentColor"
+                                        className="w-8 h-8"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
+                                        />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        {/* Main content */}
+                        <div className="p-4 bg-white rounded-lg m-4 overflow-y-auto flex-1">
+                            <Outlet />
+                        </div>
+                    </div>
                 </div>
                 <footer className="footer flex text-center justify-center text-sm items-center h-12 border-t w-screen px-6 py-1">
                     <p>
