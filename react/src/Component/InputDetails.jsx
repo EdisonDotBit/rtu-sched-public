@@ -25,6 +25,11 @@ function InputDetails() {
                             <div className="flex flex-col justify-center w-full items-center">
                                 <FormDetails />
                             </div>
+                            <div className="flex flex-col justify-center w-full items-center">
+                                <button className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 ml-5">
+                                    Next &gt;
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
