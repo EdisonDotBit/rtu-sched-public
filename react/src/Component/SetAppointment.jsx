@@ -1,11 +1,19 @@
-import SelectBranch from "./SelectBranch";
 import React, { useState } from "react";
 import SelectOffice from "./SelectOffice";
 import Calendar from "./Subcomponent/Calendar";
 import InputDetails from "./InputDetails";
 import Confirmation from "./Subcomponent/Confirmation";
+import Campus from "./Subcomponent/Asset/RTU_Campus.jpg";
+import BranchBox from "./BranchBox";
 
 function SetAppointment() {
+    {
+        /* appoinement vars*/
+    }
+    const [selectedBranch, setSelectedBranch] = useState("");
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedOffice, setSelectedOffice] = useState("");
+
     const [selectedAccordion, setSelectedAccordion] = useState(null);
 
     const handleAccordionClick = (index) => {
@@ -34,7 +42,15 @@ function SetAppointment() {
                             selectedAccordion === 0 ? "" : "hidden"
                         }`}
                     >
-                        <SelectBranch />
+                        {" "}
+                        <BranchBox
+                            selectedBranch={selectedBranch}
+                            setSelectedBranch={setSelectedBranch}
+                        />
+                        <p className="mt-4">
+                            Selected Date:{" "}
+                            {selectedBranch ? selectedBranch : "None"}
+                        </p>
                     </div>
                 </div>
                 <div className="bg-transparent collapse collapse-arrow bg-base-200 h-2/4">
@@ -52,7 +68,14 @@ function SetAppointment() {
                             selectedAccordion === 1 ? "" : "hidden"
                         }`}
                     >
-                        <SelectOffice />
+                        <SelectOffice
+                            selectedOffice={selectedOffice}
+                            setSelectedOffice={setSelectedOffice}
+                        />
+                        <p className="mt-4">
+                            Selected Date:{" "}
+                            {selectedOffice ? selectedOffice : "None"}
+                        </p>
                     </div>
                 </div>
                 <div className="bg-transparent collapse collapse-arrow bg-base-200 h-2/4">
@@ -70,7 +93,20 @@ function SetAppointment() {
                             selectedAccordion === 2 ? "" : "hidden"
                         }`}
                     >
-                        <Calendar />
+                        <div>
+                            <Calendar setSelectedDate={setSelectedDate} />
+                        </div>
+                        <div>
+                            <p className="mt-4">
+                                Selected Date:{" "}
+                                {selectedDate ? selectedDate : "None"}
+                            </p>
+                            <div className="flex flex-col justify-center w-full items-center">
+                                <button className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 ml-5 mt-7">
+                                    Next &gt;
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className="bg-transparent collapse collapse-arrow bg-base-200 h-2/4">
