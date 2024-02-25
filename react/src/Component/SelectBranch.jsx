@@ -5,12 +5,12 @@ function SelectBranch({ selectedBranch, setSelectedBranch }) {
         {
             image: Campus,
             bname: "Boni",
-            location: "Boni ",
+            location: "Boni Avenue, Mandaluyong City, Metro Manila ",
         },
         {
             image: Campus,
             bname: "Pasig",
-            location: "Pasig ",
+            location: "Eusebio, Pasig, Metro Manila",
         },
     ]);
 
@@ -19,7 +19,7 @@ function SelectBranch({ selectedBranch, setSelectedBranch }) {
         setSelectedBranch(selected);
     };
     return (
-        <div className="flex flex-wrap items-center justify-center h-64">
+        <div className="flex flex-wrap items-center justify-center h-{100}">
             {branches.map((branchItem, index) => (
                 <div
                     key={index}
@@ -28,13 +28,16 @@ function SelectBranch({ selectedBranch, setSelectedBranch }) {
                     }`}
                     onMouseEnter={() => setExpanded(true)}
                     onMouseLeave={() => setExpanded(false)}
-                    onClick={() => handleBranchSelection(branchItem.location)}
+                    onClick={() => handleBranchSelection(branchItem.bname)}
                 >
                     <img
                         src={branchItem.image}
                         alt=""
                         className="flex self-center rounded-2xl w-[500px] p-[10px]"
                     />
+                    <p className="text-xl text-center">
+                        Rizal Technological University
+                    </p>
                     <p className="text-xl text-center">{branchItem.bname}</p>
                     <p className="text-sm text-center">{branchItem.location}</p>
                 </div>

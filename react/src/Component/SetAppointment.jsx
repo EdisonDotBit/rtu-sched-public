@@ -3,9 +3,7 @@ import SelectOffice from "./SelectOffice";
 import Calendar from "./Subcomponent/Calendar";
 import InputDetails from "./InputDetails";
 import Confirmation from "./Subcomponent/Confirmation";
-import Campus from "./Subcomponent/Asset/RTU_Campus.jpg";
-import BranchBox from "./BranchBox";
-
+import SelectBranch from "./SelectBranch";
 function SetAppointment() {
     {
         /* appoinement vars*/
@@ -43,7 +41,7 @@ function SetAppointment() {
                         }`}
                     >
                         {" "}
-                        <BranchBox
+                        <SelectBranch
                             selectedBranch={selectedBranch}
                             setSelectedBranch={setSelectedBranch}
                         />
