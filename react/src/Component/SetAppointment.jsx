@@ -8,7 +8,7 @@ function SetAppointment() {
     {
         /* appoinement vars*/
     }
-    const [selectedBranch, setSelectedBranch] = useState("");
+    const [selectedBranch, setSelectedBranch] = useState();
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedOffice, setSelectedOffice] = useState("");
 
@@ -24,7 +24,7 @@ function SetAppointment() {
 
     return (
         <>
-            <div>
+            <div className="">
                 <div className="bg-transparent collapse collapse-arrow bg-base-200 h-2/4">
                     <input
                         type="radio"
@@ -45,10 +45,6 @@ function SetAppointment() {
                             selectedBranch={selectedBranch}
                             setSelectedBranch={setSelectedBranch}
                         />
-                        <p className="mt-4">
-                            Selected Date:{" "}
-                            {selectedBranch ? selectedBranch : "None"}
-                        </p>
                     </div>
                 </div>
                 <div className="bg-transparent collapse collapse-arrow bg-base-200 h-2/4">
@@ -70,10 +66,6 @@ function SetAppointment() {
                             selectedOffice={selectedOffice}
                             setSelectedOffice={setSelectedOffice}
                         />
-                        <p className="mt-4">
-                            Selected Date:{" "}
-                            {selectedOffice ? selectedOffice : "None"}
-                        </p>
                     </div>
                 </div>
                 <div className="bg-transparent collapse collapse-arrow bg-base-200 h-2/4">

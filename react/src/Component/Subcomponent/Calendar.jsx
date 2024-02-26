@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Calendar = ({ selectedDate, setSelectedDate }) => {
+const Calendar = ({ setSelectedDate, selectedDate }) => {
     const [currentDate, setCurrentDate] = useState(new Date());
 
     const handleDateClick = (date) => {
