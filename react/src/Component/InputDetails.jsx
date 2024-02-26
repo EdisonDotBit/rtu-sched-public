@@ -1,8 +1,5 @@
 import React from "react";
-import SubNav from "./Subcomponent/SubNav";
-import Calendar from "./Subcomponent/Calendar";
 import Purpose from "./Subcomponent/Purpose";
-import FormDetails from "./Subcomponent/FormDetails";
 
 function InputDetails() {
     return (
@@ -23,7 +20,7 @@ function InputDetails() {
                                 Personal Details
                             </h1>
                             <div className="flex flex-col justify-center w-full items-center">
-                                <FormDetails />
+                                {/* input boxes */}
                             </div>
                             <div className="flex flex-col justify-center w-full items-center">
                                 <button className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 ml-5">

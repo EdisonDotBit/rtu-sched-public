@@ -13,7 +13,7 @@ function StudentLayout() {
 
     return (
         <>
-            <div className="flex flex-col h-screen overflow-hidden font-poppins">
+            <div className="flex flex-col h-screen font-poppins overflow-hidden">
                 <div className="flex flex-1 bg-gray-100">
                     {/* Sidebar */}
                     <div
@@ -153,7 +153,7 @@ function StudentLayout() {
                             </div>
                         </div>
                         {/* Main content */}
-                        <div className="p-4 bg-white rounded-lg m-4 overflow-y-auto flex-1">
+                        <div className="p-4 bg-white rounded-lg m-4 overflow-y-auto flex-1  ">
                             <Outlet />
                         </div>
                     </div>
