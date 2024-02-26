@@ -1,34 +1,49 @@
 import React, { useState } from "react";
 import Campus from "./Subcomponent/Asset/RTU_Campus.jpg";
-import SubNav from "./Subcomponent/SubNav";
+function SelectBranch({ selectedBranch, setSelectedBranch }) {
+    const [branches, setBranch] = useState([
+        {
+            image: Campus,
+            bname: "Boni",
+            location: "Boni Avenue, Mandaluyong City, Metro Manila ",
+        },
+        {
+            image: Campus,
+            bname: "Pasig",
+            location: "Eusebio, Pasig, Metro Manila",
+        },
+    ]);
 
-function SelectBranch() {
-  return (
-    <>
-     <div className="">
-        <div className="">
-            <h1 className="flex justify-center text-[#194F90] text-[1.9rem] font-bold pb-[30px]">Select RTU Branch</h1>
+    const [expanded, setExpanded] = useState(false);
+    const handleBranchSelection = (selected) => {
+        setSelectedBranch(selected);
+    };
+    return (
+        <div className="flex flex-wrap items-center justify-center h-{100}">
+            {branches.map((branchItem, index) => (
+                <div
+                    key={index}
+                    className={`p-6 border border-gray-300 rounded-md shadow-md transition-transform hover:scale-105 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/4 mx-2 my-2 cursor-pointer ${
+                        selectedBranch === branchItem.bname ? "bg-blue-500" : ""
+                    }`}
+                    onMouseEnter={() => setExpanded(true)}
+                    onMouseLeave={() => setExpanded(false)}
+                    onClick={() => handleBranchSelection(branchItem.bname)}
+                >
+                    <img
+                        src={branchItem.image}
+                        alt=""
+                        className="flex self-center rounded-2xl w-[500px] p-[10px]"
+                    />
+                    <p className="text-xl text-center">
+                        Rizal Technological University
+                    </p>
+                    <p className="text-xl text-center">{branchItem.bname}</p>
+                    <p className="text-sm text-center">{branchItem.location}</p>
+                </div>
+            ))}
         </div>
-        <div className="flex justify-evenly p-[20px]">
-            <div className="border-solid border-[1px] border-black rounded-lg hover:bg-[#d9d9d9]">
-              <button className="flex flex-col p-[20px]">
-                <img src={Campus} alt="" className="lex self-center rounded-2xl w-[300px] p-[10px]"/>
-                <h2 className="text-[#194F90] text-[1.5rem] font-bold">Rizal Technological University - Boni</h2>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-              </button>
-            </div>
-            <div className="border-solid border-[1px] border-black rounded-lg hover:bg-[#d9d9d9]">
-              <button className="flex flex-col p-[20px]">
-                <img src={Campus} alt="" className="flex self-center rounded-2xl w-[300px] p-[10px]"/>
-                <h2 className="text-[#194F90] text-[1.5rem] font-bold">Rizal Technological University - Pasig</h2>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-              </button>
-            </div>
-        </div>
-     </div>
-    </>
-
-  )
+    );
 }
 
 export default SelectBranch;
