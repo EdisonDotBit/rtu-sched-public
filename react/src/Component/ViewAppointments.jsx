@@ -6,7 +6,7 @@ function ViewAppointments() {
       <div>ViewAppointments</div>
       <div className="flex justify-center items-center p-[10px] h-full">
         <div className="flex flex-row gap-[20px]">
-          <input className="text-center w-[300px] p-[5px]" type="text" placeholder="Enter your transaction number"/>
+          <input className="text-center w-[300px] p-[5px]" type="number" placeholder="Enter your transaction number"/>
           <button className="w-[100px] border-solid border-[1px] border-black rounded-lg text-[#ffffff] bg-[#194F90] hover:bg-[#123A69]">Submit</button>
         </div>
       </div>
