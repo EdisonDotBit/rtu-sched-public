@@ -4,21 +4,17 @@ import StudentLayout from "./StudentLayout.jsx";
 import Dashboard from "./Component/Dashboard.jsx";
 import SetAppointment from "./Component/SetAppointment.jsx";
 import ViewAppointments from "./Component/ViewAppointments.jsx";
-<<<<<<<<< Temporary merge branch 1
-import Confirmation from "./Component/Subcomponent/Confirmation.jsx";
-=========
+import App from "./App.jsx"
 import SelectBranch from "./Component/SelectBranch.jsx";
 import SelectOffice from "./Component/SelectOffice.jsx";
->>>>>>>>> Temporary merge branch 2
+import InputDetails from "./Component/InputDetails.jsx";
+import Confirmation from "./Component/Subcomponent/Confirmation.jsx";
+import SubNav from "./Component/Subcomponent/SubNav.jsx";
 
 const router = createBrowserRouter([
     {
         path: "/",
-<<<<<<<<< Temporary merge branch 1
-        element: <Confirmation />,
-=========
-        element: <SelectOffice />,
->>>>>>>>> Temporary merge branch 2
+        element: <App />,
     },
     {
         path: "/guest",
