@@ -12,16 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('appointments', function (Blueprint $table) {
-            $table->integer('aptid', true, true);
-            $table->string('apttype');
-            $table->string('aptname');
-            $table->string('aptstudnum');
-            $table->date('aptdate');
-            $table->string('aptoffice');
-            $table->string('aptpnumber');
-            $table->string('aptemail');
-            $table->timestamps();
-
+            $table->increments('aptid');
+            $table->string('apttype')->nullable(false);
+            $table->string('aptbranch')->nullable(false);
+            $table->string('aptoffice')->nullable(false);
+            $table->string('aptname')->nullable(false);
+            $table->string('aptpurpose')->nullable(false);
+            $table->string('aptstudnum')->nullable(false);
+            $table->date('aptdate')->nullable(false);
+            $table->string('aptpnumber')->nullable(false);
+            $table->string('aptemail')->nullable(false);
         });
     }
 
