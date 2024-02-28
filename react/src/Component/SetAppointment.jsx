@@ -24,7 +24,7 @@ function SetAppointment() {
 
     return (
         <>
-            <div className="">
+            <div className="h-full overflow-y-auto">
                 <div className="bg-transparent collapse collapse-arrow bg-base-200 h-2/4">
                     <input
                         type="radio"
@@ -40,7 +40,7 @@ function SetAppointment() {
                             selectedAccordion === 0 ? "" : "hidden"
                         }`}
                     >
-                        {" "}
+                        {" "}  
                         <SelectBranch
                             selectedBranch={selectedBranch}
                             setSelectedBranch={setSelectedBranch}
