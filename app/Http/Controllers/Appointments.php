@@ -27,4 +27,13 @@ class Appointments extends Controller
             return ['error' => 'Failed to save appointment'];
         }
     }
+
+    public function editapt($aptid)
+    {
+        $apt = Appointment::find($aptid);
+        return $apt;
+    }
+    public function updateapt(Request $request, $aptid)
+    {
+    }
 }

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Campus from "./Subcomponent/Asset/RTU_Campus.jpg";
-function SelectBranch({ selectedBranch, setSelectedBranch }) {
+import Campus from "./Asset/RTU_Campus.jpg";
+function SelectBranch({ formData, setFormData }) {
     const [branches, setBranch] = useState([
         {
             image: Campus,
@@ -16,7 +16,10 @@ function SelectBranch({ selectedBranch, setSelectedBranch }) {
 
     const [expanded, setExpanded] = useState(false);
     const handleBranchSelection = (selected) => {
-        setSelectedBranch(selected);
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            branch: selected,
+        }));
     };
     return (
         <div className="flex flex-wrap items-center justify-center h-{100}">
@@ -24,7 +27,9 @@ function SelectBranch({ selectedBranch, setSelectedBranch }) {
                 <div
                     key={index}
                     className={`p-6 border border-gray-300 rounded-md shadow-md transition-transform hover:scale-105 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/4 mx-2 my-2 cursor-pointer ${
-                        selectedBranch === branchItem.bname ? "bg-blue-500" : ""
+                        formData.branch === branchItem.bname
+                            ? "bg-blue-500"
+                            : ""
                     }`}
                     onMouseEnter={() => setExpanded(true)}
                     onMouseLeave={() => setExpanded(false)}

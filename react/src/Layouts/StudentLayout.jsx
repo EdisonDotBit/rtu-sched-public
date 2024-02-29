@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { Link, Outlet } from "react-router-dom";
-import Qwe from "./Component/Subcomponent/Asset/rtu-logo.png";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
+import Qwe from "../Component/Subcomponent/Asset/rtu-logo.png";
 
 function StudentLayout() {
     // State to track whether the sidebar is open or closed
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    // Get the current location
+    const location = useLocation();
 
     // Function to toggle the sidebar state
     const toggleSidebar = () => {
@@ -42,9 +44,15 @@ function StudentLayout() {
                         </div>
                         <div className="flex flex-col flex-1 overflow-y-auto">
                             <nav className="flex-1 bg-[#194F90]">
-                                <Link
+                                <NavLink
                                     to="/student/dashboard"
-                                    className="flex items-center px-4 py-6 text-white hover:text-white bg-[#123A69]"
+                                    className={`flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69] ${
+                                        location.pathname ===
+                                        "/student/dashboard"
+                                            ? "bg-[#123A69]"
+                                            : ""
+                                    }`}
+                                    activeClassName="bg-gray-700"
                                 >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -61,10 +69,16 @@ function StudentLayout() {
                                         />
                                     </svg>
                                     Dashboard
-                                </Link>
-                                <Link
+                                </NavLink>
+                                <NavLink
                                     to="/student/set-appointment"
-                                    className="flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69]"
+                                    className={`flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69] ${
+                                        location.pathname ===
+                                        "/student/set-appointment"
+                                            ? "bg-[#123A69]"
+                                            : ""
+                                    }`}
+                                    activeClassName="bg-gray-700"
                                 >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -81,10 +95,16 @@ function StudentLayout() {
                                         />
                                     </svg>
                                     Set Appointment
-                                </Link>
-                                <Link
+                                </NavLink>
+                                <NavLink
                                     to="/student/view-appointment"
-                                    className="flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69]"
+                                    className={`flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69] ${
+                                        location.pathname ===
+                                        "/student/view-appointment"
+                                            ? "bg-[#123A69]"
+                                            : ""
+                                    }`}
+                                    activeClassName="bg-gray-700"
                                 >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -101,7 +121,7 @@ function StudentLayout() {
                                         />
                                     </svg>
                                     View Appointment
-                                </Link>
+                                </NavLink>
                             </nav>
                         </div>
                     </div>
@@ -153,7 +173,7 @@ function StudentLayout() {
                             </div>
                         </div>
                         {/* Main content */}
-                        <div className="p-4 bg-white rounded-lg m-4 overflow-y-auto flex-1  ">
+                        <div className="p-4 bg-white rounded-lg m-4 overflow-y-auto flex-1">
                             <Outlet />
                         </div>
                     </div>

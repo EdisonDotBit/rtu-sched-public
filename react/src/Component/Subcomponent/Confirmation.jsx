@@ -1,8 +1,8 @@
 import React from "react";
 
-function Confirmation() {
+function Confirmation({ formData, setFormData }) {
     return (
-        <div className="flex flex-col flex-1 h-screen overflow-y-hidden">
+        <div className="flex flex-col flex-1 w-full h-full overflow-y-hidden">
             <div className="p-4 bg-white flex-1 rounded-lg m-4 overflow-auto">
                 <div className="p-4 w-lvh block">
                     <h4 className="text-center relative border-b text-[18px] font-bold text-[#3B3838] pb-4">
@@ -21,7 +21,7 @@ function Confirmation() {
                                     Student Number
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center">
-                                    2021-101912
+                                    {formData.studNum}
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
@@ -29,7 +29,7 @@ function Confirmation() {
                                     Full Name
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center">
-                                    Edison Lati Jr.
+                                    {formData.name}
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
@@ -37,7 +37,7 @@ function Confirmation() {
                                     Contact Number
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center">
-                                    09950679098
+                                    {formData.pnumber}
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
@@ -45,7 +45,7 @@ function Confirmation() {
                                     Email Address
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center">
-                                    2021-101864@rtu.edu.ph
+                                    {formData.email}
                                 </dd>
                             </div>
                         </dl>
@@ -62,7 +62,7 @@ function Confirmation() {
                                     RTU Branch
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center text-center">
-                                    Boni Campus
+                                    {formData.branch}
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
@@ -70,7 +70,7 @@ function Confirmation() {
                                     Office Name
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center text-center">
-                                    Management Information Center (MIC)
+                                    {formData.office}
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
@@ -78,7 +78,7 @@ function Confirmation() {
                                     Purpose
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center text-center">
-                                    Request for Gradeslip and Registration form
+                                    {formData.purpose}
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
@@ -86,23 +86,7 @@ function Confirmation() {
                                     Date
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center text-center">
-                                    Friday, March 15, 2024
-                                </dd>
-                            </div>
-                            <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                                <dt className="font-semibold text-[#3B3838] ml-10">
-                                    Time
-                                </dt>
-                                <dd className="text-gray-700 sm:col-span-2 justify-self-center text-center">
-                                    8:00 AM - 8:30 AM
-                                </dd>
-                            </div>
-                            <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                                <dt className="font-semibold text-[#3B3838] ml-10">
-                                    Transaction Number
-                                </dt>
-                                <dd className="text-gray-700 sm:col-span-2 justify-self-center text-center">
-                                    5145656
+                                    {formData.date}
                                 </dd>
                             </div>
                         </dl>
@@ -124,12 +108,6 @@ function Confirmation() {
                             the given data.
                         </label>
                     </div>
-                </div>
-
-                <div className="flex items-center justify-center w-lvh mt-4">
-                    <button className="py-2 px-8 rounded-md text-white hover:text-white bg-[#194F90] hover:bg-[#123A69] font-semibold">
-                        Confirm
-                    </button>
                 </div>
             </div>
         </div>

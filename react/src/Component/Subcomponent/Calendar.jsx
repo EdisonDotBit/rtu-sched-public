@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 
-const Calendar = ({ setSelectedDate, selectedDate }) => {
+const Calendar = ({ formData, setFormData }) => {
     const [currentDate, setCurrentDate] = useState(new Date());
 
     const handleDateClick = (date) => {
-        setSelectedDate(
-            `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${date}`
-        );
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            date: `${currentDate.getFullYear()}-${
+                currentDate.getMonth() + 1
+            }-${date}`,
+        }));
     };
 
     const handlePrevYear = () => {
@@ -70,8 +73,8 @@ const Calendar = ({ setSelectedDate, selectedDate }) => {
 
             // Add a class to highlight the clicked date
             if (
-                selectedDate &&
-                selectedDate ===
+                setFormData.date &&
+                setFormData.date ===
                     `${currentDate.getFullYear()}-${
                         currentDate.getMonth() + 1
                     }-${day}`
