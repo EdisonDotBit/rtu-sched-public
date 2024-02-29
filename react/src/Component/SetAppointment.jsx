@@ -24,7 +24,7 @@ function SetAppointment() {
 
     return (
         <>
-            <div className="h-full overflow-y-auto">
+            <div className="">
                 <div className="bg-transparent collapse collapse-arrow bg-base-200 h-2/4">
                     <input
                         type="radio"
