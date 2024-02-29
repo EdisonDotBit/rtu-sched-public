@@ -40,7 +40,7 @@ function SetAppointment() {
                             selectedAccordion === 0 ? "" : "hidden"
                         }`}
                     >
-                        {" "}
+                        {" "}  
                         <SelectBranch
                             selectedBranch={selectedBranch}
                             setSelectedBranch={setSelectedBranch}

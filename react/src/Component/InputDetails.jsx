@@ -1,10 +1,11 @@
 import React from "react";
 import Purpose from "./Subcomponent/Purpose";
+import FormDetails from "./Subcomponent/FormDetails";
 
 function InputDetails() {
     return (
         <>
-            <div className="w-full h-[500px]">
+            <div className="w-full h-[500px] overflow-y-auto">
                 <div className="flex flex-col justify-center">
                     <div>
                         <h1 className="flex justify-center text-2xl m underline">
@@ -21,6 +22,7 @@ function InputDetails() {
                             </h1>
                             <div className="flex flex-col justify-center w-full items-center">
                                 {/* input boxes */}
+                                <FormDetails />
                             </div>
                             <div className="flex flex-col justify-center w-full items-center">
                                 <button className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 ml-5">

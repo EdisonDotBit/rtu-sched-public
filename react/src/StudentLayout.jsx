@@ -13,7 +13,7 @@ function StudentLayout() {
 
     return (
         <>
-            <div className="flex flex-col h-screen font-poppins overflow-hidden">
+            <div className="flex flex-col h-screen font-poppins overflow-x-hidden">
                 <div className="flex flex-1 bg-gray-100">
                     {/* Sidebar */}
                     <div
