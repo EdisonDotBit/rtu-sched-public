@@ -9,4 +9,14 @@ class Appointment extends Model
     public $timestamps = false;
     protected $table = 'appointments';
     protected $primaryKey = 'aptid';
+    protected $fillable = [
+        'apttype',
+        'aptbranch',
+        'aptoffice',
+        'aptname',
+        'aptpurpose',
+        'aptstudnum',
+        'aptdate',
+        'aptpnumber',
+    ];
 }
