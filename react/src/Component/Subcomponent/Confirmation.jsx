@@ -21,7 +21,7 @@ function Confirmation({ formData, setFormData }) {
                                     Student Number
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center">
-                                    {formData.studNum}
+                                    {formData.aptstudum}
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
@@ -29,7 +29,7 @@ function Confirmation({ formData, setFormData }) {
                                     Full Name
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center">
-                                    {formData.name}
+                                    {formData.aptname}
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
@@ -37,7 +37,7 @@ function Confirmation({ formData, setFormData }) {
                                     Contact Number
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center">
-                                    {formData.pnumber}
+                                    {formData.aptpnumber}
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
@@ -45,7 +45,7 @@ function Confirmation({ formData, setFormData }) {
                                     Email Address
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center">
-                                    {formData.email}
+                                    {formData.aptemail}
                                 </dd>
                             </div>
                         </dl>
@@ -62,7 +62,7 @@ function Confirmation({ formData, setFormData }) {
                                     RTU Branch
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center text-center">
-                                    {formData.branch}
+                                    {formData.aptbranch}
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
@@ -70,7 +70,7 @@ function Confirmation({ formData, setFormData }) {
                                     Office Name
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center text-center">
-                                    {formData.office}
+                                    {formData.aptoffice}
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
@@ -78,7 +78,7 @@ function Confirmation({ formData, setFormData }) {
                                     Purpose
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center text-center">
-                                    {formData.purpose}
+                                    {formData.aptpurpose}
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
@@ -86,7 +86,7 @@ function Confirmation({ formData, setFormData }) {
                                     Date
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center text-center">
-                                    {formData.date}
+                                    {formData.aptdate}
                                 </dd>
                             </div>
                         </dl>

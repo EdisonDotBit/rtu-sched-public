@@ -6,7 +6,7 @@ const Calendar = ({ formData, setFormData }) => {
     const handleDateClick = (date) => {
         setFormData((prevFormData) => ({
             ...prevFormData,
-            date: `${currentDate.getFullYear()}-${
+            aptdate: `${currentDate.getFullYear()}-${
                 currentDate.getMonth() + 1
             }-${date}`,
         }));
@@ -73,7 +73,7 @@ const Calendar = ({ formData, setFormData }) => {
 
             // Add a class to highlight the clicked date
             if (
-                setFormData.date &&
+                setFormData.aptdate &&
                 setFormData.date ===
                     `${currentDate.getFullYear()}-${
                         currentDate.getMonth() + 1
@@ -85,6 +85,7 @@ const Calendar = ({ formData, setFormData }) => {
             calendarDays.push(
                 <td key={day} className={className}>
                     <button
+                        type="button" // Ensure it doesn't trigger form submission
                         onClick={() => handleDateClick(day)}
                         className={`w-full h-full p-2 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none ${
                             currentDate.getDay() === 0 ||

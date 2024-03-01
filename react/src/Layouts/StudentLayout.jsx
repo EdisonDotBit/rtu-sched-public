@@ -52,7 +52,6 @@ function StudentLayout() {
                                             ? "bg-[#123A69]"
                                             : ""
                                     }`}
-                                    activeClassName="bg-gray-700"
                                 >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -78,7 +77,6 @@ function StudentLayout() {
                                             ? "bg-[#123A69]"
                                             : ""
                                     }`}
-                                    activeClassName="bg-gray-700"
                                 >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -104,7 +102,6 @@ function StudentLayout() {
                                             ? "bg-[#123A69]"
                                             : ""
                                     }`}
-                                    activeClassName="bg-gray-700"
                                 >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"

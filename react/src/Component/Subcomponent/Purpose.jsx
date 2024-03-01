@@ -25,7 +25,7 @@ const Purpose = ({ formData, setFormData }) => {
         // Remove the dropdown from the state
         setDropdowns(dropdowns.filter((dropdown) => dropdown.id !== id));
         // Remove the value of the deleted dropdown from the stored string
-        formData.purpose((prevValue) =>
+        formData.aptpurpose((prevValue) =>
             prevValue.replace(`${deletedDropdown.value}, `, "")
         );
     };
@@ -43,7 +43,7 @@ const Purpose = ({ formData, setFormData }) => {
             .join(", ");
         setFormData((prevFormData) => ({
             ...prevFormData,
-            purpose: newStringValue,
+            aptpurpose: newStringValue,
         }));
     };
 

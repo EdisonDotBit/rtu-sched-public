@@ -36,12 +36,12 @@ function InputDetails({ formData, setFormData }) {
                                         className="mb-4 relative sm:flex sm:justify-center overflow-hidden sm:rounded-md border border-gray-200 px-3 pt-3 shadow-sm sm:focus-within:border-blue-600 sm:focus-within:ring-1 sm:focus-within:ring-blue-600 sm:w-2/3 md:w-8/12 lg:w-1/3"
                                     >
                                         <input
-                                            name="studNum"
-                                            value={formData.studNum}
+                                            name="aptstudnum"
+                                            value={formData.aptstudnum}
                                             onChange={handleChange}
                                             type="text"
                                             placeholder="Student Number"
-                                            className="mb-4peer h-8 w-full border-none bg-transparent p-0 placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm"
+                                            className="peer h-8 w-full border-none bg-transparent p-0 placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm"
                                         />
 
                                         <span className="absolute start-3 top-3 -translate-y-1/2 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-3 peer-focus:text-xs">
@@ -53,8 +53,8 @@ function InputDetails({ formData, setFormData }) {
                                         className="mb-4 relative sm:flex sm:justify-center overflow-hidden sm:rounded-md border border-gray-200 px-3 pt-3 shadow-sm sm:focus-within:border-blue-600 sm:focus-within:ring-1 sm:focus-within:ring-blue-600 sm:w-2/3 md:w-8/12 lg:w-1/3"
                                     >
                                         <input
-                                            name="name"
-                                            value={formData.name}
+                                            name="aptname"
+                                            value={formData.aptname}
                                             onChange={handleChange}
                                             type="text"
                                             placeholder="Full Name"
@@ -70,8 +70,8 @@ function InputDetails({ formData, setFormData }) {
                                         className="mb-4 relative sm:flex sm:justify-center overflow-hidden sm:rounded-md border border-gray-200 px-3 pt-3 shadow-sm sm:focus-within:border-blue-600 sm:focus-within:ring-1 sm:focus-within:ring-blue-600 sm:w-2/3 md:w-8/12 lg:w-1/3"
                                     >
                                         <input
-                                            name="pnumber"
-                                            value={formData.pnumber}
+                                            name="aptpnumber"
+                                            value={formData.aptpnumber}
                                             onChange={handleChange}
                                             type="tel"
                                             inputMode="numeric"
@@ -89,8 +89,8 @@ function InputDetails({ formData, setFormData }) {
                                         className="mb-4 relative sm:flex sm:justify-center overflow-hidden sm:rounded-md border border-gray-200 px-3 pt-3 shadow-sm sm:focus-within:border-blue-600 sm:focus-within:ring-1 sm:focus-within:ring-blue-600 sm:w-2/3 md:w-8/12 lg:w-1/3"
                                     >
                                         <input
-                                            name="email"
-                                            value={formData.email}
+                                            name="aptemail"
+                                            value={formData.aptaptemail}
                                             onChange={handleChange}
                                             type="text"
                                             placeholder="email"
