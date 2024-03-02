@@ -8,6 +8,11 @@ use Illuminate\Http\JsonResponse;
 
 class Appointments extends Controller
 {
+    public function index()
+    {
+        $apt = Appointment::all();
+        return $apt;
+    }
 
     public function newapt(Request $request)
     {
@@ -35,5 +40,21 @@ class Appointments extends Controller
                 'error' => 'Failed to save appointment. Please ensure all fields are filled correctly.',
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
+    }
+    public function getapt(int $aptid)
+    {
+        $apt = Appointment::find($aptid);
+
+        if (!$apt) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Appointment not found',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'data' => $apt,
+        ]);
     }
 }

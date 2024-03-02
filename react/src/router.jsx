@@ -4,12 +4,12 @@ import Dashboard from "./Component/Dashboard.jsx";
 import SetAppointment from "./Component/SetAppointment.jsx";
 import ViewAppointments from "./Component/ViewAppointments.jsx";
 import GuestLayout from "./Layouts/GuestLayout.jsx";
-import Confirmation from "./Component/Subcomponent/Confirmation.jsx";
+import DetailsInfo from "./Component/Subcomponent/DetailsInfo.jsx";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <Confirmation />,
+        element: <DetailsInfo />,
     },
     {
         path: "/guest",

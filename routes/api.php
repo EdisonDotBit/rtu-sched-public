@@ -18,4 +18,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('setappointment', 'App\Http\Controllers\Appointments@newapt');
+Route::post('setappt', 'App\Http\Controllers\Appointments@newapt');
+Route::get('searchappt/{aptid}', 'App\Http\Controllers\Appointments@getapt');
+
+Route::get('/', 'App\Http\Controllers\Appointments@index');

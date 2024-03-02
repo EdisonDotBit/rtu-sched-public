@@ -36,10 +36,7 @@ function SetAppointment() {
         console.log(formData); // Log the formData
 
         try {
-            const res = await axios.post(
-                `${apiBaseUrl}/api/setappointment`,
-                formData
-            );
+            const res = await axios.post(`${apiBaseUrl}/api/setappt`, formData);
 
             if (res.data.status === "200") {
                 console.log(res.data.message); // Log success message
