@@ -5,6 +5,7 @@ import SetAppointment from "./Component/SetAppointment.jsx";
 import ViewAppointments from "./Component/ViewAppointments.jsx";
 import GuestLayout from "./Layouts/GuestLayout.jsx";
 import DetailsInfo from "./Component/Subcomponent/DetailsInfo.jsx";
+import AdminLayout from "./Layouts/AdminLayout.jsx";
 
 const router = createBrowserRouter([
     {
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
     {
         path: "/guest",
         element: <GuestLayout />,
+    },
+    {
+        path: "/admin",
+        element: <AdminLayout />,
     },
     {
         path: "/student",
