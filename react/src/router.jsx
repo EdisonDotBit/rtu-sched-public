@@ -6,19 +6,41 @@ import ViewAppointments from "./Component/ViewAppointments.jsx";
 import GuestLayout from "./Layouts/GuestLayout.jsx";
 import DetailsInfo from "./Component/Subcomponent/DetailsInfo.jsx";
 import AdminLayout from "./Layouts/AdminLayout.jsx";
-
+import SupAdminLayout from "./Layouts/SupAdminLayout.jsx";
+import DashboardAdmin from "./Component/Admin/DashboardAdmin.jsx";
+import AccountSettingsAdmin from "./Component/Admin/AccountSettingsAdmin.jsx";
+import OfficelistAdmin from "./Component/Admin/OfficelistAdmin.jsx";
+import AppointmentsAdmin from "./Component/Admin/AppointmentsAdmin.jsx";
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <DetailsInfo />,
+        element: <SupAdminLayout />,
+        children: [
+            {
+                path: "",
+                element: <DashboardAdmin />,
+            },
+            {
+                path: "dashboard",
+                element: <DashboardAdmin />,
+            },
+            {
+                path: "offices",
+                element: <OfficelistAdmin />,
+            },
+            {
+                path: "appointments",
+                element: <AppointmentsAdmin />,
+            },
+            {
+                path: "accounts",
+                element: <AccountSettingsAdmin />,
+            },
+        ],
     },
     {
         path: "/guest",
         element: <GuestLayout />,
-    },
-    {
-        path: "/admin",
-        element: <AdminLayout />,
     },
     {
         path: "/student",

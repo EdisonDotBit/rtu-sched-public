@@ -8,7 +8,12 @@ use Illuminate\Http\JsonResponse;
 
 class Appointments extends Controller
 {
-    public function index()
+    public function allOngoingAppointments()
+    {
+        $apt = Appointment::where('aptstatus', 'ongoing')->get();
+        return $apt;
+    }
+    public function allAppointments()
     {
         $apt = Appointment::all();
         return $apt;

@@ -32,6 +32,9 @@ function ViewAppointments() {
             setAptData(null);
         }
     };
+    useEffect(() => {
+        console.log(aptData);
+    }, [aptData]);
 
     return (
         <>
