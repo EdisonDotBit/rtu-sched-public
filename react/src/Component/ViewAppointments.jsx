@@ -28,7 +28,7 @@ function ViewAppointments() {
             setError(null);
         } catch (error) {
             console.error("Error fetching specific row:", error);
-            setError("Error fetching data. Please try again.");
+            setError("No Data Found, double check your Appointment Number");
             setAptData(null);
         }
     };

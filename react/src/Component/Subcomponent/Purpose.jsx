@@ -78,6 +78,7 @@ const Purpose = ({ formData, setFormData }) => {
             ))}
             {dropdowns.length < 3 && (
                 <button
+                    type="button"
                     onClick={addDropdown}
                     className="flex justify-center bg-blue-500 text-white py-2 px-4 rounded-md w-2/3 ml-5"
                 >
