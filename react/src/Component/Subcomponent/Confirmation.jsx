@@ -21,7 +21,7 @@ function Confirmation({ formData, setFormData }) {
                                     Student Number
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center">
-                                    {formData.aptstudum}
+                                    {formData.aptstudnum}
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
