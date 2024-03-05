@@ -11,6 +11,7 @@ import DashboardAdmin from "./Component/Admin/DashboardAdmin.jsx";
 import AccountSettingsAdmin from "./Component/Admin/AccountSettingsAdmin.jsx";
 import OfficelistAdmin from "./Component/Admin/OfficelistAdmin.jsx";
 import AppointmentsAdmin from "./Component/Admin/AppointmentsAdmin.jsx";
+import AddOffice from "./Component/Admin/Component/AddOffice.jsx";
 const router = createBrowserRouter([
     {
         path: "/",
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
     {
         path: "/guest",
         element: <GuestLayout />,
+    },
+    {
+        path: "/test",
+        element: <AddOffice />,
     },
     {
         path: "/student",

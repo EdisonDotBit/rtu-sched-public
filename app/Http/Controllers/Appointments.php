@@ -62,4 +62,32 @@ class Appointments extends Controller
             'data' => $apt,
         ]);
     }
+
+    public function delapt($aptId)
+    {
+        $apt = Appointment::find($aptId);
+        $apt->delete();
+        return response()->json([
+            'status' => 200,
+            'messages' => 'successfully deleted appointment',
+        ]);
+    }
+    public function uptodone($aptId)
+    {
+        $apt = Appointment::find($aptId);
+        $apt->aptstatus = 'done';
+        try {
+            $apt->save();
+            return response()->json([
+                'status' => 200,
+                'messages' => 'successfully updated appointment',
+                'data' => $apt,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 400,
+                'error' => 'Failed Madafaka',
+            ], 400);
+        }
+    }
 }

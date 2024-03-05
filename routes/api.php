@@ -23,3 +23,10 @@ Route::get('searchappt/{aptid}', 'App\Http\Controllers\Appointments@getapt');
 
 Route::get('allongoing', 'App\Http\Controllers\Appointments@allOngoingAppointments');
 Route::get('all', 'App\Http\Controllers\Appointments@allAppointments');
+Route::delete('/delappt/{aptid}', 'App\Http\Controllers\Appointments@delapt');
+Route::put('/updone/{aptid}', 'App\Http\Controllers\Appointments@uptodone');
+
+
+Route::get('office/all', 'App\Http\Controllers\Offices@index');
+Route::delete('office/delete/{offid}', 'App\Http\Controllers\Offices@deloff');
+Route::post('office/add', 'App\Http\Controllers\Offices@addoff');
