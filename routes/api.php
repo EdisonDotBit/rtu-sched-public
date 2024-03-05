@@ -30,3 +30,5 @@ Route::put('/updone/{aptid}', 'App\Http\Controllers\Appointments@uptodone');
 Route::get('office/all', 'App\Http\Controllers\Offices@index');
 Route::delete('office/delete/{offid}', 'App\Http\Controllers\Offices@deloff');
 Route::post('office/add', 'App\Http\Controllers\Offices@addoff');
+Route::get('office/info/{offid}', 'App\Http\Controllers\Offices@getoff');
+Route::put('office/edit/{offid}', 'App\Http\Controllers\Offices@edoff');

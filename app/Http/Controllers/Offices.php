@@ -45,4 +45,40 @@ class Offices extends Controller
             ], 400);
         }
     }
+
+    public function getoff(int $offid)
+    {
+        $off = Office::find($offid);
+
+        if (!$off) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Appointment not found',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'data' => $off,
+        ]);
+    }
+    public function edoff(Request $request, $offid)
+    {
+        $off = Office::find($offid);
+        $off->offname = $request->input('offname');
+        $off->offabbr = $request->input('offabbr');
+        $off->offlimit = $request->input('offlimit');
+        try {
+            $off->save();
+            return response()->json([
+                'status' => 200,
+                'messages' => 'successfully edited an office',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 400,
+                'error' => 'Failed to edit an Office. Please ensure all fields are filled correctly.',
+            ], 400);
+        }
+    }
 }

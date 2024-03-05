@@ -1,13 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-function AddOffice() {
+function EditOffice({ selectedOffid }) {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-    const [formData, setFormData] = useState({
-        offabbr: "",
-        offname: "",
-        offlimit: "",
-    });
+    const [formData, setFormData] = useState({});
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -16,24 +12,45 @@ function AddOffice() {
             [name]: value,
         }));
     };
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const getRes = await axios.get(
+                    `${apiBaseUrl}/api/office/info/${selectedOffid}`
+                );
+                const responseData = getRes.data.data; // Corrected response data access
+                setFormData({
+                    offabbr: responseData.offabbr,
+                    offname: responseData.offname,
+                    offlimit: responseData.offlimit,
+                });
+            } catch (error) {
+                console.error("Error fetching office data:", error); // Log the error if there's an issue with the request
+                // Handle the error gracefully, such as showing an error message to the user
+            }
+        };
+        getData();
+    }, []);
 
-    const addoff = async (e) => {
+    const editoff = async (e) => {
         e.preventDefault(); // Prevent page reload
         console.log(formData); // Log the formData
 
         try {
-            const res = await axios.post(
-                `${apiBaseUrl}/api/office/add`,
+            const res = await axios.put(
+                `${apiBaseUrl}/api/office/edit/${selectedOffid}`,
                 formData
             );
 
             if (res.status === 200) {
                 console.log(res.data.message); // Log success message
-                alert("Office added successfully.");
+                alert("Office edited successfully.");
             }
         } catch (error) {
             console.error("Error adding office:", error); // Log the error response
-            alert("Error adding office. Please try again."); // Notify the user of the error
+            alert(
+                "Error editing office. Please try again. Please double check the details"
+            ); // Notify the user of the error
         }
     };
 
@@ -42,8 +59,8 @@ function AddOffice() {
             <div className="w-full h-[500px] overflow-y-auto">
                 <div className="flex flex-col justify-center">
                     <div>
-                        <h1 className="flex justify-center text-2xl underline text-black mb-6">
-                            Add Office Form
+                        <h1 className="flex justify-center text-2xl m underline text-black mb-5">
+                            Edit Office Form
                         </h1>
                         <h1 className="flex justify-center text-xl text-black">
                             Input Office Details
@@ -62,7 +79,6 @@ function AddOffice() {
                                             value={formData.offname}
                                             onChange={handleChange}
                                             type="text"
-                                            placeholder="Bakal Administration Office"
                                             className="grow"
                                         />
                                     </label>
@@ -73,7 +89,6 @@ function AddOffice() {
                                             value={formData.offabbr}
                                             onChange={handleChange}
                                             type="text"
-                                            placeholder="BAO"
                                             className="grow"
                                         />
                                     </label>
@@ -92,7 +107,6 @@ function AddOffice() {
                                                     ); // Remove non-numeric characters
                                             }}
                                             type="text"
-                                            placeholder="10"
                                             className="grow focus:border-blue-400"
                                         />
                                     </label>
@@ -106,9 +120,9 @@ function AddOffice() {
                                         <button
                                             type="button"
                                             className="btn btn-outline bg-yellow-500 text-black"
-                                            onClick={addoff}
+                                            onClick={editoff}
                                         >
-                                            Add Office
+                                            Save Edit
                                         </button>
                                     </div>
                                 </div>
@@ -121,4 +135,4 @@ function AddOffice() {
     );
 }
 
-export default AddOffice;
+export default EditOffice;

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import AddOffice from "./Component/AddOffice";
+import EditOffice from "./Component/EditOffice";
 
 function OfficelistAdmin() {
     const [offabbr, setoffabbr] = useState("");
@@ -9,6 +10,8 @@ function OfficelistAdmin() {
     const modalRef1 = useRef(null);
     const modalRef2 = useRef(null);
     const [selectedOffid, setSelectedOffid] = useState(null);
+    const [showEdit, setShowEdit] = useState(false);
+    const [showAddOffice, setShowAddOffice] = useState(true);
     useEffect(() => {
         const getData = async () => {
             const getRes = await fetch(`${apiBaseUrl}/api/office/all`);
@@ -26,12 +29,14 @@ function OfficelistAdmin() {
         setSearchResults(filteredResults);
     }, [offabbr, offData]);
 
-    const openModal1 = (officeNum) => {
+    const toEdit = (e, officeNum) => {
+        setShowEdit(true);
+        setShowAddOffice(false);
         setSelectedOffid(officeNum);
-        modalRef1.current.showModal();
+        window.location.href = "#edit";
+        e.preventDefault();
     };
-
-    const openModal2 = (officeNum) => {
+    const openmodal = (officeNum) => {
         setSelectedOffid(officeNum);
         modalRef2.current.showModal();
     };
@@ -67,7 +72,7 @@ function OfficelistAdmin() {
     };
     return (
         <>
-            <div className="carousel w-full">
+            <div className="carousel w-full h-full">
                 <div className="carousel-item w-full h-full" id="main">
                     <div className="flex justify-center  h-full w-full">
                         <div className="flex flex-col items-center gap-[20px]">
@@ -113,7 +118,7 @@ function OfficelistAdmin() {
 
                                         <tbody className="divide-y divide-gray-200">
                                             {searchResults
-                                                .slice(0, 20)
+                                                .slice(0, 9)
                                                 .map((office, index) => (
                                                     <tr key={index}>
                                                         <td className="whitespace-nowrap px-4 py-2 text-gray-700">
@@ -129,23 +134,27 @@ function OfficelistAdmin() {
                                                             {office.offlimit}
                                                         </td>
                                                         <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                            <button
-                                                                className="group relative inline-block overflow-hidden border border-indigo-600 px-8 py-3 focus:outline-none focus:ring"
-                                                                onClick={() =>
-                                                                    openModal1(
+                                                            <a
+                                                                onClick={(e) =>
+                                                                    toEdit(
+                                                                        e,
                                                                         office.offid
                                                                     )
                                                                 }
+                                                                href="#edit"
                                                             >
-                                                                <span className="absolute inset-x-0 bottom-0 h-[2px] bg-slate-400 transition-all group-hover:h-full group-active:bg-slate-500"></span>
-                                                                <span className="relative text-sm font-medium text-indigo-600 transition-colors group-hover:text-white">
-                                                                    Edit
-                                                                </span>
-                                                            </button>
+                                                                <button className="group relative inline-block overflow-hidden border border-indigo-600 px-8 py-3 focus:outline-none focus:ring">
+                                                                    <span className="absolute inset-x-0 bottom-0 h-[2px] bg-slate-400 transition-all group-hover:h-full group-active:bg-slate-500"></span>
+                                                                    <span className="relative text-sm font-medium text-indigo-600 transition-colors group-hover:text-white">
+                                                                        Edit
+                                                                    </span>
+                                                                </button>
+                                                            </a>
+
                                                             <button
                                                                 className="ml-4 group relative inline-block overflow-hidden border border-red-600 px-8 py-3 focus:outline-none focus:ring"
                                                                 onClick={() =>
-                                                                    openModal2(
+                                                                    openmodal(
                                                                         office.offid
                                                                     )
                                                                 }
@@ -163,37 +172,6 @@ function OfficelistAdmin() {
                                 </div>
                             )}
                         </div>
-                        <dialog ref={modalRef1} className="modal">
-                            <div className="modal-box border-cyan-400 bg-slate-300">
-                                <h3 className="font-bold text-lg">
-                                    Modal 1 Content
-                                </h3>
-                                <p className="py-4">
-                                    Appointment Number: {selectedOffid}
-                                </p>
-                                <div className="modal-action">
-                                    <button
-                                        className="btn"
-                                        type="button"
-                                        onClick={(e) =>
-                                            upoffice(e, selectedOffid)
-                                        }
-                                    >
-                                        Confirm
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="btn"
-                                        onClick={() => {
-                                            modalRef1.current.close();
-                                            window.location.reload();
-                                        }}
-                                    >
-                                        Close
-                                    </button>
-                                </div>
-                            </div>
-                        </dialog>
 
                         <dialog ref={modalRef2} className="modal">
                             <div className="modal-box">
@@ -229,8 +207,11 @@ function OfficelistAdmin() {
                         </dialog>
                     </div>
                 </div>
-                <div className="carousel-item w-full h-full" id="add">
+                <div className="carousel-item w-full h-[700px]" id="add">
                     <AddOffice />
+                </div>
+                <div className="carousel-item w-full h-full" id="edit">
+                    {showEdit && <EditOffice selectedOffid={selectedOffid} />}
                 </div>
             </div>
         </>
