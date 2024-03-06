@@ -32,3 +32,8 @@ Route::delete('office/delete/{offid}', 'App\Http\Controllers\Offices@deloff');
 Route::post('office/add', 'App\Http\Controllers\Offices@addoff');
 Route::get('office/info/{offid}', 'App\Http\Controllers\Offices@getoff');
 Route::put('office/edit/{offid}', 'App\Http\Controllers\Offices@edoff');
+
+Route::post('admin/add', 'App\Http\Controllers\Admins@create');
+Route::get('admin/all', 'App\Http\Controllers\Admins@index');
+Route::get('admin/info/{admid}', 'App\Http\Controllers\Admins@get');
+Route::delete('admin/delete/{admid}', 'App\Http\Controllers\Admins@delete');

@@ -18,8 +18,7 @@ function AddOffice() {
     };
 
     const addoff = async (e) => {
-        e.preventDefault(); // Prevent page reload
-        console.log(formData); // Log the formData
+        e.preventDefault();
 
         try {
             const res = await axios.post(
@@ -28,12 +27,11 @@ function AddOffice() {
             );
 
             if (res.status === 200) {
-                console.log(res.data.message); // Log success message
+                console.log(res.data.message);
                 alert("Office added successfully.");
             }
         } catch (error) {
-            console.error("Error adding office:", error); // Log the error response
-            alert("Error adding office. Please try again."); // Notify the user of the error
+            alert("Error adding office. Please check the madafaking fields.");
         }
     };
 

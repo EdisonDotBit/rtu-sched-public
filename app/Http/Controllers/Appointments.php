@@ -43,7 +43,7 @@ class Appointments extends Controller
             return response()->json([
                 'status' => 400,
                 'error' => 'Failed to save appointment. Please ensure all fields are filled correctly.',
-            ], JsonResponse::HTTP_BAD_REQUEST);
+            ], 400);
         }
     }
     public function getapt(int $aptid)

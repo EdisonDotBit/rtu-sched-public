@@ -72,11 +72,8 @@ function AppointmentsAdmin() {
             });
             if (deleteRes.ok) {
                 alert("Appointment update successfully.");
-            } else {
-                alert("Failed to update appointment.");
             }
         } catch (error) {
-            console.error("Error updating appointment:", error);
             alert("Error updating appointment. Please try again later.");
         }
     };
