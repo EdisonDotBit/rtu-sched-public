@@ -42,9 +42,10 @@ function SupAdminLayout() {
                         <div className="flex flex-col flex-1 overflow-y-auto">
                             <nav className="flex-1 bg-[#194F90]">
                                 <NavLink
-                                    to="/Dashboard"
+                                    to="/ewqqwe/suppa/dashboard"
                                     className={`flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69] ${
-                                        location.pathname === "/Dashboard"
+                                        location.pathname ===
+                                        "/ewqqwe/suppa/dashboard"
                                             ? "bg-[#123A69]"
                                             : ""
                                     }`}
@@ -66,10 +67,10 @@ function SupAdminLayout() {
                                     Dashboard
                                 </NavLink>
                                 <NavLink
-                                    to="/appointments"
+                                    to="/ewqqwe/suppa/appointments"
                                     className={`flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69] ${
                                         location.pathname ===
-                                        "/student/set-appointment"
+                                        "/ewqqwe/suppa/appointments"
                                             ? "bg-[#123A69]"
                                             : ""
                                     }`}
@@ -91,9 +92,10 @@ function SupAdminLayout() {
                                     Appointment
                                 </NavLink>
                                 <NavLink
-                                    to="/offices"
+                                    to="/ewqqwe/suppa/offices"
                                     className={`flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69] ${
-                                        location.pathname === "/office"
+                                        location.pathname ===
+                                        "/ewqqwe/suppa/offices"
                                             ? "bg-[#123A69]"
                                             : ""
                                     }`}
@@ -115,9 +117,10 @@ function SupAdminLayout() {
                                     Offices
                                 </NavLink>
                                 <NavLink
-                                    to="/accounts"
+                                    to="/ewqqwe/suppa/accounts"
                                     className={`flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69] ${
-                                        location.pathname === "/office"
+                                        location.pathname ===
+                                        "/ewqqwe/suppa/accounts"
                                             ? "bg-[#123A69]"
                                             : ""
                                     }`}
