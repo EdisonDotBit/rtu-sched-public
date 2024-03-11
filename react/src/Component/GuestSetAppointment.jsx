@@ -171,7 +171,13 @@ function GuestSetAppointment() {
                                 setFormData={setFormData}
                             />
 
-                            <div className="flex items-center justify-center w-lvh mt-4">
+                            <div className="flex items-center justify-center w-lvh mt-4 gap-6">
+                                <a
+                                    type="submit"
+                                    className="py-2 px-8 rounded-md text-white hover:text-white bg-[#194F90] hover:bg-[#123A69] font-semibold"
+                                >
+                                    Back
+                                </a>
                                 <button
                                     type="submit"
                                     className="py-2 px-8 rounded-md text-white hover:text-white bg-[#194F90] hover:bg-[#123A69] font-semibold"
