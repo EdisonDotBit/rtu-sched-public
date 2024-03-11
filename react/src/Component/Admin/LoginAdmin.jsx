@@ -11,7 +11,7 @@ function LoginAdmin() {
 
                 <form
                     action="#"
-                    className="mx-auto mb-0 mt-8 max-w-md space-y-4"
+                    className="flex flex-col mx-auto mb-0 mt- max-w-md"
                 >
                     <div>
                         <label className="m-3 input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-5/6">

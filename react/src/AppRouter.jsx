@@ -14,36 +14,88 @@ import AddOffice from "./Component/Admin/Component/AddOffice.jsx";
 import LoginAdmin from "./Component/Admin/LoginAdmin.jsx";
 import Login from "./Component/Login.jsx";
 import GuestSetAppointment from "./Component/GuestSetAppointment.jsx";
+import { AuthProvider } from "./Hooks/useAuth.jsx";
+import { ProtectedRoute } from "./ProtectedRoute.jsx";
 
 const AppRouter = () => (
     <>
-        <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/ewqqwe/suppa" element={<SupAdminLayout />}>
-                <Route path="" element={<DashboardAdmin />} />
-                <Route path="login" element={<LoginAdmin />} />
-                <Route path="dashboard" element={<DashboardAdmin />} />
-                <Route path="offices" element={<OfficelistAdmin />} />
-                <Route path="appointments" element={<AppointmentsAdmin />} />
-                <Route path="accounts" element={<AccountSettingsAdmin />} />
-            </Route>
-            <Route path="/guest" element={<GuestLayout />}>
-                <Route path="" element={<Dashboard />} />
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route
-                    path="set-appointment"
-                    element={<GuestSetAppointment />}
-                />
-                <Route path="view-appointment" element={<ViewAppointments />} />
-            </Route>
-            <Route path="/test" element={<AddOffice />} />
-            <Route path="/student" element={<StudentLayout />}>
-                <Route path="" element={<Dashboard />} />
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route path="set-appointment" element={<SetAppointment />} />
-                <Route path="view-appointment" element={<ViewAppointments />} />
-            </Route>
-        </Routes>
+        <AuthProvider>
+            <Routes>
+                <Route path="ewqqwe/qweqwe/login" element={<LoginAdmin />} />
+                <Route path="/" element={<Login />} />
+
+                <Route path="/ewqqwe/suppa" element={<SupAdminLayout />}>
+                    <Route
+                        path=""
+                        element={
+                            <ProtectedRoute>
+                                <DashboardAdmin />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    <Route
+                        path="dashboard"
+                        element={
+                            <ProtectedRoute>
+                                <DashboardAdmin />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="offices"
+                        element={
+                            <ProtectedRoute>
+                                <OfficelistAdmin />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="appointments"
+                        element={
+                            <ProtectedRoute>
+                                <AppointmentsAdmin />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="accounts"
+                        element={
+                            <ProtectedRoute>
+                                <AccountSettingsAdmin />
+                            </ProtectedRoute>
+                        }
+                    />
+                </Route>
+
+                <Route path="/guest" element={<GuestLayout />}>
+                    <Route path="" element={<Dashboard />} />
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route
+                        path="set-appointment"
+                        element={<GuestSetAppointment />}
+                    />
+                    <Route
+                        path="view-appointment"
+                        element={<ViewAppointments />}
+                    />
+                </Route>
+                <Route path="/test" element={<AddOffice />} />
+
+                <Route path="/student" element={<StudentLayout />}>
+                    <Route path="" element={<Dashboard />} />
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route
+                        path="set-appointment"
+                        element={<SetAppointment />}
+                    />
+                    <Route
+                        path="view-appointment"
+                        element={<ViewAppointments />}
+                    />
+                </Route>
+            </Routes>
+        </AuthProvider>
     </>
 );
 
