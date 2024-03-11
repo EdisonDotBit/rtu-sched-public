@@ -31,75 +31,52 @@ function InputDetails({ formData, setFormData }) {
                             </h1>
                             <div className="flex flex-col justify-center w-full items-center">
                                 <div className="flex flex-col justify-center items-center w-3/4">
-                                    <label
-                                        htmlFor="text"
-                                        className="mb-4 relative sm:flex sm:justify-center overflow-hidden sm:rounded-md border border-gray-200 px-3 pt-3 shadow-sm sm:focus-within:border-blue-600 sm:focus-within:ring-1 sm:focus-within:ring-blue-600 sm:w-2/3 md:w-8/12 lg:w-1/3"
-                                    >
+                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">
+                                        Student Number :
                                         <input
                                             name="aptstudnum"
                                             value={formData.aptstudnum}
                                             onChange={handleChange}
                                             type="text"
-                                            placeholder="Student Number"
-                                            className="peer h-8 w-full border-none bg-transparent p-0 placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm"
+                                            placeholder="####-######"
+                                            onInput={(e) => {
+                                                e.target.value =
+                                                    e.target.value.replace(
+                                                        /[^0-9\-]/g,
+                                                        ""
+                                                    );
+                                            }}
                                         />
-
-                                        <span className="absolute start-3 top-3 -translate-y-1/2 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-3 peer-focus:text-xs">
-                                            Student Number
-                                        </span>
                                     </label>
-                                    <label
-                                        htmlFor="text"
-                                        className="mb-4 relative sm:flex sm:justify-center overflow-hidden sm:rounded-md border border-gray-200 px-3 pt-3 shadow-sm sm:focus-within:border-blue-600 sm:focus-within:ring-1 sm:focus-within:ring-blue-600 sm:w-2/3 md:w-8/12 lg:w-1/3"
-                                    >
+                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">
+                                        Full Name :
                                         <input
                                             name="aptname"
                                             value={formData.aptname}
                                             onChange={handleChange}
                                             type="text"
-                                            placeholder="Full Name"
-                                            className="peer h-8 w-full border-none bg-transparent p-0 placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm"
+                                            placeholder="Paolo Banaglorioso nga pala"
                                         />
-
-                                        <span className="absolute start-3 top-3 -translate-y-1/2 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-3 peer-focus:text-xs">
-                                            Full Name
-                                        </span>
                                     </label>
-                                    <label
-                                        htmlFor="text"
-                                        className="mb-4 relative sm:flex sm:justify-center overflow-hidden sm:rounded-md border border-gray-200 px-3 pt-3 shadow-sm sm:focus-within:border-blue-600 sm:focus-within:ring-1 sm:focus-within:ring-blue-600 sm:w-2/3 md:w-8/12 lg:w-1/3"
-                                    >
+                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">
+                                        Contact Number :
                                         <input
                                             name="aptpnumber"
                                             value={formData.aptpnumber}
                                             onChange={handleChange}
                                             type="tel"
-                                            inputMode="numeric"
-                                            pattern="[0-9]*"
-                                            placeholder="Contact number"
-                                            className="peer h-8 w-full border-none bg-transparent p-0 placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm"
+                                            placeholder="911"
                                         />
-
-                                        <span className="absolute start-3 top-3 -translate-y-1/2 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-3 peer-focus:text-xs">
-                                            Contact Number
-                                        </span>
                                     </label>
-                                    <label
-                                        htmlFor="text"
-                                        className="mb-4 relative sm:flex sm:justify-center overflow-hidden sm:rounded-md border border-gray-200 px-3 pt-3 shadow-sm sm:focus-within:border-blue-600 sm:focus-within:ring-1 sm:focus-within:ring-blue-600 sm:w-2/3 md:w-8/12 lg:w-1/3"
-                                    >
+                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">
+                                        Institute Email :
                                         <input
                                             name="aptemail"
                                             value={formData.aptaptemail}
                                             onChange={handleChange}
                                             type="text"
-                                            placeholder="email"
-                                            className="peer h-8 w-full border-none bg-transparent p-0 placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm"
+                                            placeholder="pao.uwu@gmail.com"
                                         />
-
-                                        <span className="absolute start-3 top-3 -translate-y-1/2 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-3 peer-focus:text-xs">
-                                            Institute Email
-                                        </span>
                                     </label>
                                 </div>
                             </div>
