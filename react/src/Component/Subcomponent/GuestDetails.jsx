@@ -15,7 +15,7 @@ function GuestDetails({ formData, setFormData }) {
                 <div className="flex flex-col justify-center">
                     <div>
                         <h1 className="flex justify-center text-2xl m underline">
-                            Input Details
+                            Guest Details
                         </h1>
                     </div>
                     <div className="flex flex-col justify-center">
