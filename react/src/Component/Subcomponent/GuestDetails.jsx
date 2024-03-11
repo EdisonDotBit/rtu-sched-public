@@ -1,7 +1,7 @@
 import React from "react";
 import Purpose from "./Purpose";
 
-function InputDetails({ formData, setFormData }) {
+function GuestDetails({ formData, setFormData }) {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevState) => ({
@@ -31,23 +31,6 @@ function InputDetails({ formData, setFormData }) {
                             </h1>
                             <div className="flex flex-col justify-center w-full items-center">
                                 <div className="flex flex-col justify-center items-center w-3/4">
-                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">
-                                        Student Number :
-                                        <input
-                                            name="aptstudnum"
-                                            value={formData.aptstudnum}
-                                            onChange={handleChange}
-                                            type="text"
-                                            placeholder="####-######"
-                                            onInput={(e) => {
-                                                e.target.value =
-                                                    e.target.value.replace(
-                                                        /[^0-9\-]/g,
-                                                        ""
-                                                    );
-                                            }}
-                                        />
-                                    </label>
                                     <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-200 sm:w-2/3 md:w-8/12 lg:w-1/3">
                                         Full Name :
                                         <input
@@ -89,4 +72,4 @@ function InputDetails({ formData, setFormData }) {
     );
 }
 
-export default InputDetails;
+export default GuestDetails;
