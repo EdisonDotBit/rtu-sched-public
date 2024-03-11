@@ -52,7 +52,7 @@ function SetAppointment() {
         <>
             <form>
                 <div className="carousel w-full">
-                    <div className="carousel-item w-full h-full">
+                    <div className="carousel-item w-full h-full" id="basta">
                         <div className="w-full">
                             <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto">
                                 <input
@@ -178,6 +178,13 @@ function SetAppointment() {
                                 >
                                     Confirm
                                 </button>
+                                <a
+                                    
+                                    className="py-2 px-8 rounded-md m-5 text-white hover:text-white bg-[#194F90] hover:bg-[#123A69] font-semibold"
+                                    href="#basta"
+                                >
+                                    Back
+                                </a>
                             </div>
                         </div>
                     </div>
