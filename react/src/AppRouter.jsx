@@ -13,6 +13,7 @@ import AppointmentsAdmin from "./Component/Admin/AppointmentsAdmin.jsx";
 import AddOffice from "./Component/Admin/Component/AddOffice.jsx";
 import LoginAdmin from "./Component/Admin/LoginAdmin.jsx";
 import Login from "./Component/Login.jsx";
+import GuestSetAppointment from "./Component/GuestSetAppointment.jsx";
 
 const AppRouter = () => (
     <>
@@ -29,7 +30,10 @@ const AppRouter = () => (
             <Route path="/guest" element={<GuestLayout />}>
                 <Route path="" element={<Dashboard />} />
                 <Route path="dashboard" element={<Dashboard />} />
-                <Route path="set-appointment" element={<SetAppointment />} />
+                <Route
+                    path="set-appointment"
+                    element={<GuestSetAppointment />}
+                />
                 <Route path="view-appointment" element={<ViewAppointments />} />
             </Route>
             <Route path="/test" element={<AddOffice />} />
