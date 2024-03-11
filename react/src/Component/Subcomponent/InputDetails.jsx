@@ -67,6 +67,13 @@ function InputDetails({ formData, setFormData }) {
                                             onChange={handleChange}
                                             type="tel"
                                             placeholder="911"
+                                            onInput={(e) => {
+                                                e.target.value =
+                                                    e.target.value.replace(
+                                                        /[^0-9/+]/g,
+                                                        ""
+                                                    );
+                                            }}
                                         />
                                     </label>
                                     <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-200 sm:w-2/3 md:w-8/12 lg:w-1/3">
@@ -76,7 +83,7 @@ function InputDetails({ formData, setFormData }) {
                                             value={formData.aptaptemail}
                                             onChange={handleChange}
                                             type="text"
-                                            placeholder="pao.uwu@gmail.com"
+                                            placeholder="email@gmail.com"
                                         />
                                     </label>
                                 </div>
