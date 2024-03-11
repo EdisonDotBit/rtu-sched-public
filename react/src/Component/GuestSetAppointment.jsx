@@ -8,12 +8,13 @@ import axios from "axios";
 
 function GuestSetAppointment() {
     const [formData, setFormData] = useState({
-        apttype: "Student",
+        apttype: "Guest",
         aptbranch: "",
         aptoffice: "",
         aptname: "",
         aptpurpose: "",
-        aptstudnum: "",
+        aptIDtype: "",
+        aptIDnum: "",
         aptdate: "",
         aptemail: "",
         aptpnumber: "",
