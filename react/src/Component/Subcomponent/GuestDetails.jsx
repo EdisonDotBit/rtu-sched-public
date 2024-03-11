@@ -15,7 +15,7 @@ function GuestDetails({ formData, setFormData }) {
                 <div className="flex flex-col justify-center">
                     <div>
                         <h1 className="flex justify-center text-2xl m underline">
-                            Guest Details
+                            Input Details
                         </h1>
                     </div>
                     <div className="flex flex-col justify-center">
@@ -38,14 +38,7 @@ function GuestDetails({ formData, setFormData }) {
                                             value={formData.aptstudnum}
                                             onChange={handleChange}
                                             type="text"
-                                            placeholder="####-######"
-                                            onInput={(e) => {
-                                                e.target.value =
-                                                    e.target.value.replace(
-                                                        /[^0-9\-]/g,
-                                                        ""
-                                                    );
-                                            }}
+                                            placeholder="e.g. National ID/SSID/etc. "
                                         />
                                     </label>
                                     <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-200 sm:w-2/3 md:w-8/12 lg:w-1/3">
@@ -66,7 +59,7 @@ function GuestDetails({ formData, setFormData }) {
                                             value={formData.aptpnumber}
                                             onChange={handleChange}
                                             type="tel"
-                                            placeholder="911"
+                                            placeholder="+63"
                                         />
                                     </label>
                                     <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-200 sm:w-2/3 md:w-8/12 lg:w-1/3">
@@ -76,7 +69,7 @@ function GuestDetails({ formData, setFormData }) {
                                             value={formData.aptaptemail}
                                             onChange={handleChange}
                                             type="text"
-                                            placeholder="pao.uwu@gmail.com"
+                                            placeholder="rtu.appointment@gmail.com"
                                         />
                                     </label>
                                 </div>
