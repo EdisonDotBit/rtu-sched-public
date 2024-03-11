@@ -26,7 +26,12 @@ const AppRouter = () => (
                 <Route path="appointments" element={<AppointmentsAdmin />} />
                 <Route path="accounts" element={<AccountSettingsAdmin />} />
             </Route>
-            <Route path="/guest" element={<GuestLayout />} />
+            <Route path="/guest" element={<GuestLayout />}>
+                <Route path="" element={<Dashboard />} />
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="set-appointment" element={<SetAppointment />} />
+                <Route path="view-appointment" element={<ViewAppointments />} />
+            </Route>
             <Route path="/test" element={<AddOffice />} />
             <Route path="/student" element={<StudentLayout />}>
                 <Route path="" element={<Dashboard />} />
