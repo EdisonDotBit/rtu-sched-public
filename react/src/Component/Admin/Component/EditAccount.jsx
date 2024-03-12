@@ -12,15 +12,14 @@ function EditAccount({ selectedaccid }) {
             ...prevState,
             [name]: value,
         }));
-        console.log(formData);
     };
-    /* const editAcc = async (e) => {
+    const editAcc = async (e) => {
         e.preventDefault(); // Prevent page reload
         console.log(formData); // Log the formData
 
         try {
             const res = await axios.put(
-                `${apiBaseUrl}/api/admin/info/${selectedaccid}`,
+                `${apiBaseUrl}/api/admin/edit/${selectedaccid}`,
                 formData
             );
 
@@ -34,7 +33,7 @@ function EditAccount({ selectedaccid }) {
                 "Error editing office. Please try again. Please double check the details"
             ); // Notify the user of the error
         }
-    }; */
+    };
 
     useEffect(() => {
         const getData = async () => {
@@ -145,7 +144,7 @@ function EditAccount({ selectedaccid }) {
                                         <button
                                             type="button"
                                             className="btn btn-outline bg-yellow-500 text-black"
-                                            /* onClick={editAcc} */
+                                            onClick={editAcc}
                                         >
                                             Edit Account
                                         </button>

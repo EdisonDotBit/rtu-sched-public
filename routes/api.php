@@ -37,6 +37,6 @@ Route::post('admin/add', 'App\Http\Controllers\Admins@create');
 Route::get('admin/all', 'App\Http\Controllers\Admins@index');
 Route::get('admin/info/{admid}', 'App\Http\Controllers\Admins@get');
 Route::delete('admin/delete/{admid}', 'App\Http\Controllers\Admins@delete');
-Route::put('admin/info/{admid}', 'App\Http\Controllers\Admins@edit');
+Route::put('admin/edit/{admid}', 'App\Http\Controllers\Admins@edit');
 
 Route::post('admin/login', 'App\Http\Controllers\Admins@login');

@@ -65,9 +65,10 @@ class Admins extends Controller
     public function edit(Request $request, $offid)
     {
         $off = Admin::find($offid);
-        $off->offname = $request->input('offname');
-        $off->offabbr = $request->input('offabbr');
-        $off->offlimit = $request->input('offlimit');
+        $off->admuser = $request->input('admuser');
+        $off->admpass = $request->input('admpass');
+        $off->admname = $request->input('admname');
+        $off->admempnum = $request->input('admempnum');
         try {
             $off->save();
             return response()->json([
