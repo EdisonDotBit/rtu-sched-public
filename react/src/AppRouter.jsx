@@ -21,10 +21,17 @@ const AppRouter = () => (
     <>
         <AuthProvider>
             <Routes>
-                <Route path="ewqqwe/qweqwe/login" element={<LoginAdmin />} />
+                <Route path="ewqqwe/login" element={<LoginAdmin />} />
                 <Route path="/" element={<Login />} />
 
-                <Route path="/ewqqwe/suppa" element={<SupAdminLayout />}>
+                <Route
+                    path="/ewqqwe/suppa"
+                    element={
+                        <ProtectedRoute>
+                            <SupAdminLayout />
+                        </ProtectedRoute>
+                    }
+                >
                     <Route
                         path=""
                         element={

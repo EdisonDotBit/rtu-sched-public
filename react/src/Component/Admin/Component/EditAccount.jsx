@@ -12,6 +12,7 @@ function EditAccount({ selectedaccid }) {
             ...prevState,
             [name]: value,
         }));
+        console.log(formData);
     };
     /* const editAcc = async (e) => {
         e.preventDefault(); // Prevent page reload
