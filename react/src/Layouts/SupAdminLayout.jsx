@@ -1,13 +1,18 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { NavLink, Outlet, useLocation, Link } from "react-router-dom";
 import Qwe from "../Component/Subcomponent/Asset/rtu-logo.png";
-
+import { useAuth } from "../Hooks/useAuth";
+import axios from "axios";
 function SupAdminLayout() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const location = useLocation();
+    const { logout } = useAuth();
     const currentPath = window.location.pathname;
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
+    };
+    const handleLogout = () => {
+        logout();
     };
 
     return (
@@ -173,7 +178,10 @@ function SupAdminLayout() {
                                 <img className="w-[200px]" src={Qwe} alt="" />
                             </div>
                             <div className="flex items-center pr-4">
-                                <button className="flex items-center text-gray-500 hover:text-[#123A69] focus:outline-none">
+                                <button
+                                    className="flex items-center text-gray-500 hover:text-[#123A69] focus:outline-none"
+                                    onClick={handleLogout}
+                                >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         fill="none"
