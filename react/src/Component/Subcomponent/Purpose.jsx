@@ -85,9 +85,6 @@ const Purpose = ({ formData, setFormData }) => {
                     Add Purpose
                 </button>
             )}
-            <div className="mt-4 ml-5">
-                <p>Combined value: {stringValue}</p>
-            </div>
         </div>
     );
 };

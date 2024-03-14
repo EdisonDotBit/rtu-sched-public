@@ -170,7 +170,7 @@ function StudentLayout() {
                             </div>
                         </div>
                         {/* Main content */}
-                        <div className="p-4 bg-white rounded-lg m-4 overflow-y-auto flex-1">
+                        <div className="p-4 bg-white rounded-lg m-4 overflow-y-auto flex-1 w-full">
                             <Outlet />
                         </div>
                     </div>
