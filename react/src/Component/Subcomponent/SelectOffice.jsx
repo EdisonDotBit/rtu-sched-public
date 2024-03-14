@@ -1,27 +1,14 @@
 import React, { useState } from "react";
 
-function SelectOffice({ formData, setFormData }) {
-    const [office, setOffice] = useState([
-        {
-            offAbbr: "MIC",
-            offName: "Management Information Center",
-            transaction: "Registration and Grade Slip",
-            offID: "01",
-        },
-        {
-            offAbbr: "SRAC",
-            offName: "QWEQWEQWE",
-            transaction: "Pay Tuition Fee and Re-print ID",
-            offID: "02",
-        },
-    ]);
+function SelectOffice({ formData, setFormData, office, setOffice, setLimit }) {
     const [expanded, setExpanded] = useState(false);
 
-    const handleOfficeSelection = (selectedOffAbbr) => {
+    const handleOfficeSelection = (selectedOffAbbr, limits) => {
         setFormData((prevFormData) => ({
             ...prevFormData,
             aptoffice: selectedOffAbbr,
         }));
+        setLimit(limits);
     };
 
     return (
@@ -30,19 +17,23 @@ function SelectOffice({ formData, setFormData }) {
                 <div
                     key={index}
                     className={`p-6 border border-gray-300 rounded-md shadow-md transition-transform hover:scale-105 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 mx-2 my-2 cursor-pointer ${
-                        formData.aptoffice === officeItem.offAbbr
+                        formData.aptoffice === officeItem.offabbr
                             ? "bg-blue-500"
                             : ""
                     }`}
                     onMouseEnter={() => setExpanded(true)}
                     onMouseLeave={() => setExpanded(false)}
-                    onClick={() => handleOfficeSelection(officeItem.offAbbr)}
+                    onClick={() =>
+                        handleOfficeSelection(
+                            officeItem.offabbr,
+                            officeItem.offlimit
+                        )
+                    }
                 >
                     <h2 className="text-3xl  text-center">
-                        {officeItem.offAbbr}
+                        {officeItem.offabbr}
                     </h2>
-                    <p className="text-xl">{officeItem.offName}</p>
-                    <p className="text-sm">{officeItem.transaction}</p>
+                    <p className="text-xl">{officeItem.offname}</p>
                 </div>
             ))}
         </div>

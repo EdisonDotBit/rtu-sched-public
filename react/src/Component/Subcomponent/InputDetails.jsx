@@ -55,7 +55,6 @@ function InputDetails({ formData, setFormData }) {
                                             value={formData.aptname}
                                             onChange={handleChange}
                                             type="text"
-                                            zx
                                             placeholder="e.g. Juan A. Dela Cruz"
                                         />
                                     </label>

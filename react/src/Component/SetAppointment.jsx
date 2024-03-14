@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import SelectOffice from "./Subcomponent/SelectOffice";
 import Calendar from "./Subcomponent/Calendar";
 import InputDetails from "./Subcomponent/InputDetails";
@@ -18,7 +18,8 @@ function SetAppointment() {
         aptemail: "",
         aptpnumber: "",
     });
-
+    const [limit, setLimit] = useState(null);
+    const [office, setOffice] = useState([]);
     const [selectedAccordion, setSelectedAccordion] = useState(null);
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const [formReady, setFormReady] = useState(false);
@@ -30,6 +31,14 @@ function SetAppointment() {
             setSelectedAccordion(index);
         }
     };
+    useEffect(() => {
+        const getData = async () => {
+            const getRes = await fetch(`${apiBaseUrl}/api/office/all`);
+            const getDataResult = await getRes.json();
+            setOffice(getDataResult);
+        };
+        getData();
+    }, []);
 
     const setApt = async (e) => {
         e.preventDefault(); // Prevent page reload
@@ -94,6 +103,9 @@ function SetAppointment() {
                                     <SelectOffice
                                         formData={formData}
                                         setFormData={setFormData}
+                                        office={office}
+                                        setOffice={setOffice}
+                                        setLimit={setLimit}
                                     />
                                 </div>
                             </div>
@@ -116,6 +128,7 @@ function SetAppointment() {
                                         <Calendar
                                             formData={formData}
                                             setFormData={setFormData}
+                                            limit={limit}
                                         />
                                     </div>
                                     <div>
@@ -179,7 +192,6 @@ function SetAppointment() {
                                     Confirm
                                 </button>
                                 <a
-                                    
                                     className="py-2 px-8 rounded-md m-5 text-white hover:text-white bg-[#194F90] hover:bg-[#123A69] font-semibold"
                                     href="#basta"
                                 >

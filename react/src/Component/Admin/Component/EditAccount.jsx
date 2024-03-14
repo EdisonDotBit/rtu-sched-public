@@ -25,12 +25,11 @@ function EditAccount({ selectedaccid }) {
 
             if (res.status === 200) {
                 console.log(res.data.message); // Log success message
-                alert("Office edited successfully.");
+                alert("Admin edited successfully.");
             }
         } catch (error) {
-            console.error("Error adding office:", error); // Log the error response
             alert(
-                "Error editing office. Please try again. Please double check the details"
+                "Error editing admin. Please try again. Please double check the details"
             ); // Notify the user of the error
         }
     };

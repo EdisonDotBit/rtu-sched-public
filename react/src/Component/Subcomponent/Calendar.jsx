@@ -1,7 +1,36 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 
-const Calendar = ({ formData, setFormData }) => {
+const Calendar = ({ formData, setFormData, limit }) => {
     const [currentDate, setCurrentDate] = useState(new Date());
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+    const [aptData, setAptData] = useState([]);
+    const [disabledDates, setDisabledDates] = useState([]);
+
+    useEffect(() => {
+        const getData = async () => {
+            const getRes = await fetch(`${apiBaseUrl}/api/allongoing`);
+            const getDataResult = await getRes.json();
+
+            // Counting occurrences of each date for the specified aptoffice
+            const dateCounts = {};
+            getDataResult.forEach((item) => {
+                const date = item.aptdate;
+                if (item.aptoffice === formData.aptoffice) {
+                    dateCounts[date] = (dateCounts[date] || 0) + 1;
+                }
+            });
+
+            // Filtering dates that occur exactly three times for the specified aptoffice
+            const datesToDisable = Object.keys(dateCounts).filter(
+                (date) => dateCounts[date] >= limit
+            );
+
+            // Setting disabledDates state with filtered dates as an array
+            setDisabledDates(datesToDisable);
+        };
+
+        getData();
+    }, [formData.aptoffice]); // Trigger useEffect when formData.aptoffice changes
 
     const handleDateClick = (date) => {
         setFormData((prevFormData) => ({
@@ -40,12 +69,47 @@ const Calendar = ({ formData, setFormData }) => {
         );
     };
 
-    // Function to get the number of days in a given month
+    const isPastDate = (day) => {
+        const selectedDate = new Date(
+            currentDate.getFullYear(),
+            currentDate.getMonth(),
+            day,
+            23,
+            59,
+            59
+        );
+
+        // Check if selectedDate is in the past
+        if (selectedDate < new Date()) {
+            return true;
+        }
+
+        // Check if selectedDate is a disabled date
+        const formattedDisabledDate = `${selectedDate.getFullYear()}-${(
+            selectedDate.getMonth() + 1
+        )
+            .toString()
+            .padStart(2, "0")}-${selectedDate
+            .getDate()
+            .toString()
+            .padStart(2, "0")}`;
+
+        if (disabledDates.includes(formattedDisabledDate)) {
+            return true;
+        }
+
+        // Check if selectedDate is a weekend
+        if (selectedDate.getDay() === 0 || selectedDate.getDay() === 6) {
+            return true;
+        }
+
+        return false;
+    };
+
     const getDaysInMonth = (month, year) => {
         return new Date(year, month + 1, 0).getDate();
     };
 
-    // Function to render calendar days in a table format
     const renderCalendarDays = () => {
         const currentYear = currentDate.getFullYear();
         const currentMonth = currentDate.getMonth();
@@ -54,38 +118,38 @@ const Calendar = ({ formData, setFormData }) => {
 
         let calendarDays = [];
 
-        // Add empty cells for days before the first day of the month
         for (let i = 0; i < firstDayOfMonth; i++) {
             calendarDays.push(
                 <td key={`empty-${i}`} className="border border-gray-200"></td>
             );
         }
 
-        // Add days of the month
         for (let day = 1; day <= totalDays; day++) {
             const currentDate = new Date(currentYear, currentMonth, day);
             let className = "border border-gray-200";
 
-            // Check if the current day is a Saturday or Sunday
             if (currentDate.getDay() === 0 || currentDate.getDay() === 6) {
-                className += " text-red-500"; // Add red color
+                className += " text-red-500";
             }
 
-            // Add a class to highlight the clicked date
             if (
-                setFormData.aptdate &&
-                setFormData.date ===
+                formData.aptdate &&
+                formData.aptdate ===
                     `${currentDate.getFullYear()}-${
                         currentDate.getMonth() + 1
                     }-${day}`
             ) {
-                className += " bg-blue-200"; // Change background color to blue
+                className += " bg-blue-200";
+            }
+
+            if (isPastDate(day)) {
+                className += " pointer-events-none opacity-50";
             }
 
             calendarDays.push(
                 <td key={day} className={className}>
                     <button
-                        type="button" // Ensure it doesn't trigger form submission
+                        type="button"
                         onClick={() => handleDateClick(day)}
                         className={`w-full h-full p-2 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none ${
                             currentDate.getDay() === 0 ||
@@ -93,6 +157,7 @@ const Calendar = ({ formData, setFormData }) => {
                                 ? "pointer-events-none"
                                 : ""
                         }`}
+                        disabled={isPastDate(day)}
                     >
                         {day}
                     </button>
@@ -100,7 +165,6 @@ const Calendar = ({ formData, setFormData }) => {
             );
         }
 
-        // Split calendar days into rows
         const rows = [];
         let cells = [];
 
@@ -117,7 +181,6 @@ const Calendar = ({ formData, setFormData }) => {
             }
         });
 
-        // Render calendar table
         return rows.map((row, index) => (
             <tr key={index} className="border border-gray-200">
                 {row}
@@ -126,10 +189,11 @@ const Calendar = ({ formData, setFormData }) => {
     };
 
     return (
-        <div className="mx-auto max-w-xl p-4">
+        <div className="mx-auto max-w-xl p-4 text-black">
             <div className="flex justify-between mb-4">
                 <div>
                     <button
+                        type="button"
                         onClick={handlePrevYear}
                         className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
                     >
@@ -142,6 +206,7 @@ const Calendar = ({ formData, setFormData }) => {
                 </div>
                 <div>
                     <button
+                        type="button"
                         onClick={handleNextYear}
                         className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
                     >
@@ -152,6 +217,7 @@ const Calendar = ({ formData, setFormData }) => {
             <div className="flex justify-between mb-4">
                 <div>
                     <button
+                        type="button"
                         onClick={handlePrevMonth}
                         className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
                     >
@@ -168,6 +234,7 @@ const Calendar = ({ formData, setFormData }) => {
                 </div>
                 <div>
                     <button
+                        type="button"
                         onClick={handleNextMonth}
                         className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
                     >
