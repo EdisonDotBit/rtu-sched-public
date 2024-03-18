@@ -6,6 +6,9 @@ module.exports = {
             fontFamily: {
                 poppins: ["Poppins", "sans-serif"],
             },
+            screens: {
+                "xs": "320px"
+            },
         },
     },
     plugins: [require("daisyui")],
