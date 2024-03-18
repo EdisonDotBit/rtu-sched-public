@@ -24,14 +24,15 @@ Route::get('searchappt/{aptid}', 'App\Http\Controllers\Appointments@getapt');
 Route::get('allongoing', 'App\Http\Controllers\Appointments@allOngoingAppointments');
 Route::get('all', 'App\Http\Controllers\Appointments@allAppointments');
 Route::delete('/delappt/{aptid}', 'App\Http\Controllers\Appointments@delapt');
-Route::put('/updone/{aptid}', 'App\Http\Controllers\Appointments@uptodone');
-
+Route::put('updone/{aptid}', 'App\Http\Controllers\Appointments@uptodone');
+Route::put('resched/{aptid}', 'App\Http\Controllers\Appointments@reschedule');
 
 Route::get('office/all', 'App\Http\Controllers\Offices@index');
 Route::delete('office/delete/{offid}', 'App\Http\Controllers\Offices@deloff');
 Route::post('office/add', 'App\Http\Controllers\Offices@addoff');
 Route::get('office/info/{offid}', 'App\Http\Controllers\Offices@getoff');
 Route::put('office/edit/{offid}', 'App\Http\Controllers\Offices@edoff');
+Route::get('office/find/{offabbr}', 'App\Http\Controllers\Offices@findAbbr');
 
 Route::post('admin/add', 'App\Http\Controllers\Admins@create');
 Route::get('admin/all', 'App\Http\Controllers\Admins@index');

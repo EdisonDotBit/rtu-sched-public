@@ -30,7 +30,7 @@ const Calendar = ({ formData, setFormData, limit }) => {
         };
 
         getData();
-    }, [formData.aptoffice]); // Trigger useEffect when formData.aptoffice changes
+    }, [formData]); // Trigger useEffect when formData.aptoffice changes
 
     const handleDateClick = (date) => {
         setFormData((prevFormData) => ({
@@ -39,6 +39,7 @@ const Calendar = ({ formData, setFormData, limit }) => {
                 currentDate.getMonth() + 1
             }-${date}`,
         }));
+        console.log(formData.aptoffice);
     };
 
     const handlePrevYear = () => {
