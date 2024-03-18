@@ -38,6 +38,7 @@ class Appointments extends Controller
             return response()->json([
                 'status' => 200,
                 'messages' => 'successfully created appointment',
+                'data' => $apt,
             ]);
         } catch (\Exception $e) {
             return response()->json([

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Admin;
+use Illuminate\Support\Facades\DB;
 
 class Admins extends Controller
 {
@@ -59,5 +60,48 @@ class Admins extends Controller
             'status' => 200,
             'messages' => 'successfully deleted appointment',
         ]);
+    }
+
+    public function edit(Request $request, $offid)
+    {
+        $off = Admin::find($offid);
+        $off->admuser = $request->input('admuser');
+        $off->admpass = $request->input('admpass');
+        $off->admname = $request->input('admname');
+        $off->admempnum = $request->input('admempnum');
+        try {
+            $off->save();
+            return response()->json([
+                'status' => 200,
+                'messages' => 'successfully edited an office',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 400,
+                'error' => 'Failed to edit an Office. Please ensure all fields are filled correctly.',
+            ], 400);
+        }
+    }
+
+    public function login(Request $request)
+    {
+        $username = $request->input('admuser');
+        $password = $request->input('admpass');
+
+        $user = DB::table('admins')->where('admuser', $username)->where('admpass', $password)->first();
+
+        if ($user) {
+            // Username and password match found
+            return response()->json([
+                'status' => 200,
+                'message' => 'Login successful',
+            ]);
+        }
+
+        // No match found
+        return response()->json([
+            'status' => 401,
+            'error' => 'Unauthorized',
+        ], 401);
     }
 }

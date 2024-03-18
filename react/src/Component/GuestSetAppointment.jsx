@@ -1,25 +1,25 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import SelectOffice from "./Subcomponent/SelectOffice";
 import Calendar from "./Subcomponent/Calendar";
-import GuestDetails from "./Subcomponent/GuestDetails";
+import InputDetails from "./Subcomponent/InputDetails";
 import Confirmation from "./Subcomponent/Confirmation";
 import SelectBranch from "./Subcomponent/SelectBranch";
 import axios from "axios";
 
 function GuestSetAppointment() {
     const [formData, setFormData] = useState({
-        apttype: "Guest",
+        apttype: "Student",
         aptbranch: "",
         aptoffice: "",
         aptname: "",
         aptpurpose: "",
-        aptIDtype: "",
-        aptIDnum: "",
+        aptstudnum: "",
         aptdate: "",
         aptemail: "",
         aptpnumber: "",
     });
-
+    const [limit, setLimit] = useState(null);
+    const [office, setOffice] = useState([]);
     const [selectedAccordion, setSelectedAccordion] = useState(null);
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const [formReady, setFormReady] = useState(false);
@@ -31,6 +31,14 @@ function GuestSetAppointment() {
             setSelectedAccordion(index);
         }
     };
+    useEffect(() => {
+        const getData = async () => {
+            const getRes = await fetch(`${apiBaseUrl}/api/office/all`);
+            const getDataResult = await getRes.json();
+            setOffice(getDataResult);
+        };
+        getData();
+    }, []);
 
     const setApt = async (e) => {
         e.preventDefault(); // Prevent page reload
@@ -49,11 +57,16 @@ function GuestSetAppointment() {
         }
     };
 
+    const handleAccordinc = (e) => {
+        e.preventDefault();
+        setSelectedAccordion((prevState) => prevState + 1);
+    };
+
     return (
         <>
             <form>
                 <div className="carousel w-full">
-                    <div className="carousel-item w-full h-full">
+                    <div className="carousel-item w-full h-full" id="basta">
                         <div className="w-full">
                             <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto">
                                 <input
@@ -66,7 +79,7 @@ function GuestSetAppointment() {
                                     Select Branch
                                 </div>
                                 <div
-                                    className={`collapse-content ${
+                                    className={`flex flex-col justify-center items-center collapse-content ${
                                         selectedAccordion === 0 ? "" : "hidden"
                                     }`}
                                 >
@@ -75,6 +88,13 @@ function GuestSetAppointment() {
                                         formData={formData}
                                         setFormData={setFormData}
                                     />
+                                    <button
+                                        className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96"
+                                        type="button"
+                                        onClick={handleAccordinc}
+                                    >
+                                        Next &gt;
+                                    </button>
                                 </div>
                             </div>
                             <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto">
@@ -88,14 +108,24 @@ function GuestSetAppointment() {
                                     Select Office
                                 </div>
                                 <div
-                                    className={`collapse-content ${
+                                    className={`flex flex-col justify-center items-center collapse-content ${
                                         selectedAccordion === 1 ? "" : "hidden"
                                     }`}
                                 >
                                     <SelectOffice
                                         formData={formData}
                                         setFormData={setFormData}
+                                        office={office}
+                                        setOffice={setOffice}
+                                        setLimit={setLimit}
                                     />
+                                    <button
+                                        className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 mt-5"
+                                        type="button"
+                                        onClick={handleAccordinc}
+                                    >
+                                        Next &gt;
+                                    </button>
                                 </div>
                             </div>
                             <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto">
@@ -109,7 +139,7 @@ function GuestSetAppointment() {
                                     Select Date
                                 </div>
                                 <div
-                                    className={`collapse-content ${
+                                    className={`flex flex-col justify-center items-center collapse-content ${
                                         selectedAccordion === 2 ? "" : "hidden"
                                     }`}
                                 >
@@ -117,21 +147,15 @@ function GuestSetAppointment() {
                                         <Calendar
                                             formData={formData}
                                             setFormData={setFormData}
+                                            limit={limit}
                                         />
-                                    </div>
-                                    <div>
-                                        <p className="mt-4">
-                                            Selected Date:{" "}
-                                            {formData.aptdate
-                                                ? formData.aptdate
-                                                : "None"}
-                                        </p>
-
-                                        <div className="flex flex-col justify-center w-full items-center">
-                                            <button className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 ml-5 mt-7">
-                                                Next &gt;
-                                            </button>
-                                        </div>
+                                        <button
+                                            className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96"
+                                            type="button"
+                                            onClick={handleAccordinc}
+                                        >
+                                            Next &gt;
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -146,19 +170,22 @@ function GuestSetAppointment() {
                                     Input Details
                                 </div>
                                 <div
-                                    className={`collapse-content ${
+                                    className={`flex flex-col justify-center items-center collapse-content ${
                                         selectedAccordion === 3 ? "" : "hidden"
                                     }`}
                                 >
-                                    <GuestDetails
+                                    <InputDetails
                                         formData={formData}
                                         setFormData={setFormData}
                                     />
-                                    <a
-                                        href="#confirmation"
-                                        className="btn btn-xs"
-                                    >
-                                        1
+
+                                    <a href="#confirmation">
+                                        <button
+                                            className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96"
+                                            type="button"
+                                        >
+                                            Next &gt;
+                                        </button>
                                     </a>
                                 </div>
                             </div>
@@ -172,6 +199,12 @@ function GuestSetAppointment() {
                             />
 
                             <div className="flex items-center justify-center w-lvh mt-4">
+                                <a
+                                    className="py-2 px-8 rounded-md m-5 text-white hover:text-white bg-[#194F90] hover:bg-[#123A69] font-semibold"
+                                    href="#basta"
+                                >
+                                    Back
+                                </a>
                                 <button
                                     type="submit"
                                     className="py-2 px-8 rounded-md text-white hover:text-white bg-[#194F90] hover:bg-[#123A69] font-semibold"

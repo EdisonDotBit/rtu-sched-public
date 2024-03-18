@@ -3,7 +3,12 @@ import axios from "axios";
 
 function AddAccount() {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState({
+        admname: "",
+        admempnum: "",
+        admuser: "",
+        admpass: "",
+    });
     const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {

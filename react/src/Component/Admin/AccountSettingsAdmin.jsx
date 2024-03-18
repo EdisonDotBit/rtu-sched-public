@@ -68,7 +68,6 @@ function AccountSettingsAdmin() {
                             className="flex justify-center bg-neutral-200 border-r-teal-400 items-center text-center w-[300px] p-[5px]"
                             type="text"
                             placeholder="Enter the Full Name"
-                            value={accountsData.empname}
                             onChange={(e) => setadmname(e.target.value)}
                         />
                         <div className="flex justify-end w-full">

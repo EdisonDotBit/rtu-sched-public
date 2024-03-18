@@ -22,7 +22,7 @@ function SelectBranch({ formData, setFormData }) {
         }));
     };
     return (
-        <div className="flex flex-wrap items-center justify-center h-{100}">
+        <div className="flex flex-wrap items-center justify-center h-{100} mb-5">
             {branches.map((branchItem, index) => (
                 <div
                     key={index}
@@ -44,7 +44,9 @@ function SelectBranch({ formData, setFormData }) {
                         Rizal Technological University
                     </p>
                     <p className="text-xl text-center">{branchItem.bname}</p>
-                    <p className="text-sm text-center">{branchItem.location}</p>
+                    <p className="text-sm text-center line-clamp-1">
+                        {branchItem.location}
+                    </p>
                 </div>
             ))}
         </div>
