@@ -140,7 +140,7 @@ const Calendar = ({ formData, setFormData, limit }) => {
                         currentDate.getMonth() + 1
                     }-${day}`
             ) {
-                className += " bg-blue-200";
+                className += " bg-blue-600";
             }
 
             if (isPastDate(day)) {
@@ -198,7 +198,7 @@ const Calendar = ({ formData, setFormData, limit }) => {
                         onClick={handlePrevYear}
                         className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
                     >
-                        Previous Year
+                        Previous
                     </button>
                 </div>
                 <div className="text-center">
@@ -211,7 +211,7 @@ const Calendar = ({ formData, setFormData, limit }) => {
                         onClick={handleNextYear}
                         className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
                     >
-                        Next Year
+                        Next
                     </button>
                 </div>
             </div>
@@ -222,7 +222,7 @@ const Calendar = ({ formData, setFormData, limit }) => {
                         onClick={handlePrevMonth}
                         className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
                     >
-                        Previous Month
+                        Previous
                     </button>
                 </div>
                 <div className="text-center">
@@ -239,7 +239,7 @@ const Calendar = ({ formData, setFormData, limit }) => {
                         onClick={handleNextMonth}
                         className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
                     >
-                        Next Month
+                        Next
                     </button>
                 </div>
             </div>

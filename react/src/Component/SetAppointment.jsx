@@ -64,7 +64,7 @@ function SetAppointment() {
     return (
         <>
             <form>
-                <div className="carousel w-full">
+                <div className="carousel w-full ">
                     <div className="carousel-item w-full h-full" id="basta">
                         <div className="w-full">
                             <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto">
