@@ -48,7 +48,6 @@ function SetAppointment() {
             const res = await axios.post(`${apiBaseUrl}/api/setappt`, formData);
 
             if (res.data.status === "200") {
-                console.log(res.data.message); // Log success message
             } else {
                 console.error("Appointment not set:", res.data.message); // Log error message
             }
@@ -191,7 +190,10 @@ function SetAppointment() {
                             </div>
                         </div>
                     </div>
-                    <div id="confirmation" className="carousel-item w-full">
+                    <div
+                        id="confirmation"
+                        className="flex justify-center items-center carousel-item w-full"
+                    >
                         <div>
                             <Confirmation
                                 formData={formData}
