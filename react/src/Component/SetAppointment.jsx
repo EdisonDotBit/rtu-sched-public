@@ -57,6 +57,11 @@ function SetAppointment() {
         }
     };
 
+    const handleAccordinc = (e) => {
+        e.preventDefault();
+        setSelectedAccordion((prevState) => prevState + 1);
+    };
+
     return (
         <>
             <form>
@@ -74,7 +79,7 @@ function SetAppointment() {
                                     Select Branch
                                 </div>
                                 <div
-                                    className={`collapse-content ${
+                                    className={`flex flex-col justify-center items-center collapse-content ${
                                         selectedAccordion === 0 ? "" : "hidden"
                                     }`}
                                 >
@@ -83,6 +88,13 @@ function SetAppointment() {
                                         formData={formData}
                                         setFormData={setFormData}
                                     />
+                                    <button
+                                        className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96"
+                                        type="button"
+                                        onClick={handleAccordinc}
+                                    >
+                                        Next &gt;
+                                    </button>
                                 </div>
                             </div>
                             <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto">
@@ -96,7 +108,7 @@ function SetAppointment() {
                                     Select Office
                                 </div>
                                 <div
-                                    className={`collapse-content ${
+                                    className={`flex flex-col justify-center items-center collapse-content ${
                                         selectedAccordion === 1 ? "" : "hidden"
                                     }`}
                                 >
@@ -107,6 +119,13 @@ function SetAppointment() {
                                         setOffice={setOffice}
                                         setLimit={setLimit}
                                     />
+                                    <button
+                                        className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 mt-5"
+                                        type="button"
+                                        onClick={handleAccordinc}
+                                    >
+                                        Next &gt;
+                                    </button>
                                 </div>
                             </div>
                             <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto">
@@ -120,7 +139,7 @@ function SetAppointment() {
                                     Select Date
                                 </div>
                                 <div
-                                    className={`collapse-content ${
+                                    className={`flex flex-col justify-center items-center collapse-content ${
                                         selectedAccordion === 2 ? "" : "hidden"
                                     }`}
                                 >
@@ -130,20 +149,13 @@ function SetAppointment() {
                                             setFormData={setFormData}
                                             limit={limit}
                                         />
-                                    </div>
-                                    <div>
-                                        <p className="mt-4">
-                                            Selected Date:{" "}
-                                            {formData.aptdate
-                                                ? formData.aptdate
-                                                : "None"}
-                                        </p>
-
-                                        <div className="flex flex-col justify-center w-full items-center">
-                                            <button className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 ml-5 mt-7">
-                                                Next &gt;
-                                            </button>
-                                        </div>
+                                        <button
+                                            className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96"
+                                            type="button"
+                                            onClick={handleAccordinc}
+                                        >
+                                            Next &gt;
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -158,7 +170,7 @@ function SetAppointment() {
                                     Input Details
                                 </div>
                                 <div
-                                    className={`collapse-content ${
+                                    className={`flex flex-col justify-center items-center collapse-content ${
                                         selectedAccordion === 3 ? "" : "hidden"
                                     }`}
                                 >
@@ -166,11 +178,14 @@ function SetAppointment() {
                                         formData={formData}
                                         setFormData={setFormData}
                                     />
-                                    <a
-                                        href="#confirmation"
-                                        className="btn btn-xs"
-                                    >
-                                        1
+
+                                    <a href="#confirmation">
+                                        <button
+                                            className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96"
+                                            type="button"
+                                        >
+                                            Next &gt;
+                                        </button>
                                     </a>
                                 </div>
                             </div>
@@ -184,6 +199,12 @@ function SetAppointment() {
                             />
 
                             <div className="flex items-center justify-center w-lvh mt-4">
+                                <a
+                                    className="py-2 px-8 rounded-md m-5 text-white hover:text-white bg-[#194F90] hover:bg-[#123A69] font-semibold"
+                                    href="#basta"
+                                >
+                                    Back
+                                </a>
                                 <button
                                     type="submit"
                                     className="py-2 px-8 rounded-md text-white hover:text-white bg-[#194F90] hover:bg-[#123A69] font-semibold"
@@ -191,12 +212,6 @@ function SetAppointment() {
                                 >
                                     Confirm
                                 </button>
-                                <a
-                                    className="py-2 px-8 rounded-md m-5 text-white hover:text-white bg-[#194F90] hover:bg-[#123A69] font-semibold"
-                                    href="#basta"
-                                >
-                                    Back
-                                </a>
                             </div>
                         </div>
                     </div>

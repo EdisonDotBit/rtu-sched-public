@@ -11,7 +11,7 @@ function InputDetails({ formData, setFormData }) {
     };
     return (
         <>
-            <div className="w-full h-full">
+            <div className="w-full h-auto">
                 <div className="flex flex-col justify-center">
                     <div>
                         <h1 className="flex justify-center text-2xl m underline">
