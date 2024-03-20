@@ -23,6 +23,8 @@ return new class extends Migration
             $table->string('aptpnumber')->nullable(false);
             $table->string('aptemail')->nullable(false);
             $table->string('aptstatus')->default('ongoing')->nullable(false);
+            $table->string('apttime')->nullable(false);
+            $table->timestamps();
         });
     }
 

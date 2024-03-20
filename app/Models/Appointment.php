@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Appointment extends Model
 {
-    public $timestamps = false;
+    public $timestamps = true;
     protected $table = 'appointments';
     protected $primaryKey = 'aptid';
     protected $fillable = [

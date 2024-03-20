@@ -31,6 +31,7 @@ class Appointments extends Controller
         $apt->aptoffice = $request->input('aptoffice');
         $apt->aptpnumber = $request->input('aptpnumber');
         $apt->aptemail = $request->input('aptemail');
+        $apt->apttime = $request->input('apttime');
 
 
         try {

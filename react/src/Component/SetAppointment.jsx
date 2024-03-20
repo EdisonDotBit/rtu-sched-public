@@ -5,6 +5,7 @@ import InputDetails from "./Subcomponent/InputDetails";
 import Confirmation from "./Subcomponent/Confirmation";
 import SelectBranch from "./Subcomponent/SelectBranch";
 import axios from "axios";
+import TimePicker from "./Subcomponent/TimePicker";
 
 function SetAppointment() {
     const [formData, setFormData] = useState({
@@ -17,6 +18,7 @@ function SetAppointment() {
         aptdate: "",
         aptemail: "",
         aptpnumber: "",
+        apttime: "",
     });
     const [limit, setLimit] = useState(null);
     const [office, setOffice] = useState([]);
@@ -96,7 +98,7 @@ function SetAppointment() {
                                     </button>
                                 </div>
                             </div>
-                            <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto">
+                            <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto w-full">
                                 <input
                                     type="radio"
                                     name="my-accordion-2"
@@ -127,7 +129,7 @@ function SetAppointment() {
                                     </button>
                                 </div>
                             </div>
-                            <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto">
+                            <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto w-full">
                                 <input
                                     type="radio"
                                     name="my-accordion-2"
@@ -142,20 +144,25 @@ function SetAppointment() {
                                         selectedAccordion === 2 ? "" : "hidden"
                                     }`}
                                 >
-                                    <div>
+                                    <div className="flex flex-col sm:flex-row justify-center items-center">
                                         <Calendar
                                             formData={formData}
                                             setFormData={setFormData}
                                             limit={limit}
                                         />
-                                        <button
-                                            className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96"
-                                            type="button"
-                                            onClick={handleAccordinc}
-                                        >
-                                            Next &gt;
-                                        </button>
+                                        <TimePicker
+                                            formData={formData}
+                                            setFormData={setFormData}
+                                        />
+                                        {formData.apttime}
                                     </div>
+                                    <button
+                                        className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96"
+                                        type="button"
+                                        onClick={handleAccordinc}
+                                    >
+                                        Next &gt;
+                                    </button>
                                 </div>
                             </div>
                             <div className="bg-transparent collapse collapse-arrow bg-base-200 h-full">

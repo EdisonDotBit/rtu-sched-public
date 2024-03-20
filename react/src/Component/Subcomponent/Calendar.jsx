@@ -140,7 +140,7 @@ const Calendar = ({ formData, setFormData, limit }) => {
                         currentDate.getMonth() + 1
                     }-${day}`
             ) {
-                className += " bg-blue-600";
+                className += " bg-blue-600 text-white";
             }
 
             if (isPastDate(day)) {

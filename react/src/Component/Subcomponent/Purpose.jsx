@@ -7,7 +7,15 @@ const Purpose = ({ formData, setFormData }) => {
     const [stringValue, setStringValue] = useState("");
 
     // Options for the dropdown
-    const options = ["Select Purpose", "Option 1", "Option 2", "Option 3"];
+    const options = [
+        "Select Purpose",
+        "Printing of Documents",
+        "ID Processing",
+        "Transcript of Records",
+        "Diploma",
+        "Dismissal",
+        "LOA",
+    ];
 
     // Function to add a new dropdown
     const addDropdown = () => {
