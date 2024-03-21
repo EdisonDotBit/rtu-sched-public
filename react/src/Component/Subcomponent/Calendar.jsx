@@ -189,13 +189,13 @@ const Calendar = ({ formData, setFormData, limit }) => {
     };
 
     return (
-        <div className="mx-auto max-w-xl p-4 text-black">
+        <div className="mx-auto max-w-xl p-4 text-black xsm:w-full sm:w-full">
             <div className="flex justify-between mb-4">
                 <div>
                     <button
                         type="button"
                         onClick={handlePrevYear}
-                        className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
+                        className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded xsm:text-xs sm:text-base"
                     >
                         Previous Year
                     </button>
@@ -208,7 +208,7 @@ const Calendar = ({ formData, setFormData, limit }) => {
                     <button
                         type="button"
                         onClick={handleNextYear}
-                        className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
+                        className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded xsm:text-xs sm:text-base"
                     >
                         Next Year
                     </button>
@@ -219,7 +219,7 @@ const Calendar = ({ formData, setFormData, limit }) => {
                     <button
                         type="button"
                         onClick={handlePrevMonth}
-                        className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
+                        className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded xsm:text-xs sm:text-base"
                     >
                         Previous Month
                     </button>
@@ -236,13 +236,13 @@ const Calendar = ({ formData, setFormData, limit }) => {
                     <button
                         type="button"
                         onClick={handleNextMonth}
-                        className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
+                        className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded xsm:text-xs sm:text-base"
                     >
                         Next Month
                     </button>
                 </div>
             </div>
-            <table className="w-full">
+            <table className="xsm:w-full xsm:text-xs sm:w-full sm:text-base">
                 <thead>
                     <tr className="bg-gray-200">
                         <th className="border border-gray-200 p-2">Sun</th>

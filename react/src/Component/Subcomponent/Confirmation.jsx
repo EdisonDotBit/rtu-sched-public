@@ -100,7 +100,7 @@ function Confirmation({ formData, setFormData }) {
                         />
                         <label style={{ verticalAlign: "middle" }}>
                             I confirm that the above information is
-                            <b> true and correct</b>. And
+                            <b> true and correct</b> and
                             <b> I consent Rizal Technological University </b>
                             under the standards of Data Protection and Privacy
                             to

@@ -53,7 +53,7 @@ const Purpose = ({ formData, setFormData }) => {
             {dropdowns.map((dropdown, index) => (
                 <div
                     key={dropdown.id}
-                    className="flex justify-start items-center mb-4 ml-5 text-black"
+                    className="flex justify-start items-center mb-4 ml-5 text-black xsm:text-xs xsm:w-[200px] sm:w-full sm:text-base"
                 >
                     <select
                         className="py-2 px-3 border rounded-md mr-2 w-4/6 bg-transparent"

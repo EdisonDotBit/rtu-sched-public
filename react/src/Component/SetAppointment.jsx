@@ -75,7 +75,7 @@ function SetAppointment() {
                                     checked={selectedAccordion === 0}
                                     onChange={() => handleAccordionClick(0)}
                                 />
-                                <div className="collapse-title text-xl font-medium">
+                                <div className="collapse-title text-xl font-medium xsm:text-base md:text-xl">
                                     Select Branch
                                 </div>
                                 <div
@@ -89,7 +89,7 @@ function SetAppointment() {
                                         setFormData={setFormData}
                                     />
                                     <button
-                                        className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96"
+                                        className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 xsm:w-[100px] sm:w-[200px] md:w-[300px]"
                                         type="button"
                                         onClick={handleAccordinc}
                                     >
@@ -104,7 +104,7 @@ function SetAppointment() {
                                     checked={selectedAccordion === 1}
                                     onChange={() => handleAccordionClick(1)}
                                 />
-                                <div className="collapse-title text-xl font-medium">
+                                <div className="collapse-title text-xl font-medium xsm:text-base md:text-xl">
                                     Select Office
                                 </div>
                                 <div
@@ -120,7 +120,7 @@ function SetAppointment() {
                                         setLimit={setLimit}
                                     />
                                     <button
-                                        className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 mt-5"
+                                        className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 mt-5 xsm:w-[100px] sm:w-[200px] md:w-[300px]"
                                         type="button"
                                         onClick={handleAccordinc}
                                     >
@@ -135,7 +135,7 @@ function SetAppointment() {
                                     checked={selectedAccordion === 2}
                                     onChange={() => handleAccordionClick(2)}
                                 />
-                                <div className="collapse-title text-xl font-medium">
+                                <div className="collapse-title text-xl font-medium xsm:text-base md:text-xl">
                                     Select Date
                                 </div>
                                 <div
@@ -150,7 +150,7 @@ function SetAppointment() {
                                             limit={limit}
                                         />
                                         <button
-                                            className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96"
+                                            className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 xsm:w-[100px] sm:w-[200px] md:w-[300px]"
                                             type="button"
                                             onClick={handleAccordinc}
                                         >
@@ -166,7 +166,7 @@ function SetAppointment() {
                                     checked={selectedAccordion === 3}
                                     onChange={() => handleAccordionClick(3)}
                                 />
-                                <div className="collapse-title text-xl font-medium">
+                                <div className="collapse-title text-xl font-medium xsm:text-base md:text-xl">
                                     Input Details
                                 </div>
                                 <div
@@ -181,7 +181,7 @@ function SetAppointment() {
 
                                     <a href="#confirmation">
                                         <button
-                                            className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96"
+                                            className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 xsm:w-[100px] sm:w-[200px] md:w-[300px]"
                                             type="button"
                                         >
                                             Next &gt;
