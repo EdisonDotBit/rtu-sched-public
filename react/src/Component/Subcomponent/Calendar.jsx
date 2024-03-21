@@ -30,7 +30,7 @@ const Calendar = ({ formData, setFormData, limit }) => {
         };
 
         getData();
-    }, [formData.aptoffice]); // Trigger useEffect when formData.aptoffice changes
+    }, [formData]); // Trigger useEffect when formData.aptoffice changes
 
     const handleDateClick = (date) => {
         setFormData((prevFormData) => ({
@@ -39,6 +39,7 @@ const Calendar = ({ formData, setFormData, limit }) => {
                 currentDate.getMonth() + 1
             }-${date}`,
         }));
+        console.log(formData.aptoffice);
     };
 
     const handlePrevYear = () => {
@@ -139,7 +140,7 @@ const Calendar = ({ formData, setFormData, limit }) => {
                         currentDate.getMonth() + 1
                     }-${day}`
             ) {
-                className += " bg-blue-200";
+                className += " bg-blue-600 text-white";
             }
 
             if (isPastDate(day)) {
@@ -189,15 +190,15 @@ const Calendar = ({ formData, setFormData, limit }) => {
     };
 
     return (
-        <div className="mx-auto max-w-xl p-4 text-black">
+        <div className="mx-auto max-w-xl p-4 text-black xsm:w-full sm:w-full">
             <div className="flex justify-between mb-4">
                 <div>
                     <button
                         type="button"
                         onClick={handlePrevYear}
-                        className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
+                        className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded xsm:text-xs sm:text-base"
                     >
-                        Previous Year
+                        Previous
                     </button>
                 </div>
                 <div className="text-center">
@@ -208,9 +209,9 @@ const Calendar = ({ formData, setFormData, limit }) => {
                     <button
                         type="button"
                         onClick={handleNextYear}
-                        className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
+                        className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded xsm:text-xs sm:text-base"
                     >
-                        Next Year
+                        Next
                     </button>
                 </div>
             </div>
@@ -219,9 +220,9 @@ const Calendar = ({ formData, setFormData, limit }) => {
                     <button
                         type="button"
                         onClick={handlePrevMonth}
-                        className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
+                        className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded xsm:text-xs sm:text-base"
                     >
-                        Previous Month
+                        Previous
                     </button>
                 </div>
                 <div className="text-center">
@@ -236,13 +237,13 @@ const Calendar = ({ formData, setFormData, limit }) => {
                     <button
                         type="button"
                         onClick={handleNextMonth}
-                        className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
+                        className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded xsm:text-xs sm:text-base"
                     >
-                        Next Month
+                        Next
                     </button>
                 </div>
             </div>
-            <table className="w-full">
+            <table className="xsm:w-full xsm:text-xs sm:w-full sm:text-base">
                 <thead>
                     <tr className="bg-gray-200">
                         <th className="border border-gray-200 p-2">Sun</th>

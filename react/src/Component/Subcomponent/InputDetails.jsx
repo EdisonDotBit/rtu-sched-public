@@ -11,7 +11,7 @@ function InputDetails({ formData, setFormData }) {
     };
     return (
         <>
-            <div className="w-full h-[500px] overflow-y-auto">
+            <div className="w-full h-auto">
                 <div className="flex flex-col justify-center">
                     <div>
                         <h1 className="flex justify-center text-2xl m underline">
@@ -30,8 +30,8 @@ function InputDetails({ formData, setFormData }) {
                                 Personal Details
                             </h1>
                             <div className="flex flex-col justify-center w-full items-center">
-                                <div className="flex flex-col justify-center items-center w-3/4">
-                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-200 sm:w-2/3 md:w-8/12 lg:w-1/3">
+                                <div className="flex flex-col justify-center items-center xsm:w-full sm:w-3/4">
+                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-200 xsm:text-xs sm:w-2/3 md:w-8/12 lg:w-1/3">
                                         Student Number :
                                         <input
                                             name="aptstudnum"
@@ -48,7 +48,7 @@ function InputDetails({ formData, setFormData }) {
                                             }}
                                         />
                                     </label>
-                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-200 sm:w-2/3 md:w-8/12 lg:w-1/3">
+                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-200 xsm:text-xs  sm:w-2/3 md:w-8/12 lg:w-1/3">
                                         Full Name :
                                         <input
                                             name="aptname"
@@ -58,7 +58,7 @@ function InputDetails({ formData, setFormData }) {
                                             placeholder="e.g. Juan A. Dela Cruz"
                                         />
                                     </label>
-                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-200 sm:w-2/3 md:w-8/12 lg:w-1/3">
+                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-200 xsm:text-xs  sm:w-2/3 md:w-8/12 lg:w-1/3">
                                         Contact Number :
                                         <input
                                             name="aptpnumber"
@@ -75,7 +75,7 @@ function InputDetails({ formData, setFormData }) {
                                             }}
                                         />
                                     </label>
-                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-200 sm:w-2/3 md:w-8/12 lg:w-1/3">
+                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-200 xsm:text-xs  sm:w-2/3 md:w-8/12 lg:w-1/3">
                                         Institute Email :
                                         <input
                                             name="aptemail"

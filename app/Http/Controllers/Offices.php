@@ -13,6 +13,23 @@ class Offices extends Controller
         return $offices;
     }
 
+    public function findAbbr($abbr)
+    {
+        $off = Office::where('offabbr', $abbr)->first();
+
+        if (!$off) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Office not found with abbreviation ' . $abbr,
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'data' => $off,
+        ]);
+    }
+
     public function deloff($offid)
     {
         $off = Office::find($offid);

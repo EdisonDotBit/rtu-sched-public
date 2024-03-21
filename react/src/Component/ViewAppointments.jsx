@@ -32,20 +32,23 @@ function ViewAppointments() {
             setAptData(null);
         }
     };
-    useEffect(() => {
-        console.log(aptData);
-    }, [aptData]);
 
     return (
         <>
             <div className="flex justify-center items-center h-full">
                 <div className="flex flex-col items-center gap-[20px]">
                     <input
-                        className="flex justify-center items-center text-center w-[300px] p-[5px]"
-                        type="number"
+                        className="flex justify-center items-center text-center p-[5px] xsm:w-[200px] xsm:text-xs sm:w-[300px] sm:text-lg"
+                        type="text"
                         placeholder="Enter your transaction number"
                         value={aptid}
                         onChange={(e) => setAptid(e.target.value)}
+                        onInput={(e) => {
+                            e.target.value = e.target.value.replace(
+                                /[^0-9\-]/g,
+                                ""
+                            );
+                        }}
                     />
                     <button
                         className="w-[100px] border-solid border-[1px] border-black rounded-lg text-[#ffffff] bg-[#194F90] hover:bg-[#123A69]"

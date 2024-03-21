@@ -1,6 +1,68 @@
-import React from "react";
-
+import { useEffect, useRef, useState } from "react";
+import Calendar from "./Calendar";
+import axios from "axios";
+import PDFFile from "../PDFFile";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 function DetailsInfo({ aptData }) {
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+    const [formData, setFormData] = useState({});
+    const modalRef1 = useRef(null);
+    const modalRef2 = useRef(null);
+    const [limit, setLimit] = useState(null);
+
+    const openModal1 = () => {
+        modalRef1.current.showModal();
+    };
+    const openModal2 = () => {
+        modalRef2.current.showModal();
+    };
+
+    useEffect(() => {
+        const getData = async () => {
+            const getRes = await fetch(
+                `${apiBaseUrl}/api/office/find/${aptData.aptoffice}`
+            );
+            const getDataResult = await getRes.json();
+            setLimit(getDataResult.limit);
+        };
+        getData();
+    }, []);
+
+    const handleReSched = async (e, id) => {
+        e.preventDefault();
+        try {
+            const updateRes = await axios.put(
+                `${apiBaseUrl}/api/resched/${id}`,
+                formData // Send formData directly as the updated data
+            );
+            if (updateRes.status === 200) {
+                alert("Appointment update successful.");
+                // Optionally, you can reload the page or update the UI here
+            } else {
+                alert("Failed to update appointment.");
+            }
+        } catch (error) {
+            console.error("Error updating appointment:", error);
+            alert("Error updating appointment. Please try again later.");
+        }
+    };
+
+    const handleDelete = async (e, id) => {
+        e.preventDefault();
+        try {
+            const deleteRes = await axios.delete(
+                `${apiBaseUrl}/api/delappt/${id}`
+            );
+            if (deleteRes.status === 200) {
+                alert("Appointment deleted successfully.");
+            } else {
+                alert("Failed to delete appointment.");
+            }
+        } catch (error) {
+            console.error("Error deleting appointment:", error);
+            alert("Error deleting appointment. Please try again later.");
+        }
+    };
     return (
         <>
             <div>
@@ -92,7 +154,7 @@ function DetailsInfo({ aptData }) {
                         </div>
                         <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
                             <dt className="font-semibold text-[#3B3838] ml-10">
-                                Transaction Number
+                                Appointment Number
                             </dt>
                             <dd className="text-gray-700 sm:col-span-2 justify-self-center text-center">
                                 {aptData.aptid ? aptData.aptid : "N/A"}
@@ -102,16 +164,101 @@ function DetailsInfo({ aptData }) {
                 </div>
 
                 <div className="flex justify-evenly">
-                    <button className=" w-[200px] border-solid border-[1px] border-black p-[10px] text-black bg-[#FF0000]">
+                    <button
+                        className="flex justify-center items-center bg-red-500 text-white py-2 px-4 rounded-md w-1/3 mr-2"
+                        onClick={() => openModal2(aptData)}
+                    >
                         Delete
                     </button>
-                    <button className=" w-[200px] border-solid border-[1px] border-black p-[10px] text-black">
-                        Resend Appointment
-                    </button>
-                    <button className=" w-[200px] border-solid border-[1px] border-black p-[10px] text-black bg-[#0038FF]">
+                    <PDFDownloadLink
+                        document={<PDFFile succData={aptData} />}
+                        fileName="Transaction_Summary.pdf"
+                    >
+                        {({ loading }) =>
+                            loading ? (
+                                <button className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-full ml-2 ">
+                                    Loading...
+                                </button>
+                            ) : (
+                                <button
+                                    type="button"
+                                    className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-full ml-2"
+                                >
+                                    Print
+                                </button>
+                            )
+                        }
+                    </PDFDownloadLink>
+                    <button
+                        className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-1/3 ml-2"
+                        onClick={() => openModal1(aptData)}
+                    >
                         Reschedule
                     </button>
                 </div>
+                <dialog ref={modalRef1} className="modal">
+                    <div className="modal-box border-cyan-400 bg-gray-300">
+                        <h3 className="font-bold text-lg">Pick a date</h3>
+                        <p className="py-4">
+                            <Calendar
+                                formData={aptData}
+                                setFormData={setFormData}
+                                limit={limit}
+                            />
+                        </p>
+                        <div className="modal-action">
+                            <button
+                                className="btn"
+                                type="button"
+                                onClick={(e) => handleReSched(e, aptData.aptid)}
+                            >
+                                Confirm
+                            </button>
+
+                            <button
+                                type="button"
+                                className="btn"
+                                onClick={() => {
+                                    modalRef1.current.close();
+                                    window.location.reload();
+                                }}
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </dialog>
+
+                <dialog ref={modalRef2} className="modal">
+                    <div className="modal-box">
+                        <h3 className="font-bold text-lg">
+                            Do you really really really want to delete this
+                            shit?
+                        </h3>
+                        <p className="py-4">
+                            Appointment Number: {aptData.aptid}
+                        </p>
+                        <div className="modal-action">
+                            <button
+                                type="button"
+                                className="btn"
+                                onClick={(e) => handleDelete(e, aptData.aptid)}
+                            >
+                                Confirm
+                            </button>
+                            <button
+                                type="button"
+                                className="btn"
+                                onClick={() => {
+                                    modalRef1.current.close();
+                                    window.location.reload();
+                                }}
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </dialog>
             </div>
         </>
     );

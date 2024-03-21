@@ -2,8 +2,8 @@ import React from "react";
 
 function Confirmation({ formData, setFormData }) {
     return (
-        <div className="flex flex-col flex-1 w-full h-full overflow-y-hidden justify-center">
-            <div className="p-4 bg-white flex-1 rounded-lg m-4 overflow-auto">
+        <div className="flex flex-col flex-1 w-full h-auto justify-center">
+            <div className="p-4 bg-white flex-1 rounded-lg ">
                 <div className="p-4 w-lvh block">
                     <h4 className="text-center relative border-b text-[18px] font-bold text-[#3B3838] pb-4">
                         Appointment Summary
@@ -100,7 +100,7 @@ function Confirmation({ formData, setFormData }) {
                         />
                         <label style={{ verticalAlign: "middle" }}>
                             I confirm that the above information is
-                            <b> true and correct</b>. And
+                            <b> true and correct</b> and
                             <b> I consent Rizal Technological University </b>
                             under the standards of Data Protection and Privacy
                             to

@@ -28,7 +28,7 @@ function Sidebar() {
                 <li>
                     <a
                         href=""
-                        className="flex items-center gap-[6px] px-8 py-5 text-sm font-medium text-white hover:text-white hover:bg-[#123A69]"
+                        className="flex items-center gap-[6px] px-8 py-5 xsm:text-xs md:text-sm font-medium text-white hover:text-white hover:bg-[#123A69]"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -51,7 +51,7 @@ function Sidebar() {
                 <li>
                     <a
                         href=""
-                        className="flex items-center gap-[6px] px-8 py-5 text-sm font-medium text-white hover:bg-[#123A69] hover:text-white"
+                        className="flex items-center gap-[6px] px-8 py-5 xsm:text-xs md:text-sm font-medium text-white hover:bg-[#123A69] hover:text-white"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -74,7 +74,7 @@ function Sidebar() {
                 <li>
                     <a
                         href=""
-                        className="flex items-center gap-[6px] px-8 py-5 text-sm font-medium text-white hover:bg-[#123A69] hover:text-white"
+                        className="flex items-center gap-[6px] px-8 py-5  xsm:text-xs md:text-sm font-medium text-white hover:bg-[#123A69] hover:text-white"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"

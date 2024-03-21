@@ -31,6 +31,7 @@ class Appointments extends Controller
         $apt->aptoffice = $request->input('aptoffice');
         $apt->aptpnumber = $request->input('aptpnumber');
         $apt->aptemail = $request->input('aptemail');
+        $apt->apttime = $request->input('apttime');
 
 
         try {
@@ -38,6 +39,7 @@ class Appointments extends Controller
             return response()->json([
                 'status' => 200,
                 'messages' => 'successfully created appointment',
+                'data' => $apt,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -87,6 +89,34 @@ class Appointments extends Controller
             return response()->json([
                 'status' => 400,
                 'error' => 'Failed Madafaka',
+            ], 400);
+        }
+    }
+
+    public function reschedule(Request $request, int $aptId)
+    {
+        $apt = Appointment::find($aptId);
+
+        if (!$apt) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Appointment not found',
+            ], 404);
+        }
+
+        $apt->aptdate = $request->input('aptdate');
+
+        try {
+            $apt->save();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Appointment successfully rescheduled',
+                'data' => $apt,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 400,
+                'error' => 'Failed to reschedule appointment. Please ensure the new date is valid.',
             ], 400);
         }
     }

@@ -7,7 +7,15 @@ const Purpose = ({ formData, setFormData }) => {
     const [stringValue, setStringValue] = useState("");
 
     // Options for the dropdown
-    const options = ["Select Purpose", "Option 1", "Option 2", "Option 3"];
+    const options = [
+        "Select Purpose",
+        "Printing of Documents",
+        "ID Processing",
+        "Transcript of Records",
+        "Diploma",
+        "Dismissal",
+        "LOA",
+    ];
 
     // Function to add a new dropdown
     const addDropdown = () => {
@@ -25,7 +33,7 @@ const Purpose = ({ formData, setFormData }) => {
         // Remove the dropdown from the state
         setDropdowns(dropdowns.filter((dropdown) => dropdown.id !== id));
         // Remove the value of the deleted dropdown from the stored string
-        formData.aptpurpose((prevValue) =>
+        setFormData.aptpurpose((prevValue) =>
             prevValue.replace(`${deletedDropdown.value}, `, "")
         );
     };
@@ -48,15 +56,15 @@ const Purpose = ({ formData, setFormData }) => {
     };
 
     return (
-        <div className="mx-auto max-w-xl p-4 w-2/3">
+        <div className="mx-auto max-w-xl p-4 w-2/3 bg-transparent">
             <h1 className="flex justify-center text-3xl mb-5">Purpose</h1>
             {dropdowns.map((dropdown, index) => (
                 <div
                     key={dropdown.id}
-                    className="flex justify-start items-center mb-4 ml-5"
+                    className="flex justify-start items-center mb-4 ml-5 text-black xsm:text-xs xsm:w-[200px] sm:w-full sm:text-base"
                 >
                     <select
-                        className="py-2 px-3 border rounded-md mr-2 w-4/6"
+                        className="py-2 px-3 border rounded-md mr-2 w-4/6 bg-transparent"
                         value={dropdown.value || ""}
                         onChange={(e) => handleDropdownChange(e, index)}
                     >
@@ -85,9 +93,6 @@ const Purpose = ({ formData, setFormData }) => {
                     Add Purpose
                 </button>
             )}
-            <div className="mt-4 ml-5">
-                <p>Combined value: {stringValue}</p>
-            </div>
         </div>
     );
 };
