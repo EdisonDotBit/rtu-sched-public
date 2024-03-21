@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import Calendar from "./Calendar";
 import axios from "axios";
-
+import PDFFile from "../PDFFile";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 function DetailsInfo({ aptData }) {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const [formData, setFormData] = useState({});
     const modalRef1 = useRef(null);
     const modalRef2 = useRef(null);
     const [limit, setLimit] = useState(null);
+
     const openModal1 = () => {
         modalRef1.current.showModal();
     };
@@ -168,9 +170,25 @@ function DetailsInfo({ aptData }) {
                     >
                         Delete
                     </button>
-                    <button className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-1/3">
-                        Resend Appointment
-                    </button>
+                    <PDFDownloadLink
+                        document={<PDFFile succData={aptData} />}
+                        fileName="Transaction_Summary.pdf"
+                    >
+                        {({ loading }) =>
+                            loading ? (
+                                <button className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-full ml-2 ">
+                                    Loading...
+                                </button>
+                            ) : (
+                                <button
+                                    type="button"
+                                    className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-full ml-2"
+                                >
+                                    Print
+                                </button>
+                            )
+                        }
+                    </PDFDownloadLink>
                     <button
                         className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-1/3 ml-2"
                         onClick={() => openModal1(aptData)}

@@ -1,7 +1,6 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import StudentLayout from "./Layouts/StudentLayout.jsx";
-import Dashboard from "./Component/Dashboard.jsx";
 import SetAppointment from "./Component/SetAppointment.jsx";
 import ViewAppointments from "./Component/ViewAppointments.jsx";
 import GuestLayout from "./Layouts/GuestLayout.jsx";
@@ -12,7 +11,6 @@ import OfficelistAdmin from "./Component/Admin/OfficelistAdmin.jsx";
 import AppointmentsAdmin from "./Component/Admin/AppointmentsAdmin.jsx";
 import AddOffice from "./Component/Admin/Component/AddOffice.jsx";
 import LoginAdmin from "./Component/Admin/LoginAdmin.jsx";
-import Login from "./Component/Login.jsx";
 import GuestSetAppointment from "./Component/GuestSetAppointment.jsx";
 import { AuthProvider } from "./Hooks/useAuth.jsx";
 import { ProtectedRoute } from "./ProtectedRoute.jsx";
@@ -26,7 +24,7 @@ const AppRouter = () => (
                 <Route path="pdf-file" element={<PDFFile />} />
                 <Route path="download-link" element={<PDFDownload />} />
                 <Route path="ewqqwe/login" element={<LoginAdmin />} />
-                <Route path="/" element={<StudentLayout />} />
+                <Route path="/" element={<Navigate to="/student" />} />
                 <Route
                     path="/ewqqwe/suppa"
                     element={

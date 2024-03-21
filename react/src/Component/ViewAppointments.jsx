@@ -42,10 +42,16 @@ function ViewAppointments() {
                 <div className="flex flex-col items-center gap-[20px]">
                     <input
                         className="flex justify-center items-center text-center w-[300px] p-[5px] text-black bg-gray-400"
-                        type="number"
+                        type="text"
                         placeholder="Enter your transaction number"
                         value={aptid}
                         onChange={(e) => setAptid(e.target.value)}
+                        onInput={(e) => {
+                            e.target.value = e.target.value.replace(
+                                /[^0-9\-]/g,
+                                ""
+                            );
+                        }}
                     />
                     <button
                         className="w-[100px] border-solid border-[1px] border-black rounded-lg text-[#ffffff] bg-[#194F90] hover:bg-[#123A69]"

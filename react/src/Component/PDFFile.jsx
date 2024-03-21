@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
     image: {
         marginVertical: 15,
         marginHorizontal: 100,
+        height: "8%",
     },
 
     pageNumber: {
@@ -119,19 +120,19 @@ const PDFFile = ({ succData }) => {
                 </Text>
 
                 <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                    ID Number / Type:{succData.aptstudnum}
+                    ID Number / Type: {succData.aptstudnum}
                 </Text>
 
                 <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                    Full Name:{" "}
+                    Full Name: {succData.aptname}
                 </Text>
 
                 <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                    Contact Number:{" "}
+                    Contact Number:{succData.aptpnumber}
                 </Text>
 
                 <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                    Email Address:{" "}
+                    Email Address:{succData.aptemail}
                 </Text>
 
                 <Text
@@ -148,43 +149,21 @@ const PDFFile = ({ succData }) => {
                 </Text>
 
                 <View style={styles.column}>
-                    <View style={styles.row}>
-                        <Text
-                            style={[
-                                styles.primaryText,
-                                { fontWeight: "heavy", color: "grey" },
-                            ]}
-                        >
-                            RTU Branch
-                        </Text>
+                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
+                        Branch: {succData.aptbranch}
+                    </Text>
 
-                        <Text
-                            style={[
-                                styles.primaryText,
-                                { fontWeight: "heavy", color: "grey" },
-                            ]}
-                        >
-                            Office Name
-                        </Text>
+                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
+                        Office: {succData.aptoffice}
+                    </Text>
 
-                        <Text
-                            style={[
-                                styles.primaryText,
-                                { fontWeight: "heavy", color: "grey" },
-                            ]}
-                        >
-                            Purpose
-                        </Text>
+                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
+                        Purpose: {succData.aptpurpose}
+                    </Text>
 
-                        <Text
-                            style={[
-                                styles.primaryText,
-                                { fontWeight: "heavy", color: "grey" },
-                            ]}
-                        >
-                            Date
-                        </Text>
-                    </View>
+                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
+                        Date and Time: {succData.aptdate} : {succData.apttime}
+                    </Text>
                 </View>
 
                 <Text
