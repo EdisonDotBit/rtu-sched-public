@@ -4,7 +4,7 @@ function Header() {
     return (
         <header className="bg-white w-screen">
             <div className="mx-auto">
-                <div className="flex h-18 items-center justify-between border-b-2 px-6 py-1">
+                <div className="flex h-18 items-center justify-between border-b-2 px-6 py-1 ">
                     <div className="md:flex md:items-center md:gap-12">
                         <a className="block text-[#194F90]" href="/">
                             <img

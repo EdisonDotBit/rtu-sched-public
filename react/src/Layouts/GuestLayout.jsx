@@ -49,7 +49,7 @@ function GuestLayout() {
                             <nav className="flex-1 bg-[#194F90]">
                                 <NavLink
                                     to="/guest/set-appointment"
-                                    className={`flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69] ${
+                                    className={`flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69] xsm:text-xs sm:text-sm md:text-base ${
                                         location.pathname ===
                                         "/guest/set-appointment"
                                             ? "bg-[#123A69]"
@@ -74,7 +74,7 @@ function GuestLayout() {
                                 </NavLink>
                                 <NavLink
                                     to="/guest/view-appointment"
-                                    className={`flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69] ${
+                                    className={`flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69] xsm:text-xs sm:text-sm md:text-base ${
                                         location.pathname ===
                                         "/guest/view-appointment"
                                             ? "bg-[#123A69]"
@@ -103,7 +103,7 @@ function GuestLayout() {
 
                     {/* Header */}
                     <div className="flex flex-col flex-1">
-                        <div className="flex items-center justify-between h-16 bg-white border-b border-gray-200">
+                        <div className="flex items-center justify-between h-16 bg-white border-b border-gray-200 xsm:w-screen md:w-full">
                             <div className="flex items-center px-4">
                                 <button
                                     className="text-gray-500 focus:outline-none hover:text-[#123A69] md:hidden"
@@ -126,7 +126,11 @@ function GuestLayout() {
                                 </button>
                             </div>
                             <div>
-                                <img className="w-[200px]" src={Qwe} alt="" />
+                                <img
+                                    className="xsm:w-[150px] md:w-[200px]"
+                                    src={Qwe}
+                                    alt=""
+                                />
                             </div>
                             <div className="flex items-center pr-4">
                                 <NavLink to="../student">
@@ -137,7 +141,7 @@ function GuestLayout() {
                             </div>
                         </div>
                         {/* Main content */}
-                        <div className="bg-red-500 rounded-lg m-4 flex-1">
+                        <div className="p-4 bg-white rounded-lg m-4 overflow-y-auto flex-1 xsm:w-screen sm:w-full">
                             <Outlet />
                         </div>
                     </div>
