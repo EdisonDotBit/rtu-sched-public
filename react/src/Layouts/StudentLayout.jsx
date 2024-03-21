@@ -140,7 +140,6 @@ function StudentLayout() {
                             </div>
                         </div>
                         {/* Main content */}
-                        <div className="p-4 bg-white rounded-lg m-4 flex-1 h-full">
                             <Outlet />
                         </div>
                     </div>
@@ -154,17 +153,21 @@ function StudentLayout() {
                 <dialog ref={modals} className="modal">
                     <div className="flex flex-col justify-center items-center text-white modal-box">
                         <h3 className="font-bold text-lg">
-                            What form of human are you in RTU?
+                            Welcome to Rizal Technological University!
                         </h3>
+                        <p>*For New Student and Alumni, please select Guest</p>
                         <div className="item-center modal-action">
                             <NavLink to="../guest">
-                                <button type="button" className="btn">
+                                <button
+                                    type="button"
+                                    className="btn btn-outline"
+                                >
                                     Guest
                                 </button>
                             </NavLink>
                             <button
                                 type="button"
-                                className="btn"
+                                className="btn btn-outline"
                                 onClick={() => {
                                     modals.current.close();
                                 }}
