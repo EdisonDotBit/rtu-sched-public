@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SelectOffice from "./Subcomponent/SelectOffice";
 import Calendar from "./Subcomponent/Calendar";
 import InputDetails from "./Subcomponent/InputDetails";
@@ -6,6 +6,8 @@ import Confirmation from "./Subcomponent/Confirmation";
 import SelectBranch from "./Subcomponent/SelectBranch";
 import axios from "axios";
 import TimePicker from "./Subcomponent/TimePicker";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import PDFFile from "./PDFFile";
 
 function SetAppointment() {
     const [formData, setFormData] = useState({
@@ -22,10 +24,11 @@ function SetAppointment() {
     });
     const [limit, setLimit] = useState(null);
     const [office, setOffice] = useState([]);
-    const [selectedAccordion, setSelectedAccordion] = useState(null);
+    const [selectedAccordion, setSelectedAccordion] = useState(0);
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const [formReady, setFormReady] = useState(false);
-
+    const modals = useRef(null);
+    const [succData, setSuccData] = useState({});
     const handleAccordionClick = (index) => {
         if (selectedAccordion === index) {
             setSelectedAccordion(null);
@@ -44,23 +47,25 @@ function SetAppointment() {
 
     const setApt = async (e) => {
         e.preventDefault(); // Prevent page reload
-        console.log(formData); // Log the formData
 
         try {
             const res = await axios.post(`${apiBaseUrl}/api/setappt`, formData);
 
-            if (res.data.status === "200") {
-            } else {
-                console.error("Appointment not set:", res.data.message); // Log error message
+            if (res.status === 200) {
+                openmodal(res.data.data);
             }
         } catch (error) {
-            console.error("Error setting appointment:", error); // Log any error that occurs during the request
+            alert("Appointment noPlease check your details");
         }
     };
 
     const handleAccordinc = (e) => {
         e.preventDefault();
         setSelectedAccordion((prevState) => prevState + 1);
+    };
+    const openmodal = (data) => {
+        setSuccData(data);
+        modals.current.showModal();
     };
 
     return (
@@ -224,6 +229,28 @@ function SetAppointment() {
                             </div>
                         </div>
                     </div>
+                    <dialog ref={modals} className="modal">
+                        <div className="flex flex-col justify-center items-center text-white modal-box">
+                            <PDFDownloadLink
+                                document={<PDFFile succData={succData} />}
+                                fileName="Transaction_Summary.pdf"
+                            >
+                                {({ loading }) =>
+                                    loading ? (
+                                        <h1>Please wait. Loading....</h1>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            className="btn btn-outline"
+                                        >
+                                            Download
+                                        </button>
+                                    )
+                                }
+                            </PDFDownloadLink>
+                            <div className="item-center modal-action"></div>
+                        </div>
+                    </dialog>
                 </div>
             </form>
         </>

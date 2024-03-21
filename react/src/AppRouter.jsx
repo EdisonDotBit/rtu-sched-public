@@ -26,7 +26,7 @@ const AppRouter = () => (
                 <Route path="pdf-file" element={<PDFFile />} />
                 <Route path="download-link" element={<PDFDownload />} />
                 <Route path="ewqqwe/login" element={<LoginAdmin />} />
-                <Route path="/" element={<Login />} />
+                <Route path="/" element={<StudentLayout />} />
                 <Route
                     path="/ewqqwe/suppa"
                     element={
@@ -79,8 +79,7 @@ const AppRouter = () => (
                 </Route>
 
                 <Route path="/guest" element={<GuestLayout />}>
-                    <Route path="" element={<Dashboard />} />
-                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="" element={<GuestSetAppointment />} />
                     <Route
                         path="set-appointment"
                         element={<GuestSetAppointment />}
@@ -93,8 +92,7 @@ const AppRouter = () => (
                 <Route path="/test" element={<AddOffice />} />
 
                 <Route path="/student" element={<StudentLayout />}>
-                    <Route path="" element={<Dashboard />} />
-                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="" element={<SetAppointment />} />
                     <Route
                         path="set-appointment"
                         element={<SetAppointment />}

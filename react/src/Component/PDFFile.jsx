@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     },
 });
 
-const PDFFile = () => {
+const PDFFile = ({ succData }) => {
     return (
         <Document>
             <Page style={styles.body}>
@@ -98,15 +98,7 @@ const PDFFile = () => {
                 </Text>
 
                 <Text style={styles.primaryText}>
-                    Your online application has been submitted.
-                </Text>
-
-                <Text style={styles.primaryText}>
-                    Your Reference Number is:{" "}
-                </Text>
-
-                <Text style={styles.primaryText}>
-                    Please read the details and instructions below.
+                    Your Reference Number is: {succData.aptid}
                 </Text>
 
                 <Text style={styles.primaryText}>
@@ -127,7 +119,7 @@ const PDFFile = () => {
                 </Text>
 
                 <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                    Student Number:{" "}
+                    ID Number / Type:{succData.aptstudnum}
                 </Text>
 
                 <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>

@@ -21,7 +21,7 @@ function GuestSetAppointment() {
     });
     const [limit, setLimit] = useState(null);
     const [office, setOffice] = useState([]);
-    const [selectedAccordion, setSelectedAccordion] = useState(null);
+    const [selectedAccordion, setSelectedAccordion] = useState(0);
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const [formReady, setFormReady] = useState(false);
 
@@ -65,7 +65,7 @@ function GuestSetAppointment() {
 
     return (
         <>
-            <form>
+            <form className="">
                 <div className="carousel w-full">
                     <div className="carousel-item w-full h-full" id="basta">
                         <div className="w-full">
