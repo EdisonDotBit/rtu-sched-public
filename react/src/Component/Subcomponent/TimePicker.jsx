@@ -32,7 +32,7 @@ const TimePicker = ({ formData, setFormData }) => {
                         type="button"
                         key={index}
                         onClick={() => handleTimeClick(time)}
-                        className={`p-4 border border-gray-300 rounded-lg hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition-colors ${
+                        className={`flex justify-center items-center p-4 border border-gray-300 rounded-lg hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition-colors ${
                             formData.apttime === time
                                 ? "bg-blue-600 text-white"
                                 : "bg-white text-gray-700"

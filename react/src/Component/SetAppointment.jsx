@@ -167,13 +167,6 @@ function SetAppointment() {
                                             Next &gt;
                                         </button>
                                     </div>
-                                    <button
-                                        className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96"
-                                        type="button"
-                                        onClick={handleAccordinc}
-                                    >
-                                        Next &gt;
-                                    </button>
                                 </div>
                             </div>
                             <div className="bg-transparent collapse collapse-arrow bg-base-200 h-full">

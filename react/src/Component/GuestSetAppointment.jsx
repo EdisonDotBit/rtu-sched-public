@@ -5,7 +5,6 @@ import GuestDetails from "./Subcomponent/GuestDetails";
 import Confirmation from "./Subcomponent/Confirmation";
 import SelectBranch from "./Subcomponent/SelectBranch";
 import axios from "axios";
-import GuestDetails from "./Subcomponent/GuestDetails";
 
 function GuestSetAppointment() {
     const [formData, setFormData] = useState({
