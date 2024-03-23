@@ -4,8 +4,7 @@ import Loading from "./Loading";
 const Calendar = ({ formData, setFormData, limit }) => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-    const [aptData, setAptData] = useState([]);
-    const [disabledDates, setDisabledDates] = useState([]);
+    const [disabledDates, setDisabledDates] = useState(["2024-06-20"]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -14,7 +13,6 @@ const Calendar = ({ formData, setFormData, limit }) => {
             const getRes = await fetch(`${apiBaseUrl}/api/allongoing`);
             const getDataResult = await getRes.json();
 
-            // Counting occurrences of each date for the specified aptoffice
             const dateCounts = {};
             getDataResult.forEach((item) => {
                 const date = item.aptdate;
@@ -23,13 +21,15 @@ const Calendar = ({ formData, setFormData, limit }) => {
                 }
             });
 
-            // Filtering dates that occur exactly three times for the specified aptoffice
             const datesToDisable = Object.keys(dateCounts).filter(
                 (date) => dateCounts[date] >= limit
             );
 
-            // Setting disabledDates state with filtered dates as an array
-            setDisabledDates(datesToDisable);
+            setDisabledDates((prevDisabledDates) => {
+                return Array.from(
+                    new Set([...prevDisabledDates, ...datesToDisable])
+                );
+            });
             setIsLoading(false);
         };
 

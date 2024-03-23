@@ -17,7 +17,7 @@ function Confirmation({ formData, setFormData }) {
                                 </dt>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                                <dt className="font-semibold text-[#3B3838] ml-10">
+                                <dt className="font-semibold text-[#3B3838] ml-10 text-left sm:text-center">
                                     Student Number
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center">
@@ -25,7 +25,7 @@ function Confirmation({ formData, setFormData }) {
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                                <dt className="font-semibold text-[#3B3838] ml-10">
+                                <dt className="font-semibold text-[#3B3838] ml-10 text-left sm:text-center">
                                     Full Name
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center">
@@ -33,7 +33,7 @@ function Confirmation({ formData, setFormData }) {
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                                <dt className="font-semibold text-[#3B3838] ml-10">
+                                <dt className="font-semibold text-[#3B3838] ml-10 text-left sm:text-center">
                                     Contact Number
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center">
@@ -41,7 +41,7 @@ function Confirmation({ formData, setFormData }) {
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                                <dt className="font-semibold text-[#3B3838] ml-10">
+                                <dt className="font-semibold text-[#3B3838] ml-10 text-left sm:text-center">
                                     Email Address
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center">
