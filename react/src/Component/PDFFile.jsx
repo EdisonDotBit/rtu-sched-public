@@ -162,7 +162,10 @@ const PDFFile = ({ succData }) => {
                     </Text>
 
                     <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                        Date and Time: {succData.aptdate} : {succData.apttime}
+                        Date: {succData.aptdate}
+                    </Text>
+                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
+                        Time: {succData.apttime}
                     </Text>
                 </View>
 
