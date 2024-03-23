@@ -8,6 +8,7 @@ import axios from "axios";
 import TimePicker from "./Subcomponent/TimePicker";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import PDFFile from "./PDFFile";
+import Loading from "./Subcomponent/Loading";
 
 function SetAppointment() {
     const [formData, setFormData] = useState({
@@ -71,7 +72,7 @@ function SetAppointment() {
     return (
         <>
             <form>
-                <div className="carousel w-full ">
+                <div className="carousel w-full touch-pan-y overflow-x-hidden">
                     <div className="carousel-item w-full h-full" id="basta">
                         <div className="w-full">
                             <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto">
@@ -159,14 +160,14 @@ function SetAppointment() {
                                             formData={formData}
                                             setFormData={setFormData}
                                         />
-                                        <button
-                                            className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 xsm:w-[100px] sm:w-[200px] md:w-[300px]"
-                                            type="button"
-                                            onClick={handleAccordinc}
-                                        >
-                                            Next &gt;
-                                        </button>
                                     </div>
+                                    <button
+                                        className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 xsm:w-[100px] sm:w-[200px] md:w-[300px]"
+                                        type="button"
+                                        onClick={handleAccordinc}
+                                    >
+                                        Next &gt;
+                                    </button>
                                 </div>
                             </div>
                             <div className="bg-transparent collapse collapse-arrow bg-base-200 h-full">
@@ -232,11 +233,13 @@ function SetAppointment() {
                         <div className="flex flex-col justify-center items-center text-white modal-box">
                             <PDFDownloadLink
                                 document={<PDFFile succData={succData} />}
-                                fileName="Transaction_Summary.pdf"
+                                fileName="PaoloBanagloriosoAtEdisotLati_nga_pala.pdf"
                             >
                                 {({ loading }) =>
                                     loading ? (
-                                        <h1>Please wait. Loading....</h1>
+                                        <div>
+                                            <Loading />
+                                        </div>
                                     ) : (
                                         <button
                                             type="button"

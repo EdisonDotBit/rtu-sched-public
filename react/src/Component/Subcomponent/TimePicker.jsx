@@ -20,7 +20,6 @@ const TimePicker = ({ formData, setFormData }) => {
             ...prevFormData,
             apttime: time,
         }));
-        console.log(formData);
     };
 
     return (

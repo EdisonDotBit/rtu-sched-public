@@ -1,6 +1,6 @@
 import React from "react";
 
-function Confirmation({ formData, setFormData }) {
+function ConfirmtionG({ formData, setFormData }) {
     return (
         <div className="flex flex-col flex-1 w-full h-auto justify-center">
             <div className="p-4 bg-white flex-1 rounded-lg ">
@@ -18,7 +18,7 @@ function Confirmation({ formData, setFormData }) {
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
                                 <dt className="font-semibold text-[#3B3838] ml-10">
-                                    Student Number
+                                    ID Number / Type
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center">
                                     {formData.aptstudnum}
@@ -122,4 +122,4 @@ function Confirmation({ formData, setFormData }) {
     );
 }
 
-export default Confirmation;
+export default ConfirmtionG;

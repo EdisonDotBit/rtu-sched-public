@@ -14,15 +14,13 @@ import LoginAdmin from "./Component/Admin/LoginAdmin.jsx";
 import GuestSetAppointment from "./Component/GuestSetAppointment.jsx";
 import { AuthProvider } from "./Hooks/useAuth.jsx";
 import { ProtectedRoute } from "./ProtectedRoute.jsx";
-import PDFFile from "./Component/PDFFile.jsx";
-import PDFDownload from "./Component/PDFDownload.jsx";
+import Loading from "./Component/Subcomponent/Loading.jsx";
 
 const AppRouter = () => (
     <>
         <AuthProvider>
             <Routes>
-                <Route path="pdf-file" element={<PDFFile />} />
-                <Route path="download-link" element={<PDFDownload />} />
+                <Route path="EWQ" element={<Loading />} />
                 <Route path="ewqqwe/login" element={<LoginAdmin />} />
                 <Route path="/" element={<Navigate to="/student" />} />
                 <Route

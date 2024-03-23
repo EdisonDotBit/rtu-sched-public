@@ -82,7 +82,7 @@ function AppointmentsAdmin() {
         <div className="flex justify-center  h-full">
             <div className="flex flex-col items-center gap-[20px]">
                 <input
-                    className="flex justify-center items-center text-center w-[300px] p-[5px]"
+                    className="bg-neutral-200 border-r-teal-400 text-center w-[300px] p-[5px]"
                     type="text"
                     placeholder="Enter email address"
                     value={aptemail}

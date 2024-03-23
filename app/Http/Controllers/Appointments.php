@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Appointment; // Assuming your model is named Appointment
-use Illuminate\Http\JsonResponse;
+use App\Models\Appointment;
+use Illuminate\Support\Facades\Log;
 
 class Appointments extends Controller
 {
@@ -22,6 +22,7 @@ class Appointments extends Controller
     public function newapt(Request $request)
     {
         $apt = new Appointment();
+        $apt->aptid = date('dYm') . date('Hi') . str_pad(Appointment::count() + 1, 4, '0', STR_PAD_LEFT);
         $apt->apttype = $request->input('apttype');
         $apt->aptname = $request->input('aptname');
         $apt->aptbranch = $request->input('aptbranch');
@@ -33,21 +34,25 @@ class Appointments extends Controller
         $apt->aptemail = $request->input('aptemail');
         $apt->apttime = $request->input('apttime');
 
-
         try {
             $apt->save();
+
             return response()->json([
                 'status' => 200,
-                'messages' => 'successfully created appointment',
+                'message' => 'successfully created appointment',
                 'data' => $apt,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 400,
                 'error' => 'Failed to save appointment. Please ensure all fields are filled correctly.',
+                'exception' => $e->getMessage(),
             ], 400);
         }
     }
+
+
+
     public function getapt(int $aptid)
     {
         $apt = Appointment::find($aptid);
