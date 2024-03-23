@@ -2,12 +2,10 @@ import { useState } from "react";
 import { NavLink, Outlet, useLocation, Link } from "react-router-dom";
 import Qwe from "../Component/Subcomponent/Asset/rtu-logo.png";
 import { useAuth } from "../Hooks/useAuth";
-import axios from "axios";
 function SupAdminLayout() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const location = useLocation();
     const { logout } = useAuth();
-    const currentPath = window.location.pathname;
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
