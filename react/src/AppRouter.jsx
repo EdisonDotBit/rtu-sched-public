@@ -14,13 +14,32 @@ import LoginAdmin from "./Component/Admin/LoginAdmin.jsx";
 import GuestSetAppointment from "./Component/GuestSetAppointment.jsx";
 import { AuthProvider } from "./Hooks/useAuth.jsx";
 import { ProtectedRoute } from "./ProtectedRoute.jsx";
-import Loading from "./Component/Subcomponent/Loading.jsx";
+import AdminLayout from "./Layouts/AdminLayout.jsx";
+import NotFound from "./Component/NotFound.jsx";
 
 const AppRouter = () => (
     <>
         <AuthProvider>
             <Routes>
-                <Route path="EWQ" element={<Loading />} />
+                <Route path="/ewqqwe/admin" element={<AdminLayout />}>
+                    <Route
+                        path=""
+                        element={
+                            <ProtectedRoute>
+                                <AppointmentsAdmin />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="appointments"
+                        element={
+                            <ProtectedRoute>
+                                <AppointmentsAdmin />
+                            </ProtectedRoute>
+                        }
+                    />
+                </Route>
+                <Route path="*" element={<NotFound />} />
                 <Route path="ewqqwe/login" element={<LoginAdmin />} />
                 <Route path="/" element={<Navigate to="/student" />} />
                 <Route
