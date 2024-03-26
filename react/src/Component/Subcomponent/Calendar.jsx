@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Loading from "./Loading";
 
-const Calendar = ({ formData, setFormData, limit }) => {
+const Calendar = ({ formData, setFormData, limit, appointments }) => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const [disabledDates, setDisabledDates] = useState(["2024-06-20"]);
@@ -10,11 +10,9 @@ const Calendar = ({ formData, setFormData, limit }) => {
     useEffect(() => {
         const getData = async () => {
             setIsLoading(true);
-            const getRes = await fetch(`${apiBaseUrl}/api/allongoing`);
-            const getDataResult = await getRes.json();
 
             const dateCounts = {};
-            getDataResult.forEach((item) => {
+            appointments.forEach((item) => {
                 const date = item.aptdate;
                 if (item.aptoffice === formData.aptoffice) {
                     dateCounts[date] = (dateCounts[date] || 0) + 1;

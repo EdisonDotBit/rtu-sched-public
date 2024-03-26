@@ -111,6 +111,12 @@ function AppointmentsAdmin() {
                                         Office
                                     </th>
                                     <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                        Date
+                                    </th>
+                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                        Time
+                                    </th>
+                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
                                         Purpose
                                     </th>
                                     <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
@@ -145,6 +151,12 @@ function AppointmentsAdmin() {
                                             </td>
                                             <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                                 {apt.aptoffice}
+                                            </td>
+                                            <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                {apt.aptdate}
+                                            </td>
+                                            <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                {apt.apttime}
                                             </td>
                                             <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                                 {apt.aptpurpose}
