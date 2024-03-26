@@ -11,16 +11,17 @@ const Calendar = ({ formData, setFormData, limit, appointments }) => {
         const getData = async () => {
             setIsLoading(true);
 
-            const dateCounts = {};
+            const counts = {};
             appointments.forEach((item) => {
                 const date = item.aptdate;
                 if (item.aptoffice === formData.aptoffice) {
-                    dateCounts[date] = (dateCounts[date] || 0) + 1;
+                    counts[date] = (counts[date] || 0) + 1;
+                    console.log("qwe", date);
                 }
             });
 
-            const datesToDisable = Object.keys(dateCounts).filter(
-                (date) => dateCounts[date] >= limit
+            const datesToDisable = Object.keys(counts).filter(
+                (date) => counts[date] >= limit
             );
 
             setDisabledDates((prevDisabledDates) => {
@@ -28,6 +29,7 @@ const Calendar = ({ formData, setFormData, limit, appointments }) => {
                     new Set([...prevDisabledDates, ...datesToDisable])
                 );
             });
+            console.log(datesToDisable);
             setIsLoading(false);
         };
 
