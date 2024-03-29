@@ -16,7 +16,6 @@ const Calendar = ({ formData, setFormData, limit, appointments }) => {
                 const date = item.aptdate;
                 if (item.aptoffice === formData.aptoffice) {
                     counts[date] = (counts[date] || 0) + 1;
-                    console.log("qwe", date);
                 }
             });
 
@@ -29,7 +28,6 @@ const Calendar = ({ formData, setFormData, limit, appointments }) => {
                     new Set([...prevDisabledDates, ...datesToDisable])
                 );
             });
-            console.log(datesToDisable);
             setIsLoading(false);
         };
 
@@ -39,9 +37,11 @@ const Calendar = ({ formData, setFormData, limit, appointments }) => {
     const handleDateClick = (date) => {
         setFormData((prevFormData) => ({
             ...prevFormData,
-            aptdate: `${currentDate.getFullYear()}-${
+            aptdate: `${currentDate.getFullYear()}-${(
                 currentDate.getMonth() + 1
-            }-${date}`,
+            )
+                .toString()
+                .padStart(2, "0")}-${date.toString().padStart(2, "0")}`, // Updated here
         }));
     };
 
@@ -139,9 +139,9 @@ const Calendar = ({ formData, setFormData, limit, appointments }) => {
             if (
                 formData.aptdate &&
                 formData.aptdate ===
-                    `${currentDate.getFullYear()}-${
-                        currentDate.getMonth() + 1
-                    }-${day}`
+                    `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)
+                        .toString()
+                        .padStart(2, "0")}-${day.toString().padStart(2, "0")}`
             ) {
                 className += " bg-blue-600 text-white";
             }
@@ -155,7 +155,7 @@ const Calendar = ({ formData, setFormData, limit, appointments }) => {
                     <button
                         type="button"
                         onClick={() => handleDateClick(day)}
-                        className={`w-full h-full p-2 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none ${
+                        className={`w-full h-full p-2 focus:outline-none ${
                             currentDate.getDay() === 0 ||
                             currentDate.getDay() === 6
                                 ? "pointer-events-none"
@@ -239,9 +239,11 @@ const Calendar = ({ formData, setFormData, limit, appointments }) => {
                         <div className="text-center">
                             <div className="mb-2 font-semibold">Month</div>
                             <div className="text-2xl">
-                                {currentDate.toLocaleString("default", {
-                                    month: "long",
-                                })}
+                                {currentDate
+                                    .toLocaleString("default", {
+                                        month: "2-digit",
+                                    })
+                                    .padStart(2, "0")}
                             </div>
                         </div>
                         <div>

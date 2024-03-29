@@ -170,6 +170,7 @@ function SetAppointment() {
                                             formData={formData}
                                             setFormData={setFormData}
                                             appointments={appointments}
+                                            limit={limit}
                                         />
                                     </div>
                                     <button

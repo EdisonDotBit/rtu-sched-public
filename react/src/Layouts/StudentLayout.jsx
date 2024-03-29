@@ -3,13 +3,10 @@ import { NavLink, Outlet, useLocation } from "react-router-dom";
 import Qwe from "../Component/Subcomponent/Asset/rtu-logo.png";
 
 function StudentLayout() {
-    // State to track whether the sidebar is open or closed
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const modals = useRef(null);
-    // Get the current location
     const location = useLocation();
 
-    // Function to toggle the sidebar state
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const TimePicker = ({ formData, setFormData }) => {
-    const [selectedTime, setSelectedTime] = useState(null);
+const TimePicker = ({ formData, setFormData, appointments, limit }) => {
+    const [disabledTime, setDisabledTime] = useState([]);
+    const limits = limit / 9 + 1;
     const timeSlots = [
         "08:00",
         "09:00",
@@ -12,8 +13,35 @@ const TimePicker = ({ formData, setFormData }) => {
         "14:00",
         "15:00",
         "16:00",
-        "17:00",
     ];
+
+    useEffect(() => {
+        setDisabledTime([]);
+        const getData = async () => {
+            const counts = {};
+            appointments.forEach((item) => {
+                const time = item.apttime.slice(0, 5);
+                if (
+                    item.aptdate === formData.aptdate &&
+                    item.aptoffice === formData.aptoffice
+                ) {
+                    counts[time] = (counts[time] || 0) + 1;
+                }
+            });
+
+            const disabled = Object.keys(counts).filter(
+                (times) => counts[times] >= limits
+            );
+
+            console.log(counts);
+
+            setDisabledTime((prev) => {
+                return Array.from(new Set([...prev, ...disabled]));
+            });
+        };
+
+        getData();
+    }, [formData.aptdate, formData.aptoffice, appointments]); // Add 'appointments' her
 
     const handleTimeClick = (time) => {
         setFormData((prevFormData) => ({
@@ -31,9 +59,12 @@ const TimePicker = ({ formData, setFormData }) => {
                         type="button"
                         key={index}
                         onClick={() => handleTimeClick(time)}
-                        className={`flex justify-center items-center p-4 border border-gray-300 rounded-lg hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition-colors ${
+                        disabled={disabledTime.includes(time)}
+                        className={`flex justify-center items-center p-4 border border-gray-300 rounded-lg focus:outline-none transition-colors ${
                             formData.apttime === time
                                 ? "bg-blue-600 text-white"
+                                : disabledTime.includes(time)
+                                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
                                 : "bg-white text-gray-700"
                         }`}
                     >
