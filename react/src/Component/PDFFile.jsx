@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
     image: {
         marginVertical: 15,
         marginHorizontal: 100,
+        height: "5%",
     },
 
     pageNumber: {
@@ -88,7 +89,7 @@ const styles = StyleSheet.create({
     },
 });
 
-const PDFFile = () => {
+const PDFFile = ({ succData }) => {
     return (
         <Document>
             <Page style={styles.body}>
@@ -98,15 +99,7 @@ const PDFFile = () => {
                 </Text>
 
                 <Text style={styles.primaryText}>
-                    Your online application has been submitted.
-                </Text>
-
-                <Text style={styles.primaryText}>
-                    Your Reference Number is:{" "}
-                </Text>
-
-                <Text style={styles.primaryText}>
-                    Please read the details and instructions below.
+                    Your Reference Number is: {succData.aptid}
                 </Text>
 
                 <Text style={styles.primaryText}>
@@ -127,19 +120,19 @@ const PDFFile = () => {
                 </Text>
 
                 <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                    Student Number:{" "}
+                    ID Number / Type: {succData.aptstudnum}
                 </Text>
 
                 <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                    Full Name:{" "}
+                    Full Name: {succData.aptname}
                 </Text>
 
                 <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                    Contact Number:{" "}
+                    Contact Number: {succData.aptpnumber}
                 </Text>
 
                 <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                    Email Address:{" "}
+                    Email Address: {succData.aptemail}
                 </Text>
 
                 <Text
@@ -156,43 +149,24 @@ const PDFFile = () => {
                 </Text>
 
                 <View style={styles.column}>
-                    <View style={styles.row}>
-                        <Text
-                            style={[
-                                styles.primaryText,
-                                { fontWeight: "heavy", color: "grey" },
-                            ]}
-                        >
-                            RTU Branch
-                        </Text>
+                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
+                        Branch: {succData.aptbranch}
+                    </Text>
 
-                        <Text
-                            style={[
-                                styles.primaryText,
-                                { fontWeight: "heavy", color: "grey" },
-                            ]}
-                        >
-                            Office Name
-                        </Text>
+                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
+                        Office: {succData.aptoffice}
+                    </Text>
 
-                        <Text
-                            style={[
-                                styles.primaryText,
-                                { fontWeight: "heavy", color: "grey" },
-                            ]}
-                        >
-                            Purpose
-                        </Text>
+                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
+                        Purpose: {succData.aptpurpose}
+                    </Text>
 
-                        <Text
-                            style={[
-                                styles.primaryText,
-                                { fontWeight: "heavy", color: "grey" },
-                            ]}
-                        >
-                            Date
-                        </Text>
-                    </View>
+                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
+                        Date: {succData.aptdate}
+                    </Text>
+                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
+                        Time: {succData.apttime}
+                    </Text>
                 </View>
 
                 <Text

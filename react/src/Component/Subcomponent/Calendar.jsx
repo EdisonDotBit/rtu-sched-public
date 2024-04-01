@@ -1,45 +1,48 @@
 import { useEffect, useState } from "react";
+import Loading from "./Loading";
 
-const Calendar = ({ formData, setFormData, limit }) => {
+const Calendar = ({ formData, setFormData, limit, appointments }) => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-    const [aptData, setAptData] = useState([]);
-    const [disabledDates, setDisabledDates] = useState([]);
+    const [disabledDates, setDisabledDates] = useState(["2024-06-20"]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const getData = async () => {
-            const getRes = await fetch(`${apiBaseUrl}/api/allongoing`);
-            const getDataResult = await getRes.json();
+            setIsLoading(true);
 
-            // Counting occurrences of each date for the specified aptoffice
-            const dateCounts = {};
-            getDataResult.forEach((item) => {
+            const counts = {};
+            appointments.forEach((item) => {
                 const date = item.aptdate;
                 if (item.aptoffice === formData.aptoffice) {
-                    dateCounts[date] = (dateCounts[date] || 0) + 1;
+                    counts[date] = (counts[date] || 0) + 1;
                 }
             });
 
-            // Filtering dates that occur exactly three times for the specified aptoffice
-            const datesToDisable = Object.keys(dateCounts).filter(
-                (date) => dateCounts[date] >= limit
+            const datesToDisable = Object.keys(counts).filter(
+                (date) => counts[date] >= limit
             );
 
-            // Setting disabledDates state with filtered dates as an array
-            setDisabledDates(datesToDisable);
+            setDisabledDates((prevDisabledDates) => {
+                return Array.from(
+                    new Set([...prevDisabledDates, ...datesToDisable])
+                );
+            });
+            setIsLoading(false);
         };
 
         getData();
-    }, [formData]); // Trigger useEffect when formData.aptoffice changes
+    }, [formData.aptoffice]); // Trigger useEffect when formData.aptoffice changes
 
     const handleDateClick = (date) => {
         setFormData((prevFormData) => ({
             ...prevFormData,
-            aptdate: `${currentDate.getFullYear()}-${
+            aptdate: `${currentDate.getFullYear()}-${(
                 currentDate.getMonth() + 1
-            }-${date}`,
+            )
+                .toString()
+                .padStart(2, "0")}-${date.toString().padStart(2, "0")}`, // Updated here
         }));
-        console.log(formData.aptoffice);
     };
 
     const handlePrevYear = () => {
@@ -136,11 +139,11 @@ const Calendar = ({ formData, setFormData, limit }) => {
             if (
                 formData.aptdate &&
                 formData.aptdate ===
-                    `${currentDate.getFullYear()}-${
-                        currentDate.getMonth() + 1
-                    }-${day}`
+                    `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)
+                        .toString()
+                        .padStart(2, "0")}-${day.toString().padStart(2, "0")}`
             ) {
-                className += " bg-blue-600";
+                className += " bg-blue-600 text-white";
             }
 
             if (isPastDate(day)) {
@@ -152,7 +155,7 @@ const Calendar = ({ formData, setFormData, limit }) => {
                     <button
                         type="button"
                         onClick={() => handleDateClick(day)}
-                        className={`w-full h-full p-2 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none ${
+                        className={`w-full h-full p-2 focus:outline-none ${
                             currentDate.getDay() === 0 ||
                             currentDate.getDay() === 6
                                 ? "pointer-events-none"
@@ -190,73 +193,99 @@ const Calendar = ({ formData, setFormData, limit }) => {
     };
 
     return (
-        <div className="mx-auto max-w-xl p-4 text-black">
-            <div className="flex justify-between mb-4">
+        <div className="mx-auto max-w-xl p-4 text-black xsm:w-full sm:w-full">
+            {isLoading ? ( // Display loading text if isLoading is true
                 <div>
-                    <button
-                        type="button"
-                        onClick={handlePrevYear}
-                        className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
-                    >
-                        Previous
-                    </button>
+                    <Loading />
                 </div>
-                <div className="text-center">
-                    <div className="mb-2 font-semibold">Year</div>
-                    <div className="text-2xl">{currentDate.getFullYear()}</div>
-                </div>
-                <div>
-                    <button
-                        type="button"
-                        onClick={handleNextYear}
-                        className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
-                    >
-                        Next
-                    </button>
-                </div>
-            </div>
-            <div className="flex justify-between mb-4">
-                <div>
-                    <button
-                        type="button"
-                        onClick={handlePrevMonth}
-                        className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
-                    >
-                        Previous
-                    </button>
-                </div>
-                <div className="text-center">
-                    <div className="mb-2 font-semibold">Month</div>
-                    <div className="text-2xl">
-                        {currentDate.toLocaleString("default", {
-                            month: "long",
-                        })}
+            ) : (
+                <>
+                    <div className="flex justify-between mb-4">
+                        <div>
+                            <button
+                                type="button"
+                                onClick={handlePrevYear}
+                                className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded xsm:text-xs sm:text-base"
+                            >
+                                Previous
+                            </button>
+                        </div>
+                        <div className="text-center">
+                            <div className="mb-2 font-semibold">Year</div>
+                            <div className="text-2xl">
+                                {currentDate.getFullYear()}
+                            </div>
+                        </div>
+                        <div>
+                            <button
+                                type="button"
+                                onClick={handleNextYear}
+                                className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded xsm:text-xs sm:text-base"
+                            >
+                                Next
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <button
-                        type="button"
-                        onClick={handleNextMonth}
-                        className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded"
-                    >
-                        Next
-                    </button>
-                </div>
-            </div>
-            <table className="w-full">
-                <thead>
-                    <tr className="bg-gray-200">
-                        <th className="border border-gray-200 p-2">Sun</th>
-                        <th className="border border-gray-200 p-2">Mon</th>
-                        <th className="border border-gray-200 p-2">Tue</th>
-                        <th className="border border-gray-200 p-2">Wed</th>
-                        <th className="border border-gray-200 p-2">Thu</th>
-                        <th className="border border-gray-200 p-2">Fri</th>
-                        <th className="border border-gray-200 p-2">Sat</th>
-                    </tr>
-                </thead>
-                <tbody>{renderCalendarDays()}</tbody>
-            </table>
+                    <div className="flex justify-between mb-4">
+                        <div>
+                            <button
+                                type="button"
+                                onClick={handlePrevMonth}
+                                className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded xsm:text-xs sm:text-base"
+                            >
+                                Previous
+                            </button>
+                        </div>
+                        <div className="text-center">
+                            <div className="mb-2 font-semibold">Month</div>
+                            <div className="text-2xl">
+                                {currentDate
+                                    .toLocaleString("default", {
+                                        month: "2-digit",
+                                    })
+                                    .padStart(2, "0")}
+                            </div>
+                        </div>
+                        <div>
+                            <button
+                                type="button"
+                                onClick={handleNextMonth}
+                                className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded xsm:text-xs sm:text-base"
+                            >
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                    <table className="xsm:w-full xsm:text-xs sm:w-full sm:text-base">
+                        <thead>
+                            <tr className="bg-gray-200">
+                                <th className="border border-gray-200 p-2">
+                                    Sun
+                                </th>
+                                <th className="border border-gray-200 p-2">
+                                    Mon
+                                </th>
+                                <th className="border border-gray-200 p-2">
+                                    Tue
+                                </th>
+                                <th className="border border-gray-200 p-2">
+                                    Wed
+                                </th>
+                                <th className="border border-gray-200 p-2">
+                                    Thu
+                                </th>
+                                <th className="border border-gray-200 p-2">
+                                    Fri
+                                </th>
+                                <th className="border border-gray-200 p-2">
+                                    Sat
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>{renderCalendarDays()}</tbody>
+                    </table>
+                </>
+            )}
         </div>
     );
 };

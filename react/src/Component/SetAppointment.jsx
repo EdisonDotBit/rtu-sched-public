@@ -1,10 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SelectOffice from "./Subcomponent/SelectOffice";
 import Calendar from "./Subcomponent/Calendar";
 import InputDetails from "./Subcomponent/InputDetails";
 import Confirmation from "./Subcomponent/Confirmation";
 import SelectBranch from "./Subcomponent/SelectBranch";
 import axios from "axios";
+import TimePicker from "./Subcomponent/TimePicker";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import PDFFile from "./PDFFile";
+import Loading from "./Subcomponent/Loading";
 
 function SetAppointment() {
     const [formData, setFormData] = useState({
@@ -17,13 +21,16 @@ function SetAppointment() {
         aptdate: "",
         aptemail: "",
         aptpnumber: "",
+        apttime: "",
     });
     const [limit, setLimit] = useState(null);
     const [office, setOffice] = useState([]);
-    const [selectedAccordion, setSelectedAccordion] = useState(null);
+    const [selectedAccordion, setSelectedAccordion] = useState(0);
+    const [appointments, setAppointments] = useState([]);
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const [formReady, setFormReady] = useState(false);
-
+    const modals = useRef(null);
+    const [succData, setSuccData] = useState({});
     const handleAccordionClick = (index) => {
         if (selectedAccordion === index) {
             setSelectedAccordion(null);
@@ -39,20 +46,26 @@ function SetAppointment() {
         };
         getData();
     }, []);
+    useEffect(() => {
+        const getData = async () => {
+            const getRes = await fetch(`${apiBaseUrl}/api/allongoing`);
+            const getDataResult = await getRes.json();
+            setAppointments(getDataResult);
+        };
+        getData();
+    }, []);
 
     const setApt = async (e) => {
         e.preventDefault(); // Prevent page reload
-        console.log(formData); // Log the formData
 
         try {
             const res = await axios.post(`${apiBaseUrl}/api/setappt`, formData);
 
-            if (res.data.status === "200") {
-            } else {
-                console.error("Appointment not set:", res.data.message); // Log error message
+            if (res.status === 200) {
+                openmodal(res.data.data);
             }
         } catch (error) {
-            console.error("Error setting appointment:", error); // Log any error that occurs during the request
+            alert("Appointment noPlease check your details");
         }
     };
 
@@ -60,11 +73,15 @@ function SetAppointment() {
         e.preventDefault();
         setSelectedAccordion((prevState) => prevState + 1);
     };
+    const openmodal = (data) => {
+        setSuccData(data);
+        modals.current.showModal();
+    };
 
     return (
         <>
             <form>
-                <div className="carousel w-full ">
+                <div className="carousel w-full touch-pan-y overflow-x-hidden">
                     <div className="carousel-item w-full h-full" id="basta">
                         <div className="w-full">
                             <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto">
@@ -74,7 +91,7 @@ function SetAppointment() {
                                     checked={selectedAccordion === 0}
                                     onChange={() => handleAccordionClick(0)}
                                 />
-                                <div className="collapse-title text-xl font-medium">
+                                <div className="collapse-title text-xl font-medium xsm:text-base md:text-xl">
                                     Select Branch
                                 </div>
                                 <div
@@ -88,7 +105,7 @@ function SetAppointment() {
                                         setFormData={setFormData}
                                     />
                                     <button
-                                        className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96"
+                                        className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 xsm:w-[100px] sm:w-[200px] md:w-[300px]"
                                         type="button"
                                         onClick={handleAccordinc}
                                     >
@@ -96,14 +113,14 @@ function SetAppointment() {
                                     </button>
                                 </div>
                             </div>
-                            <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto">
+                            <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto w-full">
                                 <input
                                     type="radio"
                                     name="my-accordion-2"
                                     checked={selectedAccordion === 1}
                                     onChange={() => handleAccordionClick(1)}
                                 />
-                                <div className="collapse-title text-xl font-medium">
+                                <div className="collapse-title text-xl font-medium xsm:text-base md:text-xl">
                                     Select Office
                                 </div>
                                 <div
@@ -119,7 +136,7 @@ function SetAppointment() {
                                         setLimit={setLimit}
                                     />
                                     <button
-                                        className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 mt-5"
+                                        className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 mt-5 xsm:w-[100px] sm:w-[200px] md:w-[300px]"
                                         type="button"
                                         onClick={handleAccordinc}
                                     >
@@ -127,14 +144,14 @@ function SetAppointment() {
                                     </button>
                                 </div>
                             </div>
-                            <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto">
+                            <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto w-full">
                                 <input
                                     type="radio"
                                     name="my-accordion-2"
                                     checked={selectedAccordion === 2}
                                     onChange={() => handleAccordionClick(2)}
                                 />
-                                <div className="collapse-title text-xl font-medium">
+                                <div className="collapse-title text-xl font-medium xsm:text-base md:text-xl">
                                     Select Date
                                 </div>
                                 <div
@@ -142,20 +159,27 @@ function SetAppointment() {
                                         selectedAccordion === 2 ? "" : "hidden"
                                     }`}
                                 >
-                                    <div>
+                                    <div className="flex flex-col sm:flex-row justify-center items-center">
                                         <Calendar
                                             formData={formData}
                                             setFormData={setFormData}
                                             limit={limit}
+                                            appointments={appointments}
                                         />
-                                        <button
-                                            className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96"
-                                            type="button"
-                                            onClick={handleAccordinc}
-                                        >
-                                            Next &gt;
-                                        </button>
+                                        <TimePicker
+                                            formData={formData}
+                                            setFormData={setFormData}
+                                            appointments={appointments}
+                                            limit={limit}
+                                        />
                                     </div>
+                                    <button
+                                        className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 xsm:w-[100px] sm:w-[200px] md:w-[300px]"
+                                        type="button"
+                                        onClick={handleAccordinc}
+                                    >
+                                        Next &gt;
+                                    </button>
                                 </div>
                             </div>
                             <div className="bg-transparent collapse collapse-arrow bg-base-200 h-full">
@@ -165,7 +189,7 @@ function SetAppointment() {
                                     checked={selectedAccordion === 3}
                                     onChange={() => handleAccordionClick(3)}
                                 />
-                                <div className="collapse-title text-xl font-medium">
+                                <div className="collapse-title text-xl font-medium xsm:text-base md:text-xl">
                                     Input Details
                                 </div>
                                 <div
@@ -180,7 +204,7 @@ function SetAppointment() {
 
                                     <a href="#confirmation">
                                         <button
-                                            className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96"
+                                            className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 xsm:w-[100px] sm:w-[200px] md:w-[300px]"
                                             type="button"
                                         >
                                             Next &gt;
@@ -217,6 +241,30 @@ function SetAppointment() {
                             </div>
                         </div>
                     </div>
+                    <dialog ref={modals} className="modal">
+                        <div className="flex flex-col justify-center items-center text-white modal-box">
+                            <PDFDownloadLink
+                                document={<PDFFile succData={succData} />}
+                                fileName="PaoloBanagloriosoAtEdisotLati_nga_pala.pdf"
+                            >
+                                {({ loading }) =>
+                                    loading ? (
+                                        <div>
+                                            <Loading />
+                                        </div>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            className="btn btn-outline"
+                                        >
+                                            Download
+                                        </button>
+                                    )
+                                }
+                            </PDFDownloadLink>
+                            <div className="item-center modal-action"></div>
+                        </div>
+                    </dialog>
                 </div>
             </form>
         </>

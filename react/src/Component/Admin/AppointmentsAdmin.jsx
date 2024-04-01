@@ -82,7 +82,7 @@ function AppointmentsAdmin() {
         <div className="flex justify-center  h-full">
             <div className="flex flex-col items-center gap-[20px]">
                 <input
-                    className="flex justify-center items-center text-center w-[300px] p-[5px]"
+                    className="bg-neutral-200 border-r-teal-400 text-center w-[300px] p-[5px]"
                     type="text"
                     placeholder="Enter email address"
                     value={aptemail}
@@ -109,6 +109,12 @@ function AppointmentsAdmin() {
                                     </th>
                                     <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
                                         Office
+                                    </th>
+                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                        Date
+                                    </th>
+                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                        Time
                                     </th>
                                     <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
                                         Purpose
@@ -145,6 +151,12 @@ function AppointmentsAdmin() {
                                             </td>
                                             <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                                 {apt.aptoffice}
+                                            </td>
+                                            <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                {apt.aptdate}
+                                            </td>
+                                            <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                {apt.apttime}
                                             </td>
                                             <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                                 {apt.aptpurpose}

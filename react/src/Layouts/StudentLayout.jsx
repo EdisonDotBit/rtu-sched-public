@@ -1,18 +1,21 @@
-import React, { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import Qwe from "../Component/Subcomponent/Asset/rtu-logo.png";
 
 function StudentLayout() {
-    // State to track whether the sidebar is open or closed
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    // Get the current location
+    const modals = useRef(null);
     const location = useLocation();
 
-    // Function to toggle the sidebar state
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
-
+    const openmodal = () => {
+        modals.current.showModal();
+    };
+    useEffect(() => {
+        openmodal();
+    }, []);
     return (
         <>
             <div className="flex flex-col h-screen font-poppins overflow-x-hidden w-full">
@@ -45,33 +48,8 @@ function StudentLayout() {
                         <div className="flex flex-col flex-1 overflow-y-auto">
                             <nav className="flex-1 bg-[#194F90]">
                                 <NavLink
-                                    to="/student/dashboard"
-                                    className={`flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69] ${
-                                        location.pathname ===
-                                        "/student/dashboard"
-                                            ? "bg-[#123A69]"
-                                            : ""
-                                    }`}
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth={1.5}
-                                        stroke="currentColor"
-                                        className="w-6 h-6 mr-2"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z"
-                                        />
-                                    </svg>
-                                    Dashboard
-                                </NavLink>
-                                <NavLink
                                     to="/student/set-appointment"
-                                    className={`flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69] ${
+                                    className={`flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69] xsm:text-xs sm:text-sm md:text-base ${
                                         location.pathname ===
                                         "/student/set-appointment"
                                             ? "bg-[#123A69]"
@@ -96,7 +74,7 @@ function StudentLayout() {
                                 </NavLink>
                                 <NavLink
                                     to="/student/view-appointment"
-                                    className={`flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69] ${
+                                    className={`flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69] xsm:text-xs sm:text-sm md:text-base ${
                                         location.pathname ===
                                         "/student/view-appointment"
                                             ? "bg-[#123A69]"
@@ -125,7 +103,7 @@ function StudentLayout() {
 
                     {/* Header */}
                     <div className="flex flex-col flex-1">
-                        <div className="flex items-center justify-between h-16 bg-white border-b border-gray-200">
+                        <div className="flex items-center justify-between h-16 bg-white border-b border-gray-200 xsm:w-screen md:w-full">
                             <div className="flex items-center px-4">
                                 <button
                                     className="text-gray-500 focus:outline-none hover:text-[#123A69] md:hidden"
@@ -148,29 +126,22 @@ function StudentLayout() {
                                 </button>
                             </div>
                             <div>
-                                <img className="w-[200px]" src={Qwe} alt="" />
+                                <img
+                                    className="xsm:w-[150px] md:w-[200px]"
+                                    src={Qwe}
+                                    alt=""
+                                />
                             </div>
                             <div className="flex items-center pr-4">
-                                <button className="flex items-center text-gray-500 hover:text-[#123A69] focus:outline-none">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth={1.5}
-                                        stroke="currentColor"
-                                        className="w-8 h-8"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
-                                        />
-                                    </svg>
-                                </button>
+                                <NavLink to="../guest">
+                                    <button className=" container flex items-center text-gray-500 hover:text-[#123A69] focus:outline-none">
+                                        Change to Guest
+                                    </button>
+                                </NavLink>
                             </div>
                         </div>
                         {/* Main content */}
-                        <div className="p-4 bg-white rounded-lg m-4 overflow-y-auto flex-1 w-full">
+                        <div className="p-4 bg-white rounded-lg m-4 overflow-y-auto flex-1 w-auto xsm:w-screen sm:w-full">
                             <Outlet />
                         </div>
                     </div>
@@ -181,6 +152,33 @@ function StudentLayout() {
                         Technological University
                     </p>
                 </footer>
+                <dialog ref={modals} className="modal">
+                    <div className="flex flex-col justify-center items-center text-white modal-box">
+                        <h3 className="font-bold text-lg">
+                            Welcome to Rizal Technological University!
+                        </h3>
+                        <p>*For New Student and Alumni, please select Guest</p>
+                        <div className="item-center modal-action">
+                            <NavLink to="../guest">
+                                <button
+                                    type="button"
+                                    className="btn btn-outline"
+                                >
+                                    Guest
+                                </button>
+                            </NavLink>
+                            <button
+                                type="button"
+                                className="btn btn-outline"
+                                onClick={() => {
+                                    modals.current.close();
+                                }}
+                            >
+                                Student
+                            </button>
+                        </div>
+                    </div>
+                </dialog>
             </div>
         </>
     );

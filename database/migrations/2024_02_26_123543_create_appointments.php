@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('appointments', function (Blueprint $table) {
-            $table->increments('aptid');
+            $table->bigIncrements('aptid');
             $table->string('apttype')->nullable(false);
             $table->string('aptbranch')->nullable(false);
             $table->string('aptoffice')->nullable(false);
@@ -23,6 +23,8 @@ return new class extends Migration
             $table->string('aptpnumber')->nullable(false);
             $table->string('aptemail')->nullable(false);
             $table->string('aptstatus')->default('ongoing')->nullable(false);
+            $table->time('apttime')->nullable(false);
+            $table->timestamps();
         });
     }
 
