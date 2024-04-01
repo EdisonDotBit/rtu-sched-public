@@ -41,7 +41,7 @@ function ViewAppointments() {
             <div className="flex justify-center items-center h-full">
                 <div className="flex flex-col items-center gap-[20px]">
                     <input
-                        className="flex justify-center items-center text-center w-[300px] p-[5px]"
+                        className="flex justify-center items-center text-center w-[300px] p-[5px] text-black bg-gray-400"
                         type="number"
                         placeholder="Enter your transaction number"
                         value={aptid}

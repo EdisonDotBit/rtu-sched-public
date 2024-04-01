@@ -5,10 +5,11 @@ import InputDetails from "./Subcomponent/InputDetails";
 import Confirmation from "./Subcomponent/Confirmation";
 import SelectBranch from "./Subcomponent/SelectBranch";
 import axios from "axios";
+import GuestDetails from "./Subcomponent/GuestDetails";
 
 function GuestSetAppointment() {
     const [formData, setFormData] = useState({
-        apttype: "Student",
+        apttype: "Guest",
         aptbranch: "",
         aptoffice: "",
         aptname: "",
@@ -174,7 +175,7 @@ function GuestSetAppointment() {
                                         selectedAccordion === 3 ? "" : "hidden"
                                     }`}
                                 >
-                                    <InputDetails
+                                    <GuestDetails
                                         formData={formData}
                                         setFormData={setFormData}
                                     />

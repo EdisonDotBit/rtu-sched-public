@@ -11,7 +11,7 @@ function GuestDetails({ formData, setFormData }) {
     };
     return (
         <>
-            <div className="w-full h-[500px] overflow-y-auto">
+            <div className="w-full h-auto">
                 <div className="flex flex-col justify-center">
                     <div>
                         <h1 className="flex justify-center text-2xl m underline">
@@ -34,8 +34,8 @@ function GuestDetails({ formData, setFormData }) {
                                     <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-200 sm:w-2/3 md:w-8/12 lg:w-1/3">
                                         ID Number / Type:
                                         <input
-                                            name="aptIDnum"
-                                            value={formData.aptIDnum}
+                                            name="aptstudnum"
+                                            value={formData.aptstudnum}
                                             onChange={handleChange}
                                             type="text"
                                             placeholder="e.g 12345 / Phil ID"
@@ -48,7 +48,6 @@ function GuestDetails({ formData, setFormData }) {
                                             value={formData.aptname}
                                             onChange={handleChange}
                                             type="text"
-                                            zx
                                             placeholder="e.g. Juan A. Dela Cruz"
                                         />
                                     </label>

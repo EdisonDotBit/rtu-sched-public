@@ -91,4 +91,32 @@ class Appointments extends Controller
             ], 400);
         }
     }
+
+    public function reschedule(Request $request, int $aptId)
+    {
+        $apt = Appointment::find($aptId);
+
+        if (!$apt) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Appointment not found',
+            ], 404);
+        }
+
+        $apt->aptdate = $request->input('aptdate');
+
+        try {
+            $apt->save();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Appointment successfully rescheduled',
+                'data' => $apt,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 400,
+                'error' => 'Failed to reschedule appointment. Please ensure the new date is valid.',
+            ], 400);
+        }
+    }
 }
