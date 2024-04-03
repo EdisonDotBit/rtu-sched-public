@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import SelectOffice from "./Subcomponent/SelectOffice";
 import Calendar from "./Subcomponent/Calendar";
-import InputDetails from "./Subcomponent/InputDetails";
-import Confirmation from "./Subcomponent/Confirmation";
 import SelectBranch from "./Subcomponent/SelectBranch";
 import axios from "axios";
 import TimePicker from "./Subcomponent/TimePicker";

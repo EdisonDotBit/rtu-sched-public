@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 const TimePicker = ({ formData, setFormData, appointments, limit }) => {
     const [disabledTime, setDisabledTime] = useState([]);
-    const limits = limit / 9 + 1;
+    const limits = Math.ceil(limit / 9);
     const timeSlots = [
         "08:00",
         "09:00",

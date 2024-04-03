@@ -62,7 +62,6 @@ const styles = StyleSheet.create({
     image: {
         marginVertical: 15,
         marginHorizontal: 100,
-        height: "5%",
     },
 
     pageNumber: {
