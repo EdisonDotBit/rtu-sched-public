@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 const TimePicker = ({ formData, setFormData, appointments, limit }) => {
     const [disabledTime, setDisabledTime] = useState([]);
-    const limits = limit / 9 + 1;
+    const limits = Math.ceil(limit / 9);
     const timeSlots = [
         "08:00",
         "09:00",
@@ -53,7 +53,7 @@ const TimePicker = ({ formData, setFormData, appointments, limit }) => {
     return (
         <div className="container w-full mx-auto max-w-md p-4 text-black">
             <h2 className="text-2xl font-semibold mb-4">Select a Time</h2>
-            <div className="grid grid-cols-5 gap-4">
+            <div className="grid grid-cols-5 gap-4 xsm:text-xs sm:text-base">
                 {timeSlots.map((time, index) => (
                     <button
                         type="button"

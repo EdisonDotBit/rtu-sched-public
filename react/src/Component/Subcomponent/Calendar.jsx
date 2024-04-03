@@ -241,7 +241,7 @@ const Calendar = ({ formData, setFormData, limit, appointments }) => {
                             <div className="text-2xl">
                                 {currentDate
                                     .toLocaleString("default", {
-                                        month: "2-digit",
+                                        month: "long",
                                     })
                                     .padStart(2, "0")}
                             </div>
