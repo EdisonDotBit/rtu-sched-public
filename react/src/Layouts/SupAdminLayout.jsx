@@ -48,10 +48,10 @@ function SupAdminLayout() {
                         <div className="flex flex-col flex-1 overflow-y-auto">
                             <nav className="flex-1 bg-[#194F90]">
                                 <NavLink
-                                    to="/ewqqwe/suppa/dashboard"
+                                    to="/ewqqwe/suppa/feedbacks"
                                     className={`flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69] ${
                                         location.pathname ===
-                                        "/ewqqwe/suppa/dashboard"
+                                        "/ewqqwe/suppa/feedbacks"
                                             ? "bg-[#123A69]"
                                             : ""
                                     }`}
@@ -70,7 +70,7 @@ function SupAdminLayout() {
                                             d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z"
                                         />
                                     </svg>
-                                    Dashboard
+                                    Feedbacks
                                 </NavLink>
                                 <NavLink
                                     to="/ewqqwe/suppa/appointments"

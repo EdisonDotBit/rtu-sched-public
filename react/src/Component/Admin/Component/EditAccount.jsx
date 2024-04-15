@@ -107,7 +107,8 @@ function EditAccount({ selectedaccid }) {
                                             onChange={handleChange}
                                             type="text"
                                             placeholder="mapagmahalzero2"
-                                            className="grow focus:border-blue-400"
+                                            className="grow focus:border-blue-400 text-gray-400"
+                                            disabled
                                         />
                                     </label>
                                     <label className="m-3 focus:border-transparent input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">

@@ -3,13 +3,12 @@ import Calendar from "./Calendar";
 import axios from "axios";
 import PDFFile from "../PDFFile";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-function DetailsInfo({ aptData }) {
+function DetailsInfo({ aptData, appointments }) {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const [formData, setFormData] = useState({});
     const modalRef1 = useRef(null);
     const modalRef2 = useRef(null);
-    const [limit, setLimit] = useState(null);
-
+    const [limit, setLimit] = useState();
     const openModal1 = () => {
         modalRef1.current.showModal();
     };
@@ -22,18 +21,24 @@ function DetailsInfo({ aptData }) {
             const getRes = await fetch(
                 `${apiBaseUrl}/api/office/find/${aptData.aptoffice}`
             );
-            const getDataResult = await getRes.json();
-            setLimit(getDataResult.limit);
+            if (getRes.status === 200) {
+                const getDataResult = await getRes.json();
+                setLimit(getDataResult.data.offlimit);
+                setFormData((prevFormData) => ({
+                    ...prevFormData,
+                    aptoffice: aptData.aptoffice,
+                }));
+            }
         };
         getData();
-    }, []);
+    }, [aptData]);
 
     const handleReSched = async (e, id) => {
         e.preventDefault();
         try {
             const updateRes = await axios.put(
                 `${apiBaseUrl}/api/resched/${id}`,
-                formData // Send formData directly as the updated data
+                formData
             );
             if (updateRes.status === 200) {
                 alert("Appointment update successful.");
@@ -192,19 +197,20 @@ function DetailsInfo({ aptData }) {
                 </PDFDownloadLink>
                 <button
                     className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-1/3 ml-2"
-                    onClick={() => openModal1(aptData)}
+                    onClick={() => openModal1(formData)}
                 >
                     Reschedule
                 </button>
             </div>
             <dialog ref={modalRef1} className="modal">
-                <div className="modal-box border-cyan-400 bg-gray-300">
+                <div className="modal-box border-cyan-400 bg-gray-100">
                     <h3 className="font-bold text-lg">Pick a date</h3>
 
                     <Calendar
-                        formData={aptData}
+                        formData={formData}
                         setFormData={setFormData}
                         limit={limit}
+                        appointments={appointments}
                     />
                     <div className="modal-action">
                         <button

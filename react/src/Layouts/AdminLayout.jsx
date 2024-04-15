@@ -46,6 +46,31 @@ function AdminLayout() {
                         <div className="flex flex-col flex-1 overflow-y-auto">
                             <nav className="flex-1 bg-[#194F90]">
                                 <NavLink
+                                    to="/ewqqwe/admin/feedback"
+                                    className={`flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69] ${
+                                        location.pathname ===
+                                        "/ewqqwe/admin/feedback"
+                                            ? "bg-[#123A69]"
+                                            : ""
+                                    }`}
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth={1.5}
+                                        stroke="currentColor"
+                                        className="w-6 h-6 mr-2"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z"
+                                        />
+                                    </svg>
+                                    Feedbacks
+                                </NavLink>
+                                <NavLink
                                     to="/ewqqwe/admin/appointments"
                                     className={`flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69] ${
                                         location.pathname ===
