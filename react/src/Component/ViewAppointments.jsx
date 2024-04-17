@@ -9,6 +9,16 @@ function ViewAppointments() {
     const [error, setError] = useState(null);
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const [isLoading, setIsLoading] = useState();
+
+    const [appointments, setAppointments] = useState([]);
+    useEffect(() => {
+        const getData = async () => {
+            const getRes = await fetch(`${apiBaseUrl}/api/allongoing`);
+            const getDataResult = await getRes.json();
+            setAppointments(getDataResult);
+        };
+        getData();
+    }, []);
     const handleSearch = async () => {
         setIsLoading(true);
         setError(null);
@@ -57,7 +67,10 @@ function ViewAppointments() {
                     )}
                     {error && <p>{error}</p>}
                     {aptData && Object.keys(aptData).length > 0 && (
-                        <DetailsInfo aptData={aptData} />
+                        <DetailsInfo
+                            aptData={aptData}
+                            appointments={appointments}
+                        />
                     )}
                 </div>
             </div>

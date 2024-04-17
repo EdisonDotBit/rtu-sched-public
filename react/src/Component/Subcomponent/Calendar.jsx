@@ -1,48 +1,49 @@
 import { useEffect, useState } from "react";
 import Loading from "./Loading";
 
-const Calendar = ({ formData, setFormData, limit }) => {
+const Calendar = ({ formData, setFormData, limit, appointments }) => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-    const [aptData, setAptData] = useState([]);
-    const [disabledDates, setDisabledDates] = useState([]);
+    const [disabledDates, setDisabledDates] = useState(["2024-06-20"]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const getData = async () => {
             setIsLoading(true);
-            const getRes = await fetch(`${apiBaseUrl}/api/allongoing`);
-            const getDataResult = await getRes.json();
 
-            // Counting occurrences of each date for the specified aptoffice
-            const dateCounts = {};
-            getDataResult.forEach((item) => {
+            const counts = {};
+            appointments.forEach((item) => {
                 const date = item.aptdate;
                 if (item.aptoffice === formData.aptoffice) {
-                    dateCounts[date] = (dateCounts[date] || 0) + 1;
+                    counts[date] = (counts[date] || 0) + 1;
                 }
             });
 
-            // Filtering dates that occur exactly three times for the specified aptoffice
-            const datesToDisable = Object.keys(dateCounts).filter(
-                (date) => dateCounts[date] >= limit
+            const datesToDisable = Object.keys(counts).filter(
+                (date) => counts[date] >= limit
             );
 
-            // Setting disabledDates state with filtered dates as an array
-            setDisabledDates(datesToDisable);
+            setDisabledDates((prevDisabledDates) => {
+                return Array.from(
+                    new Set([...prevDisabledDates, ...datesToDisable])
+                );
+            });
             setIsLoading(false);
         };
 
         getData();
-    }, [formData.aptoffice]); // Trigger useEffect when formData.aptoffice changes
+    }, [formData.aptoffice]);
 
     const handleDateClick = (date) => {
         setFormData((prevFormData) => ({
             ...prevFormData,
-            aptdate: `${currentDate.getFullYear()}-${
+            aptdate: `${currentDate.getFullYear()}-${(
                 currentDate.getMonth() + 1
-            }-${date}`,
+            )
+                .toString()
+                .padStart(2, "0")}-${date.toString().padStart(2, "0")}`, // Updated here
         }));
+        console.log(limit);
     };
 
     const handlePrevYear = () => {
@@ -139,9 +140,9 @@ const Calendar = ({ formData, setFormData, limit }) => {
             if (
                 formData.aptdate &&
                 formData.aptdate ===
-                    `${currentDate.getFullYear()}-${
-                        currentDate.getMonth() + 1
-                    }-${day}`
+                    `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)
+                        .toString()
+                        .padStart(2, "0")}-${day.toString().padStart(2, "0")}`
             ) {
                 className += " bg-blue-600 text-white";
             }
@@ -155,7 +156,7 @@ const Calendar = ({ formData, setFormData, limit }) => {
                     <button
                         type="button"
                         onClick={() => handleDateClick(day)}
-                        className={`w-full h-full p-2 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none ${
+                        className={`w-full h-full p-2 focus:outline-none ${
                             currentDate.getDay() === 0 ||
                             currentDate.getDay() === 6
                                 ? "pointer-events-none"
@@ -239,9 +240,11 @@ const Calendar = ({ formData, setFormData, limit }) => {
                         <div className="text-center">
                             <div className="mb-2 font-semibold">Month</div>
                             <div className="text-2xl">
-                                {currentDate.toLocaleString("default", {
-                                    month: "long",
-                                })}
+                                {currentDate
+                                    .toLocaleString("default", {
+                                        month: "long",
+                                    })
+                                    .padStart(2, "0")}
                             </div>
                         </div>
                         <div>

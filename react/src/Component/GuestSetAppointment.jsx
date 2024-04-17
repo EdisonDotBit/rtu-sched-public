@@ -7,8 +7,8 @@ import TimePicker from "./Subcomponent/TimePicker";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import PDFFile from "./PDFFile";
 import Loading from "./Subcomponent/Loading";
-import ConfirmtionG from "./Subcomponent/ConfirmationG";
 import GuestDetails from "./Subcomponent/GuestDetails";
+import ConfirmtionG from "./Subcomponent/ConfirmationG";
 
 function GuestSetAppointment() {
     const [formData, setFormData] = useState({
@@ -26,6 +26,7 @@ function GuestSetAppointment() {
     const [limit, setLimit] = useState(null);
     const [office, setOffice] = useState([]);
     const [selectedAccordion, setSelectedAccordion] = useState(0);
+    const [appointments, setAppointments] = useState([]);
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const [formReady, setFormReady] = useState(false);
     const modals = useRef(null);
@@ -42,6 +43,14 @@ function GuestSetAppointment() {
             const getRes = await fetch(`${apiBaseUrl}/api/office/all`);
             const getDataResult = await getRes.json();
             setOffice(getDataResult);
+        };
+        getData();
+    }, []);
+    useEffect(() => {
+        const getData = async () => {
+            const getRes = await fetch(`${apiBaseUrl}/api/allongoing`);
+            const getDataResult = await getRes.json();
+            setAppointments(getDataResult);
         };
         getData();
     }, []);
@@ -155,10 +164,13 @@ function GuestSetAppointment() {
                                             formData={formData}
                                             setFormData={setFormData}
                                             limit={limit}
+                                            appointments={appointments}
                                         />
                                         <TimePicker
                                             formData={formData}
                                             setFormData={setFormData}
+                                            appointments={appointments}
+                                            limit={limit}
                                         />
                                     </div>
                                     <button

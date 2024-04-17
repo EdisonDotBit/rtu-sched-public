@@ -62,7 +62,6 @@ const styles = StyleSheet.create({
     image: {
         marginVertical: 15,
         marginHorizontal: 100,
-        height: "2%",
     },
 
     pageNumber: {
@@ -128,11 +127,11 @@ const PDFFile = ({ succData }) => {
                 </Text>
 
                 <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                    Contact Number:{succData.aptpnumber}
+                    Contact Number: {succData.aptpnumber}
                 </Text>
 
                 <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                    Email Address:{succData.aptemail}
+                    Email Address: {succData.aptemail}
                 </Text>
 
                 <Text

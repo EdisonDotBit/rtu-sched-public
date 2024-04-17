@@ -41,3 +41,6 @@ Route::delete('admin/delete/{admid}', 'App\Http\Controllers\Admins@delete');
 Route::put('admin/edit/{admid}', 'App\Http\Controllers\Admins@edit');
 
 Route::post('admin/login', 'App\Http\Controllers\Admins@login');
+
+Route::post('feedback', 'App\Http\Controllers\Feedback@add');
+Route::get('feedbacks', 'App\Http\Controllers\Feedback@all');

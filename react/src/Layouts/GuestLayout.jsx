@@ -141,7 +141,7 @@ function GuestLayout() {
                             </div>
                         </div>
                         {/* Main content */}
-                        <div className="p-4 bg-white rounded-lg m-4 overflow-y-auto flex-1 xsm:w-screen sm:w-full">
+                        <div className="p-4 bg-white rounded-lg overflow-y-auto flex-1 xsm:w-screen sm:w-full md:m-4">
                             <Outlet />
                         </div>
                     </div>

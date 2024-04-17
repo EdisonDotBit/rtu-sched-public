@@ -12,12 +12,12 @@ function ConfirmtionG({ formData, setFormData }) {
                     <div className="flow-root rounded-lg border border-gray-100 py-3 shadow-sm mb-4">
                         <dl className="-my-3 divide-y divide-gray-100 text-sm">
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-1 sm:gap-4">
-                                <dt className="font-bold text-[#EAB800] text-[16px]">
+                                <dt className="font-bold text-[#EAB800] text-[16px] text-center md:text-left">
                                     <h1>PERSONAL INFORMATION</h1>
                                 </dt>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                                <dt className="font-semibold text-[#3B3838] ml-10">
+                                <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
                                     ID Number / Type
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center">
@@ -25,7 +25,7 @@ function ConfirmtionG({ formData, setFormData }) {
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                                <dt className="font-semibold text-[#3B3838] ml-10">
+                                <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
                                     Full Name
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center">
@@ -33,7 +33,7 @@ function ConfirmtionG({ formData, setFormData }) {
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                                <dt className="font-semibold text-[#3B3838] ml-10">
+                                <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
                                     Contact Number
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center">
@@ -41,7 +41,7 @@ function ConfirmtionG({ formData, setFormData }) {
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                                <dt className="font-semibold text-[#3B3838] ml-10">
+                                <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
                                     Email Address
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center">
@@ -53,12 +53,12 @@ function ConfirmtionG({ formData, setFormData }) {
                     <div className="flow-root rounded-lg border border-gray-100 py-3 shadow-sm mb-4 ">
                         <dl className="-my-3 divide-y divide-gray-100 text-sm">
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-1 sm:gap-4">
-                                <dt className="font-bold text-[#EAB800] text-[16px]">
+                                <dt className="font-bold text-[#EAB800] text-[16px] text-center md:text-left">
                                     <h1>APPOINTMENT INFORMATION</h1>
                                 </dt>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                                <dt className="font-semibold text-[#3B3838] ml-10">
+                                <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
                                     RTU Branch
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center text-center">
@@ -66,7 +66,7 @@ function ConfirmtionG({ formData, setFormData }) {
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                                <dt className="font-semibold text-[#3B3838] ml-10">
+                                <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
                                     Office Name
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center text-center">
@@ -74,7 +74,7 @@ function ConfirmtionG({ formData, setFormData }) {
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                                <dt className="font-semibold text-[#3B3838] ml-10">
+                                <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
                                     Purpose
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center text-center">
@@ -82,7 +82,7 @@ function ConfirmtionG({ formData, setFormData }) {
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                                <dt className="font-semibold text-[#3B3838] ml-10">
+                                <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
                                     Date
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center text-center">
@@ -90,7 +90,7 @@ function ConfirmtionG({ formData, setFormData }) {
                                 </dd>
                             </div>
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                                <dt className="font-semibold text-[#3B3838] ml-10">
+                                <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
                                     Time
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 justify-self-center text-center">
