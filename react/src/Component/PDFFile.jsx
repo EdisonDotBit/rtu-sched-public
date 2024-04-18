@@ -86,6 +86,25 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         gap: 60,
     },
+    bottomParagraph: {
+        marginTop: 24,
+        borderTopWidth: 1,
+        borderTopColor: "black",
+        paddingTop: 8,
+    },
+
+    bottomText: {
+        fontSize: 10,
+        textAlign: "center",
+    },
+    bulletList: {
+        marginLeft: 20,
+    },
+
+    bulletItem: {
+        fontSize: 10,
+        marginBottom: 4,
+    },
 });
 
 const PDFFile = ({ succData }) => {
@@ -167,7 +186,28 @@ const PDFFile = ({ succData }) => {
                         Time: {succData.apttime}
                     </Text>
                 </View>
-
+                <View style={styles.bottomParagraph}>
+                    <Text style={styles.primaryText}>Reminder:</Text>
+                    <Text style={styles.primaryText}></Text>
+                    <View style={styles.bulletList}>
+                        <Text style={styles.bulletItem}>
+                            • Bring your specified ID
+                        </Text>
+                        <Text style={styles.bulletItem}></Text>
+                        <Text style={styles.bulletItem}>
+                            • If you miss the appointment, you have three (3)
+                            days to reschedule it before it is automatically
+                            deleted.
+                        </Text>
+                        <Text style={styles.bulletItem}></Text>
+                        <Text style={styles.bulletItem}>
+                            • You may submit a feedback at:
+                        </Text>
+                        <Text style={styles.primaryText}>
+                            link to feedback.comasdasdasd
+                        </Text>
+                    </View>
+                </View>
                 <Text
                     style={styles.pageNumber}
                     render={({ pageNumber, totalPages }) =>

@@ -99,23 +99,6 @@ function Confirmation({ formData, setFormData }) {
                             </div>
                         </dl>
                     </div>
-                    <div className="items-center w-[85%] ml-auto mr-auto text-center text-[12px]">
-                        <input
-                            type="checkbox"
-                            tabIndex={-1}
-                            className="mr-2 accent-[#123A69] hover:accent-[#123A69]"
-                            style={{ verticalAlign: "middle" }}
-                        />
-                        <label style={{ verticalAlign: "middle" }}>
-                            I confirm that the above information is
-                            <b> true and correct</b> and
-                            <b> I consent Rizal Technological University </b>
-                            under the standards of Data Protection and Privacy
-                            to
-                            <b> collect and process </b>
-                            the given data.
-                        </label>
-                    </div>
                 </div>
             </div>
         </div>

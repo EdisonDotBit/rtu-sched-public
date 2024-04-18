@@ -51,9 +51,9 @@ const TimePicker = ({ formData, setFormData, appointments, limit }) => {
     };
 
     return (
-        <div className="container w-full mx-auto max-w-md p-4 text-black">
+        <div className="container w-full mx-auto max-w-md p-4 text-black ml-10">
             <h2 className="text-2xl font-semibold mb-4">Select a Time</h2>
-            <div className="grid grid-cols-5 gap-4 xsm:text-xs sm:text-base">
+            <div className="grid grid-cols-3 gap-4 xsm:text-xs sm:text-base">
                 {timeSlots.map((time, index) => (
                     <button
                         type="button"

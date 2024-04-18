@@ -33,6 +33,7 @@ function SetAppointment() {
     const modals = useRef(null);
     const modals1 = useRef(null);
     const [succData, setSuccData] = useState({});
+    const [isConfirmed, setIsConfirmed] = useState(false);
     const handleAccordionClick = (index) => {
         if (selectedAccordion === index) {
             setSelectedAccordion(null);
@@ -84,6 +85,9 @@ function SetAppointment() {
                 alert("Appointment failed. Please check your details");
             }
         }
+    };
+    const handleCheckboxChange = (e) => {
+        setIsConfirmed(e.target.checked);
     };
 
     const handleAccordinc = (e) => {
@@ -243,6 +247,27 @@ function SetAppointment() {
                                 formData={formData}
                                 setFormData={setFormData}
                             />
+                            <div className="items-center w-[85%] ml-auto mr-auto text-center text-[12px]">
+                                <input
+                                    type="checkbox"
+                                    tabIndex={-1}
+                                    className="mr-2 accent-[#123A69] hover:accent-[#123A69]"
+                                    style={{ verticalAlign: "middle" }}
+                                    onChange={handleCheckboxChange}
+                                />
+                                <label style={{ verticalAlign: "middle" }}>
+                                    I confirm that the above information is
+                                    <b> true and correct</b> and
+                                    <b>
+                                        {" "}
+                                        I consent Rizal Technological University{" "}
+                                    </b>
+                                    under the standards of Data Protection and
+                                    Privacy to
+                                    <b> collect and process </b>
+                                    the given data.
+                                </label>
+                            </div>
 
                             <div className="flex items-center justify-center w-lvh mt-4">
                                 <a
@@ -253,8 +278,13 @@ function SetAppointment() {
                                 </a>
                                 <button
                                     type="submit"
-                                    className="py-2 px-8 rounded-md text-white hover:text-white bg-[#194F90] hover:bg-[#123A69] font-semibold"
+                                    className={`py-2 px-8 rounded-md text-white hover:text-white ${
+                                        isConfirmed
+                                            ? "bg-[#194F90] hover:bg-[#123A69]"
+                                            : "bg-gray-400 cursor-not-allowed"
+                                    } font-semibold`}
                                     onClick={setApt}
+                                    disabled={!isConfirmed}
                                 >
                                     Confirm
                                 </button>
