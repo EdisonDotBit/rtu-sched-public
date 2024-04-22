@@ -259,13 +259,21 @@ function SetAppointment() {
                                     I confirm that the above information is
                                     <b> true and correct</b> and
                                     <b>
-                                        {" "}
                                         I consent Rizal Technological University{" "}
                                     </b>
                                     under the standards of Data Protection and
                                     Privacy to
                                     <b> collect and process </b>
                                     the given data.
+                                </label>
+
+                                <label style={{ verticalAlign: "middle" }}>
+                                    <b>
+                                        <br />
+                                        <br />
+                                        *** Appointment number is important.
+                                        Kindly note it***
+                                    </b>
                                 </label>
                             </div>
 
@@ -293,6 +301,8 @@ function SetAppointment() {
                     </div>
                     <dialog ref={modals} className="modal">
                         <div className="flex flex-col justify-center items-center text-white modal-box">
+                            <h1> Your appointment number is:</h1>
+                            <h1 className="underline"> {succData.aptid}</h1>
                             <PDFDownloadLink
                                 document={<PDFFile succData={succData} />}
                                 fileName="PaoloBanagloriosoAtEdisotLati_nga_pala.pdf"
@@ -305,14 +315,22 @@ function SetAppointment() {
                                     ) : (
                                         <button
                                             type="button"
-                                            className="btn btn-outline"
+                                            className="btn btn-outline mt-6"
                                         >
                                             Download
                                         </button>
                                     )
                                 }
                             </PDFDownloadLink>
-                            <div className="item-center modal-action"></div>
+                            <div className="item-center modal-action">
+                                <label style={{ verticalAlign: "middle" }}>
+                                    <b>
+                                        <br />
+                                        *** Appointment number is important.
+                                        Kindly note it ***
+                                    </b>
+                                </label>
+                            </div>
                         </div>
                     </dialog>
                     <dialog ref={modals1} className="modal">

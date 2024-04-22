@@ -22,7 +22,7 @@ function GuestLayout() {
                 <div className="flex flex-1 bg-gray-100">
                     {/* Sidebar */}
                     <div
-                        className={`flex flex-col w-64 bg-[#194F90] ${
+                        className={`md:flex flex-col w-64 bg-[#194F90] ${
                             isSidebarOpen ? "" : "hidden"
                         }`}
                     >
