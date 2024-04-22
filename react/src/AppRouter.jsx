@@ -17,6 +17,7 @@ import AdminLayout from "./Layouts/AdminLayout.jsx";
 import NotFound from "./Component/NotFound.jsx";
 import Feedback from "./Component/Feedback.jsx";
 import Feedbacks from "./Component/Admin/Feedbacks.jsx";
+import ManageAcc from "./Component/Admin/ManageAcc.jsx";
 
 const AppRouter = () => (
     <>
@@ -29,6 +30,14 @@ const AppRouter = () => (
                         element={
                             <ProtectedRoute>
                                 <Feedbacks />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="manage"
+                        element={
+                            <ProtectedRoute>
+                                <ManageAcc />
                             </ProtectedRoute>
                         }
                     />
@@ -68,12 +77,20 @@ const AppRouter = () => (
                             </ProtectedRoute>
                         }
                     />
-
                     <Route
                         path="feedbacks"
                         element={
                             <ProtectedRoute>
                                 <Feedbacks />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    <Route
+                        path="manage"
+                        element={
+                            <ProtectedRoute>
+                                <ManageAcc />
                             </ProtectedRoute>
                         }
                     />
