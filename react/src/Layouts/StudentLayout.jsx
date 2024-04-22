@@ -22,7 +22,7 @@ function StudentLayout() {
                 <div className="flex flex-1 bg-gray-100">
                     {/* Sidebar */}
                     <div
-                        className={`md:flex flex-col w-64 bg-[#194F90] ${
+                        className={`flex flex-col w-64 bg-[#194F90] ${
                             isSidebarOpen ? "" : "hidden"
                         }`}
                     >
@@ -98,6 +98,12 @@ function StudentLayout() {
                                     View Appointment
                                 </NavLink>
                             </nav>
+                            <NavLink
+                                to="/feedback"
+                                className="text-center mb-7 underline text-blue-200 "
+                            >
+                                Send Feedback
+                            </NavLink>
                         </div>
                     </div>
 
