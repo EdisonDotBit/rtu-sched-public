@@ -146,7 +146,6 @@ function StudentLayout() {
                                 </NavLink>
                             </div>
                         </div>
-                        {/* Main content */}
                         <div className="p-4 bg-white rounded-lg overflow-y-auto flex-1 w-auto xsm:w-screen sm:w-full md:m-4">
                             <Outlet />
                         </div>

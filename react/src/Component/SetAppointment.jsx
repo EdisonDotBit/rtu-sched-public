@@ -301,7 +301,7 @@ function SetAppointment() {
                     </div>
                     <dialog ref={modals} className="modal">
                         <div className="flex flex-col justify-center items-center text-white modal-box">
-                            <h1> Your appointment number is:</h1>
+                            <h2> Your appointment number is:</h2>
                             <h1 className="underline"> {succData.aptid}</h1>
                             <PDFDownloadLink
                                 document={<PDFFile succData={succData} />}
