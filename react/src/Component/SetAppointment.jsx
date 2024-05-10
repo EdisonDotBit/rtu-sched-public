@@ -9,6 +9,7 @@ import TimePicker from "./Subcomponent/TimePicker";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import PDFFile from "./PDFFile";
 import Loading from "./Subcomponent/Loading";
+import Accord from "../Component/Subcomponent/Asset/bg.jpg";
 
 function SetAppointment() {
     const [formData, setFormData] = useState({
@@ -108,7 +109,7 @@ function SetAppointment() {
                 <div className="carousel w-full touch-pan-y overflow-x-hidden">
                     <div className="carousel-item w-full h-full" id="basta">
                         <div className="w-full">
-                            <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto">
+                            <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto shadow-amber-100  shadow-lg border-x border-amber-200">
                                 <input
                                     type="radio"
                                     name="my-accordion-2"
@@ -137,7 +138,7 @@ function SetAppointment() {
                                     </button>
                                 </div>
                             </div>
-                            <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto w-full">
+                            <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto w-full shadow-amber-100  shadow-lg border-x border-amber-200">
                                 <input
                                     type="radio"
                                     name="my-accordion-2"
@@ -168,7 +169,7 @@ function SetAppointment() {
                                     </button>
                                 </div>
                             </div>
-                            <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto w-full">
+                            <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto w-full shadow-amber-100  shadow-lg border-x border-amber-200">
                                 <input
                                     type="radio"
                                     name="my-accordion-2"
@@ -206,7 +207,7 @@ function SetAppointment() {
                                     </button>
                                 </div>
                             </div>
-                            <div className="bg-transparent collapse collapse-arrow bg-base-200 h-full">
+                            <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto shadow-amber-100  shadow-lg border-x border-amber-200">
                                 <input
                                     type="radio"
                                     name="my-accordion-2"

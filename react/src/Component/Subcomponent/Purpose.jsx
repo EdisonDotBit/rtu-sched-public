@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Purpose = ({ formData, setFormData }) => {
     // State to hold the list of dropdowns
@@ -7,16 +7,27 @@ const Purpose = ({ formData, setFormData }) => {
     const [stringValue, setStringValue] = useState("");
 
     // Options for the dropdown
-    const options = [
-        "Select Purpose",
-        "Printing of Documents",
-        "ID Processing",
-        "Transcript of Records",
-        "Diploma",
-        "Dismissal",
-        "LOA",
-    ];
+    const [options, setOptions] = useState(["Select Purpose"]);
 
+    useEffect(() => {
+        if (formData.aptoffice === "ASD") {
+            setOptions([
+                "--Select Purpose--",
+                "Option A Purpose 1",
+                "Option A Purpose 2",
+                "Option A Purpose 3",
+            ]);
+        } else if (formData.aptoffice === "EWQ") {
+            setOptions([
+                "--Select Purpose--",
+                "Option B Purpose 1",
+                "Option B Purpose 2",
+                "Option B Purpose 3",
+            ]);
+        } else {
+            setOptions(["--Select Purpose--"]);
+        }
+    }, [formData.aptoffice]);
     // Function to add a new dropdown
     const addDropdown = () => {
         if (dropdowns.length < 3) {
@@ -47,7 +58,7 @@ const Purpose = ({ formData, setFormData }) => {
         setDropdowns(updatedDropdowns);
         const newStringValue = updatedDropdowns
             .map((dropdown) => dropdown.value || "")
-            .filter((value) => value !== "Select Purpose") // Exclude placeholder from the stored string
+            .filter((value) => value !== "--Select Purpose--") // Exclude placeholder from the stored string
             .join(", ");
         setFormData((prevFormData) => ({
             ...prevFormData,
