@@ -18,11 +18,11 @@ function StudentLayout() {
     }, []);
     return (
         <>
-            <div className="flex flex-col max-h-screen h-screen font-poppins overflow-x-hidden w-full">
+            <div className="flex flex-col max-h-screen min-h-screen font-poppins overflow-x-hidden w-full">
                 <div className="flex flex-1 bg-gray-100">
                     {/* Sidebar */}
                     <div
-                        className={`md:flex flex-col w-64 bg-[#194F90] ${
+                        className={`lg:flex flex-col w-64 bg-[#194F90] ${
                             isSidebarOpen ? "" : "hidden"
                         }`}
                     >
@@ -112,7 +112,7 @@ function StudentLayout() {
                         <div className="flex items-center justify-between h-16 bg-white border-b border-gray-200 xsm:w-screen md:w-full">
                             <div className="flex items-center px-4">
                                 <button
-                                    className="text-gray-500 focus:outline-none hover:text-[#123A69] md:hidden"
+                                    className="text-gray-500 focus:outline-none hover:text-[#123A69] lg:hidden"
                                     onClick={toggleSidebar}
                                 >
                                     <svg

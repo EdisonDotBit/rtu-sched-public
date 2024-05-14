@@ -102,11 +102,19 @@ function SetAppointment() {
     const openmodal1 = () => {
         modals1.current.showModal();
     };
+    const [step, setStep] = useState(1);
 
+    const nextStep = () => {
+        setStep(step + 1);
+    };
+
+    const prevStep = () => {
+        setStep(step - 1);
+    };
     return (
         <>
             <form>
-                <div className="carousel w-full touch-pan-y overflow-x-hidden">
+                {/* <div className="carousel w-full touch-pan-y overflow-x-hidden">
                     <div className="carousel-item w-full h-full" id="basta">
                         <div className="w-full">
                             <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto shadow-amber-100  shadow-lg border-x border-amber-200">
@@ -298,6 +306,222 @@ function SetAppointment() {
                                     Confirm
                                 </button>
                             </div>
+                        </div>
+                    </div> */}
+                <div className="w-full h-auto flex justify-center align">
+                    <div className="w-full md:w-4/5 h-full">
+                        <h2 className="text-2xl text-center font-bold mb-5">
+                            Set an Appointment
+                        </h2>
+                        {/* Progress Indicator */}
+                        <div className="mb-4">
+                            <div className="w-full bg-gray-300 rounded-full">
+                                <div
+                                    class=" p-0.5 text-center text-xs font-medium leading-none text-primary-100 rounded-md bg-amber-400"
+                                    style={{ width: `${step * 20}%` }}
+                                >
+                                    {step * 20}%
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Form Content */}
+                        <div className="space-y-4">
+                            {/* Step 1 */}
+                            {step === 1 && (
+                                <div className="step-content flex flex-col justify-center items-center w-full">
+                                    <h2 className="text-lg text-center font-semibold">
+                                        Step 1: Select Branch
+                                    </h2>
+                                    <h4>Click the box to select</h4>
+                                    <div className="w-full justify-center">
+                                        <SelectBranch
+                                            formData={formData}
+                                            setFormData={setFormData}
+                                        />
+                                    </div>
+                                    <div className="flex w-full justify-evenly">
+                                        <button
+                                            className=" bg-blue-200 hover:bg-blue-700 hover:text-white border-x-cyan-500 border rounded-lg inline-block px-4 py-2 text-sm font-medium text-gray-700  focus:relative"
+                                            onClick={nextStep}
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Step 2 */}
+                            {step === 2 && (
+                                <div className="step-content flex flex-col justify-center items-center w-full">
+                                    <h2 className="text-lg text-center font-semibold">
+                                        Step 2: Select Office
+                                    </h2>
+                                    <h4>Click the box to select</h4>
+                                    <div className="flex flex-col sm:flex-row justify-center items-center w-full">
+                                        <SelectOffice
+                                            formData={formData}
+                                            setFormData={setFormData}
+                                            office={office}
+                                            setOffice={setOffice}
+                                            setLimit={setLimit}
+                                        />
+                                    </div>
+                                    <div className="flex w-full justify-evenly mt-64">
+                                        <button
+                                            className=" bg-slate-200 border border-x-amber-300 rounded-lg inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
+                                            onClick={prevStep}
+                                        >
+                                            Previous
+                                        </button>
+                                        <button
+                                            className=" bg-blue-200 hover:bg-blue-700 hover:text-white border-x-cyan-500 borderrounded-lg  rounded-lg inline-block px-4 py-2 text-sm font-medium text-gray-700  focus:relative"
+                                            onClick={nextStep}
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Step 3 */}
+                            {step === 3 && (
+                                <div className="step-content flex flex-col justify-center items-center">
+                                    <h2 className="text-lg text-center font-semibold">
+                                        Step 3: Select Available Time and Date
+                                    </h2>
+                                    <div className="flex flex-col sm:flex-row justify-center items-center ">
+                                        <Calendar
+                                            formData={formData}
+                                            setFormData={setFormData}
+                                            limit={limit}
+                                            appointments={appointments}
+                                        />
+                                        <TimePicker
+                                            formData={formData}
+                                            setFormData={setFormData}
+                                            appointments={appointments}
+                                            limit={limit}
+                                        />
+                                    </div>
+                                    <div className="flex w-full justify-evenly">
+                                        <button
+                                            className=" bg-slate-200 border border-x-amber-300 rounded-lg inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
+                                            onClick={prevStep}
+                                        >
+                                            Previous
+                                        </button>
+                                        <button
+                                            className=" bg-slate-200 rounded-lg inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
+                                            onClick={nextStep}
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                            {step === 4 && (
+                                <div className="step-content flex flex-col justify-center items-center">
+                                    <h2 className="text-lg text-center font-semibold">
+                                        Step 4: Input Details
+                                    </h2>
+                                    <h4></h4>
+                                    <div className="w-full">
+                                        <InputDetails
+                                            formData={formData}
+                                            setFormData={setFormData}
+                                        />
+                                    </div>
+                                    <div className="flex w-full justify-evenly">
+                                        <button
+                                            className=" bg-slate-200 border border-x-amber-300 rounded-lg inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
+                                            onClick={prevStep}
+                                        >
+                                            Previous
+                                        </button>
+                                        <button
+                                            className="  rounded-lg inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
+                                            onClick={nextStep}
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Step 4 */}
+                            {step === 5 && (
+                                <div className="step-content flex flex-col justify-center items-center w-full">
+                                    <h2 className="text-lg text-center font-semibold">
+                                        Step 5: Confirm Details
+                                    </h2>
+
+                                    <b className=" -mt-12 w-full text-center">
+                                        <br />
+                                        <br />
+                                        *** Appointment number is important.
+                                        Kindly note it***
+                                    </b>
+
+                                    <div className="w-full lg:w-[647px]">
+                                        <Confirmation formData={formData} />
+                                        <div className="items-center w-full ml-auto mr-auto text-center text-[12px]">
+                                            <input
+                                                type="checkbox"
+                                                tabIndex={-1}
+                                                className="mr-2 accent-[#123A69] hover:accent-[#123A69]"
+                                                style={{
+                                                    verticalAlign: "middle",
+                                                }}
+                                                onChange={handleCheckboxChange}
+                                            />
+                                            <label
+                                                style={{
+                                                    verticalAlign: "middle",
+                                                }}
+                                            >
+                                                I confirm that the above
+                                                information is
+                                                <b> true and correct</b> and
+                                                <b>
+                                                    I consent Rizal
+                                                    Technological University{" "}
+                                                </b>
+                                                under the standards of Data
+                                                Protection and Privacy to
+                                                <b> collect and process </b>
+                                                the given data.
+                                            </label>
+
+                                            <label
+                                                style={{
+                                                    verticalAlign: "middle",
+                                                }}
+                                            ></label>
+                                        </div>
+                                    </div>
+                                    <div className="flex w-full justify-evenly">
+                                        <button
+                                            className=" bg-slate-200 border border-x-amber-300 rounded-lg inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
+                                            onClick={prevStep}
+                                        >
+                                            Previous
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className={`py-2 px-8 rounded-md text-white hover:text-white ${
+                                                isConfirmed
+                                                    ? "bg-[#194F90] hover:bg-[#123A69]"
+                                                    : "bg-gray-400 cursor-not-allowed"
+                                            } font-semibold`}
+                                            onClick={setApt}
+                                            disabled={!isConfirmed}
+                                        >
+                                            Confirm
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                     <dialog ref={modals} className="modal">

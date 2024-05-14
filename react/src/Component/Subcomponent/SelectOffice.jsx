@@ -12,7 +12,7 @@ function SelectOffice({ formData, setFormData, office, setOffice, setLimit }) {
     };
 
     return (
-        <div className="flex flex-wrap w-full">
+        <div className="flex flex-wrap w-full justify-center">
             {office.map((officeItem, index) => (
                 <div
                     key={index}

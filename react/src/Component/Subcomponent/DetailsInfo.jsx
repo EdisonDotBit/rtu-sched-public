@@ -203,7 +203,7 @@ function DetailsInfo({ aptData, appointments }) {
                 </button>
             </div>
             <dialog ref={modalRef1} className="modal">
-                <div className="modal-box border-cyan-400 bg-gray-100">
+                <div className="modal-box text-white bg-gray-800">
                     <h3 className="font-bold text-lg">Pick a date</h3>
 
                     <Calendar
@@ -236,7 +236,7 @@ function DetailsInfo({ aptData, appointments }) {
             </dialog>
 
             <dialog ref={modalRef2} className="modal">
-                <div className="modal-box">
+                <div className="modal-box text-white bg-gray-800">
                     <h3 className="font-bold text-lg">
                         Do you really really really want to delete this shit?
                     </h3>
