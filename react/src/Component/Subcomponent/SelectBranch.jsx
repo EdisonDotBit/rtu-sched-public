@@ -26,7 +26,7 @@ function SelectBranch({ formData, setFormData }) {
             {branches.map((branchItem, index) => (
                 <div
                     key={index}
-                    className={`p-6 border border-gray-300 rounded-md shadow-md transition-transform hover:scale-105 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-[380px] mx-2 my-2 cursor-pointer h-auto ${
+                    className={`p-6 border border-gray-300 rounded-md shadow-md transition-transform hover:scale-105 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-[340px] mx-2 my-2 cursor-pointer h-auto ${
                         formData.aptbranch === branchItem.bname
                             ? "bg-blue-500"
                             : ""
