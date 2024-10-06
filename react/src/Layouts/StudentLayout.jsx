@@ -43,13 +43,13 @@ function StudentLayout() {
                             />
                         </svg>
                     </button>
-                    <div className="flex items-center gap-3 text-xl">
+                    <div className="flex items-center gap-3">
                         <img
                             className="h-auto w-16"
                             src={Qwe}
                             alt="University Logo"
                         />
-                        <span className="font-bold text-[#194F90]">
+                        <span className="text-2xl font-bold text-[#194F90]">
                             ONLINE APPOINTMENT
                         </span>
                     </div>
@@ -92,26 +92,43 @@ function StudentLayout() {
                     <nav className="flex flex-col flex-1 overflow-y-auto">
                         <NavLink
                             to="/student/set-appointment"
-                            className={`flex items-center px-8 py-6 text-white hover:text-white hover:bg-[#123A69] ${
+                            className={`relative flex items-center px-8 py-6 text-white hover:text-white hover:bg-[#123A69] ${
                                 location.pathname === "/student/set-appointment"
                                     ? "bg-[#123A69]"
                                     : ""
                             }`}
                         >
+                            <span
+                                className={`absolute left-0 h-full w-1 bg-[#FEE000] ${
+                                    location.pathname ===
+                                    "/student/set-appointment"
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                }`}
+                            ></span>
                             Set Appointment
                         </NavLink>
                         <NavLink
                             to="/student/view-appointment"
-                            className={`flex items-center px-8 py-6 text-white hover:text-white hover:bg-[#123A69] ${
+                            className={`relative flex items-center px-8 py-6 text-white hover:bg-[#123A69] ${
                                 location.pathname ===
                                 "/student/view-appointment"
                                     ? "bg-[#123A69]"
                                     : ""
                             }`}
                         >
+                            <span
+                                className={`absolute left-0 h-full w-1 bg-[#FEE000] ${
+                                    location.pathname ===
+                                    "/student/view-appointment"
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                }`}
+                            ></span>
                             View Appointment
                         </NavLink>
                     </nav>
+
                     <NavLink
                         to="/feedback"
                         className="text-center mb-7 underline text-blue-200"
@@ -122,7 +139,7 @@ function StudentLayout() {
 
                 {/* Main Content Area */}
                 <div className="flex flex-col flex-1">
-                    <div className="p-4 bg-white rounded-lg flex-1 overflow-y-auto">
+                    <div className="p-10 bg-white rounded-lg flex-1 overflow-y-auto">
                         <Outlet />
                     </div>
                 </div>
