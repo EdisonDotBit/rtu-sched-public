@@ -114,13 +114,13 @@ function SetAppointment() {
     return (
         <>
             <form>
-                <div className="w-full h-auto flex justify-center align">
+                <div className="w-full h-auto flex justify-center align text-[#3c4043]">
                     <div className="w-full md:w-4/5 h-full">
                         <h2 className="text-2xl text-center font-bold mb-5">
                             Set an Appointment
                         </h2>
                         {/* Progress Indicator */}
-                        <div className="mb-4">
+                        <div className="mb-8">
                             <div className="w-full bg-gray-300 rounded-full">
                                 <div
                                     class=" p-0.5 text-center text-xs font-medium leading-none text-primary-100 rounded-md bg-amber-400"
@@ -139,7 +139,9 @@ function SetAppointment() {
                                     <h2 className="text-lg text-center font-semibold">
                                         Step 1: Select Branch
                                     </h2>
-                                    <h4>Click the box to select</h4>
+                                    <h4 className="font-light mb-4">
+                                        Click the box to select
+                                    </h4>
                                     <div className="w-full justify-center">
                                         <SelectBranch
                                             formData={formData}
@@ -148,7 +150,7 @@ function SetAppointment() {
                                     </div>
                                     <div className="flex w-full justify-evenly">
                                         <button
-                                            className=" bg-blue-200 hover:bg-blue-700 hover:text-white border-x-cyan-500 border rounded-lg inline-block px-4 py-2 text-sm font-medium text-gray-700  focus:relative"
+                                            className=" bg-[#194F90] hover:bg-[#123A69] text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
                                             onClick={nextStep}
                                         >
                                             Next
@@ -175,13 +177,13 @@ function SetAppointment() {
                                     </div>
                                     <div className="flex w-full justify-evenly mt-28">
                                         <button
-                                            className=" bg-slate-200 border border-x-amber-300 rounded-lg inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
+                                            className=" bg-red-700 hover:bg-red-900 text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
                                             onClick={prevStep}
                                         >
                                             Previous
                                         </button>
                                         <button
-                                            className=" bg-blue-200 hover:bg-blue-700 hover:text-white border-x-cyan-500 borderrounded-lg  rounded-lg inline-block px-4 py-2 text-sm font-medium text-gray-700  focus:relative"
+                                            className=" bg-[#194F90] hover:bg-[#123A69] text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
                                             onClick={nextStep}
                                         >
                                             Next
@@ -212,13 +214,13 @@ function SetAppointment() {
                                     </div>
                                     <div className="flex w-full justify-evenly">
                                         <button
-                                            className=" bg-slate-200 border border-x-amber-300 rounded-lg inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
+                                            className=" bg-red-700 hover:bg-red-900 text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
                                             onClick={prevStep}
                                         >
                                             Previous
                                         </button>
                                         <button
-                                            className=" bg-slate-200 rounded-lg inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
+                                            className=" bg-[#194F90] hover:bg-[#123A69] text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
                                             onClick={nextStep}
                                         >
                                             Next
@@ -336,7 +338,7 @@ function SetAppointment() {
                             <h1 className="underline"> {succData.aptid}</h1>
                             <PDFDownloadLink
                                 document={<PDFFile succData={succData} />}
-                                fileName="PaoloBanagloriosoAtEdisotLati_nga_pala.pdf"
+                                fileName="RTU-Appointment-Receipt.pdf"
                             >
                                 {({ loading }) =>
                                     loading ? (
