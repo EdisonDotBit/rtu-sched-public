@@ -52,7 +52,7 @@ function StudentLayout() {
                             </div>
                             <div className="flex items-center pr-4">
                                 <NavLink to="../guest">
-                                    <button className=" container flex items-center text-gray-500 hover:text-[#123A69] focus:outline-none">
+                                    <button className=" container flex items-center text-gray-500 hover:text-[#123A69] focus:outline-none xsm:text-[10px]">
                                         Change to Guest
                                     </button>
                                 </NavLink>
