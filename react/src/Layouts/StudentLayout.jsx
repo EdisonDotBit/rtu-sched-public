@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
-import Qwe from "../Component/Subcomponent/Asset/rtu-logo.png";
+import Qwe from "../Component/Subcomponent/Asset/logo.png";
 import footer from "../Component/Subcomponent/Asset/footer.png";
 
 function StudentLayout() {
@@ -24,7 +24,7 @@ function StudentLayout() {
         <>
             <div className="flex flex-col max-h-screen min-h-screen font-roboto overflow-x-hidden w-full">
                 {/* Header */}
-                <div className="flex items-center justify-between h-16 bg-white border-b border-gray-200 w-full">
+                <div className="flex items-center justify-between h-[5rem] min-h-[5rem] max-h-[5rem] bg-white border-b border-gray-200 w-full px-2">
                     <div className="flex items-center px-4">
                         <button
                             className="text-gray-500 focus:outline-none hover:text-[#123A69] lg:hidden"
@@ -45,14 +45,18 @@ function StudentLayout() {
                                 />
                             </svg>
                         </button>
+                        <div className="flex items-center gap-3 text-xl">
+                            <img
+                                className="h-auto xsm:w-[60px] md:w-[60px]"
+                                src={Qwe}
+                                alt="University Logo"
+                            />
+                            <a className=" font-bold text-[#194F90]">
+                                ONLINE APPOINTMENT
+                            </a>
+                        </div>
                     </div>
-                    <div>
-                        <img
-                            className="xsm:w-[150px] md:w-[200px]"
-                            src={Qwe}
-                            alt="University Logo"
-                        />
-                    </div>
+
                     <div className="flex items-center pr-4">
                         <NavLink to="../guest">
                             <button className="container flex items-center text-gray-500 hover:text-[#123A69] focus:outline-none">
@@ -69,7 +73,7 @@ function StudentLayout() {
                             isSidebarOpen ? "" : "hidden"
                         }`}
                     >
-                        <div className="flex items-center justify-center gap-2 h-[100px] bg-[#194F90] text-white">
+                        <div className="flex items-center gap-2 h-[100px] bg-[#194F90] text-white px-6 py-6">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
@@ -84,7 +88,7 @@ function StudentLayout() {
                                     d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
                                 />
                             </svg>
-                            <span className="text-white font-bold uppercase mr-2">
+                            <span className="text-white font-bold uppercase mr-2 ">
                                 STUDENT
                             </span>
                         </div>
@@ -92,7 +96,7 @@ function StudentLayout() {
                             <nav className="flex-1 bg-[#194F90]">
                                 <NavLink
                                     to="/student/set-appointment"
-                                    className={`flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69] xsm:text-xs sm:text-sm md:text-base ${
+                                    className={`flex items-center px-8 py-6 text-white hover:text-white hover:bg-[#123A69] xsm:text-xs sm:text-sm md:text-base ${
                                         location.pathname ===
                                         "/student/set-appointment"
                                             ? "bg-[#123A69]"
@@ -117,7 +121,7 @@ function StudentLayout() {
                                 </NavLink>
                                 <NavLink
                                     to="/student/view-appointment"
-                                    className={`flex items-center px-4 py-6 text-white hover:text-white hover:bg-[#123A69] xsm:text-xs sm:text-sm md:text-base ${
+                                    className={`flex items-center px-8 py-6 text-white hover:text-white hover:bg-[#123A69] xsm:text-xs sm:text-sm md:text-base ${
                                         location.pathname ===
                                         "/student/view-appointment"
                                             ? "bg-[#123A69]"
@@ -158,7 +162,7 @@ function StudentLayout() {
                     </div>
                 </div>
 
-                <footer className="footer flex text-center justify-center text-sm items-center h-9 min-h-9 border-t w-screen px-6 py-1">
+                <footer className="font-light footer flex text-center justify-center text-sm items-center h-9 min-h-9 border-t w-screen px-6 py-1 text-[#3c4043]">
                     <p>
                         Copyright © 2024 - All right reserved by Rizal
                         Technological University
