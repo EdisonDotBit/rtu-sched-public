@@ -22,11 +22,11 @@ function SelectBranch({ formData, setFormData }) {
         }));
     };
     return (
-        <div className="flex flex-wrap items-center justify-center h-{100} mb-5">
+        <div className="flex flex-wrap items-center justify-center h-{100} mb-5 gap-4">
             {branches.map((branchItem, index) => (
                 <div
                     key={index}
-                    className={`p-6 border border-gray-300 rounded-md shadow-md transition-transform hover:scale-105 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/4 mx-2 my-2 cursor-pointer ${
+                    className={`p-6 border border-gray-300 rounded-md shadow-md transition-transform hover:scale-105 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-[380px] mx-2 my-2 cursor-pointer h-auto ${
                         formData.aptbranch === branchItem.bname
                             ? "bg-blue-500"
                             : ""
