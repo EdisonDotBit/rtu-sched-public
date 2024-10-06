@@ -165,7 +165,9 @@ function SetAppointment() {
                                     <h2 className="text-lg text-center font-semibold">
                                         Step 2: Select Office
                                     </h2>
-                                    <h4>Click the box to select</h4>
+                                    <h4 className="font-light mb-4">
+                                        Click the box to select
+                                    </h4>
                                     <div className="flex flex-col sm:flex-row justify-center items-center w-full">
                                         <SelectOffice
                                             formData={formData}
@@ -195,7 +197,7 @@ function SetAppointment() {
                             {/* Step 3 */}
                             {step === 3 && (
                                 <div className="step-content flex flex-col justify-center items-center">
-                                    <h2 className="text-lg text-center font-semibold">
+                                    <h2 className="text-lg text-center font-semibold mb-4">
                                         Step 3: Select Available Time and Date
                                     </h2>
                                     <div className="flex flex-col sm:flex-row justify-center items-center ">
