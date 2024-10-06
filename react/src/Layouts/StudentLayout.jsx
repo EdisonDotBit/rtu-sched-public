@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import Qwe from "../Component/Subcomponent/Asset/rtu-logo.png";
 import footer from "../Component/Subcomponent/Asset/footer.png";
+
 function StudentLayout() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const modals = useRef(null);
@@ -10,15 +11,57 @@ function StudentLayout() {
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
+
     const openmodal = () => {
         modals.current.showModal();
     };
+
     useEffect(() => {
         openmodal();
     }, []);
+
     return (
         <>
             <div className="flex flex-col max-h-screen min-h-screen font-roboto overflow-x-hidden w-full">
+                {/* Header */}
+                <div className="flex items-center justify-between h-16 bg-white border-b border-gray-200 w-full">
+                    <div className="flex items-center px-4">
+                        <button
+                            className="text-gray-500 focus:outline-none hover:text-[#123A69] lg:hidden"
+                            onClick={toggleSidebar}
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-6 w-6"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M4 6h16M4 12h16M4 18h16"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                    <div>
+                        <img
+                            className="xsm:w-[150px] md:w-[200px]"
+                            src={Qwe}
+                            alt="University Logo"
+                        />
+                    </div>
+                    <div className="flex items-center pr-4">
+                        <NavLink to="../guest">
+                            <button className="container flex items-center text-gray-500 hover:text-[#123A69] focus:outline-none">
+                                Change to Guest
+                            </button>
+                        </NavLink>
+                    </div>
+                </div>
+
                 <div className="flex flex-1 bg-gray-100">
                     {/* Sidebar */}
                     <div
@@ -100,63 +143,28 @@ function StudentLayout() {
                             </nav>
                             <NavLink
                                 to="/feedback"
-                                className="text-center mb-7 underline text-blue-200 "
+                                className="text-center mb-7 underline text-blue-200"
                             >
                                 Send Feedback
                             </NavLink>
                         </div>
                     </div>
 
-                    {/* Header */}
+                    {/* Main Content Area */}
                     <div className="flex flex-col flex-1">
-                        <div className="flex items-center justify-between h-16 bg-white border-b border-gray-200 xsm:w-screen md:w-full">
-                            <div className="flex items-center px-4">
-                                <button
-                                    className="text-gray-500 focus:outline-none hover:text-[#123A69] lg:hidden"
-                                    onClick={toggleSidebar}
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-6 w-6"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M4 6h16M4 12h16M4 18h16"
-                                        />
-                                    </svg>
-                                </button>
-                            </div>
-                            <div>
-                                <img
-                                    className="xsm:w-[150px] md:w-[200px]"
-                                    src={Qwe}
-                                    alt=""
-                                />
-                            </div>
-                            <div className="flex items-center pr-4">
-                                <NavLink to="../guest">
-                                    <button className=" container flex items-center text-gray-500 hover:text-[#123A69] focus:outline-none">
-                                        Change to Guest
-                                    </button>
-                                </NavLink>
-                            </div>
-                        </div>
                         <div className="p-4 bg-white rounded-lg overflow-y-scroll flex-1 w-auto xsm:w-screen sm:w-full md:m-4">
                             <Outlet />
                         </div>
                     </div>
                 </div>
+
                 <footer className="footer flex text-center justify-center text-sm items-center h-9 min-h-9 border-t w-screen px-6 py-1">
                     <p>
                         Copyright © 2024 - All right reserved by Rizal
                         Technological University
                     </p>
                 </footer>
+
                 <dialog ref={modals} className="modal">
                     <div className="flex flex-col justify-center items-center text-white modal-box">
                         <h3 className="font-bold text-lg">
