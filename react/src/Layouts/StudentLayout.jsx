@@ -20,7 +20,7 @@ function StudentLayout() {
     }, []);
 
     return (
-        <div className="flex flex-col h-screen overflow-hidden">
+        <div className="flex flex-col h-screen overflow-hidden font-roboto">
             {/* Header */}
             <div className="flex items-center justify-between h-20 bg-white border-b border-gray-200 px-2">
                 <div className="flex items-center px-4">
