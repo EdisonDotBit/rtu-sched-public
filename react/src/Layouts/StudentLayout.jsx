@@ -94,7 +94,7 @@ function StudentLayout() {
                             to="/student/set-appointment"
                             className={`flex items-center px-8 py-6 text-white hover:text-white hover:bg-[#123A69] ${
                                 location.pathname === "/student/set-appointment"
-                                    ? "bg-[#123A69]"
+                                    ? "bg-[#123A69] border-l-[#FEE000] border-l-4"
                                     : ""
                             }`}
                         >
@@ -105,7 +105,7 @@ function StudentLayout() {
                             className={`flex items-center px-8 py-6 text-white hover:text-white hover:bg-[#123A69] ${
                                 location.pathname ===
                                 "/student/view-appointment"
-                                    ? "bg-[#123A69]"
+                                    ? "bg-[#123A69] border-l-[#FEE000] border-l-4"
                                     : ""
                             }`}
                         >
