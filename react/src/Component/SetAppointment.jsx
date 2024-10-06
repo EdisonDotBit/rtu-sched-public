@@ -367,7 +367,7 @@ function SetAppointment() {
                                             setLimit={setLimit}
                                         />
                                     </div>
-                                    <div className="flex w-full justify-evenly mt-64">
+                                    <div className="flex w-full justify-evenly mt-28">
                                         <button
                                             className=" bg-slate-200 border border-x-amber-300 rounded-lg inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
                                             onClick={prevStep}
