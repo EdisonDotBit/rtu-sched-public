@@ -37,7 +37,11 @@ Route::get('office/find/{offabbr}', 'App\Http\Controllers\Offices@findAbbr');
 Route::post('admin/add', 'App\Http\Controllers\Admins@create');
 Route::get('admin/all', 'App\Http\Controllers\Admins@index');
 Route::get('admin/info/{admid}', 'App\Http\Controllers\Admins@get');
+Route::get('admin/informa/{admuser}', 'App\Http\Controllers\Admins@find');
 Route::delete('admin/delete/{admid}', 'App\Http\Controllers\Admins@delete');
 Route::put('admin/edit/{admid}', 'App\Http\Controllers\Admins@edit');
 
 Route::post('admin/login', 'App\Http\Controllers\Admins@login');
+
+Route::post('feedback', 'App\Http\Controllers\Feedback@add');
+Route::get('feedbacks', 'App\Http\Controllers\Feedback@all');

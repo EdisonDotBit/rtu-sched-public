@@ -1,11 +1,37 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-function EditAccount({ selectedaccid }) {
+function ManageAcc({}) {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const [formData, setFormData] = useState({});
     const [showPassword, setShowPassword] = useState(false);
 
+    useEffect(
+        () => async (e) => {
+            const items = JSON.parse(localStorage.getItem("user"));
+            if (items) {
+                try {
+                    console.log(items);
+                    const getRes = await axios.get(
+                        `${apiBaseUrl}/api/admin/informa/${items}`
+                    );
+                    const responseData = getRes.data.data; // Corrected response data access
+                    setFormData({
+                        admuser: responseData.admuser,
+                        admpass: responseData.admpass,
+                        admname: responseData.admname,
+                        admempnum: responseData.admempnum,
+                        admid: responseData.admid,
+                    });
+                    console.log(responseData);
+                } catch (error) {
+                    console.error("Error fetching office data:", error); // Log the error if there's an issue with the request
+                    // Handle the error gracefully, such as showing an error message to the user
+                }
+            }
+        },
+        []
+    );
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevState) => ({
@@ -19,45 +45,20 @@ function EditAccount({ selectedaccid }) {
 
         try {
             const res = await axios.put(
-                `${apiBaseUrl}/api/admin/edit/${selectedaccid}`,
+                `${apiBaseUrl}/api/admin/edit/${formData.admid}`,
                 formData
             );
 
             if (res.status === 200) {
                 console.log(res.data.message); // Log success message
-                alert("Admin edited successfully.");
+                alert("Your account edited successfully.");
             }
         } catch (error) {
             alert(
-                "Error editing admin. Please try again. Please double check the details"
+                "Error editing account. Please try again. Please double check the details"
             ); // Notify the user of the error
         }
     };
-
-    useEffect(() => {
-        const getData = async () => {
-            try {
-                const getRes = await axios.get(
-                    `${apiBaseUrl}/api/admin/info/${selectedaccid}`
-                );
-                const responseData = getRes.data.data; // Corrected response data access
-                setFormData({
-                    admuser: responseData.admuser,
-                    admpass: responseData.admpass,
-                    admname: responseData.admname,
-                    admempnum: responseData.admempnum,
-                });
-            } catch (error) {
-                console.error("Error fetching office data:", error); // Log the error if there's an issue with the request
-                // Handle the error gracefully, such as showing an error message to the user
-            }
-        };
-
-        // Ensure selectedaccid has a value before fetching data
-        if (selectedaccid) {
-            getData();
-        }
-    }, [selectedaccid]); // Add selectedaccid as a dependency
 
     return (
         <>
@@ -68,7 +69,7 @@ function EditAccount({ selectedaccid }) {
                             Edit Account Form
                         </h1>
                         <h1 className="flex justify-center text-xl text-black">
-                            Update Account Details {selectedaccid}
+                            Update Account Details
                         </h1>
                     </div>
                     <div className="flex flex-col justify-center">
@@ -88,7 +89,7 @@ function EditAccount({ selectedaccid }) {
                                             className="grow"
                                         />
                                     </label>
-                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">
+                                    <label className="m-3 focus:border-transparent input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">
                                         Employee Number:
                                         <input
                                             name="admempnum"
@@ -96,7 +97,8 @@ function EditAccount({ selectedaccid }) {
                                             onChange={handleChange}
                                             type="text"
                                             placeholder="SA-D-B0-1"
-                                            className="grow"
+                                            className="grow focus:border-blue-400 text-gray-400"
+                                            disabled
                                         />
                                     </label>
                                     <label className="m-3 focus:border-transparent input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">
@@ -136,17 +138,12 @@ function EditAccount({ selectedaccid }) {
                                     </label>
 
                                     <div className="flex ">
-                                        <a href="#main">
-                                            <button className="btn btn-square bg-transparent text-black mr-5">
-                                                Back
-                                            </button>
-                                        </a>
                                         <button
                                             type="button"
                                             className="btn btn-outline bg-yellow-500 text-black"
                                             onClick={editAcc}
                                         >
-                                            Edit Account
+                                            Save
                                         </button>
                                     </div>
                                 </div>
@@ -159,4 +156,4 @@ function EditAccount({ selectedaccid }) {
     );
 }
 
-export default EditAccount;
+export default ManageAcc;

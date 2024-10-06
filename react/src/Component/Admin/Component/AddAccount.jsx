@@ -30,13 +30,10 @@ function AddAccount() {
             );
 
             if (res.status === 200) {
-                console.log(res.data.message); // Log success message
-                alert("Successfully created admin account.");
+                alert(res.data.messages);
             }
         } catch (error) {
-            alert(
-                "Error creating admin Account . Please check the madafaking fields."
-            );
+            alert(error.response.data.error);
         }
     };
 

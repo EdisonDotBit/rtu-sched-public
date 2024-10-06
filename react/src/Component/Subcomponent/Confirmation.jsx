@@ -12,7 +12,7 @@ function Confirmation({ formData, setFormData }) {
                     <div className="flow-root rounded-lg border border-gray-100 py-3 shadow-sm mb-4">
                         <dl className="my-3 divide-y divide-gray-100 text-sm">
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-1 sm:gap-4">
-                                <dt className="font-bold text-[#EAB800] text-[16px]">
+                                <dt className="font-bold text-[#EAB800] text-[16px] text-center md:text-left">
                                     <h1>PERSONAL INFORMATION</h1>
                                 </dt>
                             </div>
@@ -53,7 +53,7 @@ function Confirmation({ formData, setFormData }) {
                     <div className="flow-root rounded-lg border border-gray-100 py-3 shadow-sm mb-4 ">
                         <dl className="-my-3 divide-y divide-gray-100 text-sm">
                             <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-1 sm:gap-4">
-                                <dt className="font-bold text-[#EAB800] text-[16px]">
+                                <dt className="font-bold text-[#EAB800] text-[16px] text-center md:text-left">
                                     <h1>APPOINTMENT INFORMATION</h1>
                                 </dt>
                             </div>
@@ -98,23 +98,6 @@ function Confirmation({ formData, setFormData }) {
                                 </dd>
                             </div>
                         </dl>
-                    </div>
-                    <div className="items-center w-[85%] ml-auto mr-auto text-center text-[12px]">
-                        <input
-                            type="checkbox"
-                            tabIndex={-1}
-                            className="mr-2 accent-[#123A69] hover:accent-[#123A69]"
-                            style={{ verticalAlign: "middle" }}
-                        />
-                        <label style={{ verticalAlign: "middle" }}>
-                            I confirm that the above information is
-                            <b> true and correct</b> and
-                            <b> I consent Rizal Technological University </b>
-                            under the standards of Data Protection and Privacy
-                            to
-                            <b> collect and process </b>
-                            the given data.
-                        </label>
                     </div>
                 </div>
             </div>

@@ -16,6 +16,15 @@ class Admins extends Controller
 
     public function create(Request $request)
     {
+        $existingAdmin = Admin::where('admuser', $request->input('admuser'))->first();
+
+        if ($existingAdmin) {
+            return response()->json([
+                'status' => 400,
+                'error' => 'Admin with the same username already exists.',
+            ], 400);
+        }
+
         $adm = new Admin();
         $adm->admuser = $request->input('admuser');
         $adm->admpass = $request->input('admpass');
@@ -26,7 +35,7 @@ class Admins extends Controller
             $adm->save();
             return response()->json([
                 'status' => 200,
-                'messages' => 'successfully created admin',
+                'messages' => 'Successfully created admin.',
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -38,47 +47,47 @@ class Admins extends Controller
 
     public function get(int $admid)
     {
-        $off = Admin::find($admid);
+        $adm = Admin::find($admid);
 
-        if (!$off) {
+        if (!$adm) {
             return response()->json([
                 'status' => 404,
-                'message' => 'Appointment not found',
+                'message' => 'Admin not found',
             ], 404);
         }
 
         return response()->json([
             'status' => 200,
-            'data' => $off,
+            'data' => $adm,
         ]);
     }
     public function delete($admid)
     {
-        $off = Admin::find($admid);
-        $off->delete();
+        $adm = Admin::find($admid);
+        $adm->delete();
         return response()->json([
             'status' => 200,
-            'messages' => 'successfully deleted appointment',
+            'messages' => 'successfully deleted admin',
         ]);
     }
 
     public function edit(Request $request, $offid)
     {
-        $off = Admin::find($offid);
-        $off->admuser = $request->input('admuser');
-        $off->admpass = $request->input('admpass');
-        $off->admname = $request->input('admname');
-        $off->admempnum = $request->input('admempnum');
+        $adm = Admin::find($offid);
+        $adm->admuser = $request->input('admuser');
+        $adm->admpass = $request->input('admpass');
+        $adm->admname = $request->input('admname');
+        $adm->admempnum = $request->input('admempnum');
         try {
-            $off->save();
+            $adm->save();
             return response()->json([
                 'status' => 200,
-                'messages' => 'successfully edited an office',
+                'messages' => 'successfully edited an Admin',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 400,
-                'error' => 'Failed to edit an Office. Please ensure all fields are filled correctly.',
+                'error' => 'Failed to edit an Admin. Please ensure all fields are filled correctly.',
             ], 400);
         }
     }
@@ -103,5 +112,22 @@ class Admins extends Controller
             'status' => 401,
             'error' => 'Unauthorized',
         ], 401);
+    }
+
+    public function find($admuser)
+    {
+        $adm = Admin::where('admuser', $admuser)->first();
+
+        if (!$adm) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Admin not found',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'data' => $adm,
+        ]);
     }
 }

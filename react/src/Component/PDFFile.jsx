@@ -62,6 +62,8 @@ const styles = StyleSheet.create({
     image: {
         marginVertical: 15,
         marginHorizontal: 100,
+        width: 200,
+        height: 40,
     },
 
     pageNumber: {
@@ -72,6 +74,7 @@ const styles = StyleSheet.create({
         right: 0,
         textAlign: "center",
         color: "grey",
+        fontStyle: "italic",
     },
 
     column: {
@@ -86,95 +89,175 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         gap: 60,
     },
+    bottomParagraph: {
+        marginTop: 24,
+        borderTopWidth: 1,
+        borderTopColor: "black",
+        paddingTop: 8,
+    },
+    aaragraph: {
+        marginTop: 10,
+        borderTopWidth: 1,
+        borderTopColor: "black",
+        paddingTop: 8,
+    },
+
+    bottomText: {
+        fontSize: 10,
+        textAlign: "center",
+    },
+    bulletList: {
+        marginLeft: 20,
+    },
+
+    bulletItem: {
+        fontSize: 10,
+        marginBottom: 4,
+    },
+
+    link: {
+        textDecoration: "underline",
+        fontWeight: "bold",
+        fontSize: 12,
+        marginLeft: 20,
+    },
 });
 
 const PDFFile = ({ succData }) => {
     return (
         <Document>
             <Page style={styles.body}>
-                <Image style={styles.image} src={Qwe} />
-                <Text style={styles.title} fixed>
-                    RTU Appointment Summary
-                </Text>
-
-                <Text style={styles.primaryText}>
-                    Your Reference Number is: {succData.aptid}
-                </Text>
-
-                <Text style={styles.primaryText}>
-                    Print a copy of this page.
-                </Text>
-
-                <Text
-                    style={[
-                        styles.secondaryText,
-                        {
-                            marginTop: 24,
-                            textDecoration: "underline",
-                            fontWeight: "heavy",
-                        },
-                    ]}
-                >
-                    Personal Information
-                </Text>
-
-                <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                    ID Number / Type: {succData.aptstudnum}
-                </Text>
-
-                <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                    Full Name: {succData.aptname}
-                </Text>
-
-                <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                    Contact Number: {succData.aptpnumber}
-                </Text>
-
-                <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                    Email Address: {succData.aptemail}
-                </Text>
-
-                <Text
-                    style={[
-                        styles.secondaryText,
-                        {
-                            marginTop: 24,
-                            textDecoration: "underline",
-                            fontWeight: "heavy",
-                        },
-                    ]}
-                >
-                    Appointment Information
-                </Text>
-
-                <View style={styles.column}>
-                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                        Branch: {succData.aptbranch}
-                    </Text>
-
-                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                        Office: {succData.aptoffice}
-                    </Text>
-
-                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                        Purpose: {succData.aptpurpose}
-                    </Text>
-
-                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                        Date: {succData.aptdate}
-                    </Text>
-                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                        Time: {succData.apttime}
-                    </Text>
+                <View style={[styles.row, { justifyContent: "center" }]}>
+                    <Image style={{ width: 200, height: 40 }} src={Qwe} />
                 </View>
 
-                <Text
-                    style={styles.pageNumber}
-                    render={({ pageNumber, totalPages }) =>
-                        `${pageNumber} / ${totalPages}`
-                    }
-                    fixed
-                />
+                <View style={[styles.row, { justifyContent: "center" }]}>
+                    <Text style={styles.title} fixed>
+                        RTU Appointment Slip
+                    </Text>
+                </View>
+                <View style={styles.aaragraph}>
+                    <Text style={styles.primaryText}>
+                        Your Appointment Number is: {succData.aptid}
+                    </Text>
+
+                    <Text style={styles.primaryText}>
+                        Print a copy of this page.
+                    </Text>
+
+                    <Text
+                        style={[
+                            styles.secondaryText,
+                            {
+                                marginTop: 24,
+                                textDecoration: "underline",
+                                fontWeight: "heavy",
+                            },
+                        ]}
+                    >
+                        Personal Information
+                    </Text>
+
+                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
+                        ID Number / Type: {succData.aptstudnum}
+                    </Text>
+
+                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
+                        Full Name: {succData.aptname}
+                    </Text>
+
+                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
+                        Contact Number: {succData.aptpnumber}
+                    </Text>
+
+                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
+                        Email Address: {succData.aptemail}
+                    </Text>
+
+                    <Text
+                        style={[
+                            styles.secondaryText,
+                            {
+                                marginTop: 24,
+                                textDecoration: "underline",
+                                fontWeight: "heavy",
+                            },
+                        ]}
+                    >
+                        Appointment Information
+                    </Text>
+
+                    <View style={styles.column}>
+                        <Text
+                            style={[
+                                styles.primaryText,
+                                { fontWeight: "heavy" },
+                            ]}
+                        >
+                            Branch: {succData.aptbranch}
+                        </Text>
+
+                        <Text
+                            style={[
+                                styles.primaryText,
+                                { fontWeight: "heavy" },
+                            ]}
+                        >
+                            Office: {succData.aptoffice}
+                        </Text>
+
+                        <Text
+                            style={[
+                                styles.primaryText,
+                                { fontWeight: "heavy" },
+                            ]}
+                        >
+                            Purpose: {succData.aptpurpose}
+                        </Text>
+
+                        <Text
+                            style={[
+                                styles.primaryText,
+                                { fontWeight: "heavy" },
+                            ]}
+                        >
+                            Date: {succData.aptdate}
+                        </Text>
+                        <Text
+                            style={[
+                                styles.primaryText,
+                                { fontWeight: "heavy" },
+                            ]}
+                        >
+                            Time: {succData.apttime}
+                        </Text>
+                    </View>
+                    <View style={styles.bottomParagraph}>
+                        <Text style={styles.primaryText}>Reminder:</Text>
+                        <Text style={styles.primaryText}></Text>
+                        <View style={styles.bulletList}>
+                            <Text style={styles.bulletItem}>
+                                • Bring your specified ID
+                            </Text>
+                            <Text style={styles.bulletItem}></Text>
+                            <Text style={styles.bulletItem}>
+                                • If you miss the appointment, you have three
+                                (3) days to reschedule before it automatically
+                                deleted.
+                            </Text>
+                            <Text style={styles.bulletItem}></Text>
+                            <Text style={styles.bulletItem}>
+                                • You may submit a feedback at:
+                            </Text>
+                            <Text style={styles.link}>
+                                link to feedback.comasdasdasd
+                            </Text>
+                        </View>
+                    </View>
+                </View>
+                <Text style={[styles.pageNumber, { fontStyle: "italic" }]}>
+                    "Forever true to the gold and blue~"
+                </Text>
             </Page>
         </Document>
     );

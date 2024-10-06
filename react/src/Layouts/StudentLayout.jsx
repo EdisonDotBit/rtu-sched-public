@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import Qwe from "../Component/Subcomponent/Asset/rtu-logo.png";
-
+import footer from "../Component/Subcomponent/Asset/footer.png";
 function StudentLayout() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const modals = useRef(null);
@@ -18,11 +18,11 @@ function StudentLayout() {
     }, []);
     return (
         <>
-            <div className="flex flex-col h-screen font-poppins overflow-x-hidden w-full">
+            <div className="flex flex-col max-h-screen min-h-screen font-poppins overflow-x-hidden w-full">
                 <div className="flex flex-1 bg-gray-100">
                     {/* Sidebar */}
                     <div
-                        className={`md:flex flex-col w-64 bg-[#194F90] ${
+                        className={`lg:flex flex-col w-64 bg-[#194F90] ${
                             isSidebarOpen ? "" : "hidden"
                         }`}
                     >
@@ -98,6 +98,12 @@ function StudentLayout() {
                                     View Appointment
                                 </NavLink>
                             </nav>
+                            <NavLink
+                                to="/feedback"
+                                className="text-center mb-7 underline text-blue-200 "
+                            >
+                                Send Feedback
+                            </NavLink>
                         </div>
                     </div>
 
@@ -106,7 +112,7 @@ function StudentLayout() {
                         <div className="flex items-center justify-between h-16 bg-white border-b border-gray-200 xsm:w-screen md:w-full">
                             <div className="flex items-center px-4">
                                 <button
-                                    className="text-gray-500 focus:outline-none hover:text-[#123A69] md:hidden"
+                                    className="text-gray-500 focus:outline-none hover:text-[#123A69] lg:hidden"
                                     onClick={toggleSidebar}
                                 >
                                     <svg
@@ -140,13 +146,12 @@ function StudentLayout() {
                                 </NavLink>
                             </div>
                         </div>
-                        {/* Main content */}
-                        <div className="p-4 bg-white rounded-lg overflow-y-auto flex-1 w-auto xsm:w-screen sm:w-full md:m-4">
+                        <div className="p-4 bg-white rounded-lg overflow-y-scroll flex-1 w-auto xsm:w-screen sm:w-full md:m-4">
                             <Outlet />
                         </div>
                     </div>
                 </div>
-                <footer className="footer flex text-center justify-center text-sm items-center h-12 border-t w-screen px-6 py-1">
+                <footer className="footer flex text-center justify-center text-sm items-center h-9 min-h-9 border-t w-screen px-6 py-1">
                     <p>
                         Copyright © 2024 - All right reserved by Rizal
                         Technological University
@@ -157,7 +162,9 @@ function StudentLayout() {
                         <h3 className="font-bold text-lg">
                             Welcome to Rizal Technological University!
                         </h3>
-                        <p>*For New Student and Alumni, please select Guest</p>
+                        <p>
+                            **For New Student and Alumni, please select Guest**
+                        </p>
                         <div className="item-center modal-action">
                             <NavLink to="../guest">
                                 <button

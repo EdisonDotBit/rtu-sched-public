@@ -98,6 +98,12 @@ function GuestLayout() {
                                     View Appointment
                                 </NavLink>
                             </nav>
+                            <NavLink
+                                to="/feedback"
+                                className="text-center mb-7 underline text-blue-200 "
+                            >
+                                Send Feedback
+                            </NavLink>
                         </div>
                     </div>
 
@@ -153,7 +159,7 @@ function GuestLayout() {
                     </p>
                 </footer>
                 <dialog ref={modals} className="modal">
-                    <div className="flex flex-col justify-center items-center text-white modal-box">
+                    <div className="flex flex-col justify-center items-center text-white modal-box bg-slate-600">
                         <h3 className="font-bold text-lg">
                             What type of human are you in RTU?
                         </h3>

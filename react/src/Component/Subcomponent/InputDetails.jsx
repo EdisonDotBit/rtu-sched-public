@@ -32,8 +32,9 @@ function InputDetails({ formData, setFormData }) {
                             <div className="flex flex-col justify-center w-full items-center">
                                 <div className="flex flex-col justify-center items-center xsm:w-full sm:w-3/4">
                                     <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-200 xsm:text-xs sm:w-2/3 md:w-8/12 lg:w-1/3">
-                                        Student Number :
+                                        Student Number:
                                         <input
+                                            className="w-2/3 focus:border-blue-600 "
                                             name="aptstudnum"
                                             value={formData.aptstudnum}
                                             onChange={handleChange}
@@ -49,8 +50,9 @@ function InputDetails({ formData, setFormData }) {
                                         />
                                     </label>
                                     <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-200 xsm:text-xs  sm:w-2/3 md:w-8/12 lg:w-1/3">
-                                        Full Name :
+                                        Full Name:
                                         <input
+                                            className="w-2/3"
                                             name="aptname"
                                             value={formData.aptname}
                                             onChange={handleChange}
@@ -59,9 +61,10 @@ function InputDetails({ formData, setFormData }) {
                                         />
                                     </label>
                                     <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-200 xsm:text-xs  sm:w-2/3 md:w-8/12 lg:w-1/3">
-                                        Contact Number :
+                                        Contact Number:
                                         <input
                                             name="aptpnumber"
+                                            className="w-2/3"
                                             value={formData.aptpnumber}
                                             onChange={handleChange}
                                             type="tel"
@@ -76,9 +79,10 @@ function InputDetails({ formData, setFormData }) {
                                         />
                                     </label>
                                     <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-200 xsm:text-xs  sm:w-2/3 md:w-8/12 lg:w-1/3">
-                                        Institute Email :
+                                        Institute Email:
                                         <input
                                             name="aptemail"
+                                            className="w-2/3"
                                             value={formData.aptaptemail}
                                             onChange={handleChange}
                                             type="text"

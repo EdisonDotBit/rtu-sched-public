@@ -5,7 +5,6 @@ import SetAppointment from "./Component/SetAppointment.jsx";
 import ViewAppointments from "./Component/ViewAppointments.jsx";
 import GuestLayout from "./Layouts/GuestLayout.jsx";
 import SupAdminLayout from "./Layouts/SupAdminLayout.jsx";
-import DashboardAdmin from "./Component/Admin/DashboardAdmin.jsx";
 import AccountSettingsAdmin from "./Component/Admin/AccountSettingsAdmin.jsx";
 import OfficelistAdmin from "./Component/Admin/OfficelistAdmin.jsx";
 import AppointmentsAdmin from "./Component/Admin/AppointmentsAdmin.jsx";
@@ -16,17 +15,37 @@ import { AuthProvider } from "./Hooks/useAuth.jsx";
 import { ProtectedRoute } from "./ProtectedRoute.jsx";
 import AdminLayout from "./Layouts/AdminLayout.jsx";
 import NotFound from "./Component/NotFound.jsx";
+import Feedback from "./Component/Feedback.jsx";
+import Feedbacks from "./Component/Admin/Feedbacks.jsx";
+import ManageAcc from "./Component/Admin/ManageAcc.jsx";
 
 const AppRouter = () => (
     <>
         <AuthProvider>
             <Routes>
+                <Route path="feedback" element={<Feedback />} />
                 <Route path="/ewqqwe/admin" element={<AdminLayout />}>
                     <Route
                         path=""
                         element={
                             <ProtectedRoute>
-                                <AppointmentsAdmin />
+                                <Feedbacks />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="manage"
+                        element={
+                            <ProtectedRoute>
+                                <ManageAcc />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="feedback"
+                        element={
+                            <ProtectedRoute>
+                                <Feedbacks />
                             </ProtectedRoute>
                         }
                     />
@@ -54,16 +73,24 @@ const AppRouter = () => (
                         path=""
                         element={
                             <ProtectedRoute>
-                                <DashboardAdmin />
+                                <Feedbacks />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="feedbacks"
+                        element={
+                            <ProtectedRoute>
+                                <Feedbacks />
                             </ProtectedRoute>
                         }
                     />
 
                     <Route
-                        path="dashboard"
+                        path="manage"
                         element={
                             <ProtectedRoute>
-                                <DashboardAdmin />
+                                <ManageAcc />
                             </ProtectedRoute>
                         }
                     />
@@ -107,7 +134,10 @@ const AppRouter = () => (
                 <Route path="/test" element={<AddOffice />} />
 
                 <Route path="/student" element={<StudentLayout />}>
-                    <Route path="" element={<SetAppointment />} />
+                    <Route
+                        path=""
+                        element={<Navigate to="/student/set-appointment" />}
+                    />
                     <Route
                         path="set-appointment"
                         element={<SetAppointment />}
