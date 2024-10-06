@@ -20,7 +20,7 @@ function StudentLayout() {
         <>
             <div className="flex flex-col max-h-full min-h-full w-screen font-roboto overflow-x-hidden">
                 {/* Header */}
-                <div className="flex flex-col">
+                    <div className="flex flex-col">
                         <div className="flex items-center justify-between h-16 bg-white border-b border-gray-200 xsm:w-screen md:w-full">
                             <div className="flex items-center px-4">
                                 <button
@@ -52,7 +52,7 @@ function StudentLayout() {
                             </div>
                             <div className="flex items-center pr-4">
                                 <NavLink to="../guest">
-                                    <button className=" container flex items-center text-gray-500 hover:text-[#123A69] focus:outline-none xsm:text-[10px]">
+                                    <button className=" container flex items-center text-gray-500 hover:text-[#123A69] focus:outline-none xsm:text-[0.8rem] sm:text-[1rem] mr-8">
                                         Change to Guest
                                     </button>
                                 </NavLink>
@@ -146,15 +146,17 @@ function StudentLayout() {
                             </NavLink>
                         </div>
                     </div>
+
+                    {/* Main Content Area*/}
                     <div className="flex flex-col flex-1">
-                        <div className="p-4 bg-white rounded-lg overflow-y-scroll flex-1 w-auto xsm:w-screen sm:w-full md:m-4">
+                        <div className="p-4 bg-white rounded-lg overflow-y-auto flex-1 w-auto xsm:w-screen sm:w-full md:m-4">
                             <Outlet />
                         </div>
                     </div>
                 </div>
                 
                 {/*Footer*/}
-                <footer className="footer  flex text-center justify-center text-sm items-center h-9 min-h-9 border-t w-screen px-6 py-1">
+                <footer className="footer flex text-center justify-center text-sm items-center h-9 min-h-9 border-t w-screen px-6 py-1">
                     <p>
                         Copyright © 2024 - All right reserved by Rizal
                         Technological University
