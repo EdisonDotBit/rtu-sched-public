@@ -67,12 +67,12 @@ const Purpose = ({ formData, setFormData }) => {
     };
 
     return (
-        <div className="mx-auto max-w-xl p-4 w-2/3 bg-transparent">
+        <div className="mx-auto max-w-xl p-4 w-2/3 bg-transparent flex flex-col justify-center items-center">
             <h1 className="flex justify-center text-3xl mb-5">Purpose</h1>
             {dropdowns.map((dropdown, index) => (
                 <div
                     key={dropdown.id}
-                    className="flex justify-start items-center mb-4 ml-5 text-black xsm:text-xs xsm:w-[200px] sm:w-full sm:text-base"
+                    className="flex justify-center items-center mb-4 ml-5 text-black xsm:text-xs xsm:w-[200px] sm:w-full sm:text-base"
                 >
                     <select
                         className="py-2 px-3 border rounded-md mr-2 w-4/6 bg-transparent"
