@@ -31,10 +31,10 @@ function InputDetails({ formData, setFormData }) {
                             </h1>
                             <div className="flex flex-col justify-center w-full items-center">
                                 <div className="flex flex-col justify-center items-center xsm:w-full sm:w-3/4">
-                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-200 xsm:text-xs sm:w-2/3 md:w-8/12 lg:w-1/3">
+                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-400 xsm:text-xs sm:w-2/3 md:w-8/12 lg:w-1/2">
                                         Student Number:
                                         <input
-                                            className="w-2/3 focus:border-blue-600 "
+                                            className="w- focus:border-blue-600 "
                                             name="aptstudnum"
                                             value={formData.aptstudnum}
                                             onChange={handleChange}
@@ -49,7 +49,7 @@ function InputDetails({ formData, setFormData }) {
                                             }}
                                         />
                                     </label>
-                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-200 xsm:text-xs  sm:w-2/3 md:w-8/12 lg:w-1/3">
+                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-400 xsm:text-xs  sm:w-2/3 md:w-8/12 lg:w-1/2">
                                         Full Name:
                                         <input
                                             className="w-2/3"
@@ -60,7 +60,8 @@ function InputDetails({ formData, setFormData }) {
                                             placeholder="e.g. Juan A. Dela Cruz"
                                         />
                                     </label>
-                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-200 xsm:text-xs  sm:w-2/3 md:w-8/12 lg:w-1/3">
+                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-400 xsm:text-xs  sm:w-2/3 md:w-8/12 lg:w-1/2
+                                    ">
                                         Contact Number:
                                         <input
                                             name="aptpnumber"
@@ -78,7 +79,8 @@ function InputDetails({ formData, setFormData }) {
                                             }}
                                         />
                                     </label>
-                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-200 xsm:text-xs  sm:w-2/3 md:w-8/12 lg:w-1/3">
+                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-400 xsm:text-xs  sm:w-2/3 md:w-8/12 lg:w-1/2
+                                    ">
                                         Institute Email:
                                         <input
                                             name="aptemail"
