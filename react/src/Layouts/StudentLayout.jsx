@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
-import Qwe from "../Component/Subcomponent/Asset/rtu_logo_v3.png";
+import Logo from "../Component/Subcomponent/Asset/rtu_logo_v3.png";
 
 function StudentLayout() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -47,7 +47,7 @@ function StudentLayout() {
                         <NavLink to="../student">
                             <img
                                 className="h-auto w-[200px] lg:w-64"
-                                src={Qwe}
+                                src={Logo}
                                 alt="University Logo"
                             />
                         </NavLink>
