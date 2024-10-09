@@ -40,11 +40,13 @@ function SelectBranch({ formData, setFormData }) {
                         alt=""
                         className="flex self-center rounded-2xl w-[500px] p-[10px]"
                     />
-                    <p className="text-xl text-center">
+                    <p className="font-bold text-xl text-center">
                         Rizal Technological University
                     </p>
-                    <p className="text-xl text-center">{branchItem.bname}</p>
-                    <p className="text-sm text-center line-clamp-1">
+                    <p className="font-bold text-xl text-center">
+                        {branchItem.bname}
+                    </p>
+                    <p className="text-sm text-center line-clamp-1 mt-2">
                         {branchItem.location}
                     </p>
                 </div>
