@@ -116,7 +116,7 @@ function SetAppointment() {
             <form>
                 <div className="w-full h-auto flex justify-center align text-[#3c4043]">
                     <div className="w-full md:w-4/5 h-full">
-                        <h2 className="text-2xl text-center font-bold mb-5">
+                        <h2 className="text-center text-2xl font-semibold text-gray-800 mb-5 ">
                             Set an Appointment
                         </h2>
                         {/* Progress Indicator */}
@@ -139,7 +139,7 @@ function SetAppointment() {
                                     <h2 className="text-lg text-center font-semibold">
                                         Step 1: Select Branch
                                     </h2>
-                                    <h4 className="font-light mb-4">
+                                    <h4 className="text-center text-md min-w-full  text-gray-500 mb-4">
                                         Click the box to select
                                     </h4>
                                     <div className="w-full justify-center">
@@ -165,7 +165,7 @@ function SetAppointment() {
                                     <h2 className="text-lg text-center font-semibold">
                                         Step 2: Select Office
                                     </h2>
-                                    <h4 className="font-light mb-4">
+                                    <h4 className="text-center text-md min-w-full  text-gray-500 mb-4">
                                         Click the box to select
                                     </h4>
                                     <div className="flex flex-col sm:flex-row justify-center items-center w-full">
