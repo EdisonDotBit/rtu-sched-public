@@ -146,7 +146,7 @@ function GuestLayout() {
                                 </NavLink>
                             </div>
                         </div>
-                        {/* Main content */}
+                        {/* Main Content Area*/}
                         <div className="p-4 bg-white rounded-lg overflow-y-auto flex-1 xsm:w-screen sm:w-full md:m-4">
                             <Outlet />
                         </div>
