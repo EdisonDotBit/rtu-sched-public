@@ -22,7 +22,7 @@ function StudentLayout() {
     return (
         <div className="flex flex-col h-screen overflow-hidden font-roboto">
             {/* Header */}
-            <div className="flex items-center justify-between h-20 bg-yellow-300 border-b border-gray-200 p-2">
+            <div className="flex items-center justify-between h-20 bg-[#FFDB75] border-b border-gray-200 p-2">
                 <div className="flex items-center px-4">
                     <button
                         className="text-gray-500 focus:outline-none hover:text-[#123A69] lg:hidden"
@@ -99,7 +99,7 @@ function StudentLayout() {
                             }`}
                         >
                             <span
-                                className={`absolute left-0 h-full w-1 bg-[#FEE000] ${
+                                className={`absolute left-0 h-full w-1 bg-[#FFDB75] ${
                                     location.pathname ===
                                     "/student/set-appointment"
                                         ? "opacity-100"
@@ -132,7 +132,7 @@ function StudentLayout() {
                             }`}
                         >
                             <span
-                                className={`absolute left-0 h-full w-1 bg-[#FEE000] ${
+                                className={`absolute left-0 h-full w-1 bg-[#FFDB75] ${
                                     location.pathname ===
                                     "/student/view-appointment"
                                         ? "opacity-100"
