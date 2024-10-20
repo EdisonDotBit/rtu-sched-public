@@ -39,7 +39,7 @@ class Appointments extends Controller
 
             return response()->json([
                 'status' => 200,
-                'message' => 'successfully created appointment',
+                'message' => 'Successfully created appointment',
                 'data' => $apt,
             ]);
         } catch (\Exception $e) {
@@ -76,7 +76,7 @@ class Appointments extends Controller
         $apt->delete();
         return response()->json([
             'status' => 200,
-            'messages' => 'successfully deleted appointment',
+            'messages' => 'Successfully deleted appointment',
         ]);
     }
     public function uptodone($aptId)
@@ -87,13 +87,13 @@ class Appointments extends Controller
             $apt->save();
             return response()->json([
                 'status' => 200,
-                'messages' => 'successfully updated appointment',
+                'messages' => 'Successfully updated appointment',
                 'data' => $apt,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 400,
-                'error' => 'Failed Madafaka',
+                'error' => 'Failed to update appointment',
             ], 400);
         }
     }
