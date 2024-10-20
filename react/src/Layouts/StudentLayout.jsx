@@ -22,7 +22,7 @@ function StudentLayout() {
     return (
         <div className="flex flex-col h-screen overflow-hidden font-roboto">
             {/* Header */}
-            <header className="flex items-center justify-between bg-[#FFDB75] px-6 py-2 sm:h-18 lg:h-18">
+            <header className="flex items-center justify-between bg-[#FFDB75] px-6 py-2 sm:h-16 lg:h-16">
                 <div className="flex items-center gap-4">
                     <button
                         className="text-gray-500 focus:outline-none hover:text-[#123A69] lg:hidden"
@@ -46,7 +46,7 @@ function StudentLayout() {
                     <div className="flex items-center gap-2">
                         <NavLink to="../student">
                             <img
-                                className="h-auto w-[200px] lg:w-64"
+                                className="h-auto w-[200px] lg:w-56"
                                 src={Logo}
                                 alt="University Logo"
                             />
@@ -97,7 +97,20 @@ function StudentLayout() {
                             className="text-white lg:hidden"
                             onClick={toggleSidebar}
                         >
-                            &times; {/* Close button */}
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth="2"
+                                stroke="currentColor"
+                                className="w-8 h-8" // Adjust size here
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M6 18L18 6M6 6l12 12"
+                                />
+                            </svg>
                         </button>
                     </div>
                     <nav className="flex flex-col flex-1 overflow-y-auto">
