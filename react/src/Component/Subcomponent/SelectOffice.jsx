@@ -30,10 +30,10 @@ function SelectOffice({ formData, setFormData, office, setOffice, setLimit }) {
                         )
                     }
                 >
-                    <h2 className="text-3xl  text-center">
+                    <h2 className="font-bold text-3xl text-center mb-2">
                         {officeItem.offabbr}
                     </h2>
-                    <p className="text-xl">{officeItem.offname}</p>
+                    <p className="text-xl text-center">{officeItem.offname}</p>
                 </div>
             ))}
         </div>

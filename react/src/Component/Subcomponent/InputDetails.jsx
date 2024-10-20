@@ -9,91 +9,94 @@ function InputDetails({ formData, setFormData }) {
             [name]: value,
         }));
     };
+
     return (
         <>
-            <div className="w-full h-auto">
-                <div className="flex flex-col justify-center">
-                    <div>
-                        <h1 className="flex justify-center text-2xl m underline">
-                            Student Details
-                        </h1>
+            <div className="w-full h-auto flex justify-center">
+                {/* Main container */}
+                <div className="w-full md:w-3/4 lg:w-[55%] border border-gray-300 bg-[#194F90] rounded-md shadow-md p-8">
+                    {/* Student Details Header */}
+                    {/* <h1 className="text-2xl font-bold text-center mb-6 underline">
+                        Student Details
+                    </h1> */}
+
+                    {/* Purpose Selection (Dropdown) */}
+                    <div className="mb-6">
+                        <Purpose
+                            formData={formData}
+                            setFormData={setFormData}
+                        />
                     </div>
-                    <div className="flex flex-col justify-center">
-                        <div className="flex justify-center items-center">
-                            <Purpose
-                                formData={formData}
-                                setFormData={setFormData}
+
+                    {/* Personal Details Section */}
+                    <div className="flex flex-col space-y-4">
+                        <h2 className="text-white text-xl font-semibold text-center mt-4">
+                            Personal Details
+                        </h2>
+
+                        {/* Student Number */}
+                        <label className="block text-white">
+                            Student Number:
+                            <input
+                                className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                name="aptstudnum"
+                                value={formData.aptstudnum}
+                                onChange={handleChange}
+                                type="text"
+                                placeholder="####-######"
+                                onInput={(e) => {
+                                    e.target.value = e.target.value.replace(
+                                        /[^0-9\-]/g,
+                                        ""
+                                    );
+                                }}
                             />
-                        </div>
-                        <div className="flex flex-col justify-center">
-                            <h1 className="flex justify-center text-3xl mb-5">
-                                Personal Details
-                            </h1>
-                            <div className="flex flex-col justify-center w-full items-center">
-                                <div className="flex flex-col justify-center items-center xsm:w-full sm:w-3/4">
-                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-400 xsm:text-xs sm:w-2/3 md:w-8/12 lg:w-1/2">
-                                        Student Number:
-                                        <input
-                                            className="w- focus:border-blue-600 "
-                                            name="aptstudnum"
-                                            value={formData.aptstudnum}
-                                            onChange={handleChange}
-                                            type="text"
-                                            placeholder="####-######"
-                                            onInput={(e) => {
-                                                e.target.value =
-                                                    e.target.value.replace(
-                                                        /[^0-9\-]/g,
-                                                        ""
-                                                    );
-                                            }}
-                                        />
-                                    </label>
-                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-400 xsm:text-xs  sm:w-2/3 md:w-8/12 lg:w-1/2">
-                                        Full Name:
-                                        <input
-                                            className="w-2/3"
-                                            name="aptname"
-                                            value={formData.aptname}
-                                            onChange={handleChange}
-                                            type="text"
-                                            placeholder="e.g. Juan A. Dela Cruz"
-                                        />
-                                    </label>
-                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-400 xsm:text-xs  sm:w-2/3 md:w-8/12 lg:w-1/2
-                                    ">
-                                        Contact Number:
-                                        <input
-                                            name="aptpnumber"
-                                            className="w-2/3"
-                                            value={formData.aptpnumber}
-                                            onChange={handleChange}
-                                            type="tel"
-                                            placeholder="09#########"
-                                            onInput={(e) => {
-                                                e.target.value =
-                                                    e.target.value.replace(
-                                                        /[^0-9/+]/g,
-                                                        ""
-                                                    );
-                                            }}
-                                        />
-                                    </label>
-                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-transparent text-gray-700 border-gray-400 xsm:text-xs  sm:w-2/3 md:w-8/12 lg:w-1/2
-                                    ">
-                                        Institute Email:
-                                        <input
-                                            name="aptemail"
-                                            className="w-2/3"
-                                            value={formData.aptaptemail}
-                                            onChange={handleChange}
-                                            type="text"
-                                            placeholder="email@gmail.com"
-                                        />
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
+                        </label>
+
+                        {/* Full Name */}
+                        <label className="block text-white">
+                            Full Name:
+                            <input
+                                className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                name="aptname"
+                                value={formData.aptname}
+                                onChange={handleChange}
+                                type="text"
+                                placeholder="e.g. Juan A. Dela Cruz"
+                            />
+                        </label>
+
+                        {/* Contact Number */}
+                        <label className="block text-white">
+                            Contact Number:
+                            <input
+                                className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                name="aptpnumber"
+                                value={formData.aptpnumber}
+                                onChange={handleChange}
+                                type="tel"
+                                placeholder="09#########"
+                                onInput={(e) => {
+                                    e.target.value = e.target.value.replace(
+                                        /[^0-9/+]/g,
+                                        ""
+                                    );
+                                }}
+                            />
+                        </label>
+
+                        {/* Institute Email */}
+                        <label className="block text-white">
+                            Institute Email:
+                            <input
+                                className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                name="aptemail"
+                                value={formData.aptemail}
+                                onChange={handleChange}
+                                type="email"
+                                placeholder="email@gmail.com"
+                            />
+                        </label>
                     </div>
                 </div>
             </div>

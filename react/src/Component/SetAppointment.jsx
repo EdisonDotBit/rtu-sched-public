@@ -116,7 +116,7 @@ function SetAppointment() {
             <form>
                 <div className="w-full h-auto flex justify-center align text-[#3c4043]">
                     <div className="w-full md:w-4/5 h-full">
-                        <h2 className="text-2xl text-center font-bold mb-5">
+                        <h2 className="text-center text-2xl font-semibold text-gray-800 mb-5 ">
                             Set an Appointment
                         </h2>
                         {/* Progress Indicator */}
@@ -139,7 +139,7 @@ function SetAppointment() {
                                     <h2 className="text-lg text-center font-semibold">
                                         Step 1: Select Branch
                                     </h2>
-                                    <h4 className="font-light mb-4">
+                                    <h4 className="text-center text-sm min-w-full  text-gray-500 mb-4">
                                         Click the box to select
                                     </h4>
                                     <div className="w-full justify-center">
@@ -165,7 +165,7 @@ function SetAppointment() {
                                     <h2 className="text-lg text-center font-semibold">
                                         Step 2: Select Office
                                     </h2>
-                                    <h4 className="font-light mb-4">
+                                    <h4 className="text-center text-sm min-w-full  text-gray-500 mb-4">
                                         Click the box to select
                                     </h4>
                                     <div className="flex flex-col sm:flex-row justify-center items-center w-full">
@@ -197,9 +197,12 @@ function SetAppointment() {
                             {/* Step 3 */}
                             {step === 3 && (
                                 <div className="step-content flex flex-col justify-center items-center">
-                                    <h2 className="text-lg text-center font-semibold mb-4">
+                                    <h2 className="text-lg text-center font-semibold">
                                         Step 3: Select Available Time and Date
                                     </h2>
+                                    <h4 className="text-center text-sm min-w-full  text-gray-500 mb-4">
+                                        Click the box to select date and time
+                                    </h4>
                                     <div className="flex flex-col sm:flex-row justify-center items-center ">
                                         <Calendar
                                             formData={formData}
@@ -230,13 +233,18 @@ function SetAppointment() {
                                     </div>
                                 </div>
                             )}
+
+                            {/* Step 4 */}
                             {step === 4 && (
                                 <div className="step-content flex flex-col justify-center items-center">
                                     <h2 className="text-lg text-center font-semibold">
                                         Step 4: Input Details
                                     </h2>
-                                    <h4></h4>
-                                    <div className="w-full">
+                                    <h4 className="text-center text-sm min-w-full  text-gray-500 mb-4">
+                                        Click the dropdown to select purpose and
+                                        fill up the followng information
+                                    </h4>
+                                    <div className="w-full mb-10">
                                         <InputDetails
                                             formData={formData}
                                             setFormData={setFormData}
@@ -244,13 +252,13 @@ function SetAppointment() {
                                     </div>
                                     <div className="flex w-full justify-evenly">
                                         <button
-                                            className=" bg-slate-200 border border-x-amber-300 rounded-lg inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
+                                            className=" bg-red-700 hover:bg-red-900 text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
                                             onClick={prevStep}
                                         >
                                             Previous
                                         </button>
                                         <button
-                                            className="  rounded-lg inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
+                                            className=" bg-[#194F90] hover:bg-[#123A69] text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
                                             onClick={nextStep}
                                         >
                                             Next
@@ -259,7 +267,7 @@ function SetAppointment() {
                                 </div>
                             )}
 
-                            {/* Step 4 */}
+                            {/* Step 5 */}
                             {step === 5 && (
                                 <div className="step-content flex flex-col justify-center items-center w-full">
                                     <h2 className="text-lg text-center font-semibold">

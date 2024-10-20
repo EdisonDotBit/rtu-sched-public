@@ -3,14 +3,12 @@ import { useEffect, useState } from "react";
 const Purpose = ({ formData, setFormData }) => {
     // State to hold the list of dropdowns
     const [dropdowns, setDropdowns] = useState([{ id: 0 }]);
-    // State to hold the string value
-    const [stringValue, setStringValue] = useState("");
 
     // Options for the dropdown
     const [options, setOptions] = useState(["Select Purpose"]);
 
     useEffect(() => {
-        if (formData.aptoffice === "ASD") {
+        if (formData.aptoffice === "MISO") {
             setOptions([
                 "--Select Purpose--",
                 "Option A Purpose 1",
@@ -28,6 +26,7 @@ const Purpose = ({ formData, setFormData }) => {
             setOptions(["--Select Purpose--"]);
         }
     }, [formData.aptoffice]);
+
     // Function to add a new dropdown
     const addDropdown = () => {
         if (dropdowns.length < 3) {
@@ -37,13 +36,10 @@ const Purpose = ({ formData, setFormData }) => {
 
     // Function to delete a dropdown
     const deleteDropdown = (id) => {
-        // Find the value of the dropdown being deleted
         const deletedDropdown = dropdowns.find(
             (dropdown) => dropdown.id === id
         );
-        // Remove the dropdown from the state
         setDropdowns(dropdowns.filter((dropdown) => dropdown.id !== id));
-        // Remove the value of the deleted dropdown from the stored string
         setFormData.aptpurpose((prevValue) =>
             prevValue.replace(`${deletedDropdown.value}, `, "")
         );
@@ -58,7 +54,7 @@ const Purpose = ({ formData, setFormData }) => {
         setDropdowns(updatedDropdowns);
         const newStringValue = updatedDropdowns
             .map((dropdown) => dropdown.value || "")
-            .filter((value) => value !== "--Select Purpose--") // Exclude placeholder from the stored string
+            .filter((value) => value !== "--Select Purpose--")
             .join(", ");
         setFormData((prevFormData) => ({
             ...prevFormData,
@@ -67,15 +63,17 @@ const Purpose = ({ formData, setFormData }) => {
     };
 
     return (
-        <div className="mx-auto max-w-xl p-4 w-2/3 bg-transparent flex flex-col justify-center items-center">
-            <h1 className="flex justify-center text-3xl mb-5">Purpose</h1>
+        <div className="mx-auto w-full bg-transparent">
+            <h1 className="text-white flex justify-center text-xl font-semibold mb-4">
+                Purpose
+            </h1>
             {dropdowns.map((dropdown, index) => (
                 <div
                     key={dropdown.id}
-                    className="flex justify-center items-center mb-4 ml-5 text-black xsm:text-xs xsm:w-[200px] sm:w-full sm:text-base"
+                    className="text-gray-800 flex items-center mb-4 w-full"
                 >
                     <select
-                        className="py-2 px-3 border rounded-md mr-2 w-4/6 bg-transparent"
+                        className="bg-white py-2 px-3 border w-full rounded-md flex-grow bg-transparent"
                         value={dropdown.value || ""}
                         onChange={(e) => handleDropdownChange(e, index)}
                     >
@@ -85,21 +83,23 @@ const Purpose = ({ formData, setFormData }) => {
                             </option>
                         ))}
                     </select>
-                    {index !== 0 && (
-                        <button
-                            onClick={() => deleteDropdown(dropdown.id)}
-                            className="bg-red-500 text-white py-2 px-4 rounded-md"
-                        >
-                            Delete
-                        </button>
-                    )}
+                    <div className="ml-3 min-w-[90px] flex justify-center">
+                        {index !== 0 && (
+                            <button
+                                onClick={() => deleteDropdown(dropdown.id)}
+                                className="bg-red-500 text-white py-2 px-4 rounded-md"
+                            >
+                                Delete
+                            </button>
+                        )}
+                    </div>
                 </div>
             ))}
             {dropdowns.length < 3 && (
                 <button
                     type="button"
                     onClick={addDropdown}
-                    className="flex justify-center bg-blue-500 text-white py-2 px-4 rounded-md w-2/3 ml-5"
+                    className="flex justify-center bg-[#FFDB75] text-gray-900 font-medium py-2 px-4 rounded-md w-full"
                 >
                     Add Purpose
                 </button>

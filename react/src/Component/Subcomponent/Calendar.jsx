@@ -206,7 +206,7 @@ const Calendar = ({ formData, setFormData, limit, appointments }) => {
                             <button
                                 type="button"
                                 onClick={handlePrevYear}
-                                className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded xsm:text-xs sm:text-base"
+                                className=" bg-[#194F90] hover:bg-[#123A69] text-white  px-2 py-1 rounded xsm:text-xs sm:text-base"
                             >
                                 Previous
                             </button>
@@ -221,7 +221,7 @@ const Calendar = ({ formData, setFormData, limit, appointments }) => {
                             <button
                                 type="button"
                                 onClick={handleNextYear}
-                                className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded xsm:text-xs sm:text-base"
+                                className=" bg-[#194F90] hover:bg-[#123A69] text-white  px-2 py-1 rounded xsm:text-xs sm:text-base"
                             >
                                 Next
                             </button>
@@ -232,7 +232,7 @@ const Calendar = ({ formData, setFormData, limit, appointments }) => {
                             <button
                                 type="button"
                                 onClick={handlePrevMonth}
-                                className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded xsm:text-xs sm:text-base"
+                                className=" bg-[#194F90] hover:bg-[#123A69] text-white px-2 py-1 rounded xsm:text-xs sm:text-base"
                             >
                                 Previous
                             </button>
@@ -251,7 +251,7 @@ const Calendar = ({ formData, setFormData, limit, appointments }) => {
                             <button
                                 type="button"
                                 onClick={handleNextMonth}
-                                className="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded xsm:text-xs sm:text-base"
+                                className=" bg-[#194F90] hover:bg-[#123A69] text-white  px-2 py-1 rounded xsm:text-xs sm:text-base"
                             >
                                 Next
                             </button>
@@ -259,28 +259,26 @@ const Calendar = ({ formData, setFormData, limit, appointments }) => {
                     </div>
                     <table className="xsm:w-full xsm:text-xs sm:w-full sm:text-base">
                         <thead>
-                            <tr className="bg-gray-200">
-                                <th className="border border-gray-200 p-2">
+                            <tr className="bg-[#194F90]">
+                                <th className="text-white border-r-2 border-r-white p-2">
                                     Sun
                                 </th>
-                                <th className="border border-gray-200 p-2">
+                                <th className="text-white border-r-2 border-r-white p-2">
                                     Mon
                                 </th>
-                                <th className="border border-gray-200 p-2">
+                                <th className="text-white border-r-2 border-r-white p-2">
                                     Tue
                                 </th>
-                                <th className="border border-gray-200 p-2">
+                                <th className="text-white border-r-2 border-r-white p-2">
                                     Wed
                                 </th>
-                                <th className="border border-gray-200 p-2">
+                                <th className="text-white border-r-2 border-r-white p-2">
                                     Thu
                                 </th>
-                                <th className="border border-gray-200 p-2">
+                                <th className="text-white border-r-2 border-r-white p-2">
                                     Fri
                                 </th>
-                                <th className="border border-gray-200 p-2">
-                                    Sat
-                                </th>
+                                <th className="text-white p-2">Sat</th>
                             </tr>
                         </thead>
                         <tbody>{renderCalendarDays()}</tbody>
