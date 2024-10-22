@@ -252,7 +252,7 @@ function SetAppointment() {
                                     </div>
                                     <div className="flex w-full justify-evenly">
                                         <button
-                                            className=" bg-red-700 hover:bg-red-900 text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
+                                            className="bg-red-700 hover:bg-red-900 text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
                                             onClick={prevStep}
                                         >
                                             Previous
@@ -319,7 +319,7 @@ function SetAppointment() {
                                     </div>
                                     <div className="flex w-full justify-evenly">
                                         <button
-                                            className=" bg-slate-200 border border-x-amber-300 rounded-lg inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
+                                            className="bg-red-700 hover:bg-red-900 text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
                                             onClick={prevStep}
                                         >
                                             Previous
