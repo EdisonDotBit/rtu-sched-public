@@ -4,7 +4,7 @@ module.exports = {
     theme: {
         extend: {
             fontFamily: {
-                roboto: ["Roboto","sans-serif"],
+                roboto: ["Roboto", 'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
             },
             screens: {
                 "xsm": "200px",
