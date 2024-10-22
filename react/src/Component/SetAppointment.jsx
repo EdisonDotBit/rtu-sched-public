@@ -116,9 +116,9 @@ function SetAppointment() {
             <form>
                 <div className="w-full h-auto flex justify-center align text-[#3c4043]">
                     <div className="w-full md:w-4/5 h-full">
-                        <h2 className="text-center text-2xl font-semibold text-gray-800 mb-5 ">
+                        <h1 className="text-center text-3xl font-semibold text-gray-800 mb-5">
                             Set an Appointment
-                        </h2>
+                        </h1>
                         {/* Progress Indicator */}
                         <div className="mb-8">
                             <div className="w-full bg-gray-300 rounded-full">
@@ -242,7 +242,7 @@ function SetAppointment() {
                                     </h2>
                                     <h4 className="text-center text-sm min-w-full  text-gray-500 mb-4">
                                         Click the dropdown to select purpose and
-                                        fill up the followng information
+                                        fill up the following information
                                     </h4>
                                     <div className="w-full mb-10">
                                         <InputDetails
@@ -274,16 +274,15 @@ function SetAppointment() {
                                         Step 5: Confirm Details
                                     </h2>
 
-                                    <b className=" -mt-12 w-full text-center">
-                                        <br />
-                                        <br />
-                                        *** Appointment number is important.
-                                        Kindly note it***
-                                    </b>
+                                    <h4 className="text-center text-sm min-w-full  text-gray-500 mb-4">
+                                        Review the following information.
+                                        Appointment number is important. Kindly
+                                        note it.
+                                    </h4>
 
-                                    <div className="w-full lg:w-[647px]">
+                                    <div className="w-full lg:w-[800px]">
                                         <Confirmation formData={formData} />
-                                        <div className="items-center w-full ml-auto mr-auto text-center text-[12px]">
+                                        <div className="mb-4 items-center w-full ml-auto mr-auto text-center text-[12px]">
                                             <input
                                                 type="checkbox"
                                                 tabIndex={-1}
