@@ -2,10 +2,24 @@ import { useEffect, useState } from "react";
 
 const Purpose = ({ formData, setFormData }) => {
     // State to hold the list of dropdowns
-    const [dropdowns, setDropdowns] = useState([{ id: 0 }]);
+    const [dropdowns, setDropdowns] = useState([{ id: 0, value: "" }]);
 
     // Options for the dropdown
     const [options, setOptions] = useState(["Select Purpose"]);
+
+    // Initialize dropdowns from formData when the component mounts
+    useEffect(() => {
+        // Split the aptpurpose string into an array to initialize dropdowns
+        if (formData.aptpurpose) {
+            const initialDropdowns = formData.aptpurpose
+                .split(", ")
+                .map((value, index) => ({
+                    id: index,
+                    value,
+                }));
+            setDropdowns(initialDropdowns);
+        }
+    }, [formData.aptpurpose]);
 
     useEffect(() => {
         if (formData.aptoffice === "MISO") {
@@ -30,19 +44,24 @@ const Purpose = ({ formData, setFormData }) => {
     // Function to add a new dropdown
     const addDropdown = () => {
         if (dropdowns.length < 3) {
-            setDropdowns([...dropdowns, { id: Date.now() }]);
+            setDropdowns([...dropdowns, { id: Date.now(), value: "" }]);
         }
     };
 
     // Function to delete a dropdown
     const deleteDropdown = (id) => {
-        const deletedDropdown = dropdowns.find(
-            (dropdown) => dropdown.id === id
+        const filteredDropdowns = dropdowns.filter(
+            (dropdown) => dropdown.id !== id
         );
-        setDropdowns(dropdowns.filter((dropdown) => dropdown.id !== id));
-        setFormData.aptpurpose((prevValue) =>
-            prevValue.replace(`${deletedDropdown.value}, `, "")
-        );
+        const newStringValue = filteredDropdowns
+            .map((dropdown) => dropdown.value)
+            .filter((value) => value && value !== "--Select Purpose--")
+            .join(", ");
+        setDropdowns(filteredDropdowns);
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            aptpurpose: newStringValue,
+        }));
     };
 
     // Function to handle dropdown change
@@ -52,6 +71,8 @@ const Purpose = ({ formData, setFormData }) => {
             i === index ? { ...dropdown, value: newValue } : dropdown
         );
         setDropdowns(updatedDropdowns);
+
+        // Update formData to store all selected dropdown values
         const newStringValue = updatedDropdowns
             .map((dropdown) => dropdown.value || "")
             .filter((value) => value !== "--Select Purpose--")
