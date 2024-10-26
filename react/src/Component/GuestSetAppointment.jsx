@@ -103,89 +103,109 @@ function GuestSetAppointment() {
     const openmodal1 = () => {
         modals1.current.showModal();
     };
+    const [step, setStep] = useState(1);
+
+    const nextStep = () => {
+        setStep(step + 1);
+    };
+
+    const prevStep = () => {
+        setStep(step - 1);
+    };
 
     return (
         <>
             <form>
-                <div className="carousel w-full touch-pan-y overflow-x-hidden">
-                    <div className="carousel-item w-full h-full" id="basta">
-                        <div className="w-full">
-                            <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto">
-                                <input
-                                    type="radio"
-                                    name="my-accordion-2"
-                                    checked={selectedAccordion === 0}
-                                    onChange={() => handleAccordionClick(0)}
-                                />
-                                <div className="collapse-title text-xl font-medium xsm:text-base md:text-xl">
-                                    Select Branch
-                                </div>
+                <div className="w-full h-auto flex justify-center align text-[#3c4043]">
+                    <div className="w-full md:w-4/5 h-full">
+                        <h1 className="text-center text-3xl font-semibold text-gray-800 mb-5">
+                            Set an Appointment
+                        </h1>
+                        {/* Progress Indicator */}
+                        <div className="mb-8">
+                            <div className="w-full bg-gray-300 rounded-full">
                                 <div
-                                    className={`flex flex-col justify-center items-center collapse-content ${
-                                        selectedAccordion === 0 ? "" : "hidden"
-                                    }`}
+                                    class=" p-0.5 text-center text-xs font-medium leading-none text-primary-100 rounded-md bg-amber-400"
+                                    style={{ width: `${step * 20}%` }}
                                 >
-                                    {" "}
-                                    <SelectBranch
-                                        formData={formData}
-                                        setFormData={setFormData}
-                                    />
-                                    <button
-                                        className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 xsm:w-[100px] sm:w-[200px] md:w-[300px]"
-                                        type="button"
-                                        onClick={handleAccordinc}
-                                    >
-                                        Next &gt;
-                                    </button>
+                                    {step * 20}%
                                 </div>
                             </div>
-                            <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto w-full">
-                                <input
-                                    type="radio"
-                                    name="my-accordion-2"
-                                    checked={selectedAccordion === 1}
-                                    onChange={() => handleAccordionClick(1)}
-                                />
-                                <div className="collapse-title text-xl font-medium xsm:text-base md:text-xl">
-                                    Select Office
+                        </div>
+
+                        {/* Form Content */}
+                        <div className="space-y-4">
+                            {/* Step 1 */}
+                            {step === 1 && (
+                                <div className="step-content flex flex-col justify-center items-center w-full">
+                                    <h2 className="text-lg text-center font-semibold">
+                                        Step 1: Select Branch
+                                    </h2>
+                                    <h4 className="text-center text-sm min-w-full  text-gray-500 mb-4">
+                                        Click the box to select
+                                    </h4>
+                                    <div className="w-full justify-center">
+                                        <SelectBranch
+                                            formData={formData}
+                                            setFormData={setFormData}
+                                        />
+                                    </div>
+                                    <div className="flex w-full justify-evenly">
+                                        <button
+                                            className=" bg-[#194F90] hover:bg-[#123A69] text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
+                                            onClick={nextStep}
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
                                 </div>
-                                <div
-                                    className={`flex flex-col justify-center items-center collapse-content ${
-                                        selectedAccordion === 1 ? "" : "hidden"
-                                    }`}
-                                >
-                                    <SelectOffice
-                                        formData={formData}
-                                        setFormData={setFormData}
-                                        office={office}
-                                        setOffice={setOffice}
-                                        setLimit={setLimit}
-                                    />
-                                    <button
-                                        className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 mt-5 xsm:w-[100px] sm:w-[200px] md:w-[300px]"
-                                        type="button"
-                                        onClick={handleAccordinc}
-                                    >
-                                        Next &gt;
-                                    </button>
+                            )}
+
+                            {/* Step 2 */}
+                            {step === 2 && (
+                                <div className="step-content flex flex-col justify-center items-center w-full">
+                                    <h2 className="text-lg text-center font-semibold">
+                                        Step 2: Select Office
+                                    </h2>
+                                    <h4 className="text-center text-sm min-w-full  text-gray-500 mb-4">
+                                        Click the box to select
+                                    </h4>
+                                    <div className="flex flex-col sm:flex-row justify-center items-center w-full">
+                                        <SelectOffice
+                                            formData={formData}
+                                            setFormData={setFormData}
+                                            office={office}
+                                            setOffice={setOffice}
+                                            setLimit={setLimit}
+                                        />
+                                    </div>
+                                    <div className="flex w-full justify-evenly mt-28">
+                                        <button
+                                            className=" bg-red-700 hover:bg-red-900 text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
+                                            onClick={prevStep}
+                                        >
+                                            Previous
+                                        </button>
+                                        <button
+                                            className=" bg-[#194F90] hover:bg-[#123A69] text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
+                                            onClick={nextStep}
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="bg-transparent collapse collapse-arrow bg-base-200 h-auto w-full">
-                                <input
-                                    type="radio"
-                                    name="my-accordion-2"
-                                    checked={selectedAccordion === 2}
-                                    onChange={() => handleAccordionClick(2)}
-                                />
-                                <div className="collapse-title text-xl font-medium xsm:text-base md:text-xl">
-                                    Select Date
-                                </div>
-                                <div
-                                    className={`flex flex-col justify-center items-center collapse-content ${
-                                        selectedAccordion === 2 ? "" : "hidden"
-                                    }`}
-                                >
-                                    <div className="flex flex-col sm:flex-row justify-center items-center">
+                            )}
+
+                            {/* Step 3 */}
+                            {step === 3 && (
+                                <div className="step-content flex flex-col justify-center items-center">
+                                    <h2 className="text-lg text-center font-semibold">
+                                        Step 3: Select Available Time and Date
+                                    </h2>
+                                    <h4 className="text-center text-sm min-w-full  text-gray-500 mb-4">
+                                        Click the box to select date and time
+                                    </h4>
+                                    <div className="flex flex-col sm:flex-row justify-center items-center ">
                                         <Calendar
                                             formData={formData}
                                             setFormData={setFormData}
@@ -199,115 +219,137 @@ function GuestSetAppointment() {
                                             limit={limit}
                                         />
                                     </div>
-                                    <button
-                                        className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 xsm:w-[100px] sm:w-[200px] md:w-[300px]"
-                                        type="button"
-                                        onClick={handleAccordinc}
-                                    >
-                                        Next &gt;
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="bg-transparent collapse collapse-arrow bg-base-200 h-full">
-                                <input
-                                    type="radio"
-                                    name="my-accordion-2"
-                                    checked={selectedAccordion === 3}
-                                    onChange={() => handleAccordionClick(3)}
-                                />
-                                <div className="collapse-title text-xl font-medium xsm:text-base md:text-xl">
-                                    Input Details
-                                </div>
-                                <div
-                                    className={`flex flex-col justify-center items-center collapse-content ${
-                                        selectedAccordion === 3 ? "" : "hidden"
-                                    }`}
-                                >
-                                    <GuestDetails
-                                        formData={formData}
-                                        setFormData={setFormData}
-                                    />
-
-                                    <a href="#confirmation">
+                                    <div className="flex w-full justify-evenly">
                                         <button
-                                            className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-96 xsm:w-[100px] sm:w-[200px] md:w-[300px]"
-                                            type="button"
+                                            className=" bg-red-700 hover:bg-red-900 text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
+                                            onClick={prevStep}
                                         >
-                                            Next &gt;
+                                            Previous
                                         </button>
-                                    </a>
+                                        <button
+                                            className=" bg-[#194F90] hover:bg-[#123A69] text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
+                                            onClick={nextStep}
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        id="confirmation"
-                        className="flex justify-center items-center carousel-item w-full"
-                    >
-                        <div>
-                            <ConfirmtionG
-                                formData={formData}
-                                setFormData={setFormData}
-                            />
-                            <div className="items-center w-[85%] ml-auto mr-auto text-center text-[12px]">
-                                <input
-                                    type="checkbox"
-                                    tabIndex={-1}
-                                    className="mr-2 accent-[#123A69] hover:accent-[#123A69]"
-                                    style={{ verticalAlign: "middle" }}
-                                    onChange={handleCheckboxChange}
-                                />
-                                <label style={{ verticalAlign: "middle" }}>
-                                    I confirm that the above information is
-                                    <b> true and correct</b> and
-                                    <b>
-                                        I consent Rizal Technological University{" "}
-                                    </b>
-                                    under the standards of Data Protection and
-                                    Privacy to
-                                    <b> collect and process </b>
-                                    the given data.
-                                </label>
+                            )}
 
-                                <label style={{ verticalAlign: "middle" }}>
-                                    <b>
-                                        <br />
-                                        <br />
-                                        *** Appointment number is important.
-                                        Kindly note it***
-                                    </b>
-                                </label>
-                            </div>
+                            {/* Step 4 */}
+                            {step === 4 && (
+                                <div className="step-content flex flex-col justify-center items-center">
+                                    <h2 className="text-lg text-center font-semibold">
+                                        Step 4: Input Details
+                                    </h2>
+                                    <h4 className="text-center text-sm min-w-full  text-gray-500 mb-4">
+                                        Click the dropdown to select purpose and
+                                        fill up the following information
+                                    </h4>
+                                    <div className="w-full mb-10">
+                                        <GuestDetails
+                                            formData={formData}
+                                            setFormData={setFormData}
+                                        />
+                                    </div>
+                                    <div className="flex w-full justify-evenly">
+                                        <button
+                                            className="bg-red-700 hover:bg-red-900 text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
+                                            onClick={prevStep}
+                                        >
+                                            Previous
+                                        </button>
+                                        <button
+                                            className=" bg-[#194F90] hover:bg-[#123A69] text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
+                                            onClick={nextStep}
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
 
-                            <div className="flex items-center justify-center w-lvh mt-4">
-                                <a
-                                    className="py-2 px-8 rounded-md m-5 text-white hover:text-white bg-[#194F90] hover:bg-[#123A69] font-semibold"
-                                    href="#basta"
-                                >
-                                    Back
-                                </a>
-                                <button
-                                    type="submit"
-                                    className={`py-2 px-8 rounded-md text-white hover:text-white ${
-                                        isConfirmed
-                                            ? "bg-[#194F90] hover:bg-[#123A69]"
-                                            : "bg-gray-400 cursor-not-allowed"
-                                    } font-semibold`}
-                                    onClick={setApt}
-                                    disabled={!isConfirmed}
-                                >
-                                    Confirm
-                                </button>
-                            </div>
+                            {/* Step 5 */}
+                            {step === 5 && (
+                                <div className="step-content flex flex-col justify-center items-center w-full">
+                                    <h2 className="text-lg text-center font-semibold">
+                                        Step 5: Confirm Details
+                                    </h2>
+
+                                    <h4 className="text-center text-sm min-w-full  text-gray-500 mb-4">
+                                        Review the following information.
+                                        Appointment number is important. Kindly
+                                        note it.
+                                    </h4>
+
+                                    <div className="w-full lg:w-[800px]">
+                                        <Confirmation formData={formData} />
+                                        <div className="mb-4 items-center w-full ml-auto mr-auto text-center text-[12px]">
+                                            <input
+                                                type="checkbox"
+                                                tabIndex={-1}
+                                                className="mr-2 accent-[#123A69] hover:accent-[#123A69]"
+                                                style={{
+                                                    verticalAlign: "middle",
+                                                }}
+                                                onChange={handleCheckboxChange}
+                                            />
+                                            <label
+                                                style={{
+                                                    verticalAlign: "middle",
+                                                }}
+                                            >
+                                                I confirm that the above
+                                                information is
+                                                <b> true and correct</b> and
+                                                <b>
+                                                    I consent Rizal
+                                                    Technological University{" "}
+                                                </b>
+                                                under the standards of Data
+                                                Protection and Privacy to
+                                                <b> collect and process </b>
+                                                the given data.
+                                            </label>
+
+                                            <label
+                                                style={{
+                                                    verticalAlign: "middle",
+                                                }}
+                                            ></label>
+                                        </div>
+                                    </div>
+                                    <div className="flex w-full justify-evenly">
+                                        <button
+                                            className="bg-red-700 hover:bg-red-900 text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
+                                            onClick={prevStep}
+                                        >
+                                            Previous
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className={`py-2 px-8 rounded-md text-white hover:text-white ${
+                                                isConfirmed
+                                                    ? "bg-[#194F90] hover:bg-[#123A69]"
+                                                    : "bg-gray-400 cursor-not-allowed"
+                                            } font-semibold`}
+                                            onClick={setApt}
+                                            disabled={!isConfirmed}
+                                        >
+                                            Confirm
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                     <dialog ref={modals} className="modal">
                         <div className="flex flex-col justify-center items-center text-white modal-box">
-                            <h1> Your appointment number is:</h1>
+                            <h2> Your appointment number is:</h2>
                             <h1 className="underline"> {succData.aptid}</h1>
                             <PDFDownloadLink
                                 document={<PDFFile succData={succData} />}
-                                fileName="PaoloBanagloriosoAtEdisotLati_nga_pala.pdf"
+                                fileName="RTU-Appointment-Receipt.pdf"
                             >
                                 {({ loading }) =>
                                     loading ? (
@@ -324,12 +366,14 @@ function GuestSetAppointment() {
                                     )
                                 }
                             </PDFDownloadLink>
-                            <div className="text-center">
-                                <b>
-                                    <br />
-                                    *** Appointment number is important. Kindly
-                                    note it ***
-                                </b>
+                            <div className="item-center modal-action">
+                                <label style={{ verticalAlign: "middle" }}>
+                                    <b>
+                                        <br />
+                                        *** Appointment number is important.
+                                        Kindly note it ***
+                                    </b>
+                                </label>
                             </div>
                         </div>
                     </dialog>
