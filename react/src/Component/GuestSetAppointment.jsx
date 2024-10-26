@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import SelectOffice from "./Subcomponent/SelectOffice";
 import Calendar from "./Subcomponent/Calendar";
-import InputDetails from "./Subcomponent/InputDetails";
-import Confirmation from "./Subcomponent/Confirmation";
 import SelectBranch from "./Subcomponent/SelectBranch";
 import axios from "axios";
 import TimePicker from "./Subcomponent/TimePicker";
@@ -10,7 +8,7 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import PDFFile from "./PDFFile";
 import Loading from "./Subcomponent/Loading";
 import GuestDetails from "./Subcomponent/GuestDetails";
-import ConfirmtionG from "./Subcomponent/ConfirmationG";
+import ConfirmationG from "./Subcomponent/ConfirmationG";
 
 function GuestSetAppointment() {
     const [formData, setFormData] = useState({

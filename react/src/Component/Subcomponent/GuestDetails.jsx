@@ -84,7 +84,7 @@ function GuestDetails({ formData, setFormData }) {
                             />
                         </label>
 
-                        {/* Institute Email */}
+                        {/* Email */}
                         <label className="block text-white">
                             Email Address
                             <input
