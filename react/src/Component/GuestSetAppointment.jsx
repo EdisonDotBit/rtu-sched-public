@@ -283,7 +283,7 @@ function GuestSetAppointment() {
                                     </h4>
 
                                     <div className="w-full lg:w-[800px]">
-                                        <Confirmation formData={formData} />
+                                        <ConfirmationG formData={formData} />
                                         <div className="mb-4 items-center w-full ml-auto mr-auto text-center text-[12px]">
                                             <input
                                                 type="checkbox"
