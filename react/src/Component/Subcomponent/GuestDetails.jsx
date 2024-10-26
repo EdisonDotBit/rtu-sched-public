@@ -42,7 +42,7 @@ function GuestDetails({ formData, setFormData }) {
                                 value={formData.aptstudnum}
                                 onChange={handleChange}
                                 type="text"
-                                placeholder="eg. 12345 / Phil. ID"
+                                placeholder="e.g. 12345 / Phil. ID"
                                 onInput={(e) => {
                                     e.target.value = e.target.value.replace(
                                         /[^0-9\/]/g,
