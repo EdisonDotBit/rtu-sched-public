@@ -121,7 +121,10 @@ const AppRouter = () => (
                 </Route>
 
                 <Route path="/guest" element={<GuestLayout />}>
-                    <Route path="" element={<GuestSetAppointment />} />
+                    <Route
+                        path=""
+                        element={<Navigate to="/guest/set-appointment" />}
+                    />
                     <Route
                         path="set-appointment"
                         element={<GuestSetAppointment />}
