@@ -194,7 +194,7 @@ function StudentLayout() {
                 </aside>
 
                 {/* Main Content Area */}
-                <main className="flex-1 bg-white p-6 sm:p-10 rounded-lg overflow-y-auto transition-all duration-300">
+                <main className="flex-1 bg-gray-50 p-6 sm:p-10 rounded-lg overflow-y-auto transition-all duration-300">
                     <Outlet />
                 </main>
             </div>
