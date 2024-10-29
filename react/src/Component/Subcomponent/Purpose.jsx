@@ -29,7 +29,7 @@ const Purpose = ({ formData, setFormData }) => {
                 "Option A Purpose 2",
                 "Option A Purpose 3",
             ]);
-        } else if (formData.aptoffice === "EWQ") {
+        } else if (formData.aptoffice === "SRAC") {
             setOptions([
                 "--Select Purpose--",
                 "Option B Purpose 1",
