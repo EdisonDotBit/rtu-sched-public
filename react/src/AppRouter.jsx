@@ -134,6 +134,7 @@ const AppRouter = () => (
                         element={<ViewAppointments />}
                     />
                 </Route>
+
                 <Route path="/test" element={<AddOffice />} />
 
                 <Route path="/student" element={<StudentLayout />}>
