@@ -79,7 +79,7 @@ function AppointmentsAdmin() {
     };
 
     return (
-        <div className="flex justify-center  h-full">
+        <div className="flex justify-center h-full">
             <div className="flex flex-col items-center gap-[20px]">
                 <input
                     className="bg-neutral-200 border-r-teal-400 text-center w-[300px] p-[5px]"
@@ -89,50 +89,50 @@ function AppointmentsAdmin() {
                     onChange={(e) => setAptEmail(e.target.value)}
                 />
                 {searchResults.length !== 0 && (
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
-                            <thead className="ltr:text-center rtl:text-center">
+                    <div className="overflow-x-auto overflow-y-auto">
+                        <table className="min-w-full divide-y-2 divide-gray-200 bg-white">
+                            <thead className="ltr:text-center rtl:text-center text-[9px]">
                                 <tr>
-                                    <th className=" whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                         Appointment
                                         <br />
                                         Number
                                     </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                         Type
                                     </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                         Full name
                                     </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                         Branch
                                     </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                         Office
                                     </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                         Date
                                     </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                         Time
                                     </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                         Purpose
                                     </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                        ID <br />
-                                        Number / Type
+                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
+                                        ID / Student <br />
+                                        Number
                                     </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                         Status
                                     </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                         Email
                                     </th>
                                 </tr>
                             </thead>
 
-                            <tbody className="divide-y divide-gray-200">
+                            <tbody className="divide-y divide-gray-200 text-[9px] text-center">
                                 {searchResults
                                     .slice(0, 20)
                                     .map((apt, index) => (
@@ -172,24 +172,24 @@ function AppointmentsAdmin() {
                                             </td>
                                             <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                                 <button
-                                                    className="group relative inline-block overflow-hidden border border-indigo-600 px-8 py-3 focus:outline-none focus:ring"
+                                                    className="group relative inline-block overflow-hidden border border-indigo-600 px-4 py-2 focus:outline-none focus:ring"
                                                     onClick={() =>
                                                         openModal1(apt.aptid)
                                                     }
                                                 >
-                                                    <span className="absolute inset-x-0 bottom-0 h-[2px] bg-indigo-600 transition-all group-hover:h-full group-active:bg-indigo-500"></span>
-                                                    <span className="relative text-sm font-medium text-indigo-600 transition-colors group-hover:text-white">
+                                                    <span className="text-[10px] absolute inset-x-0 bottom-0 h-[2px] bg-indigo-600 transition-all group-hover:h-full group-active:bg-indigo-500"></span>
+                                                    <span className="text-[10px] relative text-sm font-medium text-indigo-600 transition-colors group-hover:text-white">
                                                         Done
                                                     </span>
                                                 </button>
                                                 <button
-                                                    className="ml-4 group relative inline-block overflow-hidden border border-red-600 px-8 py-3 focus:outline-none focus:ring"
+                                                    className="ml-4 group relative inline-block overflow-hidden border border-red-600 px-4 py-2 focus:outline-none focus:ring"
                                                     onClick={() =>
                                                         openModal2(apt.aptid)
                                                     }
                                                 >
-                                                    <span className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600 transition-all group-hover:h-full group-active:bg-red-500"></span>
-                                                    <span className="relative text-sm font-medium text-red-600 transition-colors group-hover:text-white">
+                                                    <span className="text-[10px] absolute inset-x-0 bottom-0 h-[2px] bg-red-600 transition-all group-hover:h-full group-active:bg-red-500"></span>
+                                                    <span className="text-[10px] relative text-sm font-medium text-red-600 transition-colors group-hover:text-white">
                                                         Delete
                                                     </span>
                                                 </button>
