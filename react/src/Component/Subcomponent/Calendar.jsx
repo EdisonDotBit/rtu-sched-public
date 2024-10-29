@@ -281,7 +281,9 @@ const Calendar = ({ formData, setFormData, limit, appointments }) => {
                                 <th className="text-white p-2">Sat</th>
                             </tr>
                         </thead>
-                        <tbody>{renderCalendarDays()}</tbody>
+                        <tbody className="bg-white">
+                            {renderCalendarDays()}
+                        </tbody>
                     </table>
                 </>
             )}
