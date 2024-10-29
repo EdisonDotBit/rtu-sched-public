@@ -18,8 +18,8 @@ function SelectOffice({ formData, setFormData, office, setOffice, setLimit }) {
                     key={index}
                     className={`p-6 border border-gray-300 rounded-md shadow-md transition-transform hover:scale-105 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-[300px] mx-2 my-2 cursor-pointer ${
                         formData.aptoffice === officeItem.offabbr
-                            ? "bg-blue-500"
-                            : ""
+                            ? "bg-blue-500 text-white"
+                            : "bg-white"
                     }`}
                     onMouseEnter={() => setExpanded(true)}
                     onMouseLeave={() => setExpanded(false)}
