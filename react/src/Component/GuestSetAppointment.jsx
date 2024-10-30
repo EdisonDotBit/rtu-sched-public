@@ -342,7 +342,7 @@ function GuestSetAppointment() {
                         </div>
                     </div>
                     <dialog ref={modals} className="modal">
-                        <div className="flex flex-col justify-center items-center text-white modal-box">
+                        <div className="modal-box flex flex-col justify-center items-center text-white bg-[#194F90]">
                             <h2> Your appointment number is:</h2>
                             <h1 className="underline"> {succData.aptid}</h1>
                             <PDFDownloadLink
@@ -357,27 +357,27 @@ function GuestSetAppointment() {
                                     ) : (
                                         <button
                                             type="button"
-                                            className="btn btn-outline mt-6"
+                                            className="btn btn-outline text-white hover:bg-white hover:text-[#194F90] mt-6"
                                         >
                                             Download
                                         </button>
                                     )
                                 }
                             </PDFDownloadLink>
-                            <div className="item-center modal-action">
+                            <div className="item-center modal-action text-sm">
                                 <label style={{ verticalAlign: "middle" }}>
                                     <b>
                                         <br />
-                                        *** Appointment number is important.
-                                        Kindly note it ***
+                                        ***Your appointment number is important.
+                                        Please make a note of it.***
                                     </b>
                                 </label>
                             </div>
                         </div>
                     </dialog>
                     <dialog ref={modals1} className="modal">
-                        <div className="flex flex-col justify-center items-center text-white modal-box">
-                            <h1 className=" text-red-600">
+                        <div className="modal-box flex flex-col gap-2 justify-center items-center text-white bg-[#194F90]">
+                            <h1 className=" text-red-400 font-bold">
                                 Appointment Failed
                             </h1>
                             <h3>

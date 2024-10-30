@@ -364,12 +364,12 @@ function SetAppointment() {
                                     )
                                 }
                             </PDFDownloadLink>
-                            <div className="item-center modal-action">
+                            <div className="item-center modal-action text-sm">
                                 <label style={{ verticalAlign: "middle" }}>
                                     <b>
                                         <br />
-                                        *** Appointment number is important.
-                                        Kindly note it ***
+                                        ***Your appointment number is important.
+                                        Please make a note of it.***
                                     </b>
                                 </label>
                             </div>
