@@ -78,7 +78,7 @@ function OfficelistAdmin() {
                         />
                         <div className="flex justify-end w-full">
                             <a href="#add">
-                                <button className="btn bg-amber-300 w-50">
+                                <button className="btn bg-[#194F90] hover:bg-[#123A69] text-white rounded-md border-0 inline-block px-8 py-2 text-md font-medium focus:relative">
                                     + Add Office
                                 </button>
                             </a>
@@ -89,27 +89,27 @@ function OfficelistAdmin() {
                                 <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
                                     <thead className="ltr:text-center rtl:text-center">
                                         <tr>
-                                            <th className=" whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                            <th className=" whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                                 Office ID
                                             </th>
-                                            <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                            <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                                 Office Name
                                             </th>
-                                            <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                            <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                                 Office
                                                 <br />
                                                 Abbreviation
                                             </th>
-                                            <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                            <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                                 Office Limit
                                             </th>
-                                            <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                            <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                                 Tools
                                             </th>
                                         </tr>
                                     </thead>
 
-                                    <tbody className="divide-y divide-gray-200">
+                                    <tbody className="divide-y divide-gray-200 text-center">
                                         {searchResults
                                             .slice(0, 9)
                                             .map((office, index) => (

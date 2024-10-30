@@ -72,7 +72,7 @@ function AccountSettingsAdmin() {
                         />
                         <div className="flex justify-end w-full">
                             <a href="#add">
-                                <button className="btn bg-amber-300 w-50">
+                                <button className="btn bg-[#194F90] hover:bg-[#123A69] text-white rounded-md border-0 inline-block px-8 py-2 text-md font-medium focus:relative">
                                     + Add Admin Account
                                 </button>
                             </a>
@@ -83,22 +83,22 @@ function AccountSettingsAdmin() {
                                 <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
                                     <thead className="ltr:text-center rtl:text-center">
                                         <tr>
-                                            <th className=" whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                            <th className=" whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                                 Employee Number
                                             </th>
-                                            <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                            <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                                 Full name
                                             </th>
-                                            <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                            <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                                 Username
                                             </th>
-                                            <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                            <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                                 Tools
                                             </th>
                                         </tr>
                                     </thead>
 
-                                    <tbody className="divide-y divide-gray-200">
+                                    <tbody className="divide-y divide-gray-200 text-center">
                                         {searchResults
                                             .slice(0, 9)
                                             .map((Account, index) => (

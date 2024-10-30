@@ -172,24 +172,24 @@ function AppointmentsAdmin() {
                                             </td>
                                             <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                                 <button
-                                                    className="group relative inline-block overflow-hidden border border-indigo-600 px-4 py-2 focus:outline-none focus:ring"
+                                                    className="text-[9px] group relative inline-block overflow-hidden border border-indigo-600 px-3 py-1 focus:outline-none focus:ring"
                                                     onClick={() =>
                                                         openModal1(apt.aptid)
                                                     }
                                                 >
-                                                    <span className="text-[10px] absolute inset-x-0 bottom-0 h-[2px] bg-indigo-600 transition-all group-hover:h-full group-active:bg-indigo-500"></span>
-                                                    <span className="text-[10px] relative text-sm font-medium text-indigo-600 transition-colors group-hover:text-white">
+                                                    <span className="absolute inset-x-0 bottom-0 h-[2px] bg-indigo-600 transition-all group-hover:h-full group-active:bg-indigo-500"></span>
+                                                    <span className="relative text-[12px] font-medium text-indigo-600 transition-colors group-hover:text-white">
                                                         Done
                                                     </span>
                                                 </button>
                                                 <button
-                                                    className="ml-4 group relative inline-block overflow-hidden border border-red-600 px-4 py-2 focus:outline-none focus:ring"
+                                                    className="ml-4 group relative inline-block overflow-hidden border border-red-600 px-3 py-1 focus:outline-none focus:ring"
                                                     onClick={() =>
                                                         openModal2(apt.aptid)
                                                     }
                                                 >
-                                                    <span className="text-[10px] absolute inset-x-0 bottom-0 h-[2px] bg-red-600 transition-all group-hover:h-full group-active:bg-red-500"></span>
-                                                    <span className="text-[10px] relative text-sm font-medium text-red-600 transition-colors group-hover:text-white">
+                                                    <span className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600 transition-all group-hover:h-full group-active:bg-red-500"></span>
+                                                    <span className="relative text-[12px] font-medium text-red-600 transition-colors group-hover:text-white">
                                                         Delete
                                                     </span>
                                                 </button>
@@ -202,14 +202,16 @@ function AppointmentsAdmin() {
                 )}
             </div>
             <dialog ref={modalRef1} className="modal">
-                <div className="modal-box border-cyan-400 bg-slate-300">
-                    <h3 className="font-bold text-lg">Modal 1 Content</h3>
+                <div className="modal-box text-white bg-[#194F90]">
+                    <h3 className="font-bold text-lg">
+                        Mark Appointment Ticket as Done?
+                    </h3>
                     <p className="py-4">
                         Appointment Number: {selectedAppointmentNum}
                     </p>
                     <div className="modal-action">
                         <button
-                            className="btn"
+                            className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
                             type="button"
                             onClick={(e) => upApt(e, selectedAppointmentNum)}
                         >
@@ -217,7 +219,7 @@ function AppointmentsAdmin() {
                         </button>
                         <button
                             type="button"
-                            className="btn"
+                            className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
                             onClick={() => {
                                 modalRef1.current.close();
                                 window.location.reload();
@@ -230,15 +232,17 @@ function AppointmentsAdmin() {
             </dialog>
 
             <dialog ref={modalRef2} className="modal">
-                <div className="modal-box">
-                    <h3 className="font-bold text-lg">Modal 2 Content</h3>
+                <div className="modal-box text-white bg-[#194F90]">
+                    <h3 className="font-bold text-lg">
+                        Delete Appointment Ticket?
+                    </h3>
                     <p className="py-4">
                         Appointment Number: {selectedAppointmentNum}
                     </p>
                     <div className="modal-action">
                         <button
                             type="button"
-                            className="btn"
+                            className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
                             onClick={(e) =>
                                 deleteApt(e, selectedAppointmentNum)
                             }
@@ -247,7 +251,7 @@ function AppointmentsAdmin() {
                         </button>
                         <button
                             type="button"
-                            className="btn"
+                            className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
                             onClick={() => modalRef2.current.close()}
                         >
                             Close
