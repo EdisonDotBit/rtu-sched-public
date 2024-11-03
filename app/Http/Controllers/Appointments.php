@@ -13,6 +13,13 @@ class Appointments extends Controller
         $apt = Appointment::where('aptstatus', 'ongoing')->get();
         return $apt;
     }
+
+    public function allRoles(string $aptrole)
+    {
+        $apt = Appointment::where('aptoffice', $aptrole)->get();
+        return $apt;
+    }
+
     public function allAppointments()
     {
         $apt = Appointment::all();
@@ -34,6 +41,7 @@ class Appointments extends Controller
         $apt->aptemail = $request->input('aptemail');
         $apt->apttime = $request->input('apttime');
 
+
         try {
             $apt->save();
 
@@ -50,8 +58,6 @@ class Appointments extends Controller
             ], 400);
         }
     }
-
-
 
     public function getapt(int $aptid)
     {
