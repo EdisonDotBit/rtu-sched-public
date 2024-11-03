@@ -304,7 +304,7 @@ function SupAdminLayout() {
                 {/* Footer */}
                 <footer className="h-9 border-t text-center text-xs text-[#3c4043] flex items-center justify-center">
                     <p>
-                        Copyright © 2024 - All right reserved by Rizal
+                        Copyright © 2024 - All rights reserved by Rizal
                         Technological University
                     </p>
                 </footer>
