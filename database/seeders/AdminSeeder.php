@@ -16,9 +16,10 @@ class AdminSeeder extends Seeder
     {
         DB::table('admins')->insert([
             'admuser' => 'admin',
-            'admpass' => 'bakalako', // You may hash the password here
+            'admpass' => 'RTU$#@!1234', // You may hash the password here
             'admname' => 'Administrator',
             'admempnum' => 'superadmin',
+            'admrole' => 'admin',
         ]);
     }
 }
