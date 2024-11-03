@@ -8,6 +8,7 @@ function AddAccount() {
         admempnum: "",
         admuser: "",
         admpass: "",
+        admrole: "",
     });
     const [showPassword, setShowPassword] = useState(false);
 
@@ -109,6 +110,17 @@ function AddAccount() {
                                         >
                                             {showPassword ? "Hide" : "Show"}{" "}
                                         </button>
+                                    </label>
+                                    <label className="m-3 focus:border-transparent input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">
+                                        Select Role :
+                                        <input
+                                            name="admrole"
+                                            value={formData.admrole}
+                                            onChange={handleChange}
+                                            type="text"
+                                            placeholder="mapagmahalzero2"
+                                            className="grow focus:border-blue-400"
+                                        />
                                     </label>
 
                                     <div className="flex ">
