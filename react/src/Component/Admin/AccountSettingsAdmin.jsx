@@ -15,6 +15,7 @@ function AccountSettingsAdmin() {
         const getData = async () => {
             const getRes = await fetch(`${apiBaseUrl}/api/admin/all`);
             const getDataResult = await getRes.json();
+            setAccountsData(getDataResult);
             setSearchResults(getDataResult);
         };
         getData();
@@ -93,6 +94,9 @@ function AccountSettingsAdmin() {
                                                 Username
                                             </th>
                                             <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
+                                                Role
+                                            </th>
+                                            <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                                 Tools
                                             </th>
                                         </tr>
@@ -113,6 +117,10 @@ function AccountSettingsAdmin() {
                                                         {Account.admuser}
                                                     </td>
                                                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                        {Account.admrole}
+                                                    </td>
+
+                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                                         <a
                                                             onClick={(e) =>
                                                                 toEdit(
@@ -123,7 +131,7 @@ function AccountSettingsAdmin() {
                                                             href="#edit"
                                                         >
                                                             <button className="group relative inline-block overflow-hidden border border-indigo-600 px-8 py-3 focus:outline-none focus:ring">
-                                                                <span className="absolute inset-x-0 bottom-0 h-[2px] bg-slate-400 transition-all group-hover:h-full group-active:bg-slate-500"></span>
+                                                                <span className="absolute inset-x-0 bottom-0 h-[2px] bg-indigo-600 transition-all group-hover:h-full group-active:bg-indigo-500"></span>
                                                                 <span className="relative text-sm font-medium text-indigo-600 transition-colors group-hover:text-white">
                                                                     Edit
                                                                 </span>
