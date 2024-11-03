@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { useAuth } from "../../Hooks/useAuth";
 
 function AppointmentsAdmin() {
     const [aptemail, setAptEmail] = useState("");
@@ -9,9 +10,12 @@ function AppointmentsAdmin() {
     const modalRef2 = useRef(null);
     const [selectedAppointmentNum, setSelectedAppointmentNum] = useState(null);
 
+    const { role } = useAuth();
+
     useEffect(() => {
         const getData = async () => {
-            const getRes = await fetch(`${apiBaseUrl}/api/all`);
+            // const getRes = await fetch(`${apiBaseUrl}/api/all`);
+            const getRes = await fetch(`${apiBaseUrl}/api/filteredapt/${role}`);
             const getDataResult = await getRes.json();
             setAptData(getDataResult);
             setSearchResults(getDataResult);
