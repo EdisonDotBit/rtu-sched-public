@@ -1,28 +1,34 @@
 import { createContext, useContext, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "./useLocalStorage";
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useLocalStorage("user", null);
-    const [role, setRole] = useLocalStorage("role", null);
+    const [user, setUser] = useLocalStorage("user", null); // Key for user
+    const [role, setRole] = useLocalStorage("role", null); // Key for role
     const navigate = useNavigate();
 
-    // call this function when you want to authenticate the user
+    // Call this function when you want to authenticate the user
     const login = async (data) => {
-        setUser(data);
-        setRole(data);
-        if (data == "admin") {
+        setUser(data.user); // This sets 'user' in local storage
+        setRole(data.role); // This sets 'role' in local storage
+        if (data.user === "admin") {
             navigate("/ewqqwe/suppa");
         } else {
             navigate("/ewqqwe/admin");
         }
     };
 
-    // call this function to sign out logged in user
+    // Call this function to sign out the logged-in user
     const logout = () => {
-        setUser(null);
-        setRole(null);
+        setUser(null); // Clear user from state and local storage
+        setRole(null); // Clear role from state and local storage
+
+        // Remove the newly created keys from local storage (this is optional)
+        localStorage.removeItem("admuser");
+        localStorage.removeItem("admrole");
+
         navigate("/ewqqwe/login", { replace: true });
     };
 
@@ -33,13 +39,12 @@ export const AuthProvider = ({ children }) => {
             login,
             logout,
         }),
-        [user]
+        [user, role]
     );
+
     return (
         <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
     );
 };
 
-export const useAuth = () => {
-    return useContext(AuthContext);
-};
+export const useAuth = () => useContext(AuthContext);
