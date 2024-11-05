@@ -19,20 +19,24 @@ function LoginAdmin() {
         e.preventDefault();
 
         try {
-            const res = await axios.post(
+            const response = await axios.post(
                 `${apiBaseUrl}/api/admin/login`,
                 formData
             );
 
-            if (res.status === 200) {
-                console.log(res.data.message);
-                login(formData.admuser);
+            if (response.status === 200) {
+                // Pass the entire response to the login function
+                login({
+                    user: formData.admuser,
+                    role: response.data.admrole,
+                });
                 alert("Login Success");
             }
         } catch (error) {
             alert("Wrong Credentials please try again");
         }
     };
+
     return (
         <>
             <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
