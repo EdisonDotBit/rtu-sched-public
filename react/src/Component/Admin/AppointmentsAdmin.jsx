@@ -12,16 +12,34 @@ function AppointmentsAdmin() {
 
     const { role } = useAuth();
 
+    // useEffect(() => {
+    //     const getData = async () => {
+    //         // const getRes = await fetch(`${apiBaseUrl}/api/all`);
+    //         const getRes = await fetch(`${apiBaseUrl}/api/filteredapt/${role}`);
+    //         const getDataResult = await getRes.json();
+    //         setAptData(getDataResult);
+    //         setSearchResults(getDataResult);
+    //     };
+    //     getData();
+    // }, []);
+
     useEffect(() => {
         const getData = async () => {
-            // const getRes = await fetch(`${apiBaseUrl}/api/all`);
-            const getRes = await fetch(`${apiBaseUrl}/api/filteredapt/${role}`);
+            let endpoint;
+
+            if (role === "superadmin") {
+                endpoint = `${apiBaseUrl}/api/all`; // Assuming this endpoint returns all appointments
+            } else {
+                endpoint = `${apiBaseUrl}/api/filteredapt/${role}`;
+            }
+
+            const getRes = await fetch(endpoint);
             const getDataResult = await getRes.json();
             setAptData(getDataResult);
             setSearchResults(getDataResult);
         };
         getData();
-    }, []);
+    }, [role, apiBaseUrl]); // Add role as a dependency
 
     useEffect(() => {
         const filteredResults = aptData.filter((apt) => {
