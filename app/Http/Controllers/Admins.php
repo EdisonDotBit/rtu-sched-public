@@ -105,6 +105,8 @@ class Admins extends Controller
             return response()->json([
                 'status' => 200,
                 'message' => 'Login successful',
+                'admuser' => $user->admuser,
+                'admrole' => $user->admrole,
             ]);
         }
 
