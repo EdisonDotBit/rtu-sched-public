@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import Campus from "./Asset/RTU_Campus.jpg";
-function SelectBranch({ formData, setFormData }) {
+import BoniCampus from "./Asset/RTU_Campus.jpg";
+import PasigCampus from "./Asset/RTU_Pasig.jpg";
+function SelectBranch({ formData, setFormData, setBranchSelected }) {
     const [branches, setBranch] = useState([
         {
-            image: Campus,
+            image: BoniCampus,
             bname: "Boni",
             location: "Boni Avenue, Mandaluyong City, Metro Manila ",
         },
         {
-            image: Campus,
+            image: PasigCampus,
             bname: "Pasig",
             location: "Eusebio, Pasig, Metro Manila",
         },
@@ -20,6 +21,7 @@ function SelectBranch({ formData, setFormData }) {
             ...prevFormData,
             aptbranch: selected,
         }));
+        setBranchSelected(true);
     };
 
     return (
