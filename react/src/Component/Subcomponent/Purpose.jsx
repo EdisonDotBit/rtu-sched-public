@@ -5,11 +5,14 @@ const Purpose = ({ formData, setFormData }) => {
     const [dropdowns, setDropdowns] = useState([{ id: 0, value: "" }]);
 
     // Options for the dropdown
-    const [options, setOptions] = useState(["Select Purpose"]);
+    const [options, setOptions] = useState([
+        "Option A Purpose 1",
+        "Option A Purpose 2",
+        "Option A Purpose 3",
+    ]);
 
     // Initialize dropdowns from formData when the component mounts
     useEffect(() => {
-        // Split the aptpurpose string into an array to initialize dropdowns
         if (formData.aptpurpose) {
             const initialDropdowns = formData.aptpurpose
                 .split(", ")
@@ -24,20 +27,18 @@ const Purpose = ({ formData, setFormData }) => {
     useEffect(() => {
         if (formData.aptoffice === "MISO") {
             setOptions([
-                "--Select Purpose--",
                 "Option A Purpose 1",
                 "Option A Purpose 2",
                 "Option A Purpose 3",
             ]);
         } else if (formData.aptoffice === "SRAC") {
             setOptions([
-                "--Select Purpose--",
                 "Option B Purpose 1",
                 "Option B Purpose 2",
                 "Option B Purpose 3",
             ]);
         } else {
-            setOptions(["--Select Purpose--"]);
+            setOptions([]);
         }
     }, [formData.aptoffice]);
 
@@ -54,8 +55,7 @@ const Purpose = ({ formData, setFormData }) => {
             (dropdown) => dropdown.id !== id
         );
         const newStringValue = filteredDropdowns
-            .map((dropdown) => dropdown.value)
-            .filter((value) => value && value !== "--Select Purpose--")
+            .map((dropdown) => dropdown.value || "")
             .join(", ");
         setDropdowns(filteredDropdowns);
         setFormData((prevFormData) => ({
@@ -75,7 +75,6 @@ const Purpose = ({ formData, setFormData }) => {
         // Update formData to store all selected dropdown values
         const newStringValue = updatedDropdowns
             .map((dropdown) => dropdown.value || "")
-            .filter((value) => value !== "--Select Purpose--")
             .join(", ");
         setFormData((prevFormData) => ({
             ...prevFormData,
@@ -98,6 +97,9 @@ const Purpose = ({ formData, setFormData }) => {
                         value={dropdown.value || ""}
                         onChange={(e) => handleDropdownChange(e, index)}
                     >
+                        <option value="" disabled selected>
+                            --Select Purpose--
+                        </option>
                         {options.map((option) => (
                             <option key={option} value={option}>
                                 {option}
