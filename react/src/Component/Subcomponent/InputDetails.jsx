@@ -1,7 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import Purpose from "./Purpose";
 
-function InputDetails({ formData, setFormData }) {
+function InputDetails({ formData, setFormData, errors }) {
+    const [touched, setTouched] = useState({
+        aptstudnum: false,
+        aptname: false,
+        aptpnumber: false,
+        aptemail: false,
+    });
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevState) => ({
@@ -10,16 +17,19 @@ function InputDetails({ formData, setFormData }) {
         }));
     };
 
+    const handleBlur = (e) => {
+        const { name } = e.target;
+        setTouched((prevState) => ({
+            ...prevState,
+            [name]: true,
+        }));
+    };
+
     return (
         <>
             <div className="w-full h-auto flex justify-center">
                 {/* Main container */}
                 <div className="w-full md:w-3/4 lg:w-[55%] border border-gray-300 bg-[#194F90] rounded-md shadow-md p-8">
-                    {/* Student Details Header */}
-                    {/* <h1 className="text-2xl font-bold text-center mb-6 underline">
-                        Student Details
-                    </h1> */}
-
                     {/* Purpose Selection (Dropdown) */}
                     <div className="mb-6">
                         <Purpose
@@ -30,7 +40,7 @@ function InputDetails({ formData, setFormData }) {
 
                     {/* Personal Details Section */}
                     <div className="flex flex-col space-y-4">
-                        <h2 className="text-white text-xl font-semibold text-center mt-4">
+                        <h2 className="text-white text-xl font-semibold text-center mt-2">
                             Personal Details
                         </h2>
 
@@ -42,16 +52,33 @@ function InputDetails({ formData, setFormData }) {
                                 name="aptstudnum"
                                 value={formData.aptstudnum}
                                 onChange={handleChange}
+                                onBlur={handleBlur} // Track blur
                                 type="text"
-                                placeholder="####-######"
+                                placeholder="e.g. 2021-######"
                                 onInput={(e) => {
-                                    e.target.value = e.target.value.replace(
+                                    let value = e.target.value.replace(
                                         /[^0-9\-]/g,
                                         ""
-                                    );
+                                    ); // Remove non-numeric characters except hyphen
+                                    if (value.length > 4 && value[4] !== "-") {
+                                        // Insert hyphen after the first 4 digits
+                                        value =
+                                            value.slice(0, 4) +
+                                            "-" +
+                                            value.slice(4);
+                                    }
+                                    if (value.length > 11) {
+                                        value = value.slice(0, 11); // Ensures no more than 11 characters
+                                    }
+                                    e.target.value = value; // Apply the formatted value
                                 }}
                             />
                         </label>
+                        {touched.aptstudnum && errors.aptstudnum && (
+                            <p className="text-[#FFDB75] text-sm">
+                                {errors.aptstudnum}
+                            </p>
+                        )}
 
                         {/* Full Name */}
                         <label className="block text-white">
@@ -61,10 +88,22 @@ function InputDetails({ formData, setFormData }) {
                                 name="aptname"
                                 value={formData.aptname}
                                 onChange={handleChange}
+                                onBlur={handleBlur}
                                 type="text"
                                 placeholder="e.g. Juan A. Dela Cruz"
+                                onInput={(e) => {
+                                    e.target.value = e.target.value.replace(
+                                        /[^a-zA-Z\s\.\-\']+/g,
+                                        ""
+                                    );
+                                }}
                             />
                         </label>
+                        {touched.aptname && errors.aptname && (
+                            <p className="text-[#FFDB75] text-sm">
+                                {errors.aptname}
+                            </p>
+                        )}
 
                         {/* Contact Number */}
                         <label className="block text-white">
@@ -74,16 +113,21 @@ function InputDetails({ formData, setFormData }) {
                                 name="aptpnumber"
                                 value={formData.aptpnumber}
                                 onChange={handleChange}
+                                onBlur={handleBlur}
                                 type="tel"
                                 placeholder="09#########"
                                 onInput={(e) => {
-                                    e.target.value = e.target.value.replace(
-                                        /[^0-9/+]/g,
-                                        ""
-                                    );
+                                    e.target.value = e.target.value
+                                        .replace(/[^0-9]/g, "")
+                                        .slice(0, 11);
                                 }}
                             />
                         </label>
+                        {touched.aptpnumber && errors.aptpnumber && (
+                            <p className="text-[#FFDB75] text-sm">
+                                {errors.aptpnumber}
+                            </p>
+                        )}
 
                         {/* Institute Email */}
                         <label className="block text-white">
@@ -93,10 +137,16 @@ function InputDetails({ formData, setFormData }) {
                                 name="aptemail"
                                 value={formData.aptemail}
                                 onChange={handleChange}
+                                onBlur={handleBlur}
                                 type="email"
-                                placeholder="email@gmail.com"
+                                placeholder="e.g. 2021-######@rtu.edu.ph"
                             />
                         </label>
+                        {touched.aptemail && errors.aptemail && (
+                            <p className="text-[#FFDB75] text-sm">
+                                {errors.aptemail}
+                            </p>
+                        )}
                     </div>
                 </div>
             </div>
