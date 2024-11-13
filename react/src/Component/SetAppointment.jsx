@@ -9,7 +9,6 @@ import TimePicker from "./Subcomponent/TimePicker";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import PDFFile from "./PDFFile";
 import Loading from "./Subcomponent/Loading";
-import Accord from "../Component/Subcomponent/Asset/bg.jpg";
 
 function SetAppointment() {
     const [formData, setFormData] = useState({
@@ -24,24 +23,21 @@ function SetAppointment() {
         aptpnumber: "",
         apttime: "",
     });
-    const [appointmentIds, setAptID] = useState([]);
+
     const [limit, setLimit] = useState(null);
     const [office, setOffice] = useState([]);
-    const [selectedAccordion, setSelectedAccordion] = useState(0);
     const [appointments, setAppointments] = useState([]);
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-    const [formReady, setFormReady] = useState(false);
     const modals = useRef(null);
     const modals1 = useRef(null);
     const [succData, setSuccData] = useState({});
+    const [isBranchSelected, setIsBranchSelected] = useState(false);
+    const [isOfficeSelected, setIsOfficeSelected] = useState(false);
+    const [isTimeSelected, setIsTimeSelected] = useState(false);
+    const [isInputFilled, setIsInputFilled] = useState(false);
+    const [errors, setErrors] = useState({});
     const [isConfirmed, setIsConfirmed] = useState(false);
-    const handleAccordionClick = (index) => {
-        if (selectedAccordion === index) {
-            setSelectedAccordion(null);
-        } else {
-            setSelectedAccordion(index);
-        }
-    };
+
     useEffect(() => {
         const getData = async () => {
             const getRes = await fetch(`${apiBaseUrl}/api/office/all`);
@@ -50,6 +46,7 @@ function SetAppointment() {
         };
         getData();
     }, []);
+
     useEffect(() => {
         const getData = async () => {
             const getRes = await fetch(`${apiBaseUrl}/api/allongoing`);
@@ -58,6 +55,65 @@ function SetAppointment() {
         };
         getData();
     }, []);
+
+    useEffect(() => {
+        // Perform validation
+        const newErrors = {};
+
+        // Validate Purpose
+        if (
+            !formData.aptpurpose ||
+            formData.aptpurpose === "--Select Purpose--"
+        ) {
+            newErrors.aptpurpose = "Please select a purpose.";
+        }
+
+        // Validate Student Number (Format: ####-######)
+        if (!formData.aptstudnum) {
+            newErrors.aptstudnum = "Student number is required.";
+        } else if (!/^[0-9]{4}-[0-9]{6}$/.test(formData.aptstudnum)) {
+            newErrors.aptstudnum =
+                "Student number must follow the format ####-######.";
+        }
+
+        // Validate Name (Ensure it's not empty and has at least 10 characters)
+        if (!formData.aptname) {
+            newErrors.aptname = "Full name is required.";
+        } else if (formData.aptname.length < 10) {
+            newErrors.aptname = "Full name must be at least 10 characters.";
+        }
+
+        // Validate Contact Number (Ensure it's valid and 11 digits)
+        if (!formData.aptpnumber) {
+            newErrors.aptpnumber = "Contact number is required.";
+        } else if (
+            formData.aptpnumber &&
+            !/^[0-9]{11}$/.test(formData.aptpnumber)
+        ) {
+            newErrors.aptpnumber = "Contact number must be 11 digits long.";
+        }
+
+        // Validate Email (Ensure it's not empty and ends with @rtu.edu.ph)
+        if (!formData.aptemail) {
+            newErrors.aptemail = "Institute email is required.";
+        } else if (!/^\d{4}-\d{6}@rtu\.edu\.ph$/.test(formData.aptemail)) {
+            newErrors.aptemail =
+                "Institute Email must be in the format ####-######@rtu.edu.ph.";
+        }
+
+        // Check if the form is valid
+        const isFormValid = Object.keys(newErrors).length === 0;
+
+        setErrors(newErrors);
+        setIsInputFilled(isFormValid);
+    }, [formData]);
+
+    const handleBlur = (field) => {
+        setTouched((prevTouched) => ({
+            ...prevTouched,
+            [field]: true,
+        }));
+    };
 
     const setApt = async (e) => {
         e.preventDefault();
@@ -87,21 +143,32 @@ function SetAppointment() {
             }
         }
     };
+
+    const handleBranchSelect = () => {
+        setIsBranchSelected(true);
+    };
+
+    const handleOfficeSelect = () => {
+        setIsOfficeSelected(true);
+    };
+
+    const handleTimeSelect = () => {
+        setIsTimeSelected(true);
+    };
+
     const handleCheckboxChange = (e) => {
         setIsConfirmed(e.target.checked);
     };
 
-    const handleAccordinc = (e) => {
-        e.preventDefault();
-        setSelectedAccordion((prevState) => prevState + 1);
-    };
     const openmodal = (data) => {
         setSuccData(data);
         modals.current.showModal();
     };
+
     const openmodal1 = () => {
         modals1.current.showModal();
     };
+
     const [step, setStep] = useState(1);
 
     const nextStep = () => {
@@ -111,6 +178,7 @@ function SetAppointment() {
     const prevStep = () => {
         setStep(step - 1);
     };
+
     return (
         <>
             <form>
@@ -146,12 +214,20 @@ function SetAppointment() {
                                         <SelectBranch
                                             formData={formData}
                                             setFormData={setFormData}
+                                            setBranchSelected={
+                                                handleBranchSelect
+                                            }
                                         />
                                     </div>
                                     <div className="flex w-full justify-evenly">
                                         <button
-                                            className=" bg-[#194F90] hover:bg-[#123A69] text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
+                                            className={`py-2 px-8 rounded-md text-white hover:text-white ${
+                                                isBranchSelected
+                                                    ? "bg-[#194F90] hover:bg-[#123A69]"
+                                                    : "bg-gray-400 cursor-not-allowed"
+                                            } font-medium`}
                                             onClick={nextStep}
+                                            disabled={!isBranchSelected}
                                         >
                                             Next
                                         </button>
@@ -175,6 +251,9 @@ function SetAppointment() {
                                             office={office}
                                             setOffice={setOffice}
                                             setLimit={setLimit}
+                                            setOfficeSelected={
+                                                handleOfficeSelect
+                                            }
                                         />
                                     </div>
                                     <div className="flex w-full justify-evenly mt-28">
@@ -185,8 +264,13 @@ function SetAppointment() {
                                             Previous
                                         </button>
                                         <button
-                                            className=" bg-[#194F90] hover:bg-[#123A69] text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
+                                            className={`py-2 px-8 rounded-md text-white hover:text-white ${
+                                                isOfficeSelected
+                                                    ? "bg-[#194F90] hover:bg-[#123A69]"
+                                                    : "bg-gray-400 cursor-not-allowed"
+                                            } font-medium`}
                                             onClick={nextStep}
+                                            disabled={!isOfficeSelected}
                                         >
                                             Next
                                         </button>
@@ -215,6 +299,7 @@ function SetAppointment() {
                                             setFormData={setFormData}
                                             appointments={appointments}
                                             limit={limit}
+                                            setTimeSelected={handleTimeSelect}
                                         />
                                     </div>
                                     <div className="flex w-full justify-evenly">
@@ -225,8 +310,13 @@ function SetAppointment() {
                                             Previous
                                         </button>
                                         <button
-                                            className=" bg-[#194F90] hover:bg-[#123A69] text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
+                                            className={`py-2 px-8 rounded-md text-white hover:text-white ${
+                                                isTimeSelected
+                                                    ? "bg-[#194F90] hover:bg-[#123A69]"
+                                                    : "bg-gray-400 cursor-not-allowed"
+                                            } font-medium`}
                                             onClick={nextStep}
+                                            disabled={!isTimeSelected}
                                         >
                                             Next
                                         </button>
@@ -248,6 +338,7 @@ function SetAppointment() {
                                         <InputDetails
                                             formData={formData}
                                             setFormData={setFormData}
+                                            errors={errors}
                                         />
                                     </div>
                                     <div className="flex w-full justify-evenly">
@@ -258,8 +349,13 @@ function SetAppointment() {
                                             Previous
                                         </button>
                                         <button
-                                            className=" bg-[#194F90] hover:bg-[#123A69] text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
+                                            className={`py-2 px-8 rounded-md text-white hover:text-white ${
+                                                isInputFilled
+                                                    ? "bg-[#194F90] hover:bg-[#123A69]"
+                                                    : "bg-gray-400 cursor-not-allowed"
+                                            } font-medium`}
                                             onClick={nextStep}
+                                            disabled={!isInputFilled}
                                         >
                                             Next
                                         </button>
@@ -274,10 +370,9 @@ function SetAppointment() {
                                         Step 5: Confirm Details
                                     </h2>
 
-                                    <h4 className="text-center text-sm min-w-full  text-gray-500 mb-4">
-                                        Review the following information.
-                                        Appointment number is important. Kindly
-                                        note it.
+                                    <h4 className="text-center text-sm min-w-full  text-gray-500">
+                                        Review the following information. Note
+                                        that appointment number is important.
                                     </h4>
 
                                     <div className="w-full lg:w-[800px]">
@@ -299,7 +394,10 @@ function SetAppointment() {
                                             >
                                                 I confirm that the above
                                                 information is
-                                                <b> true and correct</b> and
+                                                <b>
+                                                    {" "}
+                                                    true and correct
+                                                </b> and{" "}
                                                 <b>
                                                     I consent Rizal
                                                     Technological University{" "}
