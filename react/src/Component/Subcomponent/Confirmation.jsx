@@ -3,19 +3,19 @@ import React from "react";
 function Confirmation({ formData, setFormData }) {
     return (
         <div className="flex flex-col flex-1 w-full h-auto justify-center">
-            <div className="bg-white flex-1 rounded-lg">
+            <div className="flex-1 rounded-lg">
                 <div className="w-lvh block">
                     <h4 className="text-[18px] font-bold text-[#3B3838] mt-4">
                         Appointment Summary:
                     </h4>
 
                     <h4 className="text-justify text-xs min-w-full  text-gray-500 mb-2 italic">
-                        Warning: Providing false or incorrect information may
-                        result in the cancellation of appointment.
+                        Warning: False or incorrect information may result in
+                        the cancellation of appointment.
                     </h4>
 
                     {/* Personal Information Section */}
-                    <div className="flow-root rounded-lg border border-gray-100 shadow-sm mb-4">
+                    <div className="bg-white flow-root rounded-lg border border-gray-100 shadow-sm mb-4">
                         <dl className="divide-y divide-gray-100 text-sm">
                             {/* Personal Information Header */}
                             <div className="grid grid-cols-1 p-2 bg-[#194F90] text-white rounded-t-md">
