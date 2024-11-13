@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 
-const TimePicker = ({ formData, setFormData, appointments, limit }) => {
+const TimePicker = ({
+    formData,
+    setFormData,
+    appointments,
+    limit,
+    setTimeSelected,
+}) => {
     const [disabledTime, setDisabledTime] = useState([]);
     const limits = Math.ceil(limit / 9);
     const timeSlots = [
@@ -48,6 +54,7 @@ const TimePicker = ({ formData, setFormData, appointments, limit }) => {
             ...prevFormData,
             apttime: time,
         }));
+        setTimeSelected(true);
     };
 
     return (
