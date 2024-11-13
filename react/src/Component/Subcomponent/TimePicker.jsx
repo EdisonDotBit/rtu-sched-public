@@ -8,6 +8,7 @@ const TimePicker = ({
     setTimeSelected,
 }) => {
     const [disabledTime, setDisabledTime] = useState([]);
+    const [initialTime, setInitialTime] = useState(formData.apttime);
     const limits = Math.ceil(limit / 9);
     const timeSlots = [
         "08:00",
@@ -44,6 +45,20 @@ const TimePicker = ({
             setDisabledTime((prev) => {
                 return Array.from(new Set([...prev, ...disabled]));
             });
+
+            // If the previously selected time is disabled, choose another available time.
+            if (disabled.includes(formData.apttime)) {
+                const availableTime = timeSlots.find(
+                    (time) => !disabled.includes(time)
+                );
+                if (availableTime) {
+                    setFormData((prevFormData) => ({
+                        ...prevFormData,
+                        apttime: availableTime,
+                    }));
+                    setTimeSelected(true);
+                }
+            }
         };
 
         getData();
@@ -56,6 +71,13 @@ const TimePicker = ({
         }));
         setTimeSelected(true);
     };
+
+    useEffect(() => {
+        // Reset the selected time when switching dates
+        if (formData.aptdate !== initialTime) {
+            setInitialTime(formData.apttime);
+        }
+    }, [formData.aptdate, formData.apttime, initialTime]);
 
     return (
         <div className="container w-full mx-auto max-w-md p-4 text-black md:ml-10">
