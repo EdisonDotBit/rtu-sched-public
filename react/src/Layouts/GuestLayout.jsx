@@ -16,7 +16,13 @@ function GuestLayout() {
     };
 
     useEffect(() => {
-        openModal();
+        const modalShown = sessionStorage.getItem("modalShown");
+
+        // If it's the first visit, show the modal
+        if (!modalShown) {
+            openModal();
+            sessionStorage.setItem("modalShown", "true"); // Mark that the modal has been shown
+        }
     }, []);
     return (
         <>
