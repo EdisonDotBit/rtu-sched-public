@@ -16,7 +16,13 @@ function StudentLayout() {
     };
 
     useEffect(() => {
-        openModal();
+        const modalShown = sessionStorage.getItem("modalShown");
+
+        // If it's the first visit, show the modal
+        if (!modalShown) {
+            openModal();
+            sessionStorage.setItem("modalShown", "true"); // Mark that the modal has been shown
+        }
     }, []);
 
     return (
@@ -208,7 +214,15 @@ function StudentLayout() {
             </footer>
 
             {/* Modal */}
-            <dialog ref={modals} className="modal">
+            <dialog
+                ref={modals}
+                className="modal"
+                onKeyDown={(event) => {
+                    if (event.key === "Escape") {
+                        event.preventDefault();
+                    }
+                }}
+            >
                 <div className="modal-box flex flex-col justify-center items-center text-white bg-[#194F90]">
                     <h3 className="font-bold text-lg">
                         Welcome to Rizal Technological University!
