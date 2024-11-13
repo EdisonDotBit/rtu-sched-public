@@ -5,8 +5,13 @@ function Confirmation({ formData, setFormData }) {
         <div className="flex flex-col flex-1 w-full h-auto justify-center">
             <div className="bg-white flex-1 rounded-lg">
                 <div className="w-lvh block">
-                    <h4 className="text-[18px] font-bold text-[#3B3838] my-4">
+                    <h4 className="text-[18px] font-bold text-[#3B3838] mt-4">
                         Appointment Summary:
+                    </h4>
+
+                    <h4 className="text-justify text-xs min-w-full  text-gray-500 mb-2 italic">
+                        Warning: Providing false or incorrect information may
+                        result in the cancellation of appointment.
                     </h4>
 
                     {/* Personal Information Section */}
