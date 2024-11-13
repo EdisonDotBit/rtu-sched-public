@@ -370,9 +370,10 @@ function SetAppointment() {
                                         Step 5: Confirm Details
                                     </h2>
 
-                                    <h4 className="text-center text-sm min-w-full  text-gray-500">
-                                        Review the following information. Note
-                                        that appointment number is important.
+                                    <h4 className="text-center text-sm min-w-full  text-gray-500 mb-4">
+                                        Review the following information.
+                                        Appointment number is important. Kindly
+                                        note it.
                                     </h4>
 
                                     <div className="w-full lg:w-[800px]">
@@ -394,10 +395,7 @@ function SetAppointment() {
                                             >
                                                 I confirm that the above
                                                 information is
-                                                <b>
-                                                    {" "}
-                                                    true and correct
-                                                </b> and{" "}
+                                                <b> true and correct</b> and
                                                 <b>
                                                     I consent Rizal
                                                     Technological University{" "}
@@ -439,7 +437,16 @@ function SetAppointment() {
                             )}
                         </div>
                     </div>
-                    <dialog ref={modals} className="modal">
+
+                    <dialog
+                        ref={modals}
+                        className="modal"
+                        onKeyDown={(event) => {
+                            if (event.key === "Escape") {
+                                event.preventDefault();
+                            }
+                        }}
+                    >
                         <div className="flex flex-col justify-center items-center text-white modal-box">
                             <h2> Your appointment number is:</h2>
                             <h1 className="underline"> {succData.aptid}</h1>
@@ -456,6 +463,11 @@ function SetAppointment() {
                                         <button
                                             type="button"
                                             className="btn btn-outline mt-6"
+                                            onClick={() => {
+                                                setTimeout(() => {
+                                                    window.location.reload();
+                                                }, 500);
+                                            }}
                                         >
                                             Download
                                         </button>
@@ -473,6 +485,7 @@ function SetAppointment() {
                             </div>
                         </div>
                     </dialog>
+
                     <dialog ref={modals1} className="modal">
                         <div className="flex flex-col justify-center items-center text-white modal-box">
                             <h1 className=" text-red-600">
