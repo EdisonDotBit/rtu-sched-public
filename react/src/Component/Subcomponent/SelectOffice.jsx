@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 
-function SelectOffice({ formData, setFormData, office, setOffice, setLimit }) {
+function SelectOffice({
+    formData,
+    setFormData,
+    office,
+    setOffice,
+    setLimit,
+    setOfficeSelected,
+}) {
     const [expanded, setExpanded] = useState(false);
 
     const handleOfficeSelection = (selectedOffAbbr, limits) => {
@@ -9,6 +16,7 @@ function SelectOffice({ formData, setFormData, office, setOffice, setLimit }) {
             aptoffice: selectedOffAbbr,
         }));
         setLimit(limits);
+        setOfficeSelected(true);
     };
 
     return (
