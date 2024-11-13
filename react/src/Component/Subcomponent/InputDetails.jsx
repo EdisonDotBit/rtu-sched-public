@@ -75,7 +75,7 @@ function InputDetails({ formData, setFormData, errors }) {
                             />
                         </label>
                         {touched.aptstudnum && errors.aptstudnum && (
-                            <p className="text-[#FFDB75] text-sm">
+                            <p className="text-[#FFDB75] text-sm !mt-2">
                                 {errors.aptstudnum}
                             </p>
                         )}
@@ -100,7 +100,7 @@ function InputDetails({ formData, setFormData, errors }) {
                             />
                         </label>
                         {touched.aptname && errors.aptname && (
-                            <p className="text-[#FFDB75] text-sm">
+                            <p className="text-[#FFDB75] text-sm !mt-2">
                                 {errors.aptname}
                             </p>
                         )}
@@ -124,7 +124,7 @@ function InputDetails({ formData, setFormData, errors }) {
                             />
                         </label>
                         {touched.aptpnumber && errors.aptpnumber && (
-                            <p className="text-[#FFDB75] text-sm">
+                            <p className="text-[#FFDB75] text-sm !mt-2">
                                 {errors.aptpnumber}
                             </p>
                         )}
@@ -143,7 +143,7 @@ function InputDetails({ formData, setFormData, errors }) {
                             />
                         </label>
                         {touched.aptemail && errors.aptemail && (
-                            <p className="text-[#FFDB75] text-sm">
+                            <p className="text-[#FFDB75] text-sm !mt-2">
                                 {errors.aptemail}
                             </p>
                         )}
