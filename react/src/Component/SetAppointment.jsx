@@ -108,13 +108,6 @@ function SetAppointment() {
         setIsInputFilled(isFormValid);
     }, [formData]);
 
-    const handleBlur = (field) => {
-        setTouched((prevTouched) => ({
-            ...prevTouched,
-            [field]: true,
-        }));
-    };
-
     const setApt = async (e) => {
         e.preventDefault();
         const emailCount = appointments.reduce((count, appointment) => {
@@ -447,7 +440,7 @@ function SetAppointment() {
                             }
                         }}
                     >
-                        <div className="flex flex-col justify-center items-center text-white modal-box">
+                        <div className="modal-box flex flex-col justify-center items-center text-white bg-[#194F90]">
                             <h2> Your appointment number is:</h2>
                             <h1 className="underline"> {succData.aptid}</h1>
                             <PDFDownloadLink
@@ -462,7 +455,7 @@ function SetAppointment() {
                                     ) : (
                                         <button
                                             type="button"
-                                            className="btn btn-outline mt-6"
+                                            className="btn btn-outline text-white hover:bg-white hover:text-[#194F90] mt-6"
                                             onClick={() => {
                                                 setTimeout(() => {
                                                     window.location.reload();
@@ -478,23 +471,64 @@ function SetAppointment() {
                                 <label style={{ verticalAlign: "middle" }}>
                                     <b>
                                         <br />
-                                        ***Your appointment number is important.
-                                        Please make a note of it.***
+                                        **Reminder that appointment number is
+                                        important**
                                     </b>
                                 </label>
                             </div>
+                            <h4 className="text-xs mt-2">
+                                Note: clicking download reloads the page.
+                            </h4>
                         </div>
                     </dialog>
 
-                    <dialog ref={modals1} className="modal">
-                        <div className="flex flex-col justify-center items-center text-white modal-box">
-                            <h1 className=" text-red-600">
-                                Appointment Failed
-                            </h1>
-                            <h3>
-                                You have already have a three(3) ongoing
-                                appointment.
-                            </h3>
+                    <dialog
+                        ref={modals1}
+                        className="modal"
+                        onKeyDown={(event) => {
+                            if (event.key === "Escape") {
+                                event.preventDefault();
+                            }
+                        }}
+                    >
+                        <div className="modal-box relative flex flex-col justify-center items-center text-white bg-[#194F90]">
+                            {/* Close button with SVG */}
+                            <button
+                                className="absolute top-2 right-2 p-2 transition duration-300 focus:outline-none"
+                                onClick={() => modals1.current.close()}
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-6 w-6 text-white"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    strokeWidth={2}
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                </svg>
+                            </button>
+
+                            <div className="text-center">
+                                <h1 className="text-red-400">
+                                    Appointment Failed
+                                </h1>
+                                <h3 className="text-md">
+                                    You already have three (3) ongoing
+                                    appointments.
+                                </h3>
+                                <h4 className="text-gray-200 text-xs mt-2">
+                                    Note: Accomplish those transactions before
+                                    scheduling another appointment.
+                                </h4>
+                                <h4 className="text-gray-200 text-xs mt-2">
+                                    Closing this modal reloads the page.
+                                </h4>
+                            </div>
                         </div>
                     </dialog>
                 </div>
