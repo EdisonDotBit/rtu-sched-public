@@ -301,7 +301,7 @@ function GuestSetAppointment() {
                                     </div>
                                     <div className="flex w-full justify-evenly">
                                         <button
-                                            className=" bg-red-700 hover:bg-red-900 text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
+                                            className="bg-red-700 hover:bg-red-900 text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
                                             onClick={prevStep}
                                         >
                                             Previous
@@ -452,7 +452,7 @@ function GuestSetAppointment() {
                             <h1 className="underline"> {succData.aptid}</h1>
                             <PDFDownloadLink
                                 document={<PDFFile succData={succData} />}
-                                fileName="RTU-Appointment-Receipt.pdf"
+                                fileName="RTU_Appointment_Receipt.pdf"
                             >
                                 {({ loading }) =>
                                     loading ? (
