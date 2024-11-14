@@ -388,7 +388,10 @@ function SetAppointment() {
                                             >
                                                 I confirm that the above
                                                 information is
-                                                <b> true and correct</b> and
+                                                <b>
+                                                    {" "}
+                                                    true and correct
+                                                </b> and{" "}
                                                 <b>
                                                     I consent Rizal
                                                     Technological University{" "}
