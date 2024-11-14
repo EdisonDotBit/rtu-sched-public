@@ -76,6 +76,15 @@ function Confirmation({ formData, setFormData }) {
                             {/* Appointment Information Rows */}
                             <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
                                 <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
+                                    Account Type
+                                </dt>
+                                <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
+                                    {formData.apttype}
+                                </dd>
+                            </div>
+
+                            <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
+                                <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
                                     RTU Branch
                                 </dt>
                                 <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
