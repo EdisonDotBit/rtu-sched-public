@@ -221,7 +221,7 @@ const Calendar = ({ formData, setFormData, limit, appointments }) => {
                             <button
                                 type="button"
                                 onClick={handleNextYear}
-                                className=" bg-[#194F90] hover:bg-[#123A69] text-white  px-2 py-1 rounded xsm:text-xs sm:text-base"
+                                className=" bg-[#194F90] hover:bg-[#123A69] text-white  px-5 py-1 rounded xsm:text-xs sm:text-base"
                             >
                                 Next
                             </button>
@@ -251,7 +251,7 @@ const Calendar = ({ formData, setFormData, limit, appointments }) => {
                             <button
                                 type="button"
                                 onClick={handleNextMonth}
-                                className=" bg-[#194F90] hover:bg-[#123A69] text-white  px-2 py-1 rounded xsm:text-xs sm:text-base"
+                                className=" bg-[#194F90] hover:bg-[#123A69] text-white  px-5 py-1 rounded xsm:text-xs sm:text-base"
                             >
                                 Next
                             </button>
