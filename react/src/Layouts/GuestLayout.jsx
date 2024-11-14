@@ -24,6 +24,7 @@ function GuestLayout() {
             sessionStorage.setItem("modalShown", "true"); // Mark that the modal has been shown
         }
     }, []);
+
     return (
         <>
             <div className="flex flex-col h-screen overflow-hidden font-roboto">
@@ -57,9 +58,6 @@ function GuestLayout() {
                                     alt="University Logo"
                                 />
                             </NavLink>
-                            {/* <span className="text-lg sm:text-lg lg:text-[22px] font-bold text-[#194F90]">
-                            ONLINE APPOINTMENT
-                        </span> */}
                         </div>
                     </div>
                     <div className="flex items-center pr-4">
@@ -217,7 +215,15 @@ function GuestLayout() {
                 </footer>
 
                 {/* Modal */}
-                <dialog ref={modals} className="modal">
+                <dialog
+                    ref={modals}
+                    className="modal"
+                    onKeyDown={(event) => {
+                        if (event.key === "Escape") {
+                            event.preventDefault();
+                        }
+                    }}
+                >
                     <div className="modal-box flex flex-col justify-center items-center text-white bg-[#194F90]">
                         <h3 className="font-bold text-lg">
                             Welcome to Rizal Technological University!
@@ -226,17 +232,6 @@ function GuestLayout() {
                             **For New Student and Alumni, please select Guest**
                         </p>
                         <div className="modal-action">
-                            <NavLink to="../guest">
-                                <button
-                                    type="button"
-                                    className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
-                                    onClick={() => {
-                                        modals.current.close();
-                                    }}
-                                >
-                                    Guest
-                                </button>
-                            </NavLink>
                             <button
                                 type="button"
                                 className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
@@ -244,8 +239,19 @@ function GuestLayout() {
                                     modals.current.close();
                                 }}
                             >
-                                Student
+                                Guest
                             </button>
+                            <NavLink to="../student">
+                                <button
+                                    type="button"
+                                    className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
+                                    onClick={() => {
+                                        modals.current.close();
+                                    }}
+                                >
+                                    Student
+                                </button>
+                            </NavLink>
                         </div>
                     </div>
                 </dialog>

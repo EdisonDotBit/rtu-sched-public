@@ -23,24 +23,21 @@ function GuestSetAppointment() {
         aptpnumber: "",
         apttime: "",
     });
-    const [appointmentIds, setAptID] = useState([]);
+
     const [limit, setLimit] = useState(null);
     const [office, setOffice] = useState([]);
-    const [selectedAccordion, setSelectedAccordion] = useState(0);
     const [appointments, setAppointments] = useState([]);
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-    const [formReady, setFormReady] = useState(false);
     const modals = useRef(null);
     const modals1 = useRef(null);
     const [succData, setSuccData] = useState({});
+    const [isBranchSelected, setIsBranchSelected] = useState(false);
+    const [isOfficeSelected, setIsOfficeSelected] = useState(false);
+    const [isTimeSelected, setIsTimeSelected] = useState(false);
+    const [isInputFilled, setIsInputFilled] = useState(false);
+    const [errors, setErrors] = useState({});
     const [isConfirmed, setIsConfirmed] = useState(false);
-    const handleAccordionClick = (index) => {
-        if (selectedAccordion === index) {
-            setSelectedAccordion(null);
-        } else {
-            setSelectedAccordion(index);
-        }
-    };
+
     useEffect(() => {
         const getData = async () => {
             const getRes = await fetch(`${apiBaseUrl}/api/office/all`);
@@ -49,6 +46,7 @@ function GuestSetAppointment() {
         };
         getData();
     }, []);
+
     useEffect(() => {
         const getData = async () => {
             const getRes = await fetch(`${apiBaseUrl}/api/allongoing`);
@@ -57,6 +55,62 @@ function GuestSetAppointment() {
         };
         getData();
     }, []);
+
+    useEffect(() => {
+        // Perform validation
+        const newErrors = {};
+
+        // Validate Purpose
+        if (
+            !formData.aptpurpose ||
+            formData.aptpurpose === "--Select Purpose--"
+        ) {
+            newErrors.aptpurpose = "Please select a purpose.";
+        }
+
+        // Validate Student Number (Format: ####-######)
+        if (!formData.aptstudnum) {
+            newErrors.aptstudnum = "ID number and type is required.";
+        } else if (!/^\d+ \/ [a-zA-Z0-9\s.]+$/.test(formData.aptstudnum)) {
+            newErrors.aptstudnum =
+                "ID Number must follow the format: ID Number / Type.";
+        }
+
+        // Validate Name (Ensure it's not empty and has at least 10 characters)
+        if (!formData.aptname) {
+            newErrors.aptname = "Full name is required.";
+        } else if (formData.aptname.length < 10) {
+            newErrors.aptname = "Full name must be at least 10 characters.";
+        }
+
+        // Validate Contact Number (Ensure it's valid and 11 digits)
+        if (!formData.aptpnumber) {
+            newErrors.aptpnumber = "Contact number is required.";
+        } else if (
+            formData.aptpnumber &&
+            !/^[0-9]{11}$/.test(formData.aptpnumber)
+        ) {
+            newErrors.aptpnumber = "Contact number must be 11 digits long.";
+        }
+
+        // Validate Email (Ensure it's not empty and ends with gmail or yahoo.com)
+        if (!formData.aptemail) {
+            newErrors.aptemail = "Personal email is required.";
+        } else if (
+            !/^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com)$/.test(
+                formData.aptemail
+            )
+        ) {
+            newErrors.aptemail =
+                "Personal email must be in gmail or yahoo format.";
+        }
+
+        // Check if the form is valid
+        const isFormValid = Object.keys(newErrors).length === 0;
+
+        setErrors(newErrors);
+        setIsInputFilled(isFormValid);
+    }, [formData]);
 
     const setApt = async (e) => {
         e.preventDefault();
@@ -86,21 +140,32 @@ function GuestSetAppointment() {
             }
         }
     };
+
+    const handleBranchSelect = () => {
+        setIsBranchSelected(true);
+    };
+
+    const handleOfficeSelect = () => {
+        setIsOfficeSelected(true);
+    };
+
+    const handleTimeSelect = () => {
+        setIsTimeSelected(true);
+    };
+
     const handleCheckboxChange = (e) => {
         setIsConfirmed(e.target.checked);
     };
 
-    const handleAccordinc = (e) => {
-        e.preventDefault();
-        setSelectedAccordion((prevState) => prevState + 1);
-    };
     const openmodal = (data) => {
         setSuccData(data);
         modals.current.showModal();
     };
+
     const openmodal1 = () => {
         modals1.current.showModal();
     };
+
     const [step, setStep] = useState(1);
 
     const nextStep = () => {
@@ -146,12 +211,20 @@ function GuestSetAppointment() {
                                         <SelectBranch
                                             formData={formData}
                                             setFormData={setFormData}
+                                            setBranchSelected={
+                                                handleBranchSelect
+                                            }
                                         />
                                     </div>
                                     <div className="flex w-full justify-evenly">
                                         <button
-                                            className=" bg-[#194F90] hover:bg-[#123A69] text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
+                                            className={`py-2 px-8 rounded-md text-white hover:text-white ${
+                                                isBranchSelected
+                                                    ? "bg-[#194F90] hover:bg-[#123A69]"
+                                                    : "bg-gray-400 cursor-not-allowed"
+                                            } font-medium`}
                                             onClick={nextStep}
+                                            disabled={!isBranchSelected}
                                         >
                                             Next
                                         </button>
@@ -175,6 +248,9 @@ function GuestSetAppointment() {
                                             office={office}
                                             setOffice={setOffice}
                                             setLimit={setLimit}
+                                            setOfficeSelected={
+                                                handleOfficeSelect
+                                            }
                                         />
                                     </div>
                                     <div className="flex w-full justify-evenly mt-28">
@@ -185,8 +261,13 @@ function GuestSetAppointment() {
                                             Previous
                                         </button>
                                         <button
-                                            className=" bg-[#194F90] hover:bg-[#123A69] text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
+                                            className={`py-2 px-8 rounded-md text-white hover:text-white ${
+                                                isOfficeSelected
+                                                    ? "bg-[#194F90] hover:bg-[#123A69]"
+                                                    : "bg-gray-400 cursor-not-allowed"
+                                            } font-medium`}
                                             onClick={nextStep}
+                                            disabled={!isOfficeSelected}
                                         >
                                             Next
                                         </button>
@@ -215,6 +296,7 @@ function GuestSetAppointment() {
                                             setFormData={setFormData}
                                             appointments={appointments}
                                             limit={limit}
+                                            setTimeSelected={handleTimeSelect}
                                         />
                                     </div>
                                     <div className="flex w-full justify-evenly">
@@ -225,8 +307,13 @@ function GuestSetAppointment() {
                                             Previous
                                         </button>
                                         <button
-                                            className=" bg-[#194F90] hover:bg-[#123A69] text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
+                                            className={`py-2 px-8 rounded-md text-white hover:text-white ${
+                                                isTimeSelected
+                                                    ? "bg-[#194F90] hover:bg-[#123A69]"
+                                                    : "bg-gray-400 cursor-not-allowed"
+                                            } font-medium`}
                                             onClick={nextStep}
+                                            disabled={!isTimeSelected}
                                         >
                                             Next
                                         </button>
@@ -248,6 +335,7 @@ function GuestSetAppointment() {
                                         <GuestDetails
                                             formData={formData}
                                             setFormData={setFormData}
+                                            errors={errors}
                                         />
                                     </div>
                                     <div className="flex w-full justify-evenly">
@@ -258,8 +346,13 @@ function GuestSetAppointment() {
                                             Previous
                                         </button>
                                         <button
-                                            className=" bg-[#194F90] hover:bg-[#123A69] text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
+                                            className={`py-2 px-8 rounded-md text-white hover:text-white ${
+                                                isInputFilled
+                                                    ? "bg-[#194F90] hover:bg-[#123A69]"
+                                                    : "bg-gray-400 cursor-not-allowed"
+                                            } font-medium`}
                                             onClick={nextStep}
+                                            disabled={!isInputFilled}
                                         >
                                             Next
                                         </button>
@@ -299,7 +392,10 @@ function GuestSetAppointment() {
                                             >
                                                 I confirm that the above
                                                 information is
-                                                <b> true and correct</b> and
+                                                <b>
+                                                    {" "}
+                                                    true and correct
+                                                </b> and{" "}
                                                 <b>
                                                     I consent Rizal
                                                     Technological University{" "}
@@ -341,7 +437,16 @@ function GuestSetAppointment() {
                             )}
                         </div>
                     </div>
-                    <dialog ref={modals} className="modal">
+
+                    <dialog
+                        ref={modals}
+                        className="modal"
+                        onKeyDown={(event) => {
+                            if (event.key === "Escape") {
+                                event.preventDefault();
+                            }
+                        }}
+                    >
                         <div className="modal-box flex flex-col justify-center items-center text-white bg-[#194F90]">
                             <h2> Your appointment number is:</h2>
                             <h1 className="underline"> {succData.aptid}</h1>
@@ -358,6 +463,11 @@ function GuestSetAppointment() {
                                         <button
                                             type="button"
                                             className="btn btn-outline text-white hover:bg-white hover:text-[#194F90] mt-6"
+                                            onClick={() => {
+                                                setTimeout(() => {
+                                                    window.location.reload();
+                                                }, 500);
+                                            }}
                                         >
                                             Download
                                         </button>
@@ -373,17 +483,59 @@ function GuestSetAppointment() {
                                     </b>
                                 </label>
                             </div>
+                            <h4 className="text-xs mt-2">
+                                Note: clicking download reloads the page.
+                            </h4>
                         </div>
                     </dialog>
-                    <dialog ref={modals1} className="modal">
-                        <div className="modal-box flex flex-col gap-2 justify-center items-center text-white bg-[#194F90]">
-                            <h1 className=" text-red-400 font-bold">
-                                Appointment Failed
-                            </h1>
-                            <h3>
-                                You have already have a three(3) ongoing
-                                appointment.
-                            </h3>
+
+                    <dialog
+                        ref={modals1}
+                        className="modal"
+                        onKeyDown={(event) => {
+                            if (event.key === "Escape") {
+                                event.preventDefault();
+                            }
+                        }}
+                    >
+                        <div className="modal-box relative flex flex-col justify-center items-center text-white bg-[#194F90]">
+                            {/* Close button with SVG */}
+                            <button
+                                className="absolute top-2 right-2 p-2 transition duration-300 focus:outline-none"
+                                onClick={() => modals1.current.close()}
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-6 w-6 text-white"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    strokeWidth={2}
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                </svg>
+                            </button>
+
+                            <div className="text-center">
+                                <h1 className="text-red-400">
+                                    Appointment Failed
+                                </h1>
+                                <h3 className="text-md">
+                                    You already have three (3) ongoing
+                                    appointments.
+                                </h3>
+                                <h4 className="text-gray-200 text-xs mt-2">
+                                    Note: Accomplish those transactions before
+                                    scheduling another appointment.
+                                </h4>
+                                <h4 className="text-gray-200 text-xs mt-2">
+                                    Closing this modal reloads the page.
+                                </h4>
+                            </div>
                         </div>
                     </dialog>
                 </div>

@@ -1,7 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import Purpose from "./Purpose";
 
-function GuestDetails({ formData, setFormData }) {
+function GuestDetails({ formData, setFormData, errors }) {
+    const [touched, setTouched] = useState({
+        aptstudnum: false,
+        aptname: false,
+        aptpnumber: false,
+        aptemail: false,
+    });
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevState) => ({
@@ -9,6 +16,15 @@ function GuestDetails({ formData, setFormData }) {
             [name]: value,
         }));
     };
+
+    const handleBlur = (e) => {
+        const { name } = e.target;
+        setTouched((prevState) => ({
+            ...prevState,
+            [name]: true,
+        }));
+    };
+
     return (
         <>
             <div className="w-full h-auto flex justify-center">
@@ -35,22 +51,29 @@ function GuestDetails({ formData, setFormData }) {
 
                         {/* ID Number / Type */}
                         <label className="block text-white">
-                           ID Number / Type:
+                            ID Number / Type:
                             <input
                                 className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
                                 name="aptstudnum"
                                 value={formData.aptstudnum}
                                 onChange={handleChange}
+                                onBlur={handleBlur} // Track blur
                                 type="text"
                                 placeholder="e.g. 12345 / Phil. ID"
                                 onInput={(e) => {
                                     e.target.value = e.target.value.replace(
-                                        /[^0-9\/]/g,
+                                        /[^0-9a-zA-Z\s\/.]/g,
                                         ""
                                     );
                                 }}
+                                required
                             />
                         </label>
+                        {touched.aptstudnum && errors.aptstudnum && (
+                            <p className="text-[#FFDB75] text-sm !mt-2">
+                                {errors.aptstudnum}
+                            </p>
+                        )}
 
                         {/* Full Name */}
                         <label className="block text-white">
@@ -60,10 +83,22 @@ function GuestDetails({ formData, setFormData }) {
                                 name="aptname"
                                 value={formData.aptname}
                                 onChange={handleChange}
+                                onBlur={handleBlur}
                                 type="text"
                                 placeholder="e.g. Juan A. Dela Cruz"
+                                onInput={(e) => {
+                                    e.target.value = e.target.value.replace(
+                                        /[^a-zA-Z\s\.\-\']+/g,
+                                        ""
+                                    );
+                                }}
                             />
                         </label>
+                        {touched.aptname && errors.aptname && (
+                            <p className="text-[#FFDB75] text-sm !mt-2">
+                                {errors.aptname}
+                            </p>
+                        )}
 
                         {/* Contact Number */}
                         <label className="block text-white">
@@ -73,18 +108,23 @@ function GuestDetails({ formData, setFormData }) {
                                 name="aptpnumber"
                                 value={formData.aptpnumber}
                                 onChange={handleChange}
+                                onBlur={handleBlur}
                                 type="tel"
                                 placeholder="09#########"
                                 onInput={(e) => {
-                                    e.target.value = e.target.value.replace(
-                                        /[^0-9/+]/g,
-                                        ""
-                                    );
+                                    e.target.value = e.target.value
+                                        .replace(/[^0-9]/g, "")
+                                        .slice(0, 11);
                                 }}
                             />
                         </label>
+                        {touched.aptpnumber && errors.aptpnumber && (
+                            <p className="text-[#FFDB75] text-sm !mt-2">
+                                {errors.aptpnumber}
+                            </p>
+                        )}
 
-                        {/* Email */}
+                        {/* Personal Email */}
                         <label className="block text-white">
                             Email Address
                             <input
@@ -92,10 +132,16 @@ function GuestDetails({ formData, setFormData }) {
                                 name="aptemail"
                                 value={formData.aptemail}
                                 onChange={handleChange}
+                                onBlur={handleBlur}
                                 type="email"
-                                placeholder="email@gmail.com"
+                                placeholder="e.g. email@gmail.com"
                             />
                         </label>
+                        {touched.aptemail && errors.aptemail && (
+                            <p className="text-[#FFDB75] text-sm !mt-2">
+                                {errors.aptemail}
+                            </p>
+                        )}
                     </div>
                 </div>
             </div>
