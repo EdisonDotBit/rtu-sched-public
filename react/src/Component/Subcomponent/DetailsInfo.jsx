@@ -9,6 +9,7 @@ function DetailsInfo({ aptData, appointments }) {
     const modalRef1 = useRef(null);
     const modalRef2 = useRef(null);
     const [limit, setLimit] = useState();
+
     const openModal1 = () => {
         modalRef1.current.showModal();
     };
@@ -41,8 +42,8 @@ function DetailsInfo({ aptData, appointments }) {
                 formData
             );
             if (updateRes.status === 200) {
-                alert("Appointment update successful.");
-                // Optionally, you can reload the page or update the UI here
+                alert("Appointment update successful. Page will reload.");
+                window.location.reload();
             } else {
                 alert("Failed to update appointment.");
             }
@@ -59,7 +60,8 @@ function DetailsInfo({ aptData, appointments }) {
                 `${apiBaseUrl}/api/delappt/${id}`
             );
             if (deleteRes.status === 200) {
-                alert("Appointment deleted successfully.");
+                alert("Appointment deleted successfully. Page will reload");
+                window.location.reload();
             } else {
                 alert("Failed to delete appointment.");
             }
@@ -68,127 +70,150 @@ function DetailsInfo({ aptData, appointments }) {
             alert("Error deleting appointment. Please try again later.");
         }
     };
+
     return (
-        <div>
-            <div className="flow-root rounded-lg border border-gray-100 py-3 shadow-sm mb-4 w-full">
-                <dl className="-my-3 divide-y divide-gray-100 text-sm w-2/3 md:w-full">
-                    <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-1 sm:gap-4">
-                        <dt className="font-bold text-[#EAB800] text-[16px]">
-                            <h1>PERSONAL INFORMATION</h1>
+        <div className="flex flex-col flex-1 w-full h-auto justify-center">
+            {/* Personal Information Section */}
+            <div className="bg-white flow-root rounded-lg border border-gray-100 shadow-sm mb-4">
+                <dl className="divide-y divide-gray-100 text-sm w-full lg:w-[800px]">
+                    {/* Personal Information Header */}
+                    <div className="grid grid-cols-1 p-2 bg-[#194F90] text-white rounded-t-md">
+                        <dt className="font-bold text-white text-[16px] text-center md:text-left">
+                            PERSONAL INFORMATION
                         </dt>
                     </div>
-                    <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-semibold text-[#3B3838] ml-10">
-                            Student Number
+
+                    {/* Personal Information Rows */}
+                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
+                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
+                            Student or ID Number / Type
                         </dt>
-                        <dd className="text-gray-700 sm:col-span-2 justify-self-center">
+                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
                             {aptData.aptstudnum ? aptData.aptstudnum : "N/A"}
                         </dd>
                     </div>
-                    <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-semibold text-[#3B3838] ml-10">
+
+                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
+                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
                             Full Name
                         </dt>
-                        <dd className="text-gray-700 sm:col-span-2 justify-self-center">
+                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
                             {aptData.aptname ? aptData.aptname : "N/A"}
                         </dd>
                     </div>
-                    <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-semibold text-[#3B3838] ml-10">
+
+                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
+                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
                             Contact Number
                         </dt>
-                        <dd className="text-gray-700 sm:col-span-2 justify-self-center">
+                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
                             {aptData.aptpnumber ? aptData.aptpnumber : "N/A"}
                         </dd>
                     </div>
-                    <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-semibold text-[#3B3838] ml-10">
+                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
+                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
                             Email Address
                         </dt>
-                        <dd className="text-gray-700 sm:col-span-2 justify-self-center">
+                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
                             {aptData.aptemail ? aptData.aptemail : "N/A"}
                         </dd>
                     </div>
                 </dl>
             </div>
-            <div className="flow-root rounded-lg border border-gray-100 py-3 shadow-sm mb-4 ">
-                <dl className="-my-3 divide-y divide-gray-100 text-sm">
-                    <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-1 sm:gap-4">
-                        <dt className="font-bold text-[#EAB800] text-[16px]">
-                            <h1>APPOINTMENT INFORMATION</h1>
+
+            {/* Appointment Information Section */}
+            <div className="flow-root rounded-lg border border-gray-100 shadow-sm mb-4">
+                <dl className="divide-y divide-gray-100 text-sm w-full lg:w-[800px]">
+                    {/* Appointment Information Header */}
+                    <div className="grid grid-cols-1 p-2 bg-[#194F90] text-white rounded-t-md">
+                        <dt className="font-bold text-white text-[16px] text-center md:text-left">
+                            APPOINTMENT INFORMATION
                         </dt>
                     </div>
-                    <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-semibold text-[#3B3838] ml-10">
+
+                    {/* Appointment Information Rows */}
+                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
+                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
+                            Account Type
+                        </dt>
+                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
+                            {aptData.apttype ? aptData.apttype : "N/A"}
+                        </dd>
+                    </div>
+
+                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
+                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
                             RTU Branch
                         </dt>
-                        <dd className="text-gray-700 sm:col-span-2 justify-self-center text-center">
+                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
                             {aptData.aptbranch ? aptData.aptbranch : "N/A"}
                         </dd>
                     </div>
-                    <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-semibold text-[#3B3838] ml-10">
+
+                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
+                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
                             Office Name
                         </dt>
-                        <dd className="text-gray-700 sm:col-span-2 justify-self-center text-center">
+                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
                             {aptData.aptoffice ? aptData.aptoffice : "N/A"}
                         </dd>
                     </div>
-                    <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-semibold text-[#3B3838] ml-10">
+
+                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
+                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
                             Purpose
                         </dt>
-                        <dd className="text-gray-700 sm:col-span-2 justify-self-center text-center">
+                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
                             {aptData.aptpurpose ? aptData.aptpurpose : "N/A"}
                         </dd>
                     </div>
-                    <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-semibold text-[#3B3838] ml-10">
+                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
+                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
                             Date
                         </dt>
-                        <dd className="text-gray-700 sm:col-span-2 justify-self-center text-center">
+                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
                             {aptData.aptdate ? aptData.aptdate : "N/A"}
                         </dd>
                     </div>
-                    <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-semibold text-[#3B3838] ml-10">
+                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
+                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
                             Time
                         </dt>
-                        <dd className="text-gray-700 sm:col-span-2 justify-self-center text-center">
+                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
                             {aptData.apttime ? aptData.apttime : "N/A"}
                         </dd>
                     </div>
-                    <div className="grid grid-cols-1 gap-1 p-2 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-semibold text-[#3B3838] ml-10">
+                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
+                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
                             Appointment Number
                         </dt>
-                        <dd className="text-gray-700 sm:col-span-2 justify-self-center text-center">
+                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
                             {aptData.aptid ? aptData.aptid : "N/A"}
                         </dd>
                     </div>
                 </dl>
             </div>
 
-            <div className="flex justify-evenly">
+            <div className="flex justify-evenly mb-4">
                 <button
-                    className="flex justify-center items-center bg-red-500 text-white py-2 px-4 rounded-md w-1/3 mr-2"
+                    className="flex justify-center items-center bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-md w-1/3 mr-2"
                     onClick={() => openModal2(aptData)}
                 >
                     Delete
                 </button>
                 <PDFDownloadLink
                     document={<PDFFile succData={aptData} />}
-                    fileName="PaoloBanagloriosoAtEdisotLati_nga_pala.pdf"
+                    fileName="RTU_Appointment_Receipt.pdf"
                 >
                     {({ loading }) =>
                         loading ? (
                             <button className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-full ml-2 ">
-                                Loading...
+                                Loading Download...
                             </button>
                         ) : (
                             <button
                                 type="button"
-                                className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-full ml-2"
+                                className="flex justify-center items-center bg-blue-500 hover:bg-blue-800 text-white py-2 px-8 rounded-md w-full"
                             >
                                 Print
                             </button>
@@ -196,25 +221,31 @@ function DetailsInfo({ aptData, appointments }) {
                     }
                 </PDFDownloadLink>
                 <button
-                    className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-1/3 ml-2"
+                    className="flex justify-center items-center bg-blue-500 hover:bg-blue-800 text-white py-2 px-4 rounded-md w-1/3 ml-2"
                     onClick={() => openModal1(formData)}
                 >
                     Reschedule
                 </button>
             </div>
-            <dialog ref={modalRef1} className="modal">
-                <div className="modal-box text-white bg-gray-800">
-                    <h3 className="font-bold text-lg">Pick a date</h3>
 
-                    <Calendar
-                        formData={formData}
-                        setFormData={setFormData}
-                        limit={limit}
-                        appointments={appointments}
-                    />
+            <dialog ref={modalRef1} className="modal">
+                <div className="modal-box w-full max-w-3xl min-h-[50vh] sm:min-h-[60vh] lg:min-h-[70vh] overflow-y-auto flex flex-col justify-start items-center text-white bg-gray-100">
+                    <h1 className="font-bold text-3xl text-black mb-6">
+                        Reschedule Appointment
+                    </h1>
+
+                    <div className="w-full flex flex-col sm:flex-row justify-center items-center">
+                        <Calendar
+                            formData={formData}
+                            setFormData={setFormData}
+                            limit={limit}
+                            appointments={appointments}
+                        />
+                    </div>
+
                     <div className="modal-action">
                         <button
-                            className="btn"
+                            className="btn border-none bg-[#194F90] text-white hover:bg-[#123A69]"
                             type="button"
                             onClick={(e) => handleReSched(e, aptData.aptid)}
                         >
@@ -223,10 +254,9 @@ function DetailsInfo({ aptData, appointments }) {
 
                         <button
                             type="button"
-                            className="btn"
+                            className="btn border-none bg-[#194F90] text-white hover:bg-[#123A69]"
                             onClick={() => {
                                 modalRef1.current.close();
-                                window.location.reload();
                             }}
                         >
                             Close
@@ -236,25 +266,24 @@ function DetailsInfo({ aptData, appointments }) {
             </dialog>
 
             <dialog ref={modalRef2} className="modal">
-                <div className="modal-box text-white bg-gray-800">
+                <div className="modal-box flex flex-col items-center justify-center text-white bg-[#194F90]">
                     <h3 className="font-bold text-lg">
-                        Do you really really really want to delete this shit?
+                        Do you want to delete this appointment?
                     </h3>
                     <p className="py-4">Appointment Number: {aptData.aptid}</p>
-                    <div className="modal-action">
+                    <div className="modal-action gap-4">
                         <button
                             type="button"
-                            className="btn"
+                            className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
                             onClick={(e) => handleDelete(e, aptData.aptid)}
                         >
                             Confirm
                         </button>
                         <button
                             type="button"
-                            className="btn"
+                            className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
                             onClick={() => {
-                                modalRef1.current.close();
-                                window.location.reload();
+                                modalRef2.current.close();
                             }}
                         >
                             Close
