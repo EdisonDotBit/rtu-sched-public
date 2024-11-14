@@ -26,30 +26,35 @@ const TimePicker = ({
         setDisabledTime([]);
         const getData = async () => {
             const counts = {};
+
+            // Count appointments for the selected branch, office, and date
             appointments.forEach((item) => {
                 const time = item.apttime.slice(0, 5);
+                const key = `${item.aptbranch}-${item.aptoffice}-${time}`;
+
                 if (
                     item.aptdate === formData.aptdate &&
-                    item.aptoffice === formData.aptoffice
+                    item.aptoffice === formData.aptoffice &&
+                    item.aptbranch === formData.aptbranch
                 ) {
-                    counts[time] = (counts[time] || 0) + 1;
+                    counts[key] = (counts[key] || 0) + 1;
                 }
             });
 
-            const disabled = Object.keys(counts).filter(
-                (times) => counts[times] >= limits
+            // Disable times for the specific branch and office if they exceed the limit
+            const branchOfficeDisabledTimes = timeSlots.filter(
+                (time) =>
+                    counts[
+                        `${formData.aptbranch}-${formData.aptoffice}-${time}`
+                    ] >= limits
             );
 
-            console.log(counts);
-
-            setDisabledTime((prev) => {
-                return Array.from(new Set([...prev, ...disabled]));
-            });
+            setDisabledTime(branchOfficeDisabledTimes);
 
             // If the previously selected time is disabled, choose another available time.
-            if (disabled.includes(formData.apttime)) {
+            if (branchOfficeDisabledTimes.includes(formData.apttime)) {
                 const availableTime = timeSlots.find(
-                    (time) => !disabled.includes(time)
+                    (time) => !branchOfficeDisabledTimes.includes(time)
                 );
                 if (availableTime) {
                     setFormData((prevFormData) => ({
@@ -62,7 +67,12 @@ const TimePicker = ({
         };
 
         getData();
-    }, [formData.aptdate, formData.aptoffice, appointments]);
+    }, [
+        formData.aptdate,
+        formData.aptoffice,
+        formData.aptbranch,
+        appointments,
+    ]);
 
     const handleTimeClick = (time) => {
         setFormData((prevFormData) => ({
@@ -82,7 +92,7 @@ const TimePicker = ({
     return (
         <div className="container w-full mx-auto max-w-md p-4 text-black md:ml-10">
             <h2 className="text-2xl font-semibold mb-4">Select a Time</h2>
-            {formData.aptdate ? ( // Check if a date has been selected
+            {formData.aptdate ? (
                 <div className="grid grid-cols-3 gap-4 xsm:text-xs sm:text-base">
                     {timeSlots.map((time, index) => (
                         <button
@@ -103,7 +113,7 @@ const TimePicker = ({
                     ))}
                 </div>
             ) : (
-                <div className="text-gray-500">Please select a date first.</div> // Message if no date is selected
+                <div className="text-gray-500">Please select a date first.</div>
             )}
         </div>
     );
