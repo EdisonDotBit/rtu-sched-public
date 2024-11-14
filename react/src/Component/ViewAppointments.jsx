@@ -38,43 +38,54 @@ function ViewAppointments() {
     };
 
     return (
-        <div className="flex justify-center items-center h-full">
-            <div className="flex flex-col items-center gap-[20px]">
-                <input
-                    className="bg-neutral-200 border-r-teal-400 w-[300px] text-center p-[5px] xsm:w-[200px] xsm:text-xs sm:w-[300px] sm:text-lg"
-                    type="text"
-                    placeholder="Enter your transaction number"
-                    value={aptid}
-                    onChange={(e) => setAptid(e.target.value)}
-                    onInput={(e) => {
-                        e.target.value = e.target.value.replace(
-                            /[^0-9\-]/g,
-                            ""
-                        );
-                    }}
-                />
-                <button
-                    className="w-[100px] border-solid border-[1px] border-black rounded-lg text-[#ffffff] bg-[#194F90] hover:bg-[#123A69]"
-                    onClick={handleSearch}
-                >
-                    Search
-                </button>
-                <div className="flex justify-center items-center">
-                    {isLoading && (
-                        <div>
-                            <Loading />
-                        </div>
-                    )}
-                    {error && <p>{error}</p>}
-                    {aptData && Object.keys(aptData).length > 0 && (
-                        <DetailsInfo
-                            aptData={aptData}
-                            appointments={appointments}
+        <>
+            <div className="h-full w-full flex flex-col items-center">
+                <h1 className="text-center text-3xl font-semibold text-gray-800 mb-5 mt-5">
+                    View Appointment
+                </h1>
+                <div className="flex flex-col justify-center items-center flex-1 gap-2">
+                    <h2 className="text-center text-lg font-semibold">
+                        Enter Transaction Number
+                    </h2>
+
+                    <div className="flex flex-col items-center gap-[20px]">
+                        <input
+                            className="text-gray-800 bg-white mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] w-[300px] xsm:w-[200px] sm:w-[300px] text-md"
+                            type="text"
+                            placeholder="e.g. 12242589000014"
+                            value={aptid}
+                            onChange={(e) => setAptid(e.target.value)}
+                            onInput={(e) => {
+                                e.target.value = e.target.value.replace(
+                                    /[^0-9\-]/g,
+                                    ""
+                                );
+                            }}
                         />
-                    )}
+                        <button
+                            className="text-center font-medium py-2 px-8 rounded-md text-white hover:text-white bg-[#194F90] hover:bg-[#123A69]"
+                            onClick={handleSearch}
+                        >
+                            Search
+                        </button>
+                        <div className="flex justify-center items-center">
+                            {isLoading && (
+                                <div>
+                                    <Loading />
+                                </div>
+                            )}
+                            {error && <p>{error}</p>}
+                            {aptData && Object.keys(aptData).length > 0 && (
+                                <DetailsInfo
+                                    aptData={aptData}
+                                    appointments={appointments}
+                                />
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
 
