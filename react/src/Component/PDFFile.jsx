@@ -159,7 +159,7 @@ const PDFFile = ({ succData }) => {
                     </Text>
 
                     <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                        ID Number / Type: {succData.aptstudnum}
+                        Student or ID Number / Type: {succData.aptstudnum}
                     </Text>
 
                     <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
