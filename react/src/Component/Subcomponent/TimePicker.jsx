@@ -90,7 +90,7 @@ const TimePicker = ({
     }, [formData.aptdate, formData.apttime, initialTime]);
 
     return (
-        <div className="container w-full mx-auto max-w-md p-4 text-black md:ml-10">
+        <div className="container w-full mx-auto max-w-md p-4 text-black md:ml-4">
             <h2 className="text-2xl font-semibold mb-4">Select a Time</h2>
             {formData.aptdate ? (
                 <div className="grid grid-cols-3 gap-4 xsm:text-xs sm:text-base">
