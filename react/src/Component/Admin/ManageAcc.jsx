@@ -20,7 +20,7 @@ function ManageAcc({}) {
                         admuser: responseData.admuser,
                         admpass: responseData.admpass,
                         admname: responseData.admname,
-                        admempnum: responseData.admempnum,
+                        // admempnum: responseData.admempnum,
                         admid: responseData.admid,
                     });
                     console.log(responseData);
@@ -62,59 +62,56 @@ function ManageAcc({}) {
 
     return (
         <>
-            <div className="w-full h-[500px] overflow-y-auto">
-                <div className="flex flex-col justify-center">
-                    <div>
-                        <h1 className="flex justify-center text-2xl underline text-black mb-6">
-                            Edit Account Form
-                        </h1>
-                        <h1 className="flex justify-center text-xl text-black">
-                            Update Account Details
-                        </h1>
-                    </div>
-                    <div className="flex flex-col justify-center">
-                        <div className="flex justify-center items-center"></div>
-                        <div className="flex flex-col justify-center">
-                            <h1 className="flex justify-center text-3xl mb-5"></h1>
-                            <div className="flex flex-col justify-center w-full items-center">
-                                <div className="flex flex-col justify-center items-center w-3/4">
-                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">
-                                        Full Name :
-                                        <input
-                                            name="admname"
-                                            value={formData.admname}
-                                            onChange={handleChange}
-                                            type="text"
-                                            placeholder="Banaglorios Nga Pala"
-                                            className="grow"
-                                        />
-                                    </label>
-                                    <label className="m-3 focus:border-transparent input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">
-                                        Employee Number:
-                                        <input
-                                            name="admempnum"
-                                            value={formData.admempnum}
-                                            onChange={handleChange}
-                                            type="text"
-                                            placeholder="SA-D-B0-1"
-                                            className="grow focus:border-blue-400 text-gray-400"
-                                            disabled
-                                        />
-                                    </label>
-                                    <label className="m-3 focus:border-transparent input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">
-                                        Username :
-                                        <input
-                                            name="admuser"
-                                            value={formData.admuser}
-                                            onChange={handleChange}
-                                            type="text"
-                                            placeholder="mapagmahalzero2"
-                                            className="grow focus:border-blue-400 text-gray-400"
-                                            disabled
-                                        />
-                                    </label>
-                                    <label className="m-3 focus:border-transparent input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">
-                                        Password :
+            <div className="w-full h-auto flex justify-center">
+                <div className="w-full md:w-3/4 lg:w-[50%] border border-gray-300 bg-[#194F90] rounded-md shadow-md p-8">
+                    <div className="flex flex-col space-y-4">
+                        <div className="flex flex-col space-y-4">
+                            <h2 className="text-white text-xl font-semibold text-center mt-4">
+                                Account Settings
+                            </h2>
+                            {/* Full Name */}
+                            <label className="block text-white">
+                                Full Name:
+                                <input
+                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                    name="admname"
+                                    value={formData.admname}
+                                    onChange={handleChange}
+                                    type="text"
+                                    placeholder="Enter Full Name"
+                                />
+                            </label>
+                            {/* Employee Number */}
+                            {/* <label className="block text-white">
+                                Employee Number
+                                <input
+                                    className="text-gray-500 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                    name="admname"
+                                    value={formData.admempnum}
+                                    onChange={handleChange}
+                                    type="text"
+                                    placeholder="e.g. SA-D-B0-1"
+                                    disabled
+                                />
+                            </label> */}
+                            {/* Username */}
+                            <label className="block text-white">
+                                Username:
+                                <input
+                                    className="text-gray-500 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                    name="admuser"
+                                    value={formData.admuser}
+                                    onChange={handleChange}
+                                    type="text"
+                                    placeholder="Enter Username"
+                                    disabled
+                                />
+                            </label>
+                            {/* Password */}
+                            <div className="relative w-full">
+                                <label className="block text-white">
+                                    Password:
+                                    <div className="relative">
                                         <input
                                             name="admpass"
                                             value={formData.admpass}
@@ -124,29 +121,30 @@ function ManageAcc({}) {
                                                     ? "text"
                                                     : "password"
                                             } // Toggle between text and password type
-                                            placeholder="Bakal Pass"
-                                            className="grow focus:border-blue-400"
+                                            placeholder="Enter Password"
+                                            className="text-gray-800 bg-white w-full mt-1 py-2 px-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
                                         />
                                         <button
+                                            type="button"
                                             onClick={() =>
                                                 setShowPassword(!showPassword)
                                             }
+                                            className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
                                         >
-                                            {showPassword ? "Hide" : "Show"}{" "}
-                                            {/* Toggle between "Hide" and "Show" */}
-                                        </button>
-                                    </label>
-
-                                    <div className="flex ">
-                                        <button
-                                            type="button"
-                                            className="btn btn-outline bg-yellow-500 text-black"
-                                            onClick={editAcc}
-                                        >
-                                            Save
+                                            {showPassword ? "Hide" : "Show"}
                                         </button>
                                     </div>
-                                </div>
+                                </label>
+                            </div>
+
+                            <div className="flex justify-center">
+                                <button
+                                    type="button"
+                                    className="btn btn-outline px-10 text-[#194F90] bg-[#FFDB75] hover:bg-[#f3cd64] hover:text-[#194F90] mt-6"
+                                    onClick={editAcc}
+                                >
+                                    Save
+                                </button>
                             </div>
                         </div>
                     </div>
