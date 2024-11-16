@@ -31,85 +31,78 @@ function AddOffice() {
                 alert("Office added successfully.");
             }
         } catch (error) {
-            alert("Error adding office. Please check the madafaking fields.");
+            alert("Error adding office. Please check the fields.");
         }
     };
 
     return (
         <>
-            <div className="w-full h-[500px] overflow-y-auto">
-                <div className="flex flex-col justify-center">
-                    <div>
-                        <h1 className="flex justify-center text-2xl underline text-black mb-6">
-                            Add Office Form
-                        </h1>
-                        <h1 className="flex justify-center text-xl text-black">
-                            Input Office Details
-                        </h1>
-                    </div>
-                    <div className="flex flex-col justify-center">
-                        <div className="flex justify-center items-center"></div>
-                        <div className="flex flex-col justify-center">
-                            <h1 className="flex justify-center text-3xl mb-5"></h1>
-                            <div className="flex flex-col justify-center w-full items-center">
-                                <div className="flex flex-col justify-center items-center w-3/4">
-                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">
-                                        Office Name :
-                                        <input
-                                            name="offname"
-                                            value={formData.offname}
-                                            onChange={handleChange}
-                                            type="text"
-                                            placeholder="Bakal Administration Office"
-                                            className="grow"
-                                        />
-                                    </label>
-                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">
-                                        Office Abbreviation:
-                                        <input
-                                            name="offabbr"
-                                            value={formData.offabbr}
-                                            onChange={handleChange}
-                                            type="text"
-                                            placeholder="BAO"
-                                            className="grow"
-                                        />
-                                    </label>
-                                    <label className="m-3 focus:border-transparent input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">
-                                        Limit :
-                                        <input
-                                            name="offlimit"
-                                            value={formData.offlimit}
-                                            onChange={handleChange}
-                                            onInput={(e) => {
-                                                // Use onInput event to handle input
-                                                e.target.value =
-                                                    e.target.value.replace(
-                                                        /[^0-9]/g,
-                                                        ""
-                                                    ); // Remove non-numeric characters
-                                            }}
-                                            type="text"
-                                            placeholder="10"
-                                            className="grow focus:border-blue-400"
-                                        />
-                                    </label>
+            <div className="w-full h-[420px] flex justify-center">
+                <div className="w-full md:w-3/4 lg:w-[50%] border border-gray-300 bg-[#194F90] rounded-md shadow-md px-8 py-2">
+                    <div className="flex flex-col space-y-4">
+                        <div className="flex flex-col space-y-4">
+                            <h2 className="text-white text-xl font-semibold text-center mt-4">
+                                Add Office
+                            </h2>
+                            {/* Full Name */}
+                            <label className="block text-white">
+                                Office Name:
+                                <input
+                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                    name="offname"
+                                    value={formData.offname}
+                                    onChange={handleChange}
+                                    type="text"
+                                    placeholder="Enter Office Name"
+                                />
+                            </label>
 
-                                    <div className="flex ">
-                                        <a href="#main">
-                                            <button className="btn btn-square bg-transparent text-black mr-5">
-                                                Back
-                                            </button>
-                                        </a>
-                                        <button
-                                            type="button"
-                                            className="btn btn-outline bg-yellow-500 text-black"
-                                            onClick={addoff}
-                                        >
-                                            Add Office
-                                        </button>
-                                    </div>
-                                </div>
+                            {/* Username */}
+                            <label className="block text-white">
+                                Office Abbreviation:
+                                <input
+                                    className="text-gray-500 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                    name="offabbr"
+                                    value={formData.offabbr}
+                                    onChange={handleChange}
+                                    type="text"
+                                    placeholder="e.g. MISO"
+                                />
+                            </label>
+
+                            {/* Username */}
+                            <label className="block text-white">
+                                Appointment Limit:
+                                <input
+                                    className="text-gray-500 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                    name="offlimit"
+                                    value={formData.offlimit}
+                                    onChange={handleChange}
+                                    onInput={(e) => {
+                                        // Use onInput event to handle input
+                                        e.target.value = e.target.value.replace(
+                                            /[^0-9]/g,
+                                            ""
+                                        ); // Remove non-numeric characters
+                                    }}
+                                    type="text"
+                                    placeholder="Recommended Limit is 180"
+                                />
+                            </label>
+
+                            <div className="flex justify-center gap-6">
+                                <a href="#main">
+                                    <button className="btn btn-outline px-6 text-[#194F90] bg-[#FFDB75] hover:bg-[#f3cd64] hover:text-[#194F90] mt-2">
+                                        Back
+                                    </button>
+                                </a>
+                                <button
+                                    type="button"
+                                    className="btn btn-outline px-6 text-[#194F90] bg-[#FFDB75] hover:bg-[#f3cd64] hover:text-[#194F90] mt-2"
+                                    onClick={addoff}
+                                >
+                                    Add Account
+                                </button>
                             </div>
                         </div>
                     </div>
