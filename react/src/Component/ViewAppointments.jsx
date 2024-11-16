@@ -31,7 +31,7 @@ function ViewAppointments() {
             setIsLoading(false);
             setError(null);
         } catch (error) {
-            setError("No Data Found, double check your Appointment Number");
+            setError("No Data Found. Double check Appointment Number.");
             setAptData(null);
             setIsLoading(false);
         }
