@@ -59,7 +59,7 @@ function Feedbacks() {
                 {feedbacks.map((feedItem, index) => (
                     <div
                         key={index}
-                        className="p-6 border border-gray-300 rounded-md shadow-md transition-transform hover:scale-105 w-96 max-w-sm mx-2 my-2 cursor-pointer"
+                        className="bg-white p-6 border border-gray-300 rounded-md shadow-md transition-transform hover:scale-105 w-96 max-w-sm mx-2 my-2 cursor-pointer"
                         onClick={() => openModal(feedItem)}
                     >
                         <p
@@ -82,27 +82,55 @@ function Feedbacks() {
                 ))}
             </div>
             <dialog ref={modals} className="modal">
-                <div className="flex flex-col text-white modal-box p-10">
-                    <h1 className="text-center">Feedback Details</h1>
-                    <div className=" mt-8">
+                <div className="modal-box flex flex-col justify-center items-center text-white bg-[#194F90] p-10">
+                    {/* Close button with SVG */}
+                    <button
+                        className="absolute top-2 right-2 p-2 transition duration-300 focus:outline-none"
+                        onClick={() => modals.current.close()}
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 text-white"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M6 18L18 6M6 6l12 12"
+                            />
+                        </svg>
+                    </button>
+                    <h1 className="text-center text-xl font-semibold mb-6">
+                        Feedback Details
+                    </h1>
+
+                    <div className="w-full max-w-lg">
                         {selectedFeedback && (
-                            <div>
-                                <div className="flex">
-                                    <p className="text-left ml-20 mr-40">
-                                        Name:{selectedFeedback.name.slice(0, 1)}
+                            <div className="flex flex-col space-y-4">
+                                {/* Name and Rating Section */}
+                                <div className="flex flex-col sm:flex-row justify-center gap-20 items-start sm:items-center">
+                                    <p className="text-center text-sm">
+                                        Name:{" "}
+                                        {selectedFeedback.name.slice(0, 1)}
                                         {selectedFeedback.name
                                             .slice(1, -1)
                                             .replace(/./g, "*")}
                                         {selectedFeedback.name.slice(-1)}
                                     </p>
-                                    Rating:{selectedFeedback.rating}
-                                </div>
-                                <div>
                                     <p className="text-center">
-                                        <br />
-                                        Message
+                                        Rating: {selectedFeedback.rating}
                                     </p>
-                                    <p className="text-left">
+                                </div>
+
+                                {/* Message Section */}
+                                <div className="mt-4 text-sm">
+                                    <p className="text-center text-lg font-medium my-2">
+                                        Message:
+                                    </p>
+                                    <p className="text-center">
                                         {selectedFeedback.message}
                                     </p>
                                 </div>
