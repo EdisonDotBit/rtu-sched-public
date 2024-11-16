@@ -45,7 +45,7 @@ function EditAccount({ selectedaccid }) {
                     admuser: responseData.admuser,
                     admpass: responseData.admpass,
                     admname: responseData.admname,
-                    admempnum: responseData.admempnum,
+                    // admempnum: responseData.admempnum,
                 });
             } catch (error) {
                 console.error("Error fetching office data:", error); // Log the error if there's an issue with the request
@@ -88,7 +88,7 @@ function EditAccount({ selectedaccid }) {
                                             className="grow"
                                         />
                                     </label>
-                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">
+                                    {/* <label className="m-3 input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">
                                         Employee Number:
                                         <input
                                             name="admempnum"
@@ -98,7 +98,7 @@ function EditAccount({ selectedaccid }) {
                                             placeholder="SA-D-B0-1"
                                             className="grow"
                                         />
-                                    </label>
+                                    </label> */}
                                     <label className="m-3 focus:border-transparent input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">
                                         Username :
                                         <input
