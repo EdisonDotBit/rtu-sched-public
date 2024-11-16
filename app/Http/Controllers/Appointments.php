@@ -45,6 +45,8 @@ class Appointments extends Controller
         try {
             $apt->save();
 
+            $apt->makeHidden(['aptid', 'aptname', 'aptstudnum', 'aptpnumber', 'aptemail']);
+
             return response()->json([
                 'status' => 200,
                 'message' => 'Successfully created appointment',
@@ -116,6 +118,7 @@ class Appointments extends Controller
         }
 
         $apt->aptdate = $request->input('aptdate');
+        $apt->apttime = $request->input('apttime');
 
         try {
             $apt->save();
