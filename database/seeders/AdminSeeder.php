@@ -18,7 +18,7 @@ class AdminSeeder extends Seeder
             'admuser' => 'admin',
             'admpass' => 'RTU$#@!1234', // You may hash the password here
             'admname' => 'Administrator',
-            'admempnum' => 'superadmin',
+            // 'admempnum' => 'superadmin',
             'admrole' => 'superadmin',
         ]);
     }
