@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Calendar from "./Calendar";
+import TimePicker from "./TimePicker";
 import axios from "axios";
 import PDFFile from "../PDFFile";
 import { PDFDownloadLink } from "@react-pdf/renderer";
@@ -9,6 +10,7 @@ function DetailsInfo({ aptData, appointments }) {
     const modalRef1 = useRef(null);
     const modalRef2 = useRef(null);
     const [limit, setLimit] = useState();
+    const [isTimeSelected, setIsTimeSelected] = useState(false);
 
     const openModal1 = () => {
         modalRef1.current.showModal();
@@ -69,6 +71,10 @@ function DetailsInfo({ aptData, appointments }) {
             console.error("Error deleting appointment:", error);
             alert("Error deleting appointment. Please try again later.");
         }
+    };
+
+    const handleTimeSelect = () => {
+        setIsTimeSelected(true);
     };
 
     return (
@@ -241,13 +247,25 @@ function DetailsInfo({ aptData, appointments }) {
                             limit={limit}
                             appointments={appointments}
                         />
+                        <TimePicker
+                            formData={formData}
+                            setFormData={setFormData}
+                            limit={limit}
+                            appointments={appointments}
+                            setTimeSelected={handleTimeSelect}
+                        />
                     </div>
 
                     <div className="modal-action">
                         <button
-                            className="btn border-none bg-[#194F90] text-white hover:bg-[#123A69]"
+                            className={`px-4 text-sm font-semibold border-none rounded-md ${
+                                isTimeSelected
+                                    ? "bg-[#194F90] hover:bg-[#123A69]"
+                                    : "bg-gray-400 cursor-not-allowed"
+                            } font-medium`}
                             type="button"
                             onClick={(e) => handleReSched(e, aptData.aptid)}
+                            disabled={!isTimeSelected}
                         >
                             Confirm
                         </button>
