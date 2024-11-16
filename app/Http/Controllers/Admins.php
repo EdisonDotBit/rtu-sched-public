@@ -29,7 +29,7 @@ class Admins extends Controller
         $adm->admuser = $request->input('admuser');
         $adm->admpass = $request->input('admpass');
         $adm->admname = $request->input('admname');
-        $adm->admempnum = $request->input('admempnum');
+        // $adm->admempnum = $request->input('admempnum');
         $adm->admrole = $request->input('admrole');
 
         try {
@@ -78,7 +78,7 @@ class Admins extends Controller
         $adm->admuser = $request->input('admuser');
         $adm->admpass = $request->input('admpass');
         $adm->admname = $request->input('admname');
-        $adm->admempnum = $request->input('admempnum');
+        // $adm->admempnum = $request->input('admempnum');
         try {
             $adm->save();
             return response()->json([
