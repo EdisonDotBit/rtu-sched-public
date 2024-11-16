@@ -66,7 +66,7 @@ function AccountSettingsAdmin() {
                 <div className="flex justify-center  h-full w-full">
                     <div className="flex flex-col items-center gap-[20px]">
                         <input
-                            className="flex justify-center bg-neutral-200 border-r-teal-400 items-center text-center w-[300px] p-[5px]"
+                            className="text-gray-800 bg-white mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] w-[300px] xsm:w-[200px] sm:w-[300px] text-md"
                             type="text"
                             placeholder="Enter the Full Name"
                             onChange={(e) => setadmname(e.target.value)}
@@ -80,21 +80,18 @@ function AccountSettingsAdmin() {
                         </div>
 
                         {searchResults.length !== 0 && (
-                            <div className="overflow-x-auto">
+                            <div className="border border-gray-200 overflow-x-auto">
                                 <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
                                     <thead className="ltr:text-center rtl:text-center">
                                         <tr>
-                                            <th className=" whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
-                                                Employee Number
-                                            </th>
                                             <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
-                                                Full name
+                                                Admin Name
                                             </th>
                                             <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                                 Username
                                             </th>
                                             <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
-                                                Role
+                                                Designation
                                             </th>
                                             <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                                 Tools
@@ -107,9 +104,6 @@ function AccountSettingsAdmin() {
                                             .slice(0, 9)
                                             .map((Account, index) => (
                                                 <tr key={index}>
-                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                        {Account.admempnum}
-                                                    </td>
                                                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                                         {Account.admname}
                                                     </td>
