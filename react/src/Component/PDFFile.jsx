@@ -237,7 +237,8 @@ const PDFFile = ({ succData }) => {
                         <Text style={styles.primaryText}></Text>
                         <View style={styles.bulletList}>
                             <Text style={styles.bulletItem}>
-                                • Bring your specified ID
+                                • Bring your specified Valid ID / Soft Copy
+                                Registration Form
                             </Text>
                             <Text style={styles.bulletItem}></Text>
                             <Text style={styles.bulletItem}>
