@@ -30,11 +30,6 @@ function GuestDetails({ formData, setFormData, errors }) {
             <div className="w-full h-auto flex justify-center">
                 {/* Main container */}
                 <div className="w-full md:w-3/4 lg:w-[55%] border border-gray-300 bg-[#194F90] rounded-md shadow-md p-8">
-                    {/* Student Details Header */}
-                    {/* <h1 className="text-2xl font-bold text-center mb-6 underline">
-                        Student Details
-                    </h1> */}
-
                     {/* Purpose Selection (Dropdown) */}
                     <div className="mb-6">
                         <Purpose
