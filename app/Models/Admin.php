@@ -15,7 +15,7 @@ class Admin extends Authenticatable implements AuthenticatableContract
         'admuser',
         'admpass',
         'admname',
-        'admempnum',
+        // 'admempnum',
         'admrole'
     ];
 }
