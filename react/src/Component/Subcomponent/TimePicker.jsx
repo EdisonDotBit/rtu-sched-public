@@ -9,17 +9,17 @@ const TimePicker = ({
 }) => {
     const [disabledTime, setDisabledTime] = useState([]);
     const [initialTime, setInitialTime] = useState(formData.apttime);
-    const limits = Math.ceil(limit / 9);
+    const limits = Math.ceil(limit / 9); // Set Office Limit to 180 if you want 20 appointments per time slot in Manage Office (Admin)
     const timeSlots = [
         "08:00",
         "09:00",
         "10:00",
         "11:00",
         "12:00",
-        "13:00",
-        "14:00",
-        "15:00",
-        "16:00",
+        "1:00",
+        "2:00",
+        "3:00",
+        "4:00",
     ];
 
     useEffect(() => {
@@ -72,6 +72,7 @@ const TimePicker = ({
         formData.aptoffice,
         formData.aptbranch,
         appointments,
+        limit,
     ]);
 
     const handleTimeClick = (time) => {
