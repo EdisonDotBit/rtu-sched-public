@@ -104,15 +104,15 @@ function AppointmentsAdmin() {
         <div className="flex justify-center h-full">
             <div className="flex flex-col items-center gap-[20px]">
                 <input
-                    className="bg-neutral-200 border-r-teal-400 text-center w-[300px] p-[5px]"
+                    className="text-gray-800 bg-white mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] w-[300px] xsm:w-[200px] sm:w-[300px] text-md"
                     type="text"
-                    placeholder="Enter email address"
+                    placeholder="Enter Email Address"
                     value={aptemail}
                     onChange={(e) => setAptEmail(e.target.value)}
                 />
                 {searchResults.length !== 0 && (
                     <div className="overflow-x-auto overflow-y-auto">
-                        <table className="min-w-full divide-y-2 divide-gray-200 bg-white">
+                        <table className="border border-gray-200 min-w-full divide-y-2 divide-gray-200 bg-white">
                             <thead className="ltr:text-center rtl:text-center text-[9px]">
                                 <tr>
                                     <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
