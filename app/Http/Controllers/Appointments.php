@@ -14,6 +14,14 @@ class Appointments extends Controller
         return $apt;
     }
 
+    // public function allRoles(string $aptrole)
+    // {
+    //     $apt = Appointment::where('aptoffice', $aptrole)
+    //         ->where('aptstatus', $'ongoing')->get();
+
+    //     return $apt;
+    // }
+
     public function allRoles(string $aptrole)
     {
         $apt = Appointment::where('aptoffice', $aptrole)->get();
