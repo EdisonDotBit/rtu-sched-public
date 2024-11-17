@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 function AddAccount() {
@@ -10,6 +10,9 @@ function AddAccount() {
         admpass: "",
         admrole: "",
     });
+
+    const [offData, setoffData] = useState([]);
+
     const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {
@@ -32,11 +35,22 @@ function AddAccount() {
 
             if (res.status === 200) {
                 alert(res.data.messages);
+                window.location.reload();
             }
         } catch (error) {
             alert(error.response.data.error);
         }
     };
+
+    useEffect(() => {
+        const getData = async () => {
+            const getRes = await fetch(`${apiBaseUrl}/api/office/all`);
+            const getDataResult = await getRes.json();
+            setoffData(getDataResult);
+            setSearchResults(getDataResult);
+        };
+        getData();
+    }, []);
 
     return (
         <>
@@ -75,7 +89,7 @@ function AddAccount() {
                             <label className="block text-white">
                                 Username:
                                 <input
-                                    className="text-gray-500 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
                                     name="admuser"
                                     value={formData.admuser}
                                     onChange={handleChange}
@@ -117,14 +131,24 @@ function AddAccount() {
                             <label className="block text-white">
                                 Assign Office:
                                 {/* Assuming this is a dropdown */}
-                                <input
-                                    name="admrole"
-                                    value={formData.admrole}
-                                    onChange={handleChange}
-                                    type="text"
-                                    placeholder="Enter Office Abbreviation"
+                                <select
+                                    placeholder="Enter Password"
                                     className="text-gray-800 bg-white w-full mt-1 py-2 px-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
-                                />
+                                    onChange={handleChange}
+                                    name="admrole"
+                                >
+                                    <option value="" disabled selected>
+                                        --Select Office--
+                                    </option>
+                                    {offData.map((option) => (
+                                        <option
+                                            key={option}
+                                            value={option.offabbr}
+                                        >
+                                            {option.offabbr}
+                                        </option>
+                                    ))}
+                                </select>
                             </label>
 
                             <div className="flex justify-center gap-6">
