@@ -6,22 +6,13 @@ function AppointmentsAdmin() {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const [aptData, setAptData] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
+    const [filterBranch, setFilterBranch] = useState("");
+    const [filterStatus, setFilterStatus] = useState("");
+    const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
     const modalRef1 = useRef(null);
     const modalRef2 = useRef(null);
     const [selectedAppointmentNum, setSelectedAppointmentNum] = useState(null);
-
     const { role } = useAuth();
-
-    // useEffect(() => {
-    //     const getData = async () => {
-    //         // const getRes = await fetch(`${apiBaseUrl}/api/all`);
-    //         const getRes = await fetch(`${apiBaseUrl}/api/filteredapt/${role}`);
-    //         const getDataResult = await getRes.json();
-    //         setAptData(getDataResult);
-    //         setSearchResults(getDataResult);
-    //     };
-    //     getData();
-    // }, []);
 
     useEffect(() => {
         const getData = async () => {
@@ -42,11 +33,24 @@ function AppointmentsAdmin() {
     }, [role, apiBaseUrl]); // Add role as a dependency
 
     useEffect(() => {
-        const filteredResults = aptData.filter((apt) => {
+        let filteredResults = aptData.filter((apt) => {
             return apt.aptemail.toLowerCase().includes(aptemail.toLowerCase());
         });
+
+        if (filterStatus) {
+            filteredResults = filteredResults.filter((apt) =>
+                apt.aptstatus.toLowerCase().includes(filterStatus.toLowerCase())
+            );
+        }
+
+        if (filterBranch) {
+            filteredResults = filteredResults.filter((apt) =>
+                apt.aptbranch.toLowerCase().includes(filterBranch.toLowerCase())
+            );
+        }
+
         setSearchResults(filteredResults);
-    }, [aptemail, aptData]);
+    }, [aptemail, aptData, filterStatus, filterBranch]);
 
     const openModal1 = (aptNum) => {
         setSelectedAppointmentNum(aptNum);
@@ -75,6 +79,7 @@ function AppointmentsAdmin() {
                     prevResults.filter((apt) => apt.aptid !== id)
                 );
                 alert("Appointment deleted successfully.");
+                window.location.reload();
             } else {
                 alert("Failed to delete appointment.");
             }
@@ -100,61 +105,300 @@ function AppointmentsAdmin() {
         }
     };
 
+    // Sorting function
+    const sortData = (key) => {
+        let direction = "asc";
+        if (sortConfig.key === key && sortConfig.direction === "asc") {
+            direction = "desc";
+        }
+        setSortConfig({ key, direction });
+
+        const sortedData = [...searchResults].sort((a, b) => {
+            if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
+            if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
+            return 0;
+        });
+        setSearchResults(sortedData);
+    };
+
+    // Function to render sort arrows
+    const SortArrow = ({ direction }) => {
+        if (direction === "asc") {
+            return (
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                    className="mb-1"
+                >
+                    <path d="M3 9l4 4 4-4H3z" />
+                </svg>
+            );
+        }
+        return (
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+                className="mt-2"
+            >
+                <path d="M3 5l4-4 4 4H3z" />
+            </svg>
+        );
+    };
+
     return (
         <div className="flex justify-center h-full">
             <div className="flex flex-col items-center gap-[20px]">
                 <input
                     className="text-gray-800 bg-white mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] w-[300px] xsm:w-[200px] sm:w-[300px] text-md"
                     type="text"
-                    placeholder="Enter Email Address"
+                    placeholder="Search Appointment by Email"
                     value={aptemail}
                     onChange={(e) => setAptEmail(e.target.value)}
                 />
+
+                <div className="text-sm flex justify-start items-center gap-4 w-full">
+                    <div className="flex justify-start items-center gap-4">
+                        <p className="text-sm">Sort Branch by:</p>
+                        <select
+                            value={filterBranch}
+                            onChange={(e) => setFilterBranch(e.target.value)}
+                            className="text-gray-800 bg-white py-1 px-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                        >
+                            <option value="">All</option>
+                            <option value="Boni">Boni</option>
+                            <option value="Pasig">Pasig</option>
+                        </select>
+                    </div>
+
+                    <div className="flex justify-start items-center gap-4">
+                        <p className="text-sm">Sort Status by:</p>
+                        <select
+                            value={filterStatus}
+                            onChange={(e) => setFilterStatus(e.target.value)}
+                            className="text-gray-800 bg-white py-1 px-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                        >
+                            <option value="">All</option>
+                            <option value="ongoing">Ongoing</option>
+                            <option value="done">Done</option>
+                        </select>
+                    </div>
+                </div>
+
                 {searchResults.length !== 0 && (
                     <div className="overflow-x-auto overflow-y-auto">
                         <table className="border border-gray-200 min-w-full divide-y-2 divide-gray-200 bg-white">
                             <thead className="ltr:text-center rtl:text-center text-[9px]">
                                 <tr>
-                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
-                                        Appointment
-                                        <br />
-                                        Number
+                                    <th
+                                        className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900 cursor-pointer"
+                                        onClick={() => sortData("aptid")}
+                                    >
+                                        <div className="flex items-center justify-center">
+                                            Appointment <br />
+                                            Number
+                                            <span className="text-gray-500">
+                                                <SortArrow
+                                                    direction={
+                                                        sortConfig.key ===
+                                                        "aptid"
+                                                            ? sortConfig.direction
+                                                            : null
+                                                    }
+                                                />
+                                            </span>
+                                        </div>
                                     </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
-                                        Type
+                                    <th
+                                        className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900 cursor-pointer"
+                                        onClick={() => sortData("apttype")}
+                                    >
+                                        <div className="flex items-center justify-center">
+                                            Type
+                                            <span className="text-gray-500">
+                                                <SortArrow
+                                                    direction={
+                                                        sortConfig.key ===
+                                                        "apttype"
+                                                            ? sortConfig.direction
+                                                            : null
+                                                    }
+                                                />
+                                            </span>
+                                        </div>
                                     </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
-                                        Full name
+                                    <th
+                                        className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900 cursor-pointer"
+                                        onClick={() => sortData("aptname")}
+                                    >
+                                        <div className="flex items-center justify-center">
+                                            Full Name
+                                            <span className="text-gray-500">
+                                                <SortArrow
+                                                    direction={
+                                                        sortConfig.key ===
+                                                        "aptname"
+                                                            ? sortConfig.direction
+                                                            : null
+                                                    }
+                                                />
+                                            </span>
+                                        </div>
                                     </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
-                                        Branch
+                                    <th
+                                        className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900 cursor-pointer"
+                                        onClick={() => sortData("aptbranch")}
+                                    >
+                                        <div className="flex items-center justify-center">
+                                            Branch
+                                            <span className="text-gray-500">
+                                                <SortArrow
+                                                    direction={
+                                                        sortConfig.key ===
+                                                        "aptbranch"
+                                                            ? sortConfig.direction
+                                                            : null
+                                                    }
+                                                />
+                                            </span>
+                                        </div>
                                     </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
-                                        Office
+                                    <th
+                                        className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900"
+                                        onClick={() => sortData("aptoffice")}
+                                    >
+                                        <div className="flex items-center justify-center">
+                                            Office
+                                            <span className="text-gray-500">
+                                                <SortArrow
+                                                    direction={
+                                                        sortConfig.key ===
+                                                        "aptoffice"
+                                                            ? sortConfig.direction
+                                                            : null
+                                                    }
+                                                />
+                                            </span>
+                                        </div>
                                     </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
-                                        Date
+                                    <th
+                                        className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900"
+                                        onClick={() => sortData("aptdate")}
+                                    >
+                                        <div className="flex items-center justify-center">
+                                            Date
+                                            <span className="text-gray-500">
+                                                <SortArrow
+                                                    direction={
+                                                        sortConfig.key ===
+                                                        "aptdate"
+                                                            ? sortConfig.direction
+                                                            : null
+                                                    }
+                                                />
+                                            </span>
+                                        </div>
                                     </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
-                                        Time
+                                    <th
+                                        className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900"
+                                        onClick={() => sortData("apttime")}
+                                    >
+                                        <div className="flex items-center justify-center">
+                                            Time
+                                            <span className="text-gray-500">
+                                                <SortArrow
+                                                    direction={
+                                                        sortConfig.key ===
+                                                        "apttime"
+                                                            ? sortConfig.direction
+                                                            : null
+                                                    }
+                                                />
+                                            </span>
+                                        </div>
                                     </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
-                                        Purpose
+                                    <th
+                                        className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900"
+                                        onClick={() => sortData("aptpurpose")}
+                                    >
+                                        <div className="flex items-center justify-center">
+                                            Purpose
+                                            <span className="text-gray-500">
+                                                <SortArrow
+                                                    direction={
+                                                        sortConfig.key ===
+                                                        "aptpurpose"
+                                                            ? sortConfig.direction
+                                                            : null
+                                                    }
+                                                />
+                                            </span>
+                                        </div>
                                     </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
-                                        ID / Student <br />
-                                        Number
+                                    <th
+                                        className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900"
+                                        onClick={() => sortData("aptstudnum")}
+                                    >
+                                        <div className="flex items-center justify-center">
+                                            Student / ID <br />
+                                            Number
+                                            <span className="text-gray-500">
+                                                <SortArrow
+                                                    direction={
+                                                        sortConfig.key ===
+                                                        "aptstudnum"
+                                                            ? sortConfig.direction
+                                                            : null
+                                                    }
+                                                />
+                                            </span>
+                                        </div>
                                     </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
-                                        Status
+                                    <th
+                                        className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900"
+                                        onClick={() => sortData("aptstatus")}
+                                    >
+                                        <div className="flex items-center justify-center">
+                                            Status
+                                            <span className="text-gray-500">
+                                                <SortArrow
+                                                    direction={
+                                                        sortConfig.key ===
+                                                        "aptstatus"
+                                                            ? sortConfig.direction
+                                                            : null
+                                                    }
+                                                />
+                                            </span>
+                                        </div>
                                     </th>
-                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
-                                        Email
+                                    <th
+                                        className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900"
+                                        onClick={() => sortData("aptemail")}
+                                    >
+                                        <div className="flex items-center justify-center">
+                                            Email
+                                            <span className="text-gray-500">
+                                                <SortArrow
+                                                    direction={
+                                                        sortConfig.key ===
+                                                        "aptemail"
+                                                            ? sortConfig.direction
+                                                            : null
+                                                    }
+                                                />
+                                            </span>
+                                        </div>
                                     </th>
                                 </tr>
                             </thead>
 
-                            <tbody className="divide-y divide-gray-200 text-[9px] text-center">
+                            <tbody className="divide-y divide-gray-200 text-sm sm:text-[8.5px] text-center">
                                 {searchResults
                                     .slice(0, 20)
                                     .map((apt, index) => (
