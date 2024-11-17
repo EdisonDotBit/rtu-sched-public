@@ -57,76 +57,67 @@ function EditOffice({ selectedOffid }) {
 
     return (
         <>
-            <div className="w-full h-[500px] overflow-y-auto">
-                <div className="flex flex-col justify-center">
-                    <div>
-                        <h1 className="flex justify-center text-2xl m underline text-black mb-5">
-                            Edit Office Form
-                        </h1>
-                        <h1 className="flex justify-center text-xl text-black">
-                            Update Office Details
-                        </h1>
-                    </div>
-                    <div className="flex flex-col justify-center">
-                        <div className="flex justify-center items-center"></div>
-                        <div className="flex flex-col justify-center">
-                            <h1 className="flex justify-center text-3xl mb-5"></h1>
-                            <div className="flex flex-col justify-center w-full items-center">
-                                <div className="flex flex-col justify-center items-center w-3/4">
-                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">
-                                        Office Name :
-                                        <input
-                                            name="offname"
-                                            value={formData.offname}
-                                            onChange={handleChange}
-                                            type="text"
-                                            className="grow"
-                                        />
-                                    </label>
-                                    <label className="m-3 input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">
-                                        Office Abbreviation:
-                                        <input
-                                            name="offabbr"
-                                            value={formData.offabbr}
-                                            onChange={handleChange}
-                                            type="text"
-                                            className="grow"
-                                        />
-                                    </label>
-                                    <label className="m-3 focus:border-transparent input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-1/3">
-                                        Limit :
-                                        <input
-                                            name="offlimit"
-                                            value={formData.offlimit}
-                                            onChange={handleChange}
-                                            onInput={(e) => {
-                                                // Use onInput event to handle input
-                                                e.target.value =
-                                                    e.target.value.replace(
-                                                        /[^0-9]/g,
-                                                        ""
-                                                    ); // Remove non-numeric characters
-                                            }}
-                                            type="text"
-                                            className="grow focus:border-blue-400"
-                                        />
-                                    </label>
+            <div className="w-full h-[400px] flex justify-center">
+                <div className="w-full md:w-3/4 lg:w-[50%] border border-gray-300 bg-[#194F90] rounded-md shadow-md px-8 py-2">
+                    <div className="flex flex-col space-y-4">
+                        <div className="flex flex-col space-y-4">
+                            <h2 className="text-white text-xl font-semibold text-center mt-4">
+                                Edit Office
+                            </h2>
+                            {/* Office Name */}
+                            <label className="block text-white">
+                                Office Name:
+                                <input
+                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                    name="offname"
+                                    value={formData.offname}
+                                    onChange={handleChange}
+                                    type="text"
+                                />
+                            </label>
+                            {/* Office Abbreviation */}
+                            <label className="block text-white">
+                                Office Abbreviation:
+                                <input
+                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                    name="offabbr"
+                                    value={formData.offabbr}
+                                    onChange={handleChange}
+                                    type="text"
+                                />
+                            </label>
+                            {/* Office Limit */}
+                            <label className="block text-white">
+                                Limit :
+                                <input
+                                    name="offlimit"
+                                    value={formData.offlimit}
+                                    onChange={handleChange}
+                                    onInput={(e) => {
+                                        // Use onInput event to handle input
+                                        e.target.value = e.target.value.replace(
+                                            /[^0-9]/g,
+                                            ""
+                                        ); // Remove non-numeric characters
+                                    }}
+                                    type="text"
+                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                />
+                            </label>
 
-                                    <div className="flex ">
-                                        <a href="#main">
-                                            <button className="btn btn-square bg-transparent text-black mr-5">
-                                                Back
-                                            </button>
-                                        </a>
-                                        <button
-                                            type="button"
-                                            className="btn btn-outline bg-yellow-500 text-black"
-                                            onClick={editoff}
-                                        >
-                                            Save Edit
-                                        </button>
-                                    </div>
-                                </div>
+                            <div className="flex justify-center gap-6">
+                                <a href="#main">
+                                    <button className="btn btn-outline px-6 text-[#194F90] bg-[#FFDB75] hover:bg-[#f3cd64] hover:text-[#194F90] mt-2">
+                                        Back
+                                    </button>
+                                </a>
+                                <button
+                                    type="button"
+                                    className="btn btn-outline px-6 text-[#194F90] bg-[#FFDB75] hover:bg-[#f3cd64] hover:text-[#194F90] mt-2"
+                                    onClick={editoff}
+                                >
+                                    Save Edit
+                                </button>
                             </div>
                         </div>
                     </div>
