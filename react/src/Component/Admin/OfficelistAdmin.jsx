@@ -9,6 +9,7 @@ function OfficelistAdmin() {
     const [searchResults, setSearchResults] = useState([]);
     const modals = useRef(null);
     const [selectedOffid, setSelectedOffid] = useState(null);
+    const [selectedOffname, setSelectedOffname] = useState("");
     const [showEdit, setShowEdit] = useState(false);
 
     useEffect(() => {
@@ -34,8 +35,9 @@ function OfficelistAdmin() {
         window.location.href = "#edit";
         e.preventDefault();
     };
-    const openmodal = (officeNum) => {
+    const openmodal = (officeNum, officeName) => {
         setSelectedOffid(officeNum);
+        setSelectedOffname(officeName);
         modals.current.showModal();
     };
 
@@ -60,6 +62,7 @@ function OfficelistAdmin() {
                     prevResults.filter((apt) => apt.aptid !== id)
                 );
                 alert("Office deleted successfully.");
+                window.location.reload();
             }
         } catch (error) {
             alert("Error deleting an office. Please try again later.");
@@ -86,7 +89,8 @@ function OfficelistAdmin() {
                         </div>
 
                         {searchResults.length !== 0 && (
-                            <div className="border border-gray-200 overflow-x-auto">
+                            // add overflow-x-auto if list gets long
+                            <div className="border border-gray-200">
                                 <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
                                     <thead className="ltr:text-center rtl:text-center">
                                         <tr>
@@ -149,7 +153,8 @@ function OfficelistAdmin() {
                                                             className="ml-4 group relative inline-block overflow-hidden border border-red-600 px-8 py-3 focus:outline-none focus:ring"
                                                             onClick={() =>
                                                                 openmodal(
-                                                                    office.offid
+                                                                    office.offid,
+                                                                    office.offname
                                                                 )
                                                             }
                                                         >
@@ -168,24 +173,24 @@ function OfficelistAdmin() {
                     </div>
 
                     <dialog ref={modals} className="modal">
-                        <div className="modal-box">
+                        <div className="modal-box text-white bg-[#194F90]">
                             <h3 className="font-bold text-lg">
-                                Do you really really want to delete this shit?
+                                Do you really want to delete this office?
                             </h3>
                             <p className="py-4">
-                                Appointment Number: {selectedOffid}
+                                Office Name: {selectedOffname}
                             </p>
                             <div className="modal-action">
                                 <button
                                     type="button"
-                                    className="btn"
+                                    className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
                                     onClick={(e) => deleteOff(e, selectedOffid)}
                                 >
                                     Confirm
                                 </button>
                                 <button
                                     type="button"
-                                    className="btn"
+                                    className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
                                     onClick={() => {
                                         modals.current.close();
                                         window.location.reload();
