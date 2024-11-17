@@ -29,6 +29,7 @@ function AddOffice() {
             if (res.status === 200) {
                 console.log(res.data.message);
                 alert("Office added successfully.");
+                window.location.reload();
             }
         } catch (error) {
             alert("Error adding office. Please check the fields.");
@@ -57,7 +58,7 @@ function AddOffice() {
                                 />
                             </label>
 
-                            {/* Username */}
+                            {/* Office Abbreviation */}
                             <label className="block text-white">
                                 Office Abbreviation:
                                 <input
@@ -70,7 +71,7 @@ function AddOffice() {
                                 />
                             </label>
 
-                            {/* Username */}
+                            {/* Appointment Limit */}
                             <label className="block text-white">
                                 Appointment Limit:
                                 <input
