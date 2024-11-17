@@ -37,6 +37,7 @@ const Calendar = ({ formData, setFormData, limit, appointments }) => {
     const handleDateClick = (date) => {
         setFormData((prevFormData) => ({
             ...prevFormData,
+            // apttime: "",
             aptdate: `${currentDate.getFullYear()}-${(
                 currentDate.getMonth() + 1
             )
