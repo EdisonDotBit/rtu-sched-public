@@ -195,6 +195,10 @@ function StudentLayout() {
                         <NavLink
                             to="/feedback"
                             className="text-center mb-6 text-sm underline text-blue-200"
+                            onClick={(e) => {
+                                e.preventDefault(); // Prevents default navigation
+                                window.open("/feedback", "_blank"); // Opens the link in a new tab
+                            }}
                         >
                             Send Feedback
                         </NavLink>
