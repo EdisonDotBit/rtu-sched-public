@@ -31,7 +31,31 @@ const Purpose = ({ formData, setFormData }) => {
                 "Option A Purpose 2",
                 "Option A Purpose 3",
             ]);
+        } else if (formData.aptoffice === "CSA") {
+            setOptions([
+                "Option B Purpose 1",
+                "Option B Purpose 2",
+                "Option B Purpose 3",
+            ]);
+        } else if (formData.aptoffice === "BAO") {
+            setOptions([
+                "Option B Purpose 1",
+                "Option B Purpose 2",
+                "Option B Purpose 3",
+            ]);
         } else if (formData.aptoffice === "SRAC") {
+            setOptions([
+                "Option B Purpose 1",
+                "Option B Purpose 2",
+                "Option B Purpose 3",
+            ]);
+        } else if (formData.aptoffice === "REG") {
+            setOptions([
+                "Option B Purpose 1",
+                "Option B Purpose 2",
+                "Option B Purpose 3",
+            ]);
+        } else if (formData.aptoffice === "SO") {
             setOptions([
                 "Option B Purpose 1",
                 "Option B Purpose 2",
