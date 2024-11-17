@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Qwe from "./Subcomponent/Asset/e.jpg";
+import rtu from "./Subcomponent/Asset/RTU_Pasig.jpg";
 import axios from "axios";
 
 const StarRating = ({ rating, onRatingChange }) => {
@@ -34,6 +34,8 @@ const Feedback = () => {
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
+
+    const maxLength = 300; // Set your desired character limit
 
     const handleRatingChange = (rating) => {
         setFormData({ ...formData, rating });
@@ -72,94 +74,98 @@ const Feedback = () => {
 
     return (
         <div
-            className="relative h-full w-full flex justify-center items-center bg-opacity-50 bg-cover backdrop-filter backdrop-blur-lg"
+            className="relative h-full w-full flex justify-center items-center bg-opacity-50 bg-cover backdrop-blur-lg"
             style={{
-                backgroundImage: `url(${Qwe})`,
-                // Apply semi-transparent black overlay
-                backgroundColor: "rgba(0, 0, 0, 0.5)", // Adjust opacity here (0.5 for 50%)
+                backgroundImage: `url(${rtu})`,
+                backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent overlay
             }}
         >
-            <div class="mx-auto flex flex-col md:flex-row z-10 py-5 shadow-lg bg-opacity-50 backdrop-filter backdrop-blur-sm rounded-2xl">
-                <div className="flex flex-col w-full lg:w-1/3 p-8 md: mr-40">
-                    <p className="ml-6 text-yellow-300 text-lg uppercase tracking-loose">
-                        REVIEW
-                    </p>
-                    <p className="text-3xl md:text-5xl my-4 text-gray-300 leading-relaxed md:leading-snug">
-                        Leave us a feedback!
-                    </p>
-                    <p className="text-sm md:text-base leading-snug text-gray-50 text-opacity-100">
-                        Please provide your valuable feedback and something
-                        something ...
+            <div className="flex flex-col md:flex-row w-full max-w-5xl z-10 py-5 shadow-lg bg-opacity-50 backdrop-blur-sm rounded-2xl">
+                {/* Left Section */}
+                <div className="flex flex-col w-3/4 p-6 lg:p-8 space-y-4 justify-between">
+                    <div className="flex flex-col gap-10">
+                        <h1 className="text-3xl lg:text-4xl font-bold text-white leading-snug">
+                            Leave us your feedback!
+                        </h1>
+                        <p className="text-sm md:text-lg text-white leading-relaxed">
+                            We value your input as it helps us improve and
+                            provide a better experience. Please take a moment to
+                            share your thoughts, suggestions, or concerns. Your
+                            feedback is greatly appreciated and will help us
+                            enhance our services.
+                        </p>
+                    </div>
+                    <p className="text-sm md:text-lg italic text-[#FFDB75] opacity-90">
+                        "~Forever true to the gold and blue~"
                     </p>
                 </div>
-                <div className="flex flex-col w-full justify-center">
-                    <div className="w-full px-4">
-                        <div className="flex flex-wrap justify-center">
-                            <div className="w-full px-4">
-                                <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-white">
-                                    <div className="flex-auto p-5 lg:p-10">
-                                        <h4 className="text-2xl mb-4 text-black font-semibold">
-                                            Have a suggestion?
-                                        </h4>
-                                        <form onSubmit={handleSubmit}>
-                                            <div className="mb-4">
-                                                <label
-                                                    htmlFor="name"
-                                                    className="block text-gray-700 font-semibold mb-2"
-                                                >
-                                                    Name
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    id="name"
-                                                    name="name"
-                                                    value={formData.name}
-                                                    onChange={handleChange}
-                                                    className="w-full px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:border-blue-500 bg-transparent"
-                                                    placeholder="Your Name"
-                                                    required
-                                                />
-                                            </div>
-                                            <div className="mb-4">
-                                                <label
-                                                    htmlFor="message"
-                                                    className="block text-gray-700 font-semibold mb-2"
-                                                >
-                                                    Comment
-                                                </label>
-                                                <textarea
-                                                    id="message"
-                                                    name="message"
-                                                    value={formData.message}
-                                                    onChange={handleChange}
-                                                    rows="4"
-                                                    className="w-full px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:border-blue-500 bg-transparent h-auto"
-                                                    placeholder="Your Feedback"
-                                                    required
-                                                ></textarea>
-                                            </div>
-                                            <div className="mb-4 flex flex-col">
-                                                <label className="block text-gray-700 font-semibold mb-2">
-                                                    Rating
-                                                </label>
-                                                <StarRating
-                                                    rating={formData.rating}
-                                                    onRatingChange={
-                                                        handleRatingChange
-                                                    }
-                                                />
-                                            </div>
-                                            <button
-                                                type="submit"
-                                                className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
-                                            >
-                                                Submit
-                                            </button>
-                                        </form>
-                                    </div>
+
+                {/* Right Section */}
+                <div className="flex flex-col w-full p-6 lg:p-8">
+                    <div className="bg-white shadow-lg rounded-lg p-10 w-full">
+                        <h4 className="text-2xl font-semibold text-gray-900 mb-4">
+                            Have a Suggestion?
+                        </h4>
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div>
+                                <label
+                                    htmlFor="name"
+                                    className="block text-gray-700 font-medium mb-1 mt-4"
+                                >
+                                    Name (Optional):
+                                </label>
+                                <input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                    placeholder="Enter Name"
+                                />
+                            </div>
+
+                            <div>
+                                <label
+                                    htmlFor="message"
+                                    className="block text-gray-700 font-medium mb-1 mt-4"
+                                >
+                                    Comment
+                                </label>
+                                <textarea
+                                    id="message"
+                                    name="message"
+                                    value={formData.message}
+                                    onChange={handleChange}
+                                    rows="4"
+                                    maxLength={maxLength}
+                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                    placeholder="Your Feedback"
+                                    required
+                                ></textarea>
+                                <div className="text-right text-sm text-gray-500 mt-2">
+                                    {formData.message.length} / {maxLength}{" "}
+                                    characters
                                 </div>
                             </div>
-                        </div>
+
+                            <div>
+                                <label className="block text-gray-700 font-medium mb-1 mt-4">
+                                    Rating
+                                </label>
+                                <StarRating
+                                    rating={formData.rating}
+                                    onRatingChange={handleRatingChange}
+                                />
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300"
+                            >
+                                Submit
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
