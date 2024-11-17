@@ -130,7 +130,7 @@ function Feedbacks() {
                                     <p className="text-center text-lg font-medium my-2">
                                         Message:
                                     </p>
-                                    <p className="text-center">
+                                    <p className="text-justify ">
                                         {selectedFeedback.message}
                                     </p>
                                 </div>
