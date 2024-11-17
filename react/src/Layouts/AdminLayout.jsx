@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NavLink, Outlet, useLocation, Link } from "react-router-dom";
-import Logo from "../Component/Subcomponent/Asset/rtu-logo.png";
+import Logo from "../Component/Subcomponent/Asset/rtu_logo_v3.png";
 import { useAuth } from "../Hooks/useAuth";
 
 function AdminLayout() {
