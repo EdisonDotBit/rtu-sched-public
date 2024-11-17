@@ -30,6 +30,7 @@ function DetailsInfo({ aptData, appointments }) {
                 setFormData((prevFormData) => ({
                     ...prevFormData,
                     aptoffice: aptData.aptoffice,
+                    aptbranch: aptData.aptbranch,
                 }));
             }
         };
