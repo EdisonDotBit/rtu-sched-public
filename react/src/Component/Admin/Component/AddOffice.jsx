@@ -61,7 +61,7 @@ function AddOffice() {
                             <label className="block text-white">
                                 Office Abbreviation:
                                 <input
-                                    className="text-gray-500 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
                                     name="offabbr"
                                     value={formData.offabbr}
                                     onChange={handleChange}
@@ -74,7 +74,7 @@ function AddOffice() {
                             <label className="block text-white">
                                 Appointment Limit:
                                 <input
-                                    className="text-gray-500 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
                                     name="offlimit"
                                     value={formData.offlimit}
                                     onChange={handleChange}
@@ -86,7 +86,7 @@ function AddOffice() {
                                         ); // Remove non-numeric characters
                                     }}
                                     type="text"
-                                    placeholder="Recommended Limit is 180"
+                                    placeholder="e.g. 180 = 20 appointments per time slot"
                                 />
                             </label>
 
@@ -101,7 +101,7 @@ function AddOffice() {
                                     className="btn btn-outline px-6 text-[#194F90] bg-[#FFDB75] hover:bg-[#f3cd64] hover:text-[#194F90] mt-2"
                                     onClick={addoff}
                                 >
-                                    Add Account
+                                    Add Office
                                 </button>
                             </div>
                         </div>
