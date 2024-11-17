@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../Hooks/useAuth";
+import Logo from "../Subcomponent/Asset/rtu_logo_v3.png";
 import axios from "axios";
 function LoginAdmin() {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -39,55 +40,74 @@ function LoginAdmin() {
 
     return (
         <>
-            <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-lg text-center">
-                    <h1 className="text-2xl font-bold sm:text-3xl">LOGIN</h1>
+            <div className="w-full h-full flex flex-col justify-center items-center gap-8">
+                <div>
+                    <img
+                        src={Logo}
+                        alt="RTU Online Appointment Logo"
+                        className="w-[400px]"
+                    />
                 </div>
+                <div className="h-[340px] w-full md:w-2/4 lg:w-[30%] border border-gray-300 bg-[#194F90] rounded-md shadow-md px-8 py-4">
+                    <div className="flex flex-col space-y-4">
+                        <div className="flex flex-col space-y-4">
+                            <h2 className="text-white text-xl font-semibold text-center mt-4">
+                                Login Admin Account
+                            </h2>
+                            {/* Full Name */}
+                            <label className="block text-white">
+                                Username:
+                                <input
+                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                    name="admuser"
+                                    type="text"
+                                    value={formData.admuser}
+                                    onChange={handleChange}
+                                    placeholder="Enter Username"
+                                />
+                            </label>
+                            {/* Password */}
+                            <div className="relative w-full">
+                                <label className="block text-white">
+                                    Password:
+                                    <div className="relative">
+                                        <input
+                                            name="admpass"
+                                            value={formData.admpass}
+                                            onChange={handleChange}
+                                            type={
+                                                showPassword
+                                                    ? "text"
+                                                    : "password"
+                                            }
+                                            placeholder="Enter Password"
+                                            className="text-gray-800 bg-white w-full mt-1 py-2 px-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setShowPassword(!showPassword)
+                                            }
+                                            className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                                        >
+                                            {showPassword ? "Hide" : "Show"}
+                                        </button>
+                                    </div>
+                                </label>
+                            </div>
 
-                <form className="mx-auto mb-0 mt-8 max-w-md space-y-4">
-                    <div>
-                        <label className="m-3 input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-5/6">
-                            Username :
-                            <input
-                                name="admuser"
-                                type="text"
-                                value={formData.admuser}
-                                onChange={handleChange}
-                                placeholder="Banaglorios Nga Pala"
-                                className="grow"
-                            />
-                        </label>
+                            <div className="flex justify-center gap-6">
+                                <button
+                                    type="button"
+                                    className="btn btn-outline px-6 text-[#194F90] bg-[#FFDB75] hover:bg-[#f3cd64] hover:text-[#194F90] mt-2"
+                                    onClick={handleLogin}
+                                >
+                                    Sign in
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <label className="m-3 input input-bordered flex items-center gap-2 bg-gray-200 text-black border-black sm:w-2/3 md:w-8/12 lg:w-5/6">
-                            Password :
-                            <input
-                                name="admpass"
-                                value={formData.admpass}
-                                onChange={handleChange}
-                                type={showPassword ? "text" : "password"}
-                                placeholder="Bakal Pass"
-                                className="grow focus:border-blue-400"
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                            >
-                                {showPassword ? "Hide" : "Show"}{" "}
-                            </button>
-                        </label>
-                    </div>
-
-                    <div className="flex items-center justify-center">
-                        <button
-                            type="button"
-                            className="inline-block rounded-lg bg-blue-500 px-5 py-3 text-sm font-medium text-white"
-                            onClick={handleLogin}
-                        >
-                            Sign in
-                        </button>
-                    </div>
-                </form>
+                </div>
             </div>
         </>
     );
