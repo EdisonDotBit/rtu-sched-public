@@ -79,7 +79,7 @@ function AdminLayout() {
                 <div className="flex flex-1 overflow-hidden">
                     {/* Sidebar */}
                     <aside
-                        className={`fixed inset-y-0 left-0 z-30 w-72 md:w-72 bg-[#194F90] transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
+                        className={`fixed inset-y-0 left-0 z-30 w-72 sm:w-60 bg-[#194F90] transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
                             isSidebarOpen
                                 ? "translate-x-0"
                                 : "-translate-x-full"
@@ -150,7 +150,7 @@ function AdminLayout() {
                                     viewBox="0 0 24 24"
                                     stroke-width="1.5"
                                     stroke="currentColor"
-                                    class="w-8 h-8 mr-1"
+                                    class="w-7 h-7 mr-1"
                                 >
                                     <path
                                         stroke-linecap="round"
@@ -158,7 +158,7 @@ function AdminLayout() {
                                         d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"
                                     />
                                 </svg>
-                                <span className="ml-3">View Feedbacks</span>
+                                <span className="ml-4">View Feedbacks</span>
                             </NavLink>
                             <NavLink
                                 to="/ewqqwe/admin/appointments"
@@ -183,7 +183,7 @@ function AdminLayout() {
                                     viewBox="0 0 24 24"
                                     strokeWidth={1.5}
                                     stroke="currentColor"
-                                    className="w-8 h-8 mr-1"
+                                    class="w-7 h-7 mr-1"
                                 >
                                     <path
                                         strokeLinecap="round"
@@ -191,7 +191,7 @@ function AdminLayout() {
                                         d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"
                                     />
                                 </svg>
-                                <span className="ml-3">Manage Appointment</span>
+                                <span className="ml-4">Manage Appointment</span>
                             </NavLink>
                             <NavLink
                                 to="/ewqqwe/admin/manage"
@@ -215,7 +215,7 @@ function AdminLayout() {
                                     viewBox="0 0 24 24"
                                     strokeWidth={1.5}
                                     stroke="currentColor"
-                                    className="w-8 h-8 mr-1"
+                                    class="w-7 h-7 mr-1"
                                 >
                                     <path
                                         strokeLinecap="round"
@@ -223,7 +223,7 @@ function AdminLayout() {
                                         d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
                                     />
                                 </svg>
-                                <span className="ml-3">My Account</span>
+                                <span className="ml-4">My Account</span>
                             </NavLink>
                         </nav>
                     </aside>
