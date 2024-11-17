@@ -4,7 +4,6 @@ function SelectOffice({
     formData,
     setFormData,
     office,
-    setOffice,
     setLimit,
     setOfficeSelected,
 }) {
