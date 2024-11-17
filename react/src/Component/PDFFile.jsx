@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
         borderTopColor: "black",
         paddingTop: 8,
     },
-    aaragraph: {
+    paragraph: {
         marginTop: 10,
         borderTopWidth: 1,
         borderTopColor: "black",
@@ -136,7 +136,7 @@ const PDFFile = ({ succData }) => {
                         RTU Appointment Slip
                     </Text>
                 </View>
-                <View style={styles.aaragraph}>
+                <View style={styles.paragraph}>
                     <Text style={styles.primaryText}>
                         Your Appointment Number is: {succData.aptid}
                     </Text>
