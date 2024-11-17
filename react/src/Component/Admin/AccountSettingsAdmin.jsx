@@ -5,6 +5,7 @@ import EditAccount from "./Component/EditAccount";
 function AccountSettingsAdmin() {
     const [accountsData, setAccountsData] = useState([]);
     const [selectedaccid, setselectedaccid] = useState(null);
+    const [selectedAdmName, setSelectedAdmName] = useState("");
     const modals = useRef(null);
     const [showEdit, setShowEdit] = useState(false);
     const [searchResults, setSearchResults] = useState([]);
@@ -51,13 +52,15 @@ function AccountSettingsAdmin() {
             );
             if (deleteRes.ok) {
                 alert("Account deleted successfully.");
+                window.location.reload();
             }
         } catch (error) {
             alert("Error deleting an account. Please try again later.");
         }
     };
-    const openmodal = (admid) => {
+    const openmodal = (admid, admname) => {
         setselectedaccid(admid);
+        setSelectedAdmName(admname);
         modals.current.showModal();
     };
     return (
@@ -80,10 +83,14 @@ function AccountSettingsAdmin() {
                         </div>
 
                         {searchResults.length !== 0 && (
-                            <div className="border border-gray-200 overflow-x-auto">
+                            // add overflow-x-auto if list gets long
+                            <div className="border border-gray-200">
                                 <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
                                     <thead className="ltr:text-center rtl:text-center">
                                         <tr>
+                                            <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
+                                                Admin ID
+                                            </th>
                                             <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                                 Admin Name
                                             </th>
@@ -91,7 +98,7 @@ function AccountSettingsAdmin() {
                                                 Username
                                             </th>
                                             <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
-                                                Designation
+                                                Assigned Office
                                             </th>
                                             <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                                 Tools
@@ -104,6 +111,9 @@ function AccountSettingsAdmin() {
                                             .slice(0, 9)
                                             .map((Account, index) => (
                                                 <tr key={index}>
+                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                        {Account.admid}
+                                                    </td>
                                                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                                         {Account.admname}
                                                     </td>
@@ -136,7 +146,8 @@ function AccountSettingsAdmin() {
                                                             className="ml-4 group relative inline-block overflow-hidden border border-red-600 px-8 py-3 focus:outline-none focus:ring"
                                                             onClick={() =>
                                                                 openmodal(
-                                                                    Account.admid
+                                                                    Account.admid,
+                                                                    Account.admname
                                                                 )
                                                             }
                                                         >
@@ -155,24 +166,24 @@ function AccountSettingsAdmin() {
                     </div>
 
                     <dialog ref={modals} className="modal">
-                        <div className="modal-box">
+                        <div className="modal-box text-white bg-[#194F90]">
                             <h3 className="font-bold text-lg">
-                                Do you really really want to delete this shit?
+                                Do you really want to delete Account?
                             </h3>
                             <p className="py-4">
-                                Account username: {selectedaccid}
+                                Account Name: {selectedAdmName}
                             </p>
                             <div className="modal-action">
                                 <button
                                     type="button"
-                                    className="btn"
+                                    className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
                                     onClick={(e) => deleteAcc(e, selectedaccid)}
                                 >
                                     Confirm
                                 </button>
                                 <button
                                     type="button"
-                                    className="btn"
+                                    className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
                                     onClick={() => {
                                         modals.current.close();
                                         window.location.reload();
