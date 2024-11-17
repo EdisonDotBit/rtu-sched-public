@@ -249,7 +249,7 @@ function SetAppointment() {
                                             }
                                         />
                                     </div>
-                                    <div className="flex w-full justify-evenly mt-28">
+                                    <div className="flex w-full justify-evenly mt-12">
                                         <button
                                             className=" bg-red-700 hover:bg-red-900 text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
                                             onClick={prevStep}
@@ -295,7 +295,7 @@ function SetAppointment() {
                                             setTimeSelected={handleTimeSelect}
                                         />
                                     </div>
-                                    <div className="flex w-full justify-evenly">
+                                    <div className="flex w-full justify-evenly mt-1">
                                         <button
                                             className=" bg-red-700 hover:bg-red-900 text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
                                             onClick={prevStep}
