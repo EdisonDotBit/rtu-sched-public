@@ -43,7 +43,7 @@ function AdminLayout() {
                             </svg>
                         </button>
                         <div className="flex items-center gap-2">
-                            <NavLink to="../student">
+                            <NavLink to="feedback">
                                 <img
                                     className="h-auto w-[200px] lg:w-56"
                                     src={Logo}
