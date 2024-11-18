@@ -74,7 +74,7 @@ const Feedback = () => {
 
     return (
         <div
-            className="relative h-full w-full flex justify-center items-center bg-opacity-50 bg-cover backdrop-blur-lg"
+            className="relative h-full w-full flex justify-center items-center object-cover bg-opacity-50 bg-cover backdrop-blur-lg"
             style={{
                 backgroundImage: `url(${rtu})`,
                 backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent overlay
