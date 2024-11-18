@@ -128,10 +128,9 @@ function SupAdminLayout() {
                         </div>
                         <nav className="text-sm flex flex-col flex-1 overflow-y-auto">
                             <NavLink
-                                to="/ewqqwe/suppa/feedbacks"
+                                to="/rtu/suppa/feedbacks"
                                 className={`relative flex items-center px-6 sm:px-8 py-4 sm:py-6 text-white hover:bg-[#123A69] ${
-                                    location.pathname ===
-                                    "/ewqqwe/suppa/feedbacks"
+                                    location.pathname === "/rtu/suppa/feedbacks"
                                         ? "bg-[#123A69]"
                                         : ""
                                 }`}
@@ -139,7 +138,7 @@ function SupAdminLayout() {
                                 <span
                                     className={`absolute left-0 h-full w-1.5 bg-[#FFDB75] ${
                                         location.pathname ===
-                                        "/ewqqwe/suppa/feedbacks"
+                                        "/rtu/suppa/feedbacks"
                                             ? "opacity-100"
                                             : "opacity-0"
                                     }`}
@@ -161,10 +160,10 @@ function SupAdminLayout() {
                                 <span className="ml-4">View Feedbacks</span>
                             </NavLink>
                             <NavLink
-                                to="/ewqqwe/suppa/appointments"
+                                to="/rtu/suppa/appointments"
                                 className={`relative flex items-center px-6 sm:px-8 py-4 sm:py-6 text-white hover:bg-[#123A69] ${
                                     location.pathname ===
-                                    "/ewqqwe/suppa/appointments"
+                                    "/rtu/suppa/appointments"
                                         ? "bg-[#123A69]"
                                         : ""
                                 }`}
@@ -172,7 +171,7 @@ function SupAdminLayout() {
                                 <span
                                     className={`absolute left-0 h-full w-1.5 bg-[#FFDB75] ${
                                         location.pathname ===
-                                        "/ewqqwe/suppa/appointments"
+                                        "/rtu/suppa/appointments"
                                             ? "opacity-100"
                                             : "opacity-0"
                                     }`}
@@ -194,10 +193,9 @@ function SupAdminLayout() {
                                 <span className="ml-4 ">Appointment</span>
                             </NavLink>
                             <NavLink
-                                to="/ewqqwe/suppa/offices"
+                                to="/rtu/suppa/offices"
                                 className={`relative flex items-center px-6 sm:px-8 py-4 sm:py-6 text-white hover:bg-[#123A69] ${
-                                    location.pathname ===
-                                    "/ewqqwe/suppa/offices"
+                                    location.pathname === "/rtu/suppa/offices"
                                         ? "bg-[#123A69]"
                                         : ""
                                 }`}
@@ -205,7 +203,7 @@ function SupAdminLayout() {
                                 <span
                                     className={`absolute left-0 h-full w-1.5 bg-[#FFDB75] ${
                                         location.pathname ===
-                                        "/ewqqwe/suppa/offices"
+                                        "/rtu/suppa/offices"
                                             ? "opacity-100"
                                             : "opacity-0"
                                     }`}
@@ -227,10 +225,9 @@ function SupAdminLayout() {
                                 <span className="ml-4">Manage Offices</span>
                             </NavLink>
                             <NavLink
-                                to="/ewqqwe/suppa/accounts"
+                                to="/rtu/suppa/accounts"
                                 className={`relative flex items-center px-6 sm:px-8 py-4 sm:py-6 text-white hover:bg-[#123A69] ${
-                                    location.pathname ===
-                                    "/ewqqwe/suppa/accounts"
+                                    location.pathname === "/rtu/suppa/accounts"
                                         ? "bg-[#123A69]"
                                         : ""
                                 }`}
@@ -238,7 +235,7 @@ function SupAdminLayout() {
                                 <span
                                     className={`absolute left-0 h-full w-1.5 bg-[#FFDB75] ${
                                         location.pathname ===
-                                        "/ewqqwe/suppa/accounts"
+                                        "/rtu/suppa/accounts"
                                             ? "opacity-100"
                                             : "opacity-0"
                                     }`}
@@ -260,9 +257,9 @@ function SupAdminLayout() {
                                 <span className="ml-4">Admin Accounts</span>
                             </NavLink>
                             <NavLink
-                                to="/ewqqwe/suppa/manage"
+                                to="/rtu/suppa/manage"
                                 className={`relative flex items-center px-6 sm:px-8 py-4 sm:py-6 text-white hover:bg-[#123A69] ${
-                                    location.pathname === "/ewqqwe/suppa/manage"
+                                    location.pathname === "/rtu/suppa/manage"
                                         ? "bg-[#123A69]"
                                         : ""
                                 }`}
@@ -270,7 +267,7 @@ function SupAdminLayout() {
                                 <span
                                     className={`absolute left-0 h-full w-1.5 bg-[#FFDB75] ${
                                         location.pathname ===
-                                        "/ewqqwe/suppa/manage"
+                                        "/rtu/suppa/manage"
                                             ? "opacity-100"
                                             : "opacity-0"
                                     }`}
