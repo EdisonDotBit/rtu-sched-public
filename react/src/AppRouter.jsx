@@ -24,7 +24,7 @@ const AppRouter = () => (
         <AuthProvider>
             <Routes>
                 <Route path="feedback" element={<Feedback />} />
-                <Route path="/ewqqwe/admin" element={<AdminLayout />}>
+                <Route path="/rtu/admin" element={<AdminLayout />}>
                     <Route
                         path=""
                         element={
@@ -59,10 +59,10 @@ const AppRouter = () => (
                     />
                 </Route>
                 <Route path="*" element={<NotFound />} />
-                <Route path="ewqqwe/login" element={<LoginAdmin />} />
+                <Route path="rtu/login" element={<LoginAdmin />} />
                 <Route path="/" element={<Navigate to="/student" />} />
                 <Route
-                    path="/ewqqwe/suppa"
+                    path="/rtu/suppa"
                     element={
                         <ProtectedRoute>
                             <SupAdminLayout />
