@@ -35,7 +35,7 @@ const Feedback = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const maxLength = 300; // Set your desired character limit
+    const maxLength = 200; // Set your desired character limit
 
     const handleRatingChange = (rating) => {
         setFormData({ ...formData, rating });
@@ -87,7 +87,7 @@ const Feedback = () => {
                         <h1 className="text-3xl lg:text-4xl font-bold text-white leading-snug">
                             Leave us your feedback!
                         </h1>
-                        <p className="text-sm md:text-lg text-white leading-relaxed">
+                        <p className="text-justify text-sm md:text-lg text-white leading-relaxed">
                             We value your input as it helps us improve and
                             provide a better experience. Please take a moment to
                             share your thoughts, suggestions, or concerns. Your
