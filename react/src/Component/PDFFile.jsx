@@ -251,7 +251,7 @@ const PDFFile = ({ succData }) => {
                                 • You may submit a feedback at:
                             </Text>
                             <Text style={styles.link}>
-                                link to feedback.comasdasdasd
+                                rtu-online-appointment/feedback.com
                             </Text>
                         </View>
                     </View>
