@@ -14,9 +14,9 @@ export const AuthProvider = ({ children }) => {
         setUser(data.user); // This sets 'user' in local storage
         setRole(data.role); // This sets 'role' in local storage
         if (data.user === "admin") {
-            navigate("/ewqqwe/suppa");
+            navigate("/rtu/suppa");
         } else {
-            navigate("/ewqqwe/admin");
+            navigate("/rtu/admin");
         }
     };
 
@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("admuser");
         localStorage.removeItem("admrole");
 
-        navigate("/ewqqwe/login", { replace: true });
+        navigate("/rtu/login", { replace: true });
     };
 
     const value = useMemo(
