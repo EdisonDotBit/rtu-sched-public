@@ -6,12 +6,12 @@ const StarRating = ({ rating, onRatingChange }) => {
     const stars = [1, 2, 3, 4, 5];
 
     return (
-        <div className="flex items-center justify-center w-auto">
+        <div className="flex items-center justify-center w-auto gap-8">
             {stars.map((star) => (
                 <button
                     type="button"
                     key={star}
-                    className={`text-2xl sm:text-4xl md:text-5xl mr-8 ${
+                    className={`text-2xl sm:text-4xl md:text-5xl ${
                         star <= rating ? "text-yellow-500" : "text-gray-400"
                     }`}
                     onClick={() => onRatingChange(star)}
