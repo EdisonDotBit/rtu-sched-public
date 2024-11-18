@@ -53,7 +53,7 @@ class Appointments extends Controller
         try {
             $apt->save();
 
-            $apt->makeHidden(['aptid', 'aptname', 'aptstudnum', 'aptpnumber', 'aptemail']);
+            // $apt->makeHidden(['aptid', 'aptname', 'aptstudnum', 'aptpnumber', 'aptemail']);
 
             return response()->json([
                 'status' => 200,
