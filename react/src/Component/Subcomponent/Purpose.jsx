@@ -27,40 +27,19 @@ const Purpose = ({ formData, setFormData }) => {
     useEffect(() => {
         if (formData.aptoffice === "MISO") {
             setOptions([
-                "Option A Purpose 1",
-                "Option A Purpose 2",
-                "Option A Purpose 3",
+                "New Email Account",
+                "Registration Form",
+                "Grade Slip",
+                "ID Processing",
             ]);
-        } else if (formData.aptoffice === "CSA") {
-            setOptions([
-                "Option B Purpose 1",
-                "Option B Purpose 2",
-                "Option B Purpose 3",
-            ]);
+        } else if (formData.aptoffice === "SAASU") {
+            setOptions(["Good Moral", "Clearance", "Uniform Exemption"]);
         } else if (formData.aptoffice === "BAO") {
-            setOptions([
-                "Option B Purpose 1",
-                "Option B Purpose 2",
-                "Option B Purpose 3",
-            ]);
-        } else if (formData.aptoffice === "SRAC") {
-            setOptions([
-                "Option B Purpose 1",
-                "Option B Purpose 2",
-                "Option B Purpose 3",
-            ]);
-        } else if (formData.aptoffice === "REG") {
-            setOptions([
-                "Option B Purpose 1",
-                "Option B Purpose 2",
-                "Option B Purpose 3",
-            ]);
-        } else if (formData.aptoffice === "SO") {
-            setOptions([
-                "Option B Purpose 1",
-                "Option B Purpose 2",
-                "Option B Purpose 3",
-            ]);
+            setOptions(["Uniform", "Book"]);
+        } else if (formData.aptoffice === "SRAU") {
+            setOptions(["Transcript of Records", "Certificate of Enrollment"]);
+        } else if (formData.aptoffice === "SFAU") {
+            setOptions(["Scholar Concern"]);
         } else {
             setOptions([]);
         }
@@ -117,7 +96,7 @@ const Purpose = ({ formData, setFormData }) => {
                     className="text-gray-800 flex items-center mb-4 w-full"
                 >
                     <select
-                        className="bg-white py-2 px-3 border w-full rounded-md flex-grow bg-transparent"
+                        className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
                         value={dropdown.value || ""}
                         onChange={(e) => handleDropdownChange(e, index)}
                     >
