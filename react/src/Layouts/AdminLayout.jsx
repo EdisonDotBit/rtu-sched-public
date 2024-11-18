@@ -128,10 +128,9 @@ function AdminLayout() {
                         </div>
                         <nav className="text-sm flex flex-col flex-1 overflow-y-auto">
                             <NavLink
-                                to="/ewqqwe/admin/feedback"
+                                to="/rtu/admin/feedback"
                                 className={`relative flex items-center px-6 sm:px-8 py-4 sm:py-6 text-white hover:bg-[#123A69] ${
-                                    location.pathname ===
-                                    "/ewqqwe/admin/feedback"
+                                    location.pathname === "/rtu/admin/feedback"
                                         ? "bg-[#123A69]"
                                         : ""
                                 }`}
@@ -139,7 +138,7 @@ function AdminLayout() {
                                 <span
                                     className={`absolute left-0 h-full w-1.5 bg-[#FFDB75] ${
                                         location.pathname ===
-                                        "/ewqqwe/admin/feedback"
+                                        "/rtu/admin/feedback"
                                             ? "opacity-100"
                                             : "opacity-0"
                                     }`}
@@ -161,10 +160,10 @@ function AdminLayout() {
                                 <span className="ml-4">View Feedbacks</span>
                             </NavLink>
                             <NavLink
-                                to="/ewqqwe/admin/appointments"
+                                to="/rtu/admin/appointments"
                                 className={`relative flex items-center px-6 sm:px-8 py-4 sm:py-6 text-white hover:bg-[#123A69] ${
                                     location.pathname ===
-                                    "/ewqqwe/admin/appointments"
+                                    "/rtu/admin/appointments"
                                         ? "bg-[#123A69]"
                                         : ""
                                 }`}
@@ -172,7 +171,7 @@ function AdminLayout() {
                                 <span
                                     className={`absolute left-0 h-full w-1.5 bg-[#FFDB75] ${
                                         location.pathname ===
-                                        "/ewqqwe/admin/appointments"
+                                        "/rtu/admin/appointments"
                                             ? "opacity-100"
                                             : "opacity-0"
                                     }`}
@@ -194,9 +193,9 @@ function AdminLayout() {
                                 <span className="ml-4">Appointment</span>
                             </NavLink>
                             <NavLink
-                                to="/ewqqwe/admin/manage"
+                                to="/rtu/admin/manage"
                                 className={`relative flex items-center px-6 sm:px-8 py-4 sm:py-6 text-white hover:bg-[#123A69] ${
-                                    location.pathname === "/ewqqwe/admin/manage"
+                                    location.pathname === "/rtu/admin/manage"
                                         ? "bg-[#123A69]"
                                         : ""
                                 }`}
@@ -204,7 +203,7 @@ function AdminLayout() {
                                 <span
                                     className={`absolute left-0 h-full w-1.5 bg-[#FFDB75] ${
                                         location.pathname ===
-                                        "/ewqqwe/admin/manage"
+                                        "/rtu/admin/manage"
                                             ? "opacity-100"
                                             : "opacity-0"
                                     }`}
