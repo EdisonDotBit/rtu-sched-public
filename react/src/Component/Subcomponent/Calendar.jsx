@@ -4,7 +4,19 @@ import Loading from "./Loading";
 const Calendar = ({ formData, setFormData, limit, appointments }) => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-    const [disabledDates, setDisabledDates] = useState(["2024-06-20"]);
+    const [disabledDates, setDisabledDates] = useState([
+        // Holidays
+        "2024-01-01",
+        "2024-03-28",
+        "2024-03-29",
+        "2024-04-09",
+        "2024-05-01",
+        "2024-06-12",
+        "2024-08-26",
+        "2024-11-30",
+        "2024-12-25",
+        "2024-12-30",
+    ]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
