@@ -75,25 +75,29 @@ const TimePicker = ({
     return (
         <div className="container w-full mx-auto max-w-md p-4 text-black md:ml-10">
             <h2 className="text-2xl font-semibold mb-4">Select a Time</h2>
-            <div className="grid grid-cols-3 gap-4 xsm:text-xs sm:text-base">
-                {timeSlots.map((time, index) => (
-                    <button
-                        type="button"
-                        key={index}
-                        onClick={() => handleTimeClick(time)}
-                        disabled={disabledTime.includes(time)}
-                        className={`flex justify-center items-center p-4 border border-gray-300 rounded-lg focus:outline-none transition-colors ${
-                            formData.apttime === time
-                                ? "bg-blue-600 text-white"
-                                : disabledTime.includes(time)
-                                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                                : "bg-white text-gray-700"
-                        }`}
-                    >
-                        {time}
-                    </button>
-                ))}
-            </div>
+            {formData.aptdate ? ( // Check if a date has been selected
+                <div className="grid grid-cols-3 gap-4 xsm:text-xs sm:text-base">
+                    {timeSlots.map((time, index) => (
+                        <button
+                            type="button"
+                            key={index}
+                            onClick={() => handleTimeClick(time)}
+                            disabled={disabledTime.includes(time)}
+                            className={`flex justify-center items-center p-4 border border-gray-300 rounded-lg focus:outline-none transition-colors ${
+                                formData.apttime === time
+                                    ? "bg-blue-600 text-white"
+                                    : disabledTime.includes(time)
+                                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                                    : "bg-white text-gray-700"
+                            }`}
+                        >
+                            {time}
+                        </button>
+                    ))}
+                </div>
+            ) : (
+                <div className="text-gray-500">Please select a date first.</div> // Message if no date is selected
+            )}
         </div>
     );
 };
