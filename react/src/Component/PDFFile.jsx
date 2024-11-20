@@ -242,9 +242,8 @@ const PDFFile = ({ succData }) => {
                             </Text>
                             <Text style={styles.bulletItem}></Text>
                             <Text style={styles.bulletItem}>
-                                • If you miss the appointment, you have three
-                                (3) days to reschedule before it automatically
-                                deleted.
+                                • If you miss the appointment on the said date,
+                                it will be automatically cancelled.
                             </Text>
                             <Text style={styles.bulletItem}></Text>
                             <Text style={styles.bulletItem}>
