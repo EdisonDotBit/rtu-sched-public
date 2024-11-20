@@ -98,4 +98,35 @@ class Offices extends Controller
             ], 400);
         }
     }
+
+
+    public function getPurposes($officeAbbr)
+    {
+        $office = Office::where('offabbr', $officeAbbr)->first();
+
+        if ($office) {
+            $purposes = $office->purposes()->pluck('purpose');
+            return response()->json($purposes);
+        } else {
+            return response()->json(['message' => 'Office not found'], 404);
+        }
+    }
+
+
+    public function addPurpose(Request $request)
+    {
+        $officeId = $request->input('officeId');
+        $purpose = $request->input('purpose');
+
+        // Debug log to check if the data is received correctly 
+        error_log("Office ID: $officeId, Purpose: $purpose");
+
+        $office = Office::find($officeId);
+        if ($office) {
+            $office->purposes()->create(['purpose' => $purpose]);
+            return response()->json(['status' => 200, 'message' => 'Purpose inserted successfully']);
+        } else {
+            return response()->json(['status' => 404, 'message' => 'Office not found'], 404);
+        }
+    }
 }
