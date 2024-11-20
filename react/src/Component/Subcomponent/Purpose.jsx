@@ -3,13 +3,10 @@ import { useEffect, useState } from "react";
 const Purpose = ({ formData, setFormData }) => {
     // State to hold the list of dropdowns
     const [dropdowns, setDropdowns] = useState([{ id: 0, value: "" }]);
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
     // Options for the dropdown
-    const [options, setOptions] = useState([
-        "Option A Purpose 1",
-        "Option A Purpose 2",
-        "Option A Purpose 3",
-    ]);
+    const [options, setOptions] = useState([]);
 
     // Initialize dropdowns from formData when the component mounts
     useEffect(() => {
@@ -25,24 +22,21 @@ const Purpose = ({ formData, setFormData }) => {
     }, [formData.aptpurpose]);
 
     useEffect(() => {
-        if (formData.aptoffice === "MISO") {
-            setOptions([
-                "New Email Account",
-                "Registration Form",
-                "Grade Slip",
-                "ID Processing",
-            ]);
-        } else if (formData.aptoffice === "SAASU") {
-            setOptions(["Good Moral", "Clearance", "Uniform Exemption"]);
-        } else if (formData.aptoffice === "BAO") {
-            setOptions(["Uniform", "Book"]);
-        } else if (formData.aptoffice === "SRAU") {
-            setOptions(["Transcript of Records", "Certificate of Enrollment"]);
-        } else if (formData.aptoffice === "SFAU") {
-            setOptions(["Scholar Concern"]);
-        } else {
-            setOptions([]);
-        }
+        const fetchPurposes = async () => {
+            try {
+                const response = await fetch(
+                    `${apiBaseUrl}/api/office/purposes/${formData.aptoffice}`
+                );
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json(); // Directly parse JSON
+                setOptions(data);
+            } catch (error) {
+                console.error("Error fetching purposes:", error);
+            }
+        };
+        fetchPurposes();
     }, [formData.aptoffice]);
 
     // Function to add a new dropdown
@@ -103,8 +97,8 @@ const Purpose = ({ formData, setFormData }) => {
                         <option value="" disabled selected>
                             --Select Purpose--
                         </option>
-                        {options.map((option) => (
-                            <option key={option} value={option}>
+                        {options.map((option, i) => (
+                            <option key={i} value={option}>
                                 {option}
                             </option>
                         ))}
