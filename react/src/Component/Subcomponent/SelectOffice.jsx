@@ -8,6 +8,7 @@ function SelectOffice({
     setOfficeSelected,
 }) {
     const [expanded, setExpanded] = useState(false);
+    const [options, setOptions] = useState([]);
 
     const handleOfficeSelection = (selectedOffAbbr, limits) => {
         setFormData((prevFormData) => ({
@@ -16,6 +17,19 @@ function SelectOffice({
         }));
         setLimit(limits);
         setOfficeSelected(true);
+        fetchPurposes(selectedOffAbbr);
+    };
+
+    const fetchPurposes = async (officeAbbr) => {
+        try {
+            const response = await fetch(
+                `${apiBaseUrl}/api/office/purposes/${officeAbbr}`
+            );
+            const data = await response.json();
+            setOptions(data);
+        } catch (error) {
+            console.error("Error fetching purposes:", error);
+        }
     };
 
     return (
