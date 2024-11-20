@@ -99,6 +99,7 @@ function AppointmentsAdmin() {
             });
             if (deleteRes.ok) {
                 alert("Appointment update successfully.");
+                window.location.reload();
             }
         } catch (error) {
             alert("Error updating appointment. Please try again later.");
@@ -488,7 +489,6 @@ function AppointmentsAdmin() {
                             className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
                             onClick={() => {
                                 modalRef1.current.close();
-                                window.location.reload();
                             }}
                         >
                             Close
