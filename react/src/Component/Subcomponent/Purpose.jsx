@@ -37,6 +37,9 @@ const Purpose = ({ formData, setFormData }) => {
             }
         };
         fetchPurposes();
+
+        // Reset dropdown values when the office changes
+        setDropdowns([{ id: 0, value: "" }]);
     }, [formData.aptoffice]);
 
     // Function to add a new dropdown
