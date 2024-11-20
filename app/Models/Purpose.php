@@ -11,6 +11,7 @@ class Purpose extends Model
     protected $fillable = ['purpose'];
     public function office()
     {
+        // Trying out debugged GitHub warning
         return $this->belongsTo(Office::class, 'office_id', 'offid');
     }
 }
