@@ -10,4 +10,9 @@ class Office extends Model
     public $timestamps = false;
     protected $table = 'offices';
     protected $primaryKey = 'offid';
+
+    public function purposes()
+    {
+        return $this->hasMany(Purpose::class, 'office_id', 'offid');
+    }
 }
