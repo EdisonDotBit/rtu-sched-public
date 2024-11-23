@@ -454,7 +454,7 @@ function GuestSetAppointment() {
                             <h1 className="underline"> {succData.aptid}</h1>
                             <PDFDownloadLink
                                 document={<PDFFile succData={succData} />}
-                                fileName="RTU_Appointment_Receipt.pdf"
+                                fileName="RTU-Appointment-Receipt.pdf"
                             >
                                 {({ loading }) =>
                                     loading ? (
