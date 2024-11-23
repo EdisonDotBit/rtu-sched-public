@@ -194,7 +194,7 @@ function AppointmentsAdmin() {
                 {searchResults.length !== 0 && (
                     <div className="overflow-x-auto overflow-y-auto">
                         <table className="border border-gray-200 min-w-full divide-y-2 divide-gray-200 bg-white">
-                            <thead className="ltr:text-center rtl:text-center text-[9px]">
+                            <thead className="ltr:text-center rtl:text-center text-[8.5px] lg:text-[10px]">
                                 <tr>
                                     <th
                                         className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900 cursor-pointer"
@@ -399,7 +399,7 @@ function AppointmentsAdmin() {
                                 </tr>
                             </thead>
 
-                            <tbody className="divide-y divide-gray-200 text-sm sm:text-[8.5px] text-center">
+                            <tbody className="divide-y divide-gray-200 text-[8.5px] lg:text-[10px] text-center">
                                 {searchResults
                                     .slice(0, 20)
                                     .map((apt, index) => (
