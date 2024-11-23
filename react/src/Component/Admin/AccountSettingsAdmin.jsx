@@ -71,7 +71,7 @@ function AccountSettingsAdmin() {
                         <input
                             className="text-gray-800 bg-white mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] w-[300px] xsm:w-[200px] sm:w-[300px] text-md"
                             type="text"
-                            placeholder="Enter the Full Name"
+                            placeholder="Enter Admin Name"
                             onChange={(e) => setadmname(e.target.value)}
                         />
                         <div className="flex justify-end w-full">
