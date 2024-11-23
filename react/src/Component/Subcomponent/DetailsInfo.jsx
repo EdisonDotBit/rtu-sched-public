@@ -210,7 +210,7 @@ function DetailsInfo({ aptData, appointments }) {
                 </button>
                 <PDFDownloadLink
                     document={<PDFFile succData={aptData} />}
-                    fileName="RTU_Appointment_Receipt.pdf"
+                    fileName="RTU-Appointment-Receipt.pdf"
                 >
                     {({ loading }) =>
                         loading ? (
