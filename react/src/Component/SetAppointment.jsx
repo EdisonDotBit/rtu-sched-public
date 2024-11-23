@@ -22,6 +22,7 @@ function SetAppointment() {
         aptemail: "",
         aptpnumber: "",
         apttime: "",
+        isConfirmed: false,
     });
 
     const [limit, setLimit] = useState(null);
@@ -150,7 +151,7 @@ function SetAppointment() {
     };
 
     const handleCheckboxChange = (e) => {
-        setIsConfirmed(e.target.checked);
+        setFormData({ ...formData, isConfirmed: e.target.checked });
     };
 
     const openmodal = (data) => {
@@ -379,6 +380,7 @@ function SetAppointment() {
                                                 style={{
                                                     verticalAlign: "middle",
                                                 }}
+                                                checked={formData.isConfirmed}
                                                 onChange={handleCheckboxChange}
                                             />
                                             <label
@@ -419,12 +421,12 @@ function SetAppointment() {
                                         <button
                                             type="submit"
                                             className={`py-2 px-8 rounded-md text-white hover:text-white ${
-                                                isConfirmed
+                                                formData.isConfirmed
                                                     ? "bg-[#194F90] hover:bg-[#123A69]"
                                                     : "bg-gray-400 cursor-not-allowed"
                                             } font-semibold`}
                                             onClick={setApt}
-                                            disabled={!isConfirmed}
+                                            disabled={!formData.isConfirmed}
                                         >
                                             Confirm
                                         </button>
