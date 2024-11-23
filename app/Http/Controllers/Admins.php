@@ -78,6 +78,7 @@ class Admins extends Controller
         $adm->admuser = $request->input('admuser');
         $adm->admpass = $request->input('admpass');
         $adm->admname = $request->input('admname');
+        $adm->admrole = $request->input('admrole');
         // $adm->admempnum = $request->input('admempnum');
         try {
             $adm->save();
