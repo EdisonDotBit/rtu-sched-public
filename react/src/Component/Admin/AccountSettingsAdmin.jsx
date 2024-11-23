@@ -108,17 +108,41 @@ function AccountSettingsAdmin() {
                                             .slice(0, 9)
                                             .map((Account, index) => (
                                                 <tr key={index}>
-                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                    <td
+                                                        className={`whitespace-nowrap text-gray-700 ${
+                                                            Account.admid === 1
+                                                                ? "px-8 py-5"
+                                                                : "px-4 py-2"
+                                                        }`}
+                                                    >
                                                         {Account.admname}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                    <td
+                                                        className={`whitespace-nowrap text-gray-700 ${
+                                                            Account.admid === 1
+                                                                ? "px-8 py-5"
+                                                                : "px-4 py-2"
+                                                        }`}
+                                                    >
                                                         {Account.admuser}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                    <td
+                                                        className={`whitespace-nowrap text-gray-700 ${
+                                                            Account.admid === 1
+                                                                ? "px-8 py-5"
+                                                                : "px-4 py-2"
+                                                        }`}
+                                                    >
                                                         {Account.admrole}
                                                     </td>
 
-                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                    <td
+                                                        className={`whitespace-nowrap text-gray-700 ${
+                                                            Account.admid === 1
+                                                                ? "px-8 py-5"
+                                                                : "px-4 py-2"
+                                                        }`}
+                                                    >
                                                         <a
                                                             onClick={(e) =>
                                                                 toEdit(
@@ -128,12 +152,15 @@ function AccountSettingsAdmin() {
                                                             }
                                                             href="#edit"
                                                         >
-                                                            <button className="group relative inline-block overflow-hidden border border-indigo-600 px-8 py-3 focus:outline-none focus:ring">
-                                                                <span className="absolute inset-x-0 bottom-0 h-[2px] bg-indigo-600 transition-all group-hover:h-full group-active:bg-indigo-500"></span>
-                                                                <span className="relative text-sm font-medium text-indigo-600 transition-colors group-hover:text-white">
-                                                                    Edit
-                                                                </span>
-                                                            </button>
+                                                            {Account.admid !==
+                                                                1 && (
+                                                                <button className="group relative inline-block overflow-hidden border border-indigo-600 px-8 py-3 focus:outline-none focus:ring">
+                                                                    <span className="absolute inset-x-0 bottom-0 h-[2px] bg-indigo-600 transition-all group-hover:h-full group-active:bg-indigo-500"></span>
+                                                                    <span className="relative text-sm font-medium text-indigo-600 transition-colors group-hover:text-white">
+                                                                        Edit
+                                                                    </span>
+                                                                </button>
+                                                            )}
                                                         </a>
 
                                                         {Account.admid !==
