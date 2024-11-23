@@ -46,6 +46,7 @@ function EditOffice({ selectedOffid }) {
             if (res.status === 200) {
                 console.log(res.data.message); // Log success message
                 alert("Office edited successfully.");
+                window.location.reload();
             }
         } catch (error) {
             console.error("Error adding office:", error); // Log the error response
