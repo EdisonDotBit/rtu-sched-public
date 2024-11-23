@@ -89,9 +89,6 @@ function AccountSettingsAdmin() {
                                     <thead className="ltr:text-center rtl:text-center">
                                         <tr>
                                             <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
-                                                Admin ID
-                                            </th>
-                                            <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                                 Admin Name
                                             </th>
                                             <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
@@ -111,9 +108,6 @@ function AccountSettingsAdmin() {
                                             .slice(0, 9)
                                             .map((Account, index) => (
                                                 <tr key={index}>
-                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                        {Account.admid}
-                                                    </td>
                                                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                                         {Account.admname}
                                                     </td>
@@ -142,20 +136,23 @@ function AccountSettingsAdmin() {
                                                             </button>
                                                         </a>
 
-                                                        <button
-                                                            className="ml-4 group relative inline-block overflow-hidden border border-red-600 px-8 py-3 focus:outline-none focus:ring"
-                                                            onClick={() =>
-                                                                openmodal(
-                                                                    Account.admid,
-                                                                    Account.admname
-                                                                )
-                                                            }
-                                                        >
-                                                            <span className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600 transition-all group-hover:h-full group-active:bg-red-500"></span>
-                                                            <span className="relative text-sm font-medium text-red-600 transition-colors group-hover:text-white">
-                                                                Delete
-                                                            </span>
-                                                        </button>
+                                                        {Account.admid !==
+                                                            1 && (
+                                                            <button
+                                                                className="ml-4 group relative inline-block overflow-hidden border border-red-600 px-8 py-3 focus:outline-none focus:ring"
+                                                                onClick={() =>
+                                                                    openmodal(
+                                                                        Account.admid,
+                                                                        Account.admname
+                                                                    )
+                                                                }
+                                                            >
+                                                                <span className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600 transition-all group-hover:h-full group-active:bg-red-500"></span>{" "}
+                                                                <span className="relative text-sm font-medium text-red-600 transition-colors group-hover:text-white">
+                                                                    Delete
+                                                                </span>
+                                                            </button>
+                                                        )}
                                                     </td>
                                                 </tr>
                                             ))}

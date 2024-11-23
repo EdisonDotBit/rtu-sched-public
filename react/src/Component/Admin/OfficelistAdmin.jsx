@@ -129,9 +129,6 @@ function OfficelistAdmin() {
                                 <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
                                     <thead className="ltr:text-center rtl:text-center">
                                         <tr>
-                                            <th className=" whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
-                                                Office ID
-                                            </th>
                                             <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                                 Office Name
                                             </th>
@@ -154,9 +151,6 @@ function OfficelistAdmin() {
                                             .slice(0, 9)
                                             .map((office, index) => (
                                                 <tr key={index}>
-                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                        {office.offid}
-                                                    </td>
                                                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                                         {office.offname}
                                                     </td>
