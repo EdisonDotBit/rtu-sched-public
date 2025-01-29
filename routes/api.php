@@ -44,6 +44,8 @@ Route::get('admin/info/{admid}', 'App\Http\Controllers\Admins@get');
 Route::get('admin/informa/{admuser}', 'App\Http\Controllers\Admins@find');
 Route::delete('admin/delete/{admid}', 'App\Http\Controllers\Admins@delete');
 Route::put('admin/edit/{admid}', 'App\Http\Controllers\Admins@edit');
+Route::get('admin/bybranch/{admbranch}', 'App\Http\Controllers\Admins@filterByBranch');
+
 
 Route::post('admin/login', 'App\Http\Controllers\Admins@login');
 
