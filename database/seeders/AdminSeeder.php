@@ -15,11 +15,19 @@ class AdminSeeder extends Seeder
     public function run()
     {
         DB::table('admins')->insert([
-            'admuser' => 'admin',
-            'admpass' => 'RTU$#@!1234', // You may hash the password here
-            'admname' => 'Administrator',
-            // 'admempnum' => 'superadmin',
+            'admuser' => 'boniadmin',
+            'admpass' => 'BONI$#@!1234',
+            'admname' => 'Boni Super Admin',
             'admrole' => 'superadmin',
+            'admbranch' => 'boni',
+        ]);
+
+        DB::table('admins')->insert([
+            'admuser' => 'pasigadmin',
+            'admpass' => 'PASIG$#@!1234',
+            'admname' => 'Pasig Super Admin',
+            'admrole' => 'superadmin',
+            'admbranch' => 'pasig',
         ]);
     }
 }
