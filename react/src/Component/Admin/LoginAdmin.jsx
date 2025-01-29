@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../../Hooks/useAuth";
 import Logo from "../Subcomponent/Asset/rtu_logo_v3.png";
 import axios from "axios";
+
 function LoginAdmin() {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const [showPassword, setShowPassword] = useState(false);
@@ -30,6 +31,7 @@ function LoginAdmin() {
                 login({
                     user: formData.admuser,
                     role: response.data.admrole,
+                    branch: response.data.admbranch,
                 });
                 alert("Login Success");
             }
