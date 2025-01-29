@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import AddAccount from "./Component/AddAccount";
 import EditAccount from "./Component/EditAccount";
+import { useAuth } from "../../Hooks/useAuth";
 
 function AccountSettingsAdmin() {
     const [accountsData, setAccountsData] = useState([]);
@@ -11,16 +12,19 @@ function AccountSettingsAdmin() {
     const [searchResults, setSearchResults] = useState([]);
     const [admname, setadmname] = useState("");
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+    const { branch } = useAuth();
 
     useEffect(() => {
         const getData = async () => {
-            const getRes = await fetch(`${apiBaseUrl}/api/admin/all`);
+            const getRes = await fetch(
+                `${apiBaseUrl}/api/admin/bybranch/${branch}`
+            );
             const getDataResult = await getRes.json();
             setAccountsData(getDataResult);
             setSearchResults(getDataResult);
         };
         getData();
-    }, []);
+    }, [branch]);
 
     useEffect(() => {
         const filteredResults = accountsData.filter((account) => {
