@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useAuth } from "../../../Hooks/useAuth";
 
 function AddAccount() {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+    const { branch } = useAuth();
     const [formData, setFormData] = useState({
         admname: "",
         // admempnum: "",
         admuser: "",
         admpass: "",
         admrole: "",
+        admbranch: branch,
     });
 
     const [offData, setoffData] = useState([]);
@@ -44,13 +47,15 @@ function AddAccount() {
 
     useEffect(() => {
         const getData = async () => {
-            const getRes = await fetch(`${apiBaseUrl}/api/office/all`);
+            const getRes = await fetch(
+                `${apiBaseUrl}/api/office/bybranch/${branch}`
+            );
             const getDataResult = await getRes.json();
             setoffData(getDataResult);
             setSearchResults(getDataResult);
         };
         getData();
-    }, []);
+    }, [branch]);
 
     return (
         <>
@@ -149,6 +154,19 @@ function AddAccount() {
                                         </option>
                                     ))}
                                 </select>
+                            </label>
+
+                            {/* Username */}
+                            <label className="block text-white">
+                                Branch:
+                                <input
+                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                    name="admbranch"
+                                    value={formData.admbranch}
+                                    onChange={handleChange}
+                                    type="text"
+                                    readOnly
+                                />
                             </label>
 
                             <div className="flex justify-center gap-6">
