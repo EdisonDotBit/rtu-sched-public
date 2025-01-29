@@ -29,6 +29,7 @@ Route::put('updone/{aptid}', 'App\Http\Controllers\Appointments@uptodone');
 Route::put('resched/{aptid}', 'App\Http\Controllers\Appointments@reschedule');
 
 Route::get('office/all', 'App\Http\Controllers\Offices@index');
+Route::get('office/bybranch/{offbranch}', 'App\Http\Controllers\Offices@filterByBranch');
 Route::delete('office/delete/{offid}', 'App\Http\Controllers\Offices@deloff');
 Route::post('office/add', 'App\Http\Controllers\Offices@addoff');
 Route::get('office/info/{offid}', 'App\Http\Controllers\Offices@getoff');
@@ -36,8 +37,6 @@ Route::put('office/edit/{offid}', 'App\Http\Controllers\Offices@edoff');
 Route::get('office/find/{offabbr}', 'App\Http\Controllers\Offices@findAbbr');
 Route::post('office/addPurpose', 'App\Http\Controllers\Offices@addPurpose');
 Route::get('office/purposes/{officeAbbr}', 'App\Http\Controllers\Offices@getPurposes');
-
-
 
 Route::post('admin/add', 'App\Http\Controllers\Admins@create');
 Route::get('admin/all', 'App\Http\Controllers\Admins@index');
