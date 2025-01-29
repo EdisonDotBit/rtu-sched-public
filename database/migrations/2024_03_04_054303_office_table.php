@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('offname')->nullable(false);
             $table->integer('offlimit')->nullable(false);
             $table->string('offabbr')->nullable(false);
+            $table->string('offbranch')->nullable(false);
         });
     }
 

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('admname')->nullable(false);
             // $table->string('admempnum')->nullable(false);
             $table->string('admrole')->nullable(false);
+            $table->string('admbranch')->nullable(false);
         });
     }
 
