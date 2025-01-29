@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useAuth } from "../../../Hooks/useAuth";
 
 function AddOffice() {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+    const { branch } = useAuth();
     const [formData, setFormData] = useState({
         offabbr: "",
         offname: "",
@@ -21,10 +23,10 @@ function AddOffice() {
         e.preventDefault();
 
         try {
-            const res = await axios.post(
-                `${apiBaseUrl}/api/office/add`,
-                formData
-            );
+            const res = await axios.post(`${apiBaseUrl}/api/office/add`, {
+                ...formData,
+                offbranch: branch,
+            });
 
             if (res.status === 200) {
                 console.log(res.data.message);
