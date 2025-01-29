@@ -13,6 +13,12 @@ class Offices extends Controller
         return $offices;
     }
 
+    public function filterByBranch($offbranch)
+    {
+        $off = Office::where('offbranch', $offbranch)->get();
+        return response()->json($off);
+    }
+
     public function findAbbr($abbr)
     {
         $off = Office::where('offabbr', $abbr)->first();
@@ -46,8 +52,7 @@ class Offices extends Controller
         $off->offname = $request->input('offname');
         $off->offlimit = $request->input('offlimit');
         $off->offabbr = $request->input('offabbr');
-
-
+        $off->offbranch = $request->input('offbranch');
 
         try {
             $off->save();

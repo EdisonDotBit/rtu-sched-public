@@ -108,6 +108,7 @@ class Admins extends Controller
                 'message' => 'Login successful',
                 'admuser' => $user->admuser,
                 'admrole' => $user->admrole,
+                'admbranch' => $user->admbranch,
             ]);
         }
 
