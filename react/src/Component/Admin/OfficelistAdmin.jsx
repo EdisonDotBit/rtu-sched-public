@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import AddOffice from "./Component/AddOffice";
 import EditOffice from "./Component/EditOffice";
+import { useAuth } from "../../Hooks/useAuth";
 
 function OfficelistAdmin() {
     const [offabbr, setoffabbr] = useState("");
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+    const { branch } = useAuth();
     const [offData, setoffData] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
     const modals = useRef(null);
@@ -17,13 +19,15 @@ function OfficelistAdmin() {
 
     useEffect(() => {
         const getData = async () => {
-            const getRes = await fetch(`${apiBaseUrl}/api/office/all`);
+            const getRes = await fetch(
+                `${apiBaseUrl}/api/office/bybranch/${branch}`
+            );
             const getDataResult = await getRes.json();
             setoffData(getDataResult);
             setSearchResults(getDataResult);
         };
         getData();
-    }, []);
+    }, [branch]);
 
     useEffect(() => {
         const filteredResults = offData.filter((office) => {
@@ -141,6 +145,9 @@ function OfficelistAdmin() {
                                                 Office Limit
                                             </th>
                                             <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
+                                                Branch
+                                            </th>
+                                            <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                                 Tools
                                             </th>
                                         </tr>
@@ -159,6 +166,9 @@ function OfficelistAdmin() {
                                                     </td>
                                                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                                         {office.offlimit}
+                                                    </td>
+                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                        {office.offbranch}
                                                     </td>
                                                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                                         <a
