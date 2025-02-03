@@ -22,9 +22,22 @@ class Appointments extends Controller
     //     return $apt;
     // }
 
-    public function allRoles(string $aptrole)
+    // public function allRoles(string $aptrole)
+    // {
+    //     $apt = Appointment::where('aptoffice', $aptrole)->get();
+    //     return $apt;
+    // }
+
+    public function allRolesAndBranch(string $aptrole, string $aptbranch)
     {
-        $apt = Appointment::where('aptoffice', $aptrole)->get();
+        $apt = Appointment::where('aptoffice', $aptrole)
+            ->where('aptbranch', $aptbranch)->get();
+        return $apt;
+    }
+
+    public function allBranch(string $aptbranch)
+    {
+        $apt = Appointment::where('aptbranch', $aptbranch)->get();
         return $apt;
     }
 

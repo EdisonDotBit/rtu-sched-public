@@ -19,7 +19,7 @@ class AdminSeeder extends Seeder
             'admpass' => 'BONI$#@!1234',
             'admname' => 'Boni Super Admin',
             'admrole' => 'superadmin',
-            'admbranch' => 'boni',
+            'admbranch' => 'Boni',
         ]);
 
         DB::table('admins')->insert([
@@ -27,7 +27,7 @@ class AdminSeeder extends Seeder
             'admpass' => 'PASIG$#@!1234',
             'admname' => 'Pasig Super Admin',
             'admrole' => 'superadmin',
-            'admbranch' => 'pasig',
+            'admbranch' => 'Pasig',
         ]);
     }
 }

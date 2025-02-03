@@ -12,16 +12,16 @@ function AppointmentsAdmin() {
     const modalRef1 = useRef(null);
     const modalRef2 = useRef(null);
     const [selectedAppointmentNum, setSelectedAppointmentNum] = useState(null);
-    const { role } = useAuth();
+    const { role, branch } = useAuth();
 
     useEffect(() => {
         const getData = async () => {
             let endpoint;
 
             if (role === "superadmin") {
-                endpoint = `${apiBaseUrl}/api/all`; // Assuming this endpoint returns all appointments
+                endpoint = `${apiBaseUrl}/api/branchapt/${branch}`; // Assuming this endpoint returns all appointments
             } else {
-                endpoint = `${apiBaseUrl}/api/filteredapt/${role}`;
+                endpoint = `${apiBaseUrl}/api/filteredapt/${role}/${branch}`;
             }
 
             const getRes = await fetch(endpoint);
@@ -30,7 +30,7 @@ function AppointmentsAdmin() {
             setSearchResults(getDataResult);
         };
         getData();
-    }, [role, apiBaseUrl]); // Add role as a dependency
+    }, [role, branch, apiBaseUrl]); // Add role as a dependency
 
     useEffect(() => {
         let filteredResults = aptData.filter((apt) => {

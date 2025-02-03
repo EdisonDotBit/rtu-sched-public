@@ -156,7 +156,7 @@ function AddAccount() {
                                 </select>
                             </label>
 
-                            {/* Username */}
+                            {/* Office Branch */}
                             <label className="block text-white">
                                 Branch:
                                 <input

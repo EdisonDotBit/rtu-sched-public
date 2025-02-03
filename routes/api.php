@@ -22,7 +22,9 @@ Route::post('setappt', 'App\Http\Controllers\Appointments@newapt');
 Route::get('searchappt/{aptid}', 'App\Http\Controllers\Appointments@getapt');
 
 Route::get('allongoing', 'App\Http\Controllers\Appointments@allOngoingAppointments');
-Route::get('filteredapt/{aptrole}', 'App\Http\Controllers\Appointments@allRoles');
+// Route::get('filteredapt/{aptrole}', 'App\Http\Controllers\Appointments@allRoles');
+Route::get('filteredapt/{aptrole}/{aptbranch}', 'App\Http\Controllers\Appointments@allRolesAndBranch');
+Route::get('branchapt/{aptbranch}', 'App\Http\Controllers\Appointments@allBranch');
 Route::get('all', 'App\Http\Controllers\Appointments@allAppointments');
 Route::delete('/delappt/{aptid}', 'App\Http\Controllers\Appointments@delapt');
 Route::put('updone/{aptid}', 'App\Http\Controllers\Appointments@uptodone');
