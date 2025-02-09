@@ -193,6 +193,38 @@ function AdminLayout() {
                                 <span className="ml-4">Appointments</span>
                             </NavLink>
                             <NavLink
+                                to="/rtu/admin/office"
+                                className={`relative flex items-center px-6 sm:px-8 py-4 sm:py-6 text-white hover:bg-[#123A69] ${
+                                    location.pathname === "/rtu/admin/office"
+                                        ? "bg-[#123A69]"
+                                        : ""
+                                }`}
+                            >
+                                <span
+                                    className={`absolute left-0 h-full w-1.5 bg-[#FFDB75] ${
+                                        location.pathname ===
+                                        "/rtu/admin/office"
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                    }`}
+                                ></span>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor"
+                                    class="w-7 h-7 mr-1"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z"
+                                    />
+                                </svg>
+                                <span className="ml-4">Manage Office</span>
+                            </NavLink>
+                            <NavLink
                                 to="/rtu/admin/manage"
                                 className={`relative flex items-center px-6 sm:px-8 py-4 sm:py-6 text-white hover:bg-[#123A69] ${
                                     location.pathname === "/rtu/admin/manage"

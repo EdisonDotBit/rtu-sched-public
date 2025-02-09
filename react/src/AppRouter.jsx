@@ -18,6 +18,7 @@ import NotFound from "./Component/NotFound.jsx";
 import Feedback from "./Component/Feedback.jsx";
 import Feedbacks from "./Component/Admin/Feedbacks.jsx";
 import ManageAcc from "./Component/Admin/ManageAcc.jsx";
+import OfficeAdminManage from "./Component/Admin/OfficeAdminManage.jsx";
 
 const AppRouter = () => (
     <>
@@ -30,6 +31,14 @@ const AppRouter = () => (
                         element={
                             <ProtectedRoute>
                                 <Feedbacks />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="office"
+                        element={
+                            <ProtectedRoute>
+                                <OfficeAdminManage />
                             </ProtectedRoute>
                         }
                     />

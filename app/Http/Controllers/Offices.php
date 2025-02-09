@@ -19,6 +19,14 @@ class Offices extends Controller
         return response()->json($off);
     }
 
+    public function filterByBranchRole($offbranch, $offabbr)
+    {
+        $off = Office::where('offbranch', $offbranch)
+            ->where('offabbr', $offabbr)
+            ->get();
+        return response()->json($off);
+    }
+
     public function findAbbr($abbr)
     {
         $off = Office::where('offabbr', $abbr)->first();

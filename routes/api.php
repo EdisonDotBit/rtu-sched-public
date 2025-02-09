@@ -32,6 +32,7 @@ Route::put('resched/{aptid}', 'App\Http\Controllers\Appointments@reschedule');
 
 Route::get('office/all', 'App\Http\Controllers\Offices@index');
 Route::get('office/bybranch/{offbranch}', 'App\Http\Controllers\Offices@filterByBranch');
+Route::get('office/bybranchrole/{offbranch}/{offabbr}', 'App\Http\Controllers\Offices@filterByBranchRol');
 Route::delete('office/delete/{offid}', 'App\Http\Controllers\Offices@deloff');
 Route::post('office/add', 'App\Http\Controllers\Offices@addoff');
 Route::get('office/info/{offid}', 'App\Http\Controllers\Offices@getoff');
