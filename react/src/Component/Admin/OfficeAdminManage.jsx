@@ -8,7 +8,6 @@ function OfficeAdminManage() {
     const { branch, role } = useAuth();
     const [offData, setoffData] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
-    const modals = useRef(null);
     const purposeModal = useRef(null);
     const [selectedOffid, setSelectedOffid] = useState(null);
     const [selectedOffname, setSelectedOffname] = useState("");
@@ -40,11 +39,6 @@ function OfficeAdminManage() {
         setSelectedOffid(officeNum);
         window.location.href = "#edit";
         e.preventDefault();
-    };
-    const openmodal = (officeNum, officeName) => {
-        setSelectedOffid(officeNum);
-        setSelectedOffname(officeName);
-        modals.current.showModal();
     };
 
     const openPurposeModal = (office, officeName) => {
@@ -203,7 +197,7 @@ function OfficeAdminManage() {
                                     <button
                                         type="button"
                                         onClick={() => {
-                                            modals.current.close();
+                                            purposeModal.current.close();
                                             window.location.reload();
                                         }}
                                         className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
