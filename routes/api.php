@@ -54,3 +54,8 @@ Route::post('admin/login', 'App\Http\Controllers\Admins@login');
 
 Route::post('feedback', 'App\Http\Controllers\Feedback@add');
 Route::get('feedbacks', 'App\Http\Controllers\Feedback@all');
+
+// For User Registration and Login
+Route::post('users/register', 'App\Http\Controllers\UserController@register');
+Route::post('users/login', 'App\Http\Controllers\UserController@login');
+Route::post('users/verify-pin', 'App\Http\Controllers\UserController@verifyPin');
