@@ -58,5 +58,8 @@ Route::get('feedbacks', 'App\Http\Controllers\Feedback@all');
 // For User Registration and Login
 Route::post('users/register', 'App\Http\Controllers\UserController@register');
 Route::post('users/login', 'App\Http\Controllers\UserController@login');
+Route::middleware('auth:sanctum')->post('users/logout', 'App\Http\Controllers\UserController@logout');
 Route::post('users/verify-pin', 'App\Http\Controllers\UserController@verifyPin');
 Route::post('users/resend-pin', 'App\Http\Controllers\UserController@resendPin');
+
+Route::middleware('auth:sanctum')->get('users/info', 'App\Http\Controllers\UserController@userInfo');
