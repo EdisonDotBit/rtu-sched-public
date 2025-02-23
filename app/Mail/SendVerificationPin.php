@@ -27,6 +27,11 @@ class SendVerificationPin extends Mailable
     {
         return $this->subject('Your Verification PIN')
             ->view('emails.verification_pin') // Blade email template
+            // ->attach(public_path('images/rtu_logo_v3.png'), [
+            //     'as' => 'logo.png',
+            //     'mime' => 'image/png',
+            // ])
+
             ->with([
                 'pin' => $this->pin, // Pass the PIN variable to the template
             ]);

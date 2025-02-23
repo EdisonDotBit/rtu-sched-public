@@ -115,4 +115,31 @@ class UserController extends Controller
             return response()->json(['success' => false, 'message' => 'Invalid PIN.'], 422);
         }
     }
+
+    public function resendPin(Request $request)
+    {
+        // Retrieve session data
+        $registrationData = session('registration_data');
+
+        if (!$registrationData) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Session expired. Please register again.'
+            ], 400);
+        }
+
+        // Generate a new 6-digit PIN
+        $newPin = random_int(100000, 999999);
+
+        // Store the new PIN in session
+        session(['verification_pin' => $newPin]);
+
+        // Send new PIN via email
+        Mail::to($registrationData['email'])->send(new SendVerificationPin($newPin));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'A new verification PIN has been sent to your email.'
+        ]);
+    }
 }

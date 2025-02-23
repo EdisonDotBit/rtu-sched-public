@@ -101,10 +101,19 @@ function Login() {
                     </button>
 
                     <p className="text-white text-sm text-center mt-4">
-                        Don't have an account?{" "}
+                        Don't have a student account?{" "}
                         <NavLink to="../student/register">
                             <span className="text-[#FFDB75] hover:underline cursor-pointer">
                                 Create One Here!
+                            </span>
+                        </NavLink>
+                    </p>
+
+                    <p className="text-white text-sm text-center mt-4">OR</p>
+                    <p className="text-white text-sm text-center mt-4">
+                        <NavLink to="../guest/set-appointment">
+                            <span className="text-[#FFDB75] hover:underline cursor-pointer">
+                                Sign in as Guest
                             </span>
                         </NavLink>
                     </p>

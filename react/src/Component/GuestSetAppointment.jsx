@@ -189,7 +189,7 @@ function GuestSetAppointment() {
                         <div className="mb-8">
                             <div className="w-full bg-gray-300 rounded-full">
                                 <div
-                                    class=" p-0.5 text-center text-xs font-medium leading-none text-primary-100 rounded-md bg-amber-400"
+                                    className=" p-0.5 text-center text-xs font-medium leading-none text-primary-100 rounded-md bg-amber-400"
                                     style={{ width: `${step * 20}%` }}
                                 >
                                     {step * 20}%

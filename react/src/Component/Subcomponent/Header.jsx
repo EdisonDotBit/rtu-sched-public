@@ -23,7 +23,7 @@ function Header() {
                                     viewBox="0 0 24 24"
                                     stroke-width="1.5"
                                     stroke="currentColor"
-                                    class="w-12 h-10"
+                                    className="w-12 h-10"
                                 >
                                     <path
                                         stroke-linecap="round"

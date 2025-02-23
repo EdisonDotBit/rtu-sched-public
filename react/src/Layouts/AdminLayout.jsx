@@ -149,7 +149,7 @@ function AdminLayout() {
                                     viewBox="0 0 24 24"
                                     stroke-width="1.5"
                                     stroke="currentColor"
-                                    class="w-7 h-7 mr-1"
+                                    className="w-7 h-7 mr-1"
                                 >
                                     <path
                                         stroke-linecap="round"
@@ -182,7 +182,7 @@ function AdminLayout() {
                                     viewBox="0 0 24 24"
                                     strokeWidth={1.5}
                                     stroke="currentColor"
-                                    class="w-7 h-7 mr-1"
+                                    className="w-7 h-7 mr-1"
                                 >
                                     <path
                                         strokeLinecap="round"
@@ -214,7 +214,7 @@ function AdminLayout() {
                                     viewBox="0 0 24 24"
                                     stroke-width="1.5"
                                     stroke="currentColor"
-                                    class="w-7 h-7 mr-1"
+                                    className="w-7 h-7 mr-1"
                                 >
                                     <path
                                         stroke-linecap="round"
@@ -246,7 +246,7 @@ function AdminLayout() {
                                     viewBox="0 0 24 24"
                                     strokeWidth={1.5}
                                     stroke="currentColor"
-                                    class="w-7 h-7 mr-1"
+                                    className="w-7 h-7 mr-1"
                                 >
                                     <path
                                         strokeLinecap="round"
