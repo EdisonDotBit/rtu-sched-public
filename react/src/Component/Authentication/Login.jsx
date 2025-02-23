@@ -14,6 +14,9 @@ function Login() {
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
+    // Get the API base URL from environment variables
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
     // Handle input change
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -27,8 +30,9 @@ function Login() {
 
         try {
             const response = await axios.post(
-                "http://localhost:8000/api/users/login",
-                formData
+                `${apiBaseUrl}/api/users/login`,
+                formData,
+                { withCredentials: true }
             );
 
             if (response.status === 200) {

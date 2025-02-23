@@ -11,6 +11,9 @@ function Authentication() {
     const [resendMessage, setResendMessage] = useState("");
     const [isResending, setIsResending] = useState(false);
 
+    // Get the API base URL from environment variables
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
     const handleChange = (e, index) => {
         const value = e.target.value;
         // Only allow digits and max 1 character per input
@@ -30,7 +33,7 @@ function Authentication() {
         e.preventDefault();
         try {
             const response = await axios.post(
-                "http://localhost:8000/api/users/verify-pin",
+                `${apiBaseUrl}/api/users/verify-pin`,
                 { pin },
                 { withCredentials: true }
             );
@@ -58,7 +61,7 @@ function Authentication() {
 
         try {
             const response = await axios.post(
-                "http://localhost:8000/api/users/resend-pin",
+                `${apiBaseUrl}/api/users/resend-pin`,
                 {},
                 { withCredentials: true }
             );
@@ -95,7 +98,7 @@ function Authentication() {
                     </h2>
 
                     <p className="text-white text-sm text-center mt-4">
-                        Kindly check the email that will receive the pin.
+                        Kindly check the email that will receive the PIN.
                     </p>
 
                     {/* Display Messages */}

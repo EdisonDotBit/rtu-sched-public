@@ -23,13 +23,15 @@ function Register() {
     };
 
     // Handle form submission
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
 
         try {
             const response = await axios.post(
-                "http://localhost:8000/api/users/register",
+                `${apiBaseUrl}/api/users/register`,
                 formData,
                 { withCredentials: true }
             );
