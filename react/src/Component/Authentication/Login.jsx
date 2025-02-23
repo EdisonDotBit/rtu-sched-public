@@ -29,16 +29,7 @@ function Login() {
         setError("");
 
         try {
-            const response = await axios.post(
-                `${apiBaseUrl}/api/users/login`,
-                formData,
-                { withCredentials: true }
-            );
-
-            if (response.status === 200) {
-                studentLogin(response.data); // Store user data using studentLogin
-                navigate("../student/set-appointment"); // Redirect after successful login
-            }
+            await studentLogin(formData);
         } catch (err) {
             if (err.response && err.response.data) {
                 setError(err.response.data.message || "Invalid credentials.");
