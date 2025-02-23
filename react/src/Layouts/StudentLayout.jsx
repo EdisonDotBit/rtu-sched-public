@@ -1,29 +1,25 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import Logo from "../Component/Subcomponent/Asset/rtu_logo_v3.png";
+import { useStudentAuth } from "../Hooks/useStudentAuth";
 
 function StudentLayout() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const modals = useRef(null);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const location = useLocation();
+    const { studentLogout, user } = useStudentAuth();
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
 
-    const openModal = () => {
-        modals.current.showModal();
+    const toggleDropdown = () => {
+        setIsDropdownOpen(!isDropdownOpen);
     };
 
-    useEffect(() => {
-        const modalShown = sessionStorage.getItem("modalShown");
-
-        // If it's the first visit, show the modal
-        if (!modalShown) {
-            openModal();
-            sessionStorage.setItem("modalShown", "true"); // Mark that the modal has been shown
-        }
-    }, []);
+    const handleSignOut = () => {
+        studentLogout();
+    };
 
     return (
         <>
@@ -60,12 +56,43 @@ function StudentLayout() {
                             </NavLink>
                         </div>
                     </div>
-                    <div className="flex items-center pr-4">
-                        <NavLink to="../guest">
-                            <button className="text-sm text-gray-500 hover:text-[#123A69]">
-                                Change to Guest
-                            </button>
-                        </NavLink>
+                    <div className="relative">
+                        <button
+                            className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#123A69] focus:outline-none"
+                            onClick={toggleDropdown}
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth="1.5"
+                                stroke="currentColor"
+                                className="w-6 h-6"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M15.75 7.5A3.75 3.75 0 1 1 12 3.75a3.75 3.75 0 0 1 3.75 3.75zM9 10.5h6a6 6 0 0 1 6 6v.75a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 17.25v-.75a6 6 0 0 1 6-6z"
+                                />
+                            </svg>
+                            <span>{user?.username}</span>
+                        </button>
+                        {isDropdownOpen && (
+                            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg">
+                                <NavLink
+                                    to="/student/manage-account"
+                                    className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                                >
+                                    Manage Account
+                                </NavLink>
+                                <button
+                                    className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
+                                    onClick={handleSignOut}
+                                >
+                                    Sign Out
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </header>
 
@@ -148,7 +175,7 @@ function StudentLayout() {
                                     <path
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
-                                        d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"
+                                        d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907                                        -2.185a48.208 48.208 0 0 1 1.927-.184"
                                     />
                                 </svg>
                                 <span className="ml-3">Set Appointment</span>
@@ -217,45 +244,6 @@ function StudentLayout() {
                         Technological University
                     </p>
                 </footer>
-
-                {/* Modal */}
-                <dialog
-                    ref={modals}
-                    className="modal"
-                    onKeyDown={(event) => {
-                        if (event.key === "Escape") {
-                            event.preventDefault();
-                        }
-                    }}
-                >
-                    <div className="modal-box flex flex-col justify-center items-center text-white bg-[#194F90]">
-                        <h3 className="font-bold text-lg">
-                            Welcome to Rizal Technological University!
-                        </h3>
-                        <p>
-                            **For New Student and Alumni, please select Guest**
-                        </p>
-                        <div className="modal-action">
-                            <NavLink to="../guest">
-                                <button
-                                    type="button"
-                                    className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
-                                >
-                                    Guest
-                                </button>
-                            </NavLink>
-                            <button
-                                type="button"
-                                className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
-                                onClick={() => {
-                                    modals.current.close();
-                                }}
-                            >
-                                Student
-                            </button>
-                        </div>
-                    </div>
-                </dialog>
             </div>
         </>
     );
