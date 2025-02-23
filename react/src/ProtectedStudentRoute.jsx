@@ -2,10 +2,10 @@ import { Navigate } from "react-router-dom";
 import { useStudentAuth } from "./Hooks/useStudentAuth";
 
 const ProtectedStudentRoute = ({ children }) => {
-    const { user } = useStudentAuth();
+    const { isStudentAuthenticated } = useStudentAuth();
 
-    // Check if the studentUser object is present and has a role of "Student"
-    if (!user || user.role !== "Student") {
+    // Check if the student is authenticated
+    if (!isStudentAuthenticated()) {
         return <Navigate to="/student/login" />;
     }
 
