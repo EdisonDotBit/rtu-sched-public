@@ -57,30 +57,6 @@ class UserController extends Controller
         ], 201);
     }
 
-
-    public function login(Request $request)
-    {
-        $validated = $request->validate([
-            'username' => 'required',
-            'password' => 'required',
-        ]);
-
-        $user = User::where('username', $validated['username'])->first();
-
-        if (!$user || !Hash::check($validated['password'], $user->password)) {
-            throw ValidationException::withMessages([
-                'username' => ['The provided credentials are incorrect.'],
-            ]);
-        }
-
-        $token = $user->createToken('authToken')->plainTextToken;
-
-        return response()->json([
-            'user' => $user,
-            'token' => $token,
-        ], 200);
-    }
-
     public function verifyPin(Request $request)
     {
         $request->validate([
@@ -141,5 +117,46 @@ class UserController extends Controller
             'success' => true,
             'message' => 'A new verification PIN has been sent to your email.'
         ]);
+    }
+
+    public function login(Request $request)
+    {
+        $validated = $request->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ]);
+
+        $user = User::where('username', $validated['username'])->first();
+
+        if (!$user || !Hash::check($validated['password'], $user->password)) {
+            return response()->json([
+                'error' => 'The provided credentials are incorrect.'
+            ], 422);
+        }
+
+        $token = $user->createToken('authToken')->plainTextToken;
+
+        return response()->json([
+            'user' => $user,
+            'token' => $token,
+        ], 200);
+    }
+
+
+    public function logout(Request $request)
+    {
+        // Revoke the token that was used to authenticate the current request
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Logged out successfully.'
+        ]);
+    }
+
+
+    public function userInfo(Request $request)
+    {
+        return response()->json($request->user());
     }
 }
