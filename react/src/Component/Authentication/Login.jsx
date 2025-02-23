@@ -45,7 +45,7 @@ function Login() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100 py-8">
+        <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100 py-8 font-roboto">
             <div className="mb-4">
                 <img
                     src={Logo}

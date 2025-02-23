@@ -43,7 +43,7 @@ function Register() {
     };
 
     return (
-        <div className="w-full h-full flex flex-col justify-center items-center gap-8">
+        <div className="w-full h-full flex flex-col justify-center items-center gap-8 font-roboto">
             <img
                 src={Logo}
                 alt="RTU Online Appointment Logo"

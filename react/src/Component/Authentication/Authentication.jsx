@@ -47,7 +47,7 @@ function Authentication() {
     };
 
     return (
-        <div className="w-full h-full flex flex-col justify-center items-center gap-8">
+        <div className="w-full h-full flex flex-col justify-center items-center gap-8 font-roboto">
             <h2 className="text-2xl font-semibold">Verify Your Email</h2>
             {location.state?.message && (
                 <div className="text-green-600">{location.state.message}</div>

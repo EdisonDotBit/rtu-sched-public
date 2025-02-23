@@ -1,5 +1,7 @@
-@import "tailwindcss/base";
+@import "tailwindcss";
 
-@import "tailwindcss/components";
-
-@import "tailwindcss/utilities";
+@theme {
+    --font-*: initial;
+    --font-roboto: "Roboto", serif; 
+  }
+  
