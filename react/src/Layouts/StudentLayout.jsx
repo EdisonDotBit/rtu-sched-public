@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../Component/Subcomponent/Asset/rtu_logo_v3.png";
 import { useStudentAuth } from "../Hooks/useStudentAuth";
 
@@ -7,7 +7,17 @@ function StudentLayout() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const location = useLocation();
-    const { studentLogout, user } = useStudentAuth();
+    const navigate = useNavigate();
+    const { studentLogout, user, loading } = useStudentAuth();
+
+    console.log("User object:", user);
+
+    useEffect(() => {
+        // If user is null after loading, redirect to login
+        if (!loading && !user) {
+            navigate("/student/login", { replace: true });
+        }
+    }, [loading, user, navigate]);
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
@@ -20,6 +30,16 @@ function StudentLayout() {
     const handleSignOut = () => {
         studentLogout();
     };
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <p className="text-3xl text-[#194F90] font-bold">
+                    Loading Data...
+                </p>
+            </div>
+        );
+    }
 
     return (
         <>
@@ -75,7 +95,7 @@ function StudentLayout() {
                                     d="M15.75 7.5A3.75 3.75 0 1 1 12 3.75a3.75 3.75 0 0 1 3.75 3.75zM9 10.5h6a6 6 0 0 1 6 6v.75a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 17.25v-.75a6 6 0 0 1 6-6z"
                                 />
                             </svg>
-                            <span>{user?.username}</span>
+                            <span>{user?.role || "Loading..."}</span>
                         </button>
                         {isDropdownOpen && (
                             <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg">
@@ -123,7 +143,9 @@ function StudentLayout() {
                                     />
                                 </svg>
                                 <span className="text-base sm:text-lg text-white font-bold uppercase px-2">
-                                    STUDENT
+                                    <span>
+                                        {user?.full_name || "Loading..."}
+                                    </span>
                                 </span>
                             </div>
                             <button
@@ -238,7 +260,7 @@ function StudentLayout() {
                 </div>
 
                 {/* Footer */}
-                <footer className="h-9 border-t text-center text-xs text-[#3c4043] flex items-center justify-center">
+                <footer className="h-9 border-t border-gray-300 text-center text-xs text-[#3c4043] flex items-center justify-center">
                     <p>
                         Copyright © 2024 - All rights reserved by Rizal
                         Technological University
