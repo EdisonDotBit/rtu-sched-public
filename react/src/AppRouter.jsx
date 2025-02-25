@@ -24,6 +24,7 @@ import Login from "./Component/Authentication/Login.jsx";
 import Register from "./Component/Authentication/Register.jsx";
 import ProtectedStudentRoute from "./ProtectedStudentRoute.jsx";
 import Authentication from "./Component/Authentication/Authentication.jsx";
+import ManageAccount from "./Component/Subcomponent/ManageAccount.jsx";
 
 const AppRouter = () => (
     <>
@@ -174,6 +175,15 @@ const AppRouter = () => (
                             element={
                                 <ProtectedStudentRoute>
                                     <ViewAppointments />
+                                </ProtectedStudentRoute>
+                            }
+                        />
+
+                        <Route
+                            path="manage-account"
+                            element={
+                                <ProtectedStudentRoute>
+                                    <ManageAccount />
                                 </ProtectedStudentRoute>
                             }
                         />
