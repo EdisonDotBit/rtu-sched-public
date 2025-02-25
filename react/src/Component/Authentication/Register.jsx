@@ -10,11 +10,12 @@ function Register() {
         contact_number: "",
         password: "",
         full_name: "",
-        student_number: "",
+        // student_number: "",
         role: "Student",
     });
 
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     // Handle input change
@@ -28,6 +29,7 @@ function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
+        setLoading(true);
 
         try {
             const response = await axios.post(
@@ -41,6 +43,8 @@ function Register() {
             }
         } catch (error) {
             setError(error.response?.data?.message || "Registration failed.");
+        } finally {
+            setLoading(false); // Hide loading indicator after request completes
         }
     };
 
@@ -97,20 +101,6 @@ function Register() {
 
                         <div>
                             <label className="block text-white">
-                                Contact Number:
-                                <input
-                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] transition"
-                                    name="contact_number"
-                                    type="text"
-                                    value={formData.contact_number}
-                                    onChange={handleChange}
-                                    placeholder="Enter Contact Number"
-                                />
-                            </label>
-                        </div>
-
-                        <div>
-                            <label className="block text-white">
                                 Full Name:
                                 <input
                                     className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] transition"
@@ -126,6 +116,20 @@ function Register() {
 
                         <div>
                             <label className="block text-white">
+                                Contact Number:
+                                <input
+                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] transition"
+                                    name="contact_number"
+                                    type="text"
+                                    value={formData.contact_number}
+                                    onChange={handleChange}
+                                    placeholder="Enter Contact Number"
+                                />
+                            </label>
+                        </div>
+
+                        {/* <div>
+                            <label className="block text-white">
                                 Student Number:
                                 <input
                                     className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] transition"
@@ -136,7 +140,7 @@ function Register() {
                                     placeholder="Enter Student Number"
                                 />
                             </label>
-                        </div>
+                        </div> */}
 
                         <div>
                             <label className="block text-white">
@@ -157,8 +161,9 @@ function Register() {
                     <button
                         type="submit"
                         className="w-full py-2 px-4 bg-[#FFDB75] text-[#194F90] font-semibold rounded-lg hover:bg-[#f3cd64] transition duration-200"
+                        disabled={loading} // Disable button while loading
                     >
-                        Register
+                        {loading ? "Processing..." : "Register"}
                     </button>
 
                     <p className="text-white text-sm text-center mt-4">
