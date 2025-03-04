@@ -37,7 +37,6 @@ function GuestSetAppointment() {
     const [isTimeSelected, setIsTimeSelected] = useState(false);
     const [isInputFilled, setIsInputFilled] = useState(false);
     const [errors, setErrors] = useState({});
-    const [isConfirmed, setIsConfirmed] = useState(false);
 
     useEffect(() => {
         const getData = async () => {
@@ -115,17 +114,23 @@ function GuestSetAppointment() {
 
     const setApt = async (e) => {
         e.preventDefault();
-        const emailCount = appointments.reduce((count, appointment) => {
-            if (appointment.aptemail === formData.aptemail) {
+
+        // Count how many times the student has an appointment in the selected office
+        const officeCount = appointments.reduce((count, appointment) => {
+            if (
+                appointment.aptoffice === formData.aptoffice &&
+                appointment.aptbranch === formData.aptbranch && // Same Branch
+                appointment.aptemail === formData.aptemail // Ensure it's the same guest email
+            ) {
                 count++;
             }
             return count;
         }, 0);
 
-        // Check if emailCount is greater than or equal to 3
-        if (emailCount >= 3) {
-            openmodal1();
-            return; // Exit function if already three appointments
+        // If guest already has an appointment in this office, prevent another booking
+        if (officeCount >= 1) {
+            openmodal1(); // Show modal to notify student
+            return; // Exit function
         } else {
             try {
                 const res = await axios.post(
@@ -134,7 +139,7 @@ function GuestSetAppointment() {
                 );
 
                 if (res.status === 200) {
-                    openmodal(res.data.data);
+                    openmodal(res.data.data); // Show success modal
                 }
             } catch (error) {
                 alert("Appointment failed. Please check your details");

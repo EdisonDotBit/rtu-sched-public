@@ -105,8 +105,9 @@ function SetAppointment() {
         // Count how many times the student has an appointment in the selected office
         const officeCount = appointments.reduce((count, appointment) => {
             if (
-                appointment.aptoffice === formData.aptoffice &&
-                appointment.aptstudnum === formData.aptstudnum // Ensure it's the same student
+                appointment.aptoffice === formData.aptoffice && // Same Office
+                appointment.aptbranch === formData.aptbranch && // Same Branch
+                appointment.aptstudnum === formData.aptstudnum // Same Student Number
             ) {
                 count++;
             }
@@ -455,7 +456,7 @@ function SetAppointment() {
                                     ) : (
                                         <button
                                             type="button"
-                                            className="absolute top-1 right-1 text-white hover:text-gray-300 transition duration-300 focus:outline-none"
+                                            className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
                                             onClick={() => {
                                                 setTimeout(() => {
                                                     window.location.reload();
