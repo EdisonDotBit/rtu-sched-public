@@ -48,30 +48,14 @@ function InputDetails({ formData, setFormData, errors }) {
                         <label className="block text-white">
                             Student Number:
                             <input
-                                className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                className="text-gray-800 bg-gray-300 w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
                                 name="aptstudnum"
                                 value={formData.aptstudnum}
                                 onChange={handleChange}
                                 onBlur={handleBlur} // Track blur
                                 type="text"
                                 placeholder="e.g. 2021-######"
-                                onInput={(e) => {
-                                    let value = e.target.value.replace(
-                                        /[^0-9\-]/g,
-                                        ""
-                                    ); // Remove non-numeric characters except hyphen
-                                    if (value.length > 4 && value[4] !== "-") {
-                                        // Insert hyphen after the first 4 digits
-                                        value =
-                                            value.slice(0, 4) +
-                                            "-" +
-                                            value.slice(4);
-                                    }
-                                    if (value.length > 11) {
-                                        value = value.slice(0, 11); // Ensures no more than 11 characters
-                                    }
-                                    e.target.value = value; // Apply the formatted value
-                                }}
+                                disabled
                             />
                         </label>
                         {touched.aptstudnum && errors.aptstudnum && (
@@ -84,19 +68,14 @@ function InputDetails({ formData, setFormData, errors }) {
                         <label className="block text-white">
                             Full Name:
                             <input
-                                className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                className="text-gray-800 bg-gray-300 w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
                                 name="aptname"
                                 value={formData.aptname}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 type="text"
                                 placeholder="e.g. Juan A. Dela Cruz"
-                                onInput={(e) => {
-                                    e.target.value = e.target.value.replace(
-                                        /[^a-zA-Z\s\.\-\']+/g,
-                                        ""
-                                    );
-                                }}
+                                disabled
                             />
                         </label>
                         {touched.aptname && errors.aptname && (
@@ -109,18 +88,14 @@ function InputDetails({ formData, setFormData, errors }) {
                         <label className="block text-white">
                             Contact Number:
                             <input
-                                className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                className="text-gray-800 bg-gray-300 w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
                                 name="aptpnumber"
                                 value={formData.aptpnumber}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 type="tel"
                                 placeholder="09#########"
-                                onInput={(e) => {
-                                    e.target.value = e.target.value
-                                        .replace(/[^0-9]/g, "")
-                                        .slice(0, 11);
-                                }}
+                                disabled
                             />
                         </label>
                         {touched.aptpnumber && errors.aptpnumber && (
@@ -133,20 +108,16 @@ function InputDetails({ formData, setFormData, errors }) {
                         <label className="block text-white">
                             Institute Email:
                             <input
-                                className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                className="text-gray-800 bg-gray-300 w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
                                 name="aptemail"
                                 value={formData.aptemail}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 type="email"
                                 placeholder="e.g. 2021-######@rtu.edu.ph"
+                                disabled
                             />
                         </label>
-                        {touched.aptemail && errors.aptemail && (
-                            <p className="text-[#FFDB75] text-sm !mt-2">
-                                {errors.aptemail}
-                            </p>
-                        )}
                     </div>
                 </div>
             </div>
