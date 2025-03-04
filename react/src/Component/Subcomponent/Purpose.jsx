@@ -38,8 +38,8 @@ const Purpose = ({ formData, setFormData }) => {
         };
         fetchPurposes();
 
-        // Reset dropdown values when the office changes
-        setDropdowns([{ id: 0, value: "" }]);
+        // // Reset dropdown values when the office changes
+        // setDropdowns([{ id: 0, value: "" }]);
     }, [formData.aptoffice]);
 
     // Function to add a new dropdown
@@ -97,7 +97,7 @@ const Purpose = ({ formData, setFormData }) => {
                         value={dropdown.value || ""}
                         onChange={(e) => handleDropdownChange(e, index)}
                     >
-                        <option value="" disabled selected>
+                        <option value="" disabled>
                             --Select Purpose--
                         </option>
                         {options.map((option, i) => (
