@@ -4,4 +4,7 @@
     --font-*: initial;
     --font-roboto: "Roboto", serif; 
   }
-  
+
+* {
+  box-sizing: border-box;
+}

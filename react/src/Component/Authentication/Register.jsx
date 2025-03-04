@@ -10,13 +10,12 @@ function Register() {
         contact_number: "",
         password: "",
         full_name: "",
-        // student_number: "",
         role: "Student",
     });
 
-    const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
     // Handle input change
     const handleChange = (e) => {
@@ -24,11 +23,8 @@ function Register() {
     };
 
     // Handle form submission
-    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
         setLoading(true);
 
         try {
@@ -42,9 +38,9 @@ function Register() {
                 navigate("/student/authenticate"); // Redirect to authentication
             }
         } catch (error) {
-            setError(error.response?.data?.message || "Registration failed.");
+            alert(error.response?.data?.message || "Registration failed.");
         } finally {
-            setLoading(false); // Hide loading indicator after request completes
+            setLoading(false);
         }
     };
 
@@ -64,108 +60,108 @@ function Register() {
                         Register Student Account
                     </h2>
 
-                    {error && (
-                        <p className="text-red-500 text-center">{error}</p>
-                    )}
-
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* Username */}
                         <div>
                             <label className="block text-white">
                                 Username:
                                 <input
-                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] transition"
-                                    name="username"
                                     type="text"
+                                    name="username"
                                     value={formData.username}
                                     onChange={handleChange}
-                                    placeholder="Enter Username"
                                     required
+                                    placeholder="Enter Username"
+                                    pattern="^(?=.{3,20}$)(?![_.])[a-zA-Z0-9._]+(?<![_.])$"
+                                    title="Username must be 3-20 characters long and cannot start or end with _ or ."
+                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] transition"
                                 />
                             </label>
                         </div>
 
+                        {/* Email */}
                         <div>
                             <label className="block text-white">
                                 Email:
                                 <input
-                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] transition"
-                                    name="email"
                                     type="email"
+                                    name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    placeholder="Enter Email"
+                                    placeholder="Ex: 2021-1018##@rtu.edu.ph"
                                     required
+                                    pattern="^\d{4}-\d{6}@rtu\.edu\.ph$"
+                                    title="Email must be in the format ####-######@rtu.edu.ph"
+                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] transition"
                                 />
                             </label>
                         </div>
 
+                        {/* Full Name */}
                         <div>
                             <label className="block text-white">
                                 Full Name:
                                 <input
-                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] transition"
-                                    name="full_name"
                                     type="text"
+                                    name="full_name"
                                     value={formData.full_name}
                                     onChange={handleChange}
                                     placeholder="Enter Full Name"
                                     required
+                                    // pattern="^[A-Z][a-zA-Z' -]{1,99}$"
+                                    // title="Only letters, hyphens, and apostrophes are allowed."
+                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] transition"
                                 />
                             </label>
                         </div>
 
+                        {/* Contact Number */}
                         <div>
                             <label className="block text-white">
                                 Contact Number:
                                 <input
-                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] transition"
+                                    type="tel"
                                     name="contact_number"
-                                    type="text"
                                     value={formData.contact_number}
                                     onChange={handleChange}
                                     placeholder="Enter Contact Number"
+                                    required
+                                    pattern="^09\d{9}$"
+                                    title="Contact number must start with '09' and be 11 digits long."
+                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] transition"
                                 />
                             </label>
                         </div>
 
-                        {/* <div>
-                            <label className="block text-white">
-                                Student Number:
-                                <input
-                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] transition"
-                                    name="student_number"
-                                    type="text"
-                                    value={formData.student_number}
-                                    onChange={handleChange}
-                                    placeholder="Enter Student Number"
-                                />
-                            </label>
-                        </div> */}
-
+                        {/* Password */}
                         <div>
                             <label className="block text-white">
                                 Password:
                                 <input
-                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] transition"
-                                    name="password"
                                     type="password"
+                                    name="password"
                                     value={formData.password}
                                     onChange={handleChange}
                                     placeholder="Enter Password"
                                     required
+                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+                                    title="Password must be at least 8 characters long, include uppercase, lowercase, a number, and a special character."
+                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] transition"
                                 />
                             </label>
                         </div>
                     </div>
 
+                    {/* Submit Button */}
                     <button
                         type="submit"
                         className="w-full py-2 px-4 bg-[#FFDB75] text-[#194F90] font-semibold rounded-lg hover:bg-[#f3cd64] transition duration-200"
-                        disabled={loading} // Disable button while loading
+                        disabled={loading}
                     >
                         {loading ? "Processing..." : "Register"}
                     </button>
 
+                    {/* Sign In Links */}
                     <p className="text-white text-sm text-center mt-4">
                         Already have a student account?{" "}
                         <NavLink to="../student/login">

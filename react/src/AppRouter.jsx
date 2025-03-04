@@ -28,7 +28,6 @@ import ManageAccount from "./Component/Subcomponent/ManageAccount.jsx";
 import ForgotPassword from "./Component/Authentication/ForgotPassword.jsx";
 import ForgotPasswordAuthentication from "./Component/Authentication/ForgotPasswordAuthentication.jsx";
 import ResetPassword from "./Component/Authentication/ResetPassword.jsx";
-import ProtectedVerificationRoute from "./ProtectedVerificationRoute.jsx";
 
 const AppRouter = () => (
     <>
@@ -198,11 +197,7 @@ const AppRouter = () => (
                     <Route path="/student/register" element={<Register />} />
                     <Route
                         path="/student/authenticate"
-                        element={
-                            <ProtectedVerificationRoute>
-                                <Authentication />
-                            </ProtectedVerificationRoute>
-                        }
+                        element={<Authentication />}
                     />
                     <Route
                         path="/student/forgot-password"
@@ -210,20 +205,9 @@ const AppRouter = () => (
                     />
                     <Route
                         path="/student/forgot-password-authenticate"
-                        element={
-                            <ProtectedVerificationRoute>
-                                <ForgotPasswordAuthentication />
-                            </ProtectedVerificationRoute>
-                        }
+                        element={<ForgotPasswordAuthentication />}
                     />
-                    <Route
-                        path="/reset-password"
-                        element={
-                            <ProtectedVerificationRoute>
-                                <ResetPassword />
-                            </ProtectedVerificationRoute>
-                        }
-                    />
+                    <Route path="/reset-password" element={<ResetPassword />} />
                     <Route path="/" element={<Navigate to="/student" />} />
                 </Routes>
             </StudentAuthProvider>

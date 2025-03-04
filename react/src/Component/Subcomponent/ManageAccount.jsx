@@ -245,6 +245,8 @@ function ManageAccount() {
                                 type="text"
                                 value={formData.contact_number}
                                 onChange={handleChange}
+                                pattern="^09\d{9}$"
+                                title="Contact number must start with '09' and be 11 digits long."
                             />
                         </div>
 
@@ -252,9 +254,9 @@ function ManageAccount() {
                             <label className="block text-white">
                                 Student Number:
                             </label>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 mt-1">
                                 <input
-                                    className={`text-gray-800 w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg ${
+                                    className={`text-gray-800 w-full py-2 px-3 border border-gray-300 rounded-lg ${
                                         isVerified
                                             ? "bg-gray-300 cursor-not-allowed"
                                             : "bg-white"
@@ -264,6 +266,10 @@ function ManageAccount() {
                                     value={formData.student_number}
                                     onChange={handleChange}
                                     disabled={isVerified}
+                                    placeholder="Ex: 2021-101###"
+                                    required
+                                    pattern="^\d{4}-\d{6}$"
+                                    title="Student number must be in the format ####-###### (e.g., 2021-101864)"
                                 />
                                 {!isVerified && (
                                     <button
