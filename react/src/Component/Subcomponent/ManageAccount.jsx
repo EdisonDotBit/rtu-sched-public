@@ -72,10 +72,20 @@ function ManageAccount() {
         }
     };
 
-    // Request verification PIN
+    // Request verification PIN with validation
     const handleRequestVerification = async () => {
         setIsVerifying(true);
         setVerificationMessage("");
+
+        // Validate student number format
+        const studentNumberPattern = /^\d{4}-\d{6}$/; // Ensures ####-###### format
+        if (!studentNumberPattern.test(formData.student_number)) {
+            setVerificationMessage(
+                "Invalid student number format. Use YYYY-######."
+            );
+            setIsVerifying(false);
+            return;
+        }
 
         try {
             const token = Cookies.get("studentToken");
@@ -90,11 +100,7 @@ function ManageAccount() {
 
             if (response.status === 200) {
                 setVerificationMessage("Verification PIN sent to your email.");
-                setIsPinInputVisible(true); // Show PIN input field
-                // Reload the page after a slight delay
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000); // Optional delay for better UX
+                setIsPinInputVisible(true);
             }
         } catch (error) {
             setVerificationMessage("Verification request failed. Try again.");
@@ -120,6 +126,9 @@ function ManageAccount() {
                 setVerificationMessage("Student number verified successfully!");
                 setIsVerified(true);
                 setIsPinInputVisible(false);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000); // Optional delay for better UX
             }
         } catch (error) {
             setVerificationMessage("Invalid PIN. Please try again.");
