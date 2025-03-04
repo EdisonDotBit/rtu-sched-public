@@ -9,18 +9,21 @@ import TimePicker from "./Subcomponent/TimePicker";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import PDFFile from "./PDFFile";
 import Loading from "./Subcomponent/Loading";
+import { useStudentAuth } from "../Hooks/useStudentAuth";
 
 function SetAppointment() {
+    const { user } = useStudentAuth();
+
     const [formData, setFormData] = useState({
-        apttype: "Student",
+        apttype: user ? user.role : "",
         aptbranch: "",
         aptoffice: "",
-        aptname: "",
+        aptname: user ? user.full_name : "",
         aptpurpose: "",
-        aptstudnum: "",
+        aptstudnum: user ? user.student_number : "",
         aptdate: "",
-        aptemail: "",
-        aptpnumber: "",
+        aptemail: user ? user.email : "",
+        aptpnumber: user ? user.contact_number : "",
         apttime: "",
         isConfirmed: false,
     });
@@ -37,7 +40,18 @@ function SetAppointment() {
     const [isTimeSelected, setIsTimeSelected] = useState(false);
     const [isInputFilled, setIsInputFilled] = useState(false);
     const [errors, setErrors] = useState({});
-    const [isConfirmed, setIsConfirmed] = useState(false);
+
+    useEffect(() => {
+        if (user) {
+            setFormData((prevData) => ({
+                ...prevData,
+                aptname: user.full_name,
+                aptstudnum: user.student_number,
+                aptemail: user.email,
+                aptpnumber: user.contact_number,
+            }));
+        }
+    }, [user]);
 
     useEffect(() => {
         const getData = async () => {
@@ -61,7 +75,7 @@ function SetAppointment() {
         // Perform validation
         const newErrors = {};
 
-        // Validate Purpose
+        // Validate Purpose (Required)
         if (
             !formData.aptpurpose ||
             formData.aptpurpose === "--Select Purpose--"
@@ -69,38 +83,14 @@ function SetAppointment() {
             newErrors.aptpurpose = "Please select a purpose.";
         }
 
-        // Validate Student Number (Format: ####-######)
-        if (!formData.aptstudnum) {
+        // Ensure all required fields are filled
+        if (!formData.aptstudnum)
             newErrors.aptstudnum = "Student number is required.";
-        } else if (!/^[0-9]{4}-[0-9]{6}$/.test(formData.aptstudnum)) {
-            newErrors.aptstudnum =
-                "Student number must follow the format ####-######.";
-        }
-
-        // Validate Name (Ensure it's not empty and has at least 10 characters)
-        if (!formData.aptname) {
-            newErrors.aptname = "Full name is required.";
-        } else if (formData.aptname.length < 10) {
-            newErrors.aptname = "Full name must be at least 10 characters.";
-        }
-
-        // Validate Contact Number (Ensure it's valid and 11 digits)
-        if (!formData.aptpnumber) {
+        if (!formData.aptname) newErrors.aptname = "Full name is required.";
+        if (!formData.aptpnumber)
             newErrors.aptpnumber = "Contact number is required.";
-        } else if (
-            formData.aptpnumber &&
-            !/^[0-9]{11}$/.test(formData.aptpnumber)
-        ) {
-            newErrors.aptpnumber = "Contact number must be 11 digits long.";
-        }
-
-        // Validate Email (Ensure it's not empty and ends with @rtu.edu.ph)
-        if (!formData.aptemail) {
+        if (!formData.aptemail)
             newErrors.aptemail = "Institute email is required.";
-        } else if (!/^\d{4}-\d{6}@rtu\.edu\.ph$/.test(formData.aptemail)) {
-            newErrors.aptemail =
-                "Institute Email must be in the format ####-######@rtu.edu.ph.";
-        }
 
         // Check if the form is valid
         const isFormValid = Object.keys(newErrors).length === 0;
@@ -111,17 +101,22 @@ function SetAppointment() {
 
     const setApt = async (e) => {
         e.preventDefault();
-        const emailCount = appointments.reduce((count, appointment) => {
-            if (appointment.aptemail === formData.aptemail) {
+
+        // Count how many times the student has an appointment in the selected office
+        const officeCount = appointments.reduce((count, appointment) => {
+            if (
+                appointment.aptoffice === formData.aptoffice &&
+                appointment.aptstudnum === formData.aptstudnum // Ensure it's the same student
+            ) {
                 count++;
             }
             return count;
         }, 0);
 
-        // Check if emailCount is greater than or equal to 3
-        if (emailCount >= 3) {
-            openmodal1();
-            return; // Exit function if already three appointments
+        // If student already has an appointment in this office, prevent another booking
+        if (officeCount >= 1) {
+            openmodal1(); // Show modal to notify student
+            return; // Exit function
         } else {
             try {
                 const res = await axios.post(
@@ -130,7 +125,7 @@ function SetAppointment() {
                 );
 
                 if (res.status === 200) {
-                    openmodal(res.data.data);
+                    openmodal(res.data.data); // Show success modal
                 }
             } catch (error) {
                 alert("Appointment failed. Please check your details");
@@ -489,17 +484,17 @@ function SetAppointment() {
 
                     <dialog
                         ref={modals1}
-                        className="modal"
+                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 backdrop:bg-black/50"
                         onKeyDown={(event) => {
                             if (event.key === "Escape") {
                                 event.preventDefault();
                             }
                         }}
                     >
-                        <div className="modal-box relative flex flex-col justify-center items-center text-white bg-[#194F90]">
+                        <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] p-6 w-full">
                             {/* Close button with SVG */}
                             <button
-                                className="absolute top-2 right-2 p-2 transition duration-300 focus:outline-none"
+                                className="absolute top-1 right-1 text-white hover:text-gray-300 transition duration-300 focus:outline-none"
                                 onClick={() => modals1.current.close()}
                             >
                                 <svg
@@ -523,11 +518,11 @@ function SetAppointment() {
                                     Appointment Failed
                                 </h1>
                                 <h3 className="text-md">
-                                    You already have three (3) ongoing
-                                    appointments.
+                                    You already have an ongoing appointment in
+                                    this office.
                                 </h3>
                                 <h4 className="text-gray-200 text-xs mt-2">
-                                    Note: Accomplish those transactions before
+                                    Note: Accomplish the transaction before
                                     scheduling another appointment.
                                 </h4>
                                 <h4 className="text-gray-200 text-xs mt-2">
