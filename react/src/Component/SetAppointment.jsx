@@ -433,14 +433,14 @@ function SetAppointment() {
 
                     <dialog
                         ref={modals}
-                        className="modal"
+                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 backdrop:bg-black/50"
                         onKeyDown={(event) => {
                             if (event.key === "Escape") {
                                 event.preventDefault();
                             }
                         }}
                     >
-                        <div className="modal-box flex flex-col justify-center items-center text-white bg-[#194F90]">
+                        <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] p-6 w-full">
                             <h2> Your appointment number is:</h2>
                             <h1 className="underline"> {succData.aptid}</h1>
                             <PDFDownloadLink
@@ -455,7 +455,7 @@ function SetAppointment() {
                                     ) : (
                                         <button
                                             type="button"
-                                            className="btn btn-outline text-white hover:bg-white hover:text-[#194F90] mt-6"
+                                            className="absolute top-1 right-1 text-white hover:text-gray-300 transition duration-300 focus:outline-none"
                                             onClick={() => {
                                                 setTimeout(() => {
                                                     window.location.reload();
