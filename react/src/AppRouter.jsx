@@ -25,6 +25,10 @@ import Register from "./Component/Authentication/Register.jsx";
 import ProtectedStudentRoute from "./ProtectedStudentRoute.jsx";
 import Authentication from "./Component/Authentication/Authentication.jsx";
 import ManageAccount from "./Component/Subcomponent/ManageAccount.jsx";
+import ForgotPassword from "./Component/Authentication/ForgotPassword.jsx";
+import ForgotPasswordAuthentication from "./Component/Authentication/ForgotPasswordAuthentication.jsx";
+import ResetPassword from "./Component/Authentication/ResetPassword.jsx";
+import ProtectedVerificationRoute from "./ProtectedVerificationRoute.jsx";
 
 const AppRouter = () => (
     <>
@@ -194,7 +198,31 @@ const AppRouter = () => (
                     <Route path="/student/register" element={<Register />} />
                     <Route
                         path="/student/authenticate"
-                        element={<Authentication />}
+                        element={
+                            <ProtectedVerificationRoute>
+                                <Authentication />
+                            </ProtectedVerificationRoute>
+                        }
+                    />
+                    <Route
+                        path="/student/forgot-password"
+                        element={<ForgotPassword />}
+                    />
+                    <Route
+                        path="/student/forgot-password-authenticate"
+                        element={
+                            <ProtectedVerificationRoute>
+                                <ForgotPasswordAuthentication />
+                            </ProtectedVerificationRoute>
+                        }
+                    />
+                    <Route
+                        path="/reset-password"
+                        element={
+                            <ProtectedVerificationRoute>
+                                <ResetPassword />
+                            </ProtectedVerificationRoute>
+                        }
                     />
                     <Route path="/" element={<Navigate to="/student" />} />
                 </Routes>

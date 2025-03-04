@@ -83,4 +83,10 @@ Route::controller(UserController::class)->group(function () {
     Route::middleware('auth:sanctum')->post('users/verify-student-number', 'verifyStudentNumberPin');
 
     Route::middleware('auth:sanctum')->put('users/update', 'updateAccount');
+
+
+    // Forgot Password
+    Route::post('users/request-password-reset', 'requestPasswordReset');
+    Route::post('users/verify-password-reset-pin', 'verifyPasswordResetPin');
+    Route::post('users/reset-password', 'resetPassword');
 });

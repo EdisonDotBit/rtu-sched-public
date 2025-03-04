@@ -91,6 +91,10 @@ function ManageAccount() {
             if (response.status === 200) {
                 setVerificationMessage("Verification PIN sent to your email.");
                 setIsPinInputVisible(true); // Show PIN input field
+                // Reload the page after a slight delay
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000); // Optional delay for better UX
             }
         } catch (error) {
             setVerificationMessage("Verification request failed. Try again.");

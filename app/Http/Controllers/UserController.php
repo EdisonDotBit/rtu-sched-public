@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ForgotPasswordPin;
 use App\Mail\SendVerificationPin;
 use App\Mail\StudentNumberVerificationMail;
 use Illuminate\Http\Request;
@@ -253,5 +254,94 @@ class UserController extends Controller
         $user->save(); // Ensure save() is called on a valid instance
 
         return response()->json(['message' => 'Account updated successfully.', 'user' => $user], 200);
+    }
+
+
+
+    // Forgot Password
+    public function requestPasswordReset(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        $user = User::where('email', $validated['email'])->first();
+
+        // Generate a random 6-digit PIN
+        $pin = random_int(100000, 999999);
+
+        // Store PIN and email in session
+        session([
+            'password_reset_data' => [
+                'email' => $validated['email'],
+                'pin' => $pin,
+            ],
+        ]);
+
+        // Log stored PIN and session ID
+        Log::info('Stored Password Reset PIN: ' . $pin);
+        Log::info('Session Data: ' . json_encode(session('password_reset_data')));
+        Log::info('Session ID: ' . session()->getId());
+
+        // Send email with PIN
+        Mail::to($validated['email'])->send(new ForgotPasswordPin($pin));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'A verification PIN has been sent to your email.'
+        ], 200);
+    }
+
+    public function verifyPasswordResetPin(Request $request)
+    {
+        $request->validate([
+            'pin' => 'required|array',
+        ]);
+
+        // Combine the PIN array into a single string
+        $enteredPin = implode('', $request->pin);
+
+        // Retrieve session data
+        $sessionPin = session('password_reset_data.pin');
+        $resetEmail = session('password_reset_data.email');
+
+        // Log entered PIN, stored PIN, and session ID
+        Log::info('Entered PIN: ' . $enteredPin);
+        Log::info('Stored PIN: ' . $sessionPin);
+        Log::info('Session Data: ' . json_encode(session('password_reset_data')));
+        Log::info('Session ID: ' . session()->getId());
+
+        // Check if the PINs match
+        if ($sessionPin && $resetEmail && (string)$enteredPin === (string)$sessionPin) {
+            session(['password_reset_verified' => true]);
+            return response()->json(['success' => true, 'message' => 'PIN verified successfully.']);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Invalid PIN.'], 422);
+        }
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $validated = $request->validate([
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        // Check if the PIN was verified
+        if (!session('password_reset_verified')) {
+            return response()->json(['success' => false, 'message' => 'PIN not verified.'], 422);
+        }
+
+        // Retrieve email from session
+        $resetEmail = session('password_reset_data.email');
+        $user = User::where('email', $resetEmail)->first();
+
+        // Update user password
+        $user->password = Hash::make($validated['password']);
+        $user->save();
+
+        // Clear session data after successful password reset
+        session()->forget(['password_reset_data', 'password_reset_verified']);
+
+        return response()->json(['success' => true, 'message' => 'Password reset successfully.'], 200);
     }
 }

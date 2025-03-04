@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useStudentAuth } from "../../Hooks/useStudentAuth";
 import Logo from "../Subcomponent/Asset/rtu_logo_v3.png";
-import axios from "axios";
 import { NavLink, useNavigate } from "react-router-dom";
 
 function Login() {
@@ -10,7 +9,6 @@ function Login() {
         username: "",
         password: "",
     });
-
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
@@ -92,19 +90,30 @@ function Login() {
                         type="submit"
                         className="w-full py-2 px-4 bg-[#FFDB75] text-[#194F90] font-semibold rounded-lg hover:bg-[#f3cd64] transition duration-200"
                     >
-                        Sign in
+                        Log In
                     </button>
 
-                    <p className="text-white text-sm text-center mt-4">
-                        Don't have a student account?{" "}
-                        <NavLink to="../student/register">
+                    <p className="text-white text-sm text-center mb-8">
+                        <NavLink to="../student/forgot-password">
                             <span className="text-[#FFDB75] hover:underline cursor-pointer">
-                                Create One Here!
+                                Forgot Password?
                             </span>
                         </NavLink>
                     </p>
 
+                    <div className="border-t border-[#FFDB75] mt-6 pt-4">
+                        <NavLink to="../student/register">
+                            <button
+                                type="button"
+                                className="w-full py-2 px-4 bg-[#FFDB75] text-[#194F90] font-semibold rounded-lg hover:bg-[#f3cd64] transition duration-200"
+                            >
+                                Create Student Account
+                            </button>
+                        </NavLink>
+                    </div>
+
                     <p className="text-white text-sm text-center mt-4">OR</p>
+
                     <p className="text-white text-sm text-center mt-4">
                         <NavLink to="../guest/set-appointment">
                             <span className="text-[#FFDB75] hover:underline cursor-pointer">
