@@ -9,10 +9,14 @@ export const StudentAuthProvider = ({ children }) => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true); // Added loading state
-    const token = useMemo(
-        () => Cookies.get("studentToken"),
-        [Cookies.get("studentToken")]
-    );
+    const [token, setToken] = useState(Cookies.get("studentToken"));
+
+    useEffect(() => {
+        const handleCookieChange = () => setToken(Cookies.get("studentToken"));
+
+        window.addEventListener("storage", handleCookieChange);
+        return () => window.removeEventListener("storage", handleCookieChange);
+    }, []);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -45,44 +49,52 @@ export const StudentAuthProvider = ({ children }) => {
 
     const studentLogin = async (data) => {
         try {
-            setLoading(true); // Start loading before login
+            setLoading(true);
             const response = await axios.post(
                 `${import.meta.env.VITE_API_BASE_URL}/api/users/login`,
                 data,
                 { withCredentials: true }
             );
+
             console.log("Login response:", response.data);
-            if (response.status === 200) {
+
+            if (response.status === 200 && response.data.token) {
                 Cookies.set("studentToken", response.data.token, {
                     expires: 7,
                 });
-                setUser(response.data.user);
-                navigate("/student/set-appointment");
+                setUser(response.data.user); // Ensure user state updates
+
+                // Force a reload to make sure state is refreshed
+                window.location.href = "/student/set-appointment";
+            } else {
+                throw new Error("Login successful but no token received.");
             }
         } catch (error) {
-            console.error("Student login failed", error);
-            throw error;
+            console.error("Student login failed:", error);
+            alert(
+                "Login failed: " +
+                    (error.response?.data?.message || error.message)
+            );
         } finally {
-            setLoading(false); // Stop loading after login attempt
+            setLoading(false);
         }
     };
 
     const studentLogout = async () => {
-        console.log("Logging out, token:", token);
         try {
             await axios.post(
                 `${import.meta.env.VITE_API_BASE_URL}/api/users/logout`,
                 {},
                 {
-                    headers: { Authorization: `Bearer ${token}` },
                     withCredentials: true,
                 }
             );
-            Cookies.remove("studentToken");
-            setUser(null);
-            navigate("/student/login", { replace: true });
         } catch (error) {
             console.error("Logout failed", error);
+        } finally {
+            Cookies.remove("studentToken");
+            setUser(null);
+            window.location.href = "/student/login"; // Ensure fresh redirect
         }
     };
 
