@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useStudentAuth } from "../../Hooks/useStudentAuth";
 import Logo from "../Subcomponent/Asset/rtu_logo_v3.png";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 function Login() {
     const { studentLogin } = useStudentAuth();
@@ -10,10 +11,13 @@ function Login() {
         password: "",
     });
     const [error, setError] = useState("");
-    const navigate = useNavigate();
 
-    // Get the API base URL from environment variables
-    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+    const { isStudentAuthenticated } = useStudentAuth(); // Use the hook here
+
+    // If user is already logged in, redirect them to set-appointment
+    if (isStudentAuthenticated()) {
+        return <Navigate to="/student/set-appointment" />;
+    }
 
     // Handle input change
     const handleChange = (e) => {

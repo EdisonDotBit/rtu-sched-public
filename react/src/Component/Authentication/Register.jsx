@@ -2,6 +2,9 @@ import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Logo from "../Subcomponent/Asset/rtu_logo_v3.png";
+import Cookies from "js-cookie";
+import { useStudentAuth } from "../../Hooks/useStudentAuth";
+import { Navigate } from "react-router-dom";
 
 function Register() {
     const [formData, setFormData] = useState({
@@ -13,16 +16,21 @@ function Register() {
         role: "Student",
     });
 
+    const { isStudentAuthenticated } = useStudentAuth(); // Use the hook here
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
+    // If user is already logged in, redirect them to set-appointment
+    if (isStudentAuthenticated()) {
+        return <Navigate to="/student/set-appointment" />;
+    }
 
     // Handle input change
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -34,10 +42,26 @@ function Register() {
                 { withCredentials: true }
             );
 
+            console.log("Registration Response:", response.data); // Debugging
+
             if (response.status === 201) {
-                navigate("/student/authenticate"); // Redirect to authentication
+                // Store only username & password in cookies
+                Cookies.set(
+                    "registration_data",
+                    JSON.stringify({
+                        username: formData.username,
+                        password: formData.password,
+                    }),
+                    { expires: 1 }
+                );
+
+                // Redirect to authentication
+                navigate("/student/authenticate");
+            } else {
+                alert("Unexpected response from the server.");
             }
         } catch (error) {
+            console.error("Registration Error:", error.response?.data || error);
             alert(error.response?.data?.message || "Registration failed.");
         } finally {
             setLoading(false);
