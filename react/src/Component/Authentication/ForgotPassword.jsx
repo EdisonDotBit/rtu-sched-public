@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Logo from "../Subcomponent/Asset/rtu_logo_v3.png";
+import { useStudentAuth } from "../../Hooks/useStudentAuth";
+import { Navigate } from "react-router-dom";
 
 function ForgotPassword() {
     const navigate = useNavigate();
@@ -9,8 +11,13 @@ function ForgotPassword() {
     const [message, setMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [loading, setLoading] = useState(false);
-
+    const { isStudentAuthenticated } = useStudentAuth();
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
+    // If user is already logged in, redirect them to set-appointment
+    if (isStudentAuthenticated()) {
+        return <Navigate to="/student/set-appointment" />;
+    }
 
     const handleRequestPin = async (e) => {
         e.preventDefault();

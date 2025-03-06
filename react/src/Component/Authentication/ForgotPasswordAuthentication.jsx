@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import Logo from "../Subcomponent/Asset/rtu_logo_v3.png";
+import { useStudentAuth } from "../../Hooks/useStudentAuth";
+import { Navigate } from "react-router-dom";
 
 function ForgotPasswordAuthentication() {
     const navigate = useNavigate();
@@ -10,6 +12,12 @@ function ForgotPasswordAuthentication() {
     const [errorMessage, setErrorMessage] = useState("");
     const [resendMessage, setResendMessage] = useState("");
     const [isResending, setIsResending] = useState(false);
+    const { isStudentAuthenticated } = useStudentAuth();
+
+    // If user is already logged in, redirect them to set-appointment
+    if (isStudentAuthenticated()) {
+        return <Navigate to="/student/set-appointment" />;
+    }
 
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -60,7 +68,7 @@ function ForgotPasswordAuthentication() {
         try {
             const response = await axios.post(
                 `${apiBaseUrl}/api/users/request-password-reset`,
-                {},
+                { email: location.state?.email }, // ✅ Email is now correctly sent
                 { withCredentials: true }
             );
 
@@ -71,6 +79,7 @@ function ForgotPasswordAuthentication() {
             }
         } catch (error) {
             setResendMessage("An error occurred. Please try again.");
+            console.error("Resend PIN Error:", error.response?.data || error);
         }
 
         // Allow resending after 30 seconds
