@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import Logo from "../Subcomponent/Asset/rtu_logo_v3.png";
+import { useStudentAuth } from "../../Hooks/useStudentAuth";
+import Cookies from "js-cookie";
 
 function Authentication() {
     const navigate = useNavigate();
@@ -29,6 +31,8 @@ function Authentication() {
         }
     };
 
+    const { studentLogin } = useStudentAuth();
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -38,17 +42,46 @@ function Authentication() {
                 { withCredentials: true }
             );
 
+            console.log("Verification Response:", response.data); // Debugging
+
             if (response.status === 200 && response.data.success) {
-                navigate("/student/set-appointment", {
-                    state: {
-                        message: response.data.message,
-                    },
+                // Retrieve stored registration data
+                const storedRegistrationData = Cookies.get("registration_data");
+                console.log(
+                    "Stored Registration Data:",
+                    storedRegistrationData
+                ); // Debugging
+
+                if (!storedRegistrationData) {
+                    throw new Error(
+                        "Verification succeeded but registration data is missing."
+                    );
+                }
+
+                const parsedData = JSON.parse(storedRegistrationData);
+                if (!parsedData.username || !parsedData.password) {
+                    throw new Error(
+                        "Verification succeeded but missing user credentials."
+                    );
+                }
+
+                // Automatically log in the user with their username & password
+                await studentLogin({
+                    username: parsedData.username,
+                    password: parsedData.password,
                 });
+
+                // Remove registration data and redirect
+                Cookies.remove("registration_data");
+                navigate("/student/set-appointment");
+            } else {
+                setErrorMessage(
+                    "Verification failed due to an unexpected response."
+                );
             }
         } catch (error) {
-            setErrorMessage(
-                error.response?.data?.message || "Verification failed."
-            );
+            console.error("Verification Error:", error);
+            setErrorMessage(error.message || "Verification failed.");
         }
     };
 
