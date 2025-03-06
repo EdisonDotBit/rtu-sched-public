@@ -10,7 +10,10 @@ function StudentLayout() {
     const navigate = useNavigate();
     const { studentLogout, user, loading } = useStudentAuth();
 
-    console.log("User object:", user);
+    // Only log user when it's actually available
+    if (user) {
+        console.log("User object:", user);
+    }
 
     useEffect(() => {
         // If user is null after loading, redirect to login
