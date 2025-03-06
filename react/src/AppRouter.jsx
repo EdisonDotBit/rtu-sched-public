@@ -28,6 +28,8 @@ import ManageAccount from "./Component/Subcomponent/ManageAccount.jsx";
 import ForgotPassword from "./Component/Authentication/ForgotPassword.jsx";
 import ForgotPasswordAuthentication from "./Component/Authentication/ForgotPasswordAuthentication.jsx";
 import ResetPassword from "./Component/Authentication/ResetPassword.jsx";
+import ProtectedRegisterRoute from "./ProtectedRegisterRoute.jsx";
+import ProtectedForgotRoute from "./ProtectedForgotRoute.jsx";
 
 const AppRouter = () => (
     <>
@@ -197,7 +199,11 @@ const AppRouter = () => (
                     <Route path="/student/register" element={<Register />} />
                     <Route
                         path="/student/authenticate"
-                        element={<Authentication />}
+                        element={
+                            <ProtectedRegisterRoute>
+                                <Authentication />
+                            </ProtectedRegisterRoute>
+                        }
                     />
                     <Route
                         path="/student/forgot-password"
@@ -205,7 +211,11 @@ const AppRouter = () => (
                     />
                     <Route
                         path="/student/forgot-password-authenticate"
-                        element={<ForgotPasswordAuthentication />}
+                        element={
+                            <ProtectedForgotRoute>
+                                <ForgotPasswordAuthentication />
+                            </ProtectedForgotRoute>
+                        }
                     />
                     <Route path="/reset-password" element={<ResetPassword />} />
                     <Route path="/" element={<Navigate to="/student" />} />
