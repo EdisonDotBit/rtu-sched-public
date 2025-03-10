@@ -6,13 +6,15 @@
         "build": "vite build"
     },
     "devDependencies": {
-        "axios": "^1.6.4",
-        "laravel-vite-plugin": "^1.0.0",
-        "vite": "^5.0.0"
+        "axios": "^1.7.9",
+        "laravel-vite-plugin": "^1.2.0",
+        "vite": "^6.1.1"
     },
     "dependencies": {
         "-": "^0.0.1",
-        "@react-pdf/renderer": "^3.4.0",
-        "ave": "^0.0.1-0"
+        "@react-pdf/renderer": "^4.2.2",
+        "ave": "^0.0.1-0",
+        "js-cookie": "^3.0.5",
+        "jwt-decode": "^4.0.0"
     }
 }

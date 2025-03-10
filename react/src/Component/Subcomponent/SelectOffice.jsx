@@ -10,6 +10,8 @@ function SelectOffice({
     const [expanded, setExpanded] = useState(false);
     const [options, setOptions] = useState([]);
 
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
     const handleOfficeSelection = (selectedOffAbbr, limits) => {
         setFormData((prevFormData) => ({
             ...prevFormData,

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('appointments', function (Blueprint $table) {
-            $table->bigIncrements('aptid');
+            $table->bigIncrements(column: 'aptid');
             $table->string('apttype')->nullable(false);
             $table->string('aptbranch')->nullable(false);
             $table->string('aptoffice')->nullable(false);

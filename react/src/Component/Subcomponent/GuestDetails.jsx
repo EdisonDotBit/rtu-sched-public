@@ -45,7 +45,7 @@ function GuestDetails({ formData, setFormData, errors }) {
                         </h2>
 
                         {/* ID Number / Type */}
-                        <label className="block text-white">
+                        <label className="block text-white mb-2">
                             ID Number / Type:
                             <input
                                 className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
@@ -65,13 +65,13 @@ function GuestDetails({ formData, setFormData, errors }) {
                             />
                         </label>
                         {touched.aptstudnum && errors.aptstudnum && (
-                            <p className="text-[#FFDB75] text-sm !mt-2">
+                            <p className="text-[#FFDB75] text-sm">
                                 {errors.aptstudnum}
                             </p>
                         )}
 
                         {/* Full Name */}
-                        <label className="block text-white">
+                        <label className="block text-white mb-2">
                             Full Name:
                             <input
                                 className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
@@ -90,13 +90,13 @@ function GuestDetails({ formData, setFormData, errors }) {
                             />
                         </label>
                         {touched.aptname && errors.aptname && (
-                            <p className="text-[#FFDB75] text-sm !mt-2">
+                            <p className="text-[#FFDB75] text-sm">
                                 {errors.aptname}
                             </p>
                         )}
 
                         {/* Contact Number */}
-                        <label className="block text-white">
+                        <label className="block text-white mb-2">
                             Contact Number:
                             <input
                                 className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
@@ -114,13 +114,13 @@ function GuestDetails({ formData, setFormData, errors }) {
                             />
                         </label>
                         {touched.aptpnumber && errors.aptpnumber && (
-                            <p className="text-[#FFDB75] text-sm !mt-2">
+                            <p className="text-[#FFDB75] text-sm">
                                 {errors.aptpnumber}
                             </p>
                         )}
 
                         {/* Personal Email */}
-                        <label className="block text-white">
+                        <label className="block text-white mb-2">
                             Email Address
                             <input
                                 className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
@@ -133,7 +133,7 @@ function GuestDetails({ formData, setFormData, errors }) {
                             />
                         </label>
                         {touched.aptemail && errors.aptemail && (
-                            <p className="text-[#FFDB75] text-sm !mt-2">
+                            <p className="text-[#FFDB75] text-sm">
                                 {errors.aptemail}
                             </p>
                         )}

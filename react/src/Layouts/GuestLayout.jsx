@@ -4,26 +4,11 @@ import Logo from "../Component/Subcomponent/Asset/rtu_logo_v3.png";
 
 function GuestLayout() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const modals = useRef(null);
     const location = useLocation();
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
-
-    const openModal = () => {
-        modals.current.showModal();
-    };
-
-    useEffect(() => {
-        const modalShown = sessionStorage.getItem("modalShown");
-
-        // If it's the first visit, show the modal
-        if (!modalShown) {
-            openModal();
-            sessionStorage.setItem("modalShown", "true"); // Mark that the modal has been shown
-        }
-    }, []);
 
     return (
         <>
@@ -61,9 +46,9 @@ function GuestLayout() {
                         </div>
                     </div>
                     <div className="flex items-center pr-4">
-                        <NavLink to="../student">
+                        <NavLink to="../student/login">
                             <button className="text-sm text-gray-500 hover:text-[#123A69]">
-                                Change to Student
+                                Sign in as Student
                             </button>
                         </NavLink>
                     </div>
@@ -217,48 +202,6 @@ function GuestLayout() {
                         Technological University
                     </p>
                 </footer>
-
-                {/* Modal */}
-                <dialog
-                    ref={modals}
-                    className="modal"
-                    onKeyDown={(event) => {
-                        if (event.key === "Escape") {
-                            event.preventDefault();
-                        }
-                    }}
-                >
-                    <div className="modal-box flex flex-col justify-center items-center text-white bg-[#194F90]">
-                        <h3 className="font-bold text-lg">
-                            Welcome to Rizal Technological University!
-                        </h3>
-                        <p>
-                            **For New Student and Alumni, please select Guest**
-                        </p>
-                        <div className="modal-action">
-                            <button
-                                type="button"
-                                className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
-                                onClick={() => {
-                                    modals.current.close();
-                                }}
-                            >
-                                Guest
-                            </button>
-                            <NavLink to="../student">
-                                <button
-                                    type="button"
-                                    className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
-                                    onClick={() => {
-                                        modals.current.close();
-                                    }}
-                                >
-                                    Student
-                                </button>
-                            </NavLink>
-                        </div>
-                    </div>
-                </dialog>
             </div>
         </>
     );
