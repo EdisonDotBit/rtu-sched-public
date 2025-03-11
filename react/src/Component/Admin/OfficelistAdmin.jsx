@@ -10,12 +10,10 @@ function OfficelistAdmin() {
     const [offData, setoffData] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
     const modals = useRef(null);
-    const purposeModal = useRef(null);
     const [selectedOffid, setSelectedOffid] = useState(null);
     const [selectedOffname, setSelectedOffname] = useState("");
+    const [showAdd, setShowAdd] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
-    const [selectedOffice, setSelectedOffice] = useState(null);
-    const [purpose, setPurpose] = useState("");
 
     useEffect(() => {
         const getData = async () => {
@@ -48,38 +46,6 @@ function OfficelistAdmin() {
         modals.current.showModal();
     };
 
-    const openPurposeModal = (office, officeName) => {
-        setSelectedOffice(office);
-        setSelectedOffname(officeName);
-        purposeModal.current.showModal();
-    };
-
-    const handlePurposeInsert = async (e) => {
-        e.preventDefault();
-        console.log("Insert Purpose:", purpose);
-        try {
-            const response = await fetch(
-                `${apiBaseUrl}/api/office/addPurpose`,
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        officeId: selectedOffice.offid,
-                        purpose,
-                    }),
-                }
-            );
-            if (response.ok) {
-                alert("Purpose inserted successfully");
-                window.location.reload();
-            } else {
-                alert("Failed to insert purpose");
-            }
-        } catch (error) {
-            console.error("Error:", error);
-        }
-    };
-
     const deleteOff = async (e, id) => {
         e.preventDefault();
         try {
@@ -108,8 +74,12 @@ function OfficelistAdmin() {
         }
     };
     return (
-        <div className="carousel w-full h-full">
-            <div className="carousel-item w-full h-full" id="main">
+        <div className="relative w-full h-full overflow-hidden">
+            <div
+                className={`absolute w-full h-full transition-transform duration-500 ${
+                    showAdd || showEdit ? "-translate-x-full" : "translate-x-0"
+                }`}
+            >
                 <div className="flex justify-center  h-full w-full">
                     <div className="flex flex-col items-center gap-[20px]">
                         <input
@@ -120,8 +90,11 @@ function OfficelistAdmin() {
                             onChange={(e) => setoffabbr(e.target.value)}
                         />
                         <div className="flex justify-end w-full">
-                            <a href="#add">
-                                <button className="btn bg-[#194F90] hover:bg-[#123A69] text-white rounded-md border-0 inline-block px-8 py-2 text-md font-medium focus:relative">
+                            <a href="#add" onClick={() => setShowAdd(true)}>
+                                <button
+                                    className="btn bg-[#194F90] hover:bg-[#123A69] text-white rounded-md border-0 inline-block px-8 py-2 text-md font-medium focus:relative"
+                                    onClick={() => setShowAdd(true)}
+                                >
                                     + Add Office
                                 </button>
                             </a>
@@ -189,21 +162,6 @@ function OfficelistAdmin() {
                                                         </a>
 
                                                         <button
-                                                            className="ml-4 group relative inline-block overflow-hidden border border-green-600 px-8 py-3 focus:outline-none focus:ring"
-                                                            onClick={() =>
-                                                                openPurposeModal(
-                                                                    office,
-                                                                    office.offname
-                                                                )
-                                                            }
-                                                        >
-                                                            <span className="absolute inset-x-0 bottom-0 h-[2px] bg-green-600 transition-all group-hover:h-full group-active:bg-red-500"></span>
-                                                            <span className="relative text-sm font-medium text-green-600 transition-colors group-hover:text-white">
-                                                                Purpose
-                                                            </span>
-                                                        </button>
-
-                                                        <button
                                                             className="ml-4 group relative inline-block overflow-hidden border border-red-600 px-8 py-3 focus:outline-none focus:ring"
                                                             onClick={() =>
                                                                 openmodal(
@@ -255,80 +213,27 @@ function OfficelistAdmin() {
                             </div>
                         </div>
                     </dialog>
-
-                    <dialog ref={purposeModal} className="modal">
-                        <div className="modal-box text-white bg-[#194F90]">
-                            <h3 className="font-bold text-lg">
-                                Insert Purpose
-                            </h3>
-                            <p className="py-4">
-                                Office Name: {selectedOffname}
-                            </p>
-
-                            <form onSubmit={handlePurposeInsert}>
-                                <input
-                                    type="text"
-                                    value={purpose}
-                                    onChange={(e) => setPurpose(e.target.value)}
-                                    placeholder="Enter purpose"
-                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] mb-4"
-                                />
-                                <div className="modal-action">
-                                    <button
-                                        type="submit"
-                                        className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
-                                    >
-                                        Insert
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            modals.current.close();
-                                            window.location.reload();
-                                        }}
-                                        className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
-                                    >
-                                        Close
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </dialog>
                 </div>
             </div>
 
-            {/* {purposeModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center">
-                    <div className="text-white bg-[#194F90] p-4 rounded">
-                        <h3 className="text-xl mb-4">Insert Purpose</h3>
-                        <form onSubmit={handlePurposeInsert}>
-                            <input
-                                type="text"
-                                value={purpose}
-                                onChange={(e) => setPurpose(e.target.value)}
-                                placeholder="Enter purpose"
-                                className="text-gray-800 bg-white w-full mt-1 py-2 px-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] mb-4"
-                            />
-                            <button type="submit" className="btn btn-primary">
-                                Insert
-                            </button>
-                            <button
-                                type="button"
-                                onClick={closePurposeModal}
-                                className="btn btn-secondary ml-2"
-                            >
-                                Close
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            )} */}
-
-            <div className="carousel-item w-full h-[700px]" id="add">
-                <AddOffice />
+            <div
+                className={`absolute w-full h-full transition-transform duration-500 ${
+                    showAdd ? "translate-x-0" : "translate-x-full"
+                }`}
+            >
+                <AddOffice setShowAdd={setShowAdd} />
             </div>
-            <div className="carousel-item w-full h-full" id="edit">
-                {showEdit && <EditOffice selectedOffid={selectedOffid} />}
+            <div
+                className={`absolute w-full h-full transition-transform duration-500 ${
+                    showEdit ? "translate-x-0" : "translate-x-full"
+                }`}
+            >
+                {showEdit && (
+                    <EditOffice
+                        selectedOffid={selectedOffid}
+                        setShowEdit={setShowEdit}
+                    />
+                )}
             </div>
         </div>
     );

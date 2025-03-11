@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../../Hooks/useAuth";
 
-function AddOffice() {
+function AddOffice({ setShowAdd }) {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const { branch } = useAuth();
     const [formData, setFormData] = useState({
         offabbr: "",
         offname: "",
         offlimit: "",
-        // offbranch: branch,
     });
 
     const handleChange = (e) => {
@@ -94,15 +93,17 @@ function AddOffice() {
                                 />
                             </label>
 
-                            <div className="flex justify-center gap-6">
-                                <a href="#main">
-                                    <button className="btn btn-outline px-6 text-[#194F90] bg-[#FFDB75] hover:bg-[#f3cd64] hover:text-[#194F90] mt-2">
-                                        Back
-                                    </button>
-                                </a>
+                            <div className="flex justify-center gap-6 mt-4">
+                                <button
+                                    className="btn bg-[#FFDB75] text-[#194F90] font-semibold hover:bg-[#f3cd64] hover:text-[#194F90] rounded-md px-6 py-2"
+                                    onClick={() => setShowAdd(false)}
+                                >
+                                    Back
+                                </button>
+
                                 <button
                                     type="button"
-                                    className="btn btn-outline px-6 text-[#194F90] bg-[#FFDB75] hover:bg-[#f3cd64] hover:text-[#194F90] mt-2"
+                                    className="btn bg-[#FFDB75] text-[#194F90] font-semibold  hover:bg-[#f3cd64] hover:text-[#194F90] rounded-md px-6 py-2"
                                     onClick={addoff}
                                 >
                                     Add Office
