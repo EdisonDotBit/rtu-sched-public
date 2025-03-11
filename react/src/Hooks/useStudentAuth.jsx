@@ -8,7 +8,7 @@ const StudentAuthContext = createContext();
 export const StudentAuthProvider = ({ children }) => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true); // Added loading state
+    const [loading, setLoading] = useState(true);
     const [token, setToken] = useState(Cookies.get("studentToken"));
 
     useEffect(() => {
@@ -20,10 +20,9 @@ export const StudentAuthProvider = ({ children }) => {
 
     useEffect(() => {
         const fetchUser = async () => {
-            console.log("Fetching user token:", token);
             if (token) {
                 try {
-                    setLoading(true); // Set loading before fetching
+                    setLoading(true);
                     const response = await axios.get(
                         `${import.meta.env.VITE_API_BASE_URL}/api/users/info`,
                         {
@@ -31,16 +30,15 @@ export const StudentAuthProvider = ({ children }) => {
                             withCredentials: true,
                         }
                     );
-                    console.log("Fetched user data:", response.data);
                     setUser(response.data);
                 } catch (error) {
                     console.error("Failed to fetch user info", error);
-                    setUser(null); // Ensure user is null if fetching fails
+                    setUser(null);
                 } finally {
-                    setLoading(false); // Stop loading when fetch is done
+                    setLoading(false);
                 }
             } else {
-                setLoading(false); // No token, stop loading
+                setLoading(false);
             }
         };
 
@@ -56,13 +54,11 @@ export const StudentAuthProvider = ({ children }) => {
                 { withCredentials: true }
             );
 
-            console.log("Login response:", response.data);
-
             if (response.status === 200 && response.data.token) {
                 Cookies.set("studentToken", response.data.token, {
                     expires: 7,
                 });
-                setUser(response.data.user); // Ensure user state updates
+                setUser(response.data.user);
 
                 // Force a reload to make sure state is refreshed
                 window.location.href = "/student/set-appointment";
@@ -81,20 +77,38 @@ export const StudentAuthProvider = ({ children }) => {
     };
 
     const studentLogout = async () => {
-        try {
-            await axios.post(
-                `${import.meta.env.VITE_API_BASE_URL}/api/users/logout`,
-                {},
-                {
-                    withCredentials: true,
+        if (token) {
+            try {
+                await axios.post(
+                    `${import.meta.env.VITE_API_BASE_URL}/api/users/logout`,
+                    {},
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                        withCredentials: true,
+                    }
+                );
+            } catch (error) {
+                console.error("Logout failed", error);
+                // Handle 401 Unauthorized error gracefully
+                if (error.response?.status === 401) {
+                    console.log("Token is invalid or expired.");
                 }
+            } finally {
+                Cookies.remove("studentToken");
+                console.log("Token removed from cookies");
+                setToken(null); // Update the token state
+                setUser(null);
+                console.log("User state cleared");
+                // Navigate to the login page
+                navigate("/student/login");
+            }
+        } else {
+            // If no token, clear user state and navigate to login
+            console.log(
+                "No token found. Clearing user state and navigating to login."
             );
-        } catch (error) {
-            console.error("Logout failed", error);
-        } finally {
-            Cookies.remove("studentToken");
             setUser(null);
-            window.location.href = "/student/login"; // Ensure fresh redirect
+            navigate("/student/login");
         }
     };
 
@@ -106,7 +120,7 @@ export const StudentAuthProvider = ({ children }) => {
             studentLogin,
             studentLogout,
             isStudentAuthenticated,
-            loading, // Include loading state in context
+            loading,
         }),
         [user, token, loading]
     );
