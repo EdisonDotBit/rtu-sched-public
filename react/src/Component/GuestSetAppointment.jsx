@@ -447,68 +447,65 @@ function GuestSetAppointment() {
 
                     <dialog
                         ref={modals}
-                        className="modal"
+                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 backdrop:bg-black/50"
                         onKeyDown={(event) => {
                             if (event.key === "Escape") {
                                 event.preventDefault();
                             }
                         }}
                     >
-                        <div className="modal-box flex flex-col justify-center items-center text-white bg-[#194F90]">
-                            <h2> Your appointment number is:</h2>
-                            <h1 className="underline"> {succData.aptid}</h1>
-                            <PDFDownloadLink
-                                document={<PDFFile succData={succData} />}
-                                fileName="RTU-Appointment-Receipt.pdf"
+                        <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] p-6 w-full">
+                            <button
+                                className="cursor-pointer absolute top-1 right-1 text-white hover:text-gray-300 transition duration-300 focus:outline-none"
+                                onClick={() => modals.current.close()}
                             >
-                                {({ loading }) =>
-                                    loading ? (
-                                        <div>
-                                            <Loading />
-                                        </div>
-                                    ) : (
-                                        <button
-                                            type="button"
-                                            className="btn btn-outline text-white hover:bg-white hover:text-[#194F90] mt-6"
-                                            onClick={() => {
-                                                setTimeout(() => {
-                                                    window.location.reload();
-                                                }, 500);
-                                            }}
-                                        >
-                                            Download
-                                        </button>
-                                    )
-                                }
-                            </PDFDownloadLink>
-                            <div className="item-center modal-action text-sm">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-6 w-6 text-white"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    strokeWidth={2}
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                </svg>
+                            </button>
+                            <h2>Appointment has been Set Successfully</h2>
+
+                            <div className="item-center modal-action text-sm text-center">
                                 <label style={{ verticalAlign: "middle" }}>
                                     <b>
                                         <br />
-                                        ***Your appointment number is important.
-                                        Please make a note of it.***
+                                        Kindly wait for the office to confirm
+                                        your appointment.
+                                        <br />
+                                        Confirmation will be sent via email.
                                     </b>
                                 </label>
                             </div>
-                            <h4 className="text-xs mt-2">
-                                Note: clicking download reloads the page.
+                            <h4 className="text-xs mt-6">
+                                Note: Click the "X" to go back home.
                             </h4>
                         </div>
                     </dialog>
 
                     <dialog
                         ref={modals1}
-                        className="modal"
+                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 backdrop:bg-black/50"
                         onKeyDown={(event) => {
                             if (event.key === "Escape") {
                                 event.preventDefault();
                             }
                         }}
                     >
-                        <div className="modal-box relative flex flex-col justify-center items-center text-white bg-[#194F90]">
+                        <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] p-6 w-full">
                             {/* Close button with SVG */}
                             <button
-                                className="absolute top-2 right-2 p-2 transition duration-300 focus:outline-none"
+                                className="absolute top-1 right-1 text-white hover:text-gray-300 transition duration-300 focus:outline-none"
                                 onClick={() => modals1.current.close()}
                             >
                                 <svg
@@ -532,11 +529,11 @@ function GuestSetAppointment() {
                                     Appointment Failed
                                 </h1>
                                 <h3 className="text-md">
-                                    You already have three (3) ongoing
-                                    appointments.
+                                    You already have an ongoing appointment in
+                                    this office.
                                 </h3>
                                 <h4 className="text-gray-200 text-xs mt-2">
-                                    Note: Accomplish those transactions before
+                                    Note: Accomplish the transaction before
                                     scheduling another appointment.
                                 </h4>
                                 <h4 className="text-gray-200 text-xs mt-2">
