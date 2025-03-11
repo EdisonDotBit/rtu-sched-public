@@ -1,25 +1,29 @@
 import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../../Hooks/useAuth";
+import axios from "axios";
 
 function AppointmentsAdmin() {
     const [aptemail, setAptEmail] = useState("");
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const [aptData, setAptData] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
-    const [filterBranch, setFilterBranch] = useState("");
     const [filterStatus, setFilterStatus] = useState("");
     const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
-    const modalRef1 = useRef(null);
-    const modalRef2 = useRef(null);
-    const [selectedAppointmentNum, setSelectedAppointmentNum] = useState(null);
     const { role, branch } = useAuth();
+    const [selectedAppointmentNum, setSelectedAppointmentNum] = useState(null);
+    const [confirmationMessage, setConfirmationMessage] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [modalTitle, setModalTitle] = useState("");
+    const [action, setAction] = useState(null);
+    const modalRef = useRef(null);
 
-    useEffect(() => {
-        const getData = async () => {
+    const getData = async () => {
+        setLoading(true);
+        try {
             let endpoint;
 
             if (role === "superadmin") {
-                endpoint = `${apiBaseUrl}/api/branchapt/${branch}`; // Assuming this endpoint returns all appointments
+                endpoint = `${apiBaseUrl}/api/branchapt/${branch}`;
             } else {
                 endpoint = `${apiBaseUrl}/api/filteredapt/${role}/${branch}`;
             }
@@ -28,9 +32,20 @@ function AppointmentsAdmin() {
             const getDataResult = await getRes.json();
             setAptData(getDataResult);
             setSearchResults(getDataResult);
-        };
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
         getData();
-    }, [role, branch, apiBaseUrl]); // Add role as a dependency
+    }, [role, branch, apiBaseUrl]);
+
+    const handleReload = () => {
+        getData();
+    };
 
     useEffect(() => {
         let filteredResults = aptData.filter((apt) => {
@@ -43,70 +58,121 @@ function AppointmentsAdmin() {
             );
         }
 
-        if (filterBranch) {
-            filteredResults = filteredResults.filter((apt) =>
-                apt.aptbranch.toLowerCase().includes(filterBranch.toLowerCase())
-            );
-        }
-
         setSearchResults(filteredResults);
-    }, [aptemail, aptData, filterStatus, filterBranch]);
+    }, [aptemail, aptData, filterStatus]);
 
-    const openModal1 = (aptNum) => {
-        setSelectedAppointmentNum(aptNum);
-        modalRef1.current.showModal();
+    const handleConfirm = async (id) => {
+        setModalTitle("Confirm Appointment");
+        setConfirmationMessage(
+            "Are you sure you want to confirm this appointment?"
+        );
+        setSelectedAppointmentNum(id);
+        setAction(() => () => confirmAppointment(id)); // Set action
+        modalRef.current.showModal();
     };
 
-    const openModal2 = (aptNum) => {
-        setSelectedAppointmentNum(aptNum);
-        modalRef2.current.showModal();
+    const handleDone = async (id) => {
+        setModalTitle("Mark Appointment as Done");
+        setConfirmationMessage(
+            "Are you sure you want to mark this appointment as done?"
+        );
+        setSelectedAppointmentNum(id);
+        setAction(() => () => markAppointmentDone(id)); // Set action
+        modalRef.current.showModal();
     };
-    const deleteApt = async (e, id) => {
-        e.preventDefault();
+
+    const handleCancel = async (id) => {
+        setModalTitle("Cancel Appointment");
+        setConfirmationMessage(
+            "Are you sure you want to cancel this appointment?"
+        );
+        setSelectedAppointmentNum(id);
+        setAction(() => () => cancelAppointment(id)); // Set action
+        modalRef.current.showModal();
+    };
+
+    const handleDelete = async (id) => {
+        setModalTitle("Delete Appointment");
+        setConfirmationMessage(
+            "Are you sure you want to delete this appointment?"
+        );
+        setSelectedAppointmentNum(id);
+        setAction(() => () => deleteAppointment(id)); // Set action
+        modalRef.current.showModal();
+    };
+
+    // Define the appointment action functions...
+    const confirmAppointment = async (id) => {
+        setLoading(true);
         try {
-            const deleteRes = await fetch(`${apiBaseUrl}/api/delappt/${id}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            if (deleteRes.ok) {
-                // Remove the deleted appointment from the local state
-                setAptData((prevData) =>
-                    prevData.filter((apt) => apt.aptid !== id)
-                );
-                setSearchResults((prevResults) =>
-                    prevResults.filter((apt) => apt.aptid !== id)
-                );
-                alert("Appointment deleted successfully.");
+            const response = await axios.post(
+                `${apiBaseUrl}/api/appointments/confirm/${id}`,
+                {}
+            );
+            if (response.status === 200) {
+                alert("Appointment confirmed.");
                 window.location.reload();
-            } else {
-                alert("Failed to delete appointment.");
             }
         } catch (error) {
-            console.error("Error deleting appointment:", error);
-            alert("Error deleting appointment. Please try again later.");
-        }
-    };
-    const upApt = async (e, id) => {
-        e.preventDefault();
-        try {
-            const deleteRes = await fetch(`${apiBaseUrl}/api/updone/${id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            if (deleteRes.ok) {
-                alert("Appointment update successfully.");
-                window.location.reload();
-            }
-        } catch (error) {
-            alert("Error updating appointment. Please try again later.");
+            alert("Error confirming appointment.");
+        } finally {
+            setLoading(false);
         }
     };
 
-    // Sorting function
+    const markAppointmentDone = async (id) => {
+        setLoading(true);
+        try {
+            const response = await axios.post(
+                `${apiBaseUrl}/api/appointments/done/${id}`,
+                {}
+            );
+            if (response.status === 200) {
+                alert("Appointment marked as done.");
+                window.location.reload();
+            }
+        } catch (error) {
+            alert("Error marking appointment as done.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const cancelAppointment = async (id) => {
+        setLoading(true);
+        try {
+            const response = await axios.post(
+                `${apiBaseUrl}/api/appointments/cancel/${id}`,
+                {}
+            );
+            if (response.status === 200) {
+                alert("Appointment cancelled.");
+                window.location.reload();
+            }
+        } catch (error) {
+            alert("Error cancelling appointment.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const deleteAppointment = async (id) => {
+        setLoading(true);
+        try {
+            const response = await axios.delete(
+                `${apiBaseUrl}/api/appointments/${id}`
+            );
+            if (response.status === 200) {
+                alert("Appointment deleted.");
+                window.location.reload();
+            }
+        } catch (error) {
+            alert("Error deleting appointment.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const sortData = (key) => {
         let direction = "asc";
         if (sortConfig.key === key && sortConfig.direction === "asc") {
@@ -122,7 +188,6 @@ function AppointmentsAdmin() {
         setSearchResults(sortedData);
     };
 
-    // Function to render sort arrows
     const SortArrow = ({ direction }) => {
         if (direction === "asc") {
             return (
@@ -154,7 +219,14 @@ function AppointmentsAdmin() {
 
     return (
         <div className="flex justify-center h-full">
-            <div className="flex flex-col items-center gap-[20px]">
+            {loading && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-white opacity-75">
+                    <p className="text-3xl text-[#194F90] font-bold">
+                        Processing...
+                    </p>
+                </div>
+            )}
+            <div className="flex flex-col items-center gap-[20px] flex-1 w-full">
                 <input
                     className="text-gray-800 bg-white mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] w-[300px] xsm:w-[200px] sm:w-[300px] text-md"
                     type="text"
@@ -163,36 +235,29 @@ function AppointmentsAdmin() {
                     onChange={(e) => setAptEmail(e.target.value)}
                 />
 
-                <div className="text-sm flex justify-start items-center gap-4 w-full">
-                    <div className="flex justify-start items-center gap-4">
-                        <p className="text-sm">Sort Branch by:</p>
-                        <select
-                            value={filterBranch}
-                            onChange={(e) => setFilterBranch(e.target.value)}
-                            className="text-gray-800 bg-white py-1 px-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
-                        >
-                            <option value="">All</option>
-                            <option value="Boni">Boni</option>
-                            <option value="Pasig">Pasig</option>
-                        </select>
-                    </div>
+                <div className="self-baseline flex items-center gap-2 mb-4">
+                    <button
+                        onClick={handleReload}
+                        className="text-blue-500 hover:text-blue-700 mr-6"
+                    >
+                        <i className="fas fa-sync-alt"></i>
+                    </button>
 
-                    <div className="flex justify-start items-center gap-4">
-                        <p className="text-sm">Sort Status by:</p>
-                        <select
-                            value={filterStatus}
-                            onChange={(e) => setFilterStatus(e.target.value)}
-                            className="text-gray-800 bg-white py-1 px-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
-                        >
-                            <option value="">All</option>
-                            <option value="ongoing">Ongoing</option>
-                            <option value="done">Done</option>
-                        </select>
-                    </div>
+                    <p className="text-sm">Sort Status by:</p>
+                    <select
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                        className="text-gray-800 bg-white py-1 px-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                    >
+                        <option value="">All</option>
+                        <option value="ongoing">Ongoing</option>
+                        <option value="done">Done</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
                 </div>
 
                 {searchResults.length !== 0 && (
-                    <div className="overflow-x-auto overflow-y-auto">
+                    <div className="overflow-x-auto overflow-y-auto mb-4">
                         <table className="border border-gray-200 min-w-full divide-y-2 divide-gray-200 bg-white">
                             <thead className="ltr:text-center rtl:text-center text-[8.5px] lg:text-[10px]">
                                 <tr>
@@ -439,20 +504,62 @@ function AppointmentsAdmin() {
                                             </td>
                                             <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                                 <button
-                                                    className="text-[9px] group relative inline-block overflow-hidden border border-indigo-600 px-3 py-1 focus:outline-none focus:ring"
+                                                    className="text-[9px] group relative inline-block overflow-hidden border border-green-600 px-3 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
                                                     onClick={() =>
-                                                        openModal1(apt.aptid)
+                                                        handleConfirm(apt.aptid)
+                                                    }
+                                                    disabled={
+                                                        apt.aptstatus !==
+                                                        "ongoing"
                                                     }
                                                 >
-                                                    <span className="absolute inset-x-0 bottom-0 h-[2px] bg-indigo-600 transition-all group-hover:h-full group-active:bg-indigo-500"></span>
-                                                    <span className="relative text-[12px] font-medium text-indigo-600 transition-colors group-hover:text-white">
+                                                    <span className="absolute inset-x-0 bottom-0 h-[2px] bg-green-600 transition-all group-hover:h-full group-active:bg-green-500"></span>
+                                                    <span className="relative text-[12px] font-medium text-green-600 transition-colors group-hover:text-white">
+                                                        Confirm
+                                                    </span>
+                                                </button>
+                                                <button
+                                                    className="ml-4 text-[9px] group relative inline-block overflow-hidden border border-yellow-600 px-3 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    onClick={() =>
+                                                        handleDone(apt.aptid)
+                                                    }
+                                                    disabled={
+                                                        apt.aptstatus !==
+                                                        "confirmed"
+                                                    }
+                                                >
+                                                    <span className="absolute inset-x-0 bottom-0 h-[2px] bg-yellow-600 transition-all group-hover:h-full group-active:bg-yellow-500"></span>
+                                                    <span className="relative text-[12px] font-medium text-yellow-600 transition-colors group-hover:text-white">
                                                         Done
                                                     </span>
                                                 </button>
                                                 <button
-                                                    className="ml-4 group relative inline-block overflow-hidden border border-red-600 px-3 py-1 focus:outline-none focus:ring"
+                                                    className="ml-4 text-[9px] group relative inline-block overflow-hidden border border-blue-600 px-3 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
                                                     onClick={() =>
-                                                        openModal2(apt.aptid)
+                                                        handleCancel(apt.aptid)
+                                                    }
+                                                    disabled={
+                                                        apt.aptstatus ===
+                                                            "done" ||
+                                                        apt.aptstatus ===
+                                                            "cancelled"
+                                                    }
+                                                >
+                                                    <span className="absolute inset-x-0 bottom-0 h-[2px] bg-blue-600 transition-all group-hover:h-full group-active:bg-blue-500"></span>
+                                                    <span className="relative text-[12px] font-medium text-blue-600 transition-colors group-hover:text-white">
+                                                        Cancel
+                                                    </span>
+                                                </button>
+                                                <button
+                                                    className="ml-4 text-[9px] group relative inline-block overflow-hidden border border-red-600 px-3 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    onClick={() =>
+                                                        handleDelete(apt.aptid)
+                                                    }
+                                                    disabled={
+                                                        apt.aptstatus !==
+                                                            "done" &&
+                                                        apt.aptstatus !==
+                                                            "cancelled"
                                                     }
                                                 >
                                                     <span className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600 transition-all group-hover:h-full group-active:bg-red-500"></span>
@@ -467,64 +574,41 @@ function AppointmentsAdmin() {
                         </table>
                     </div>
                 )}
-            </div>
-            <dialog ref={modalRef1} className="modal">
-                <div className="modal-box text-white bg-[#194F90]">
-                    <h3 className="font-bold text-lg">
-                        Mark Appointment Ticket as Done?
-                    </h3>
-                    <p className="py-4">
-                        Appointment Number: {selectedAppointmentNum}
-                    </p>
-                    <div className="modal-action">
-                        <button
-                            className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
-                            type="button"
-                            onClick={(e) => upApt(e, selectedAppointmentNum)}
-                        >
-                            Confirm
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
-                            onClick={() => {
-                                modalRef1.current.close();
-                            }}
-                        >
-                            Close
-                        </button>
-                    </div>
-                </div>
-            </dialog>
 
-            <dialog ref={modalRef2} className="modal">
-                <div className="modal-box text-white bg-[#194F90]">
-                    <h3 className="font-bold text-lg">
-                        Delete Appointment Ticket?
-                    </h3>
-                    <p className="py-4">
-                        Appointment Number: {selectedAppointmentNum}
-                    </p>
-                    <div className="modal-action">
-                        <button
-                            type="button"
-                            className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
-                            onClick={(e) =>
-                                deleteApt(e, selectedAppointmentNum)
-                            }
-                        >
-                            Confirm
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
-                            onClick={() => modalRef2.current.close()}
-                        >
-                            Close
-                        </button>
+                <dialog
+                    ref={modalRef}
+                    className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 backdrop:bg-black/50"
+                >
+                    <div className="modal-box text-white bg-[#194F90]">
+                        <h3 className="font-bold text-lg">{modalTitle}</h3>
+                        <p className="py-4">{confirmationMessage}</p>
+                        <p className="py-4">
+                            Appointment Number: {selectedAppointmentNum}
+                        </p>
+                        <div className="modal-action flex justify-center gap-4">
+                            <button
+                                className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
+                                type="button"
+                                onClick={() => {
+                                    action(); // Execute action
+                                    modalRef.current.close();
+                                }}
+                            >
+                                Confirm
+                            </button>
+                            <button
+                                type="button"
+                                className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
+                                onClick={() => {
+                                    modalRef.current.close();
+                                }}
+                            >
+                                Cancel
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </dialog>
+                </dialog>
+            </div>
         </div>
     );
 }
