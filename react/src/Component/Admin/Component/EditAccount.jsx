@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-function EditAccount({ selectedaccid }) {
+function EditAccount({ selectedaccid, setShowEdit }) {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState({
+        admuser: "",
+        admpass: "",
+        admname: "",
+        admrole: "",
+    });
     const [offData, setOffData] = useState([]);
     const [showPassword, setShowPassword] = useState(false);
     const [selectedOffice, setSelectedOffice] = useState("");
@@ -33,7 +38,10 @@ function EditAccount({ selectedaccid }) {
             if (res.status === 200) {
                 console.log(res.data.message); // Log success message
                 alert("Admin edited successfully.");
-                window.location.reload();
+                setShowEdit(false);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 100);
             }
         } catch (error) {
             alert(
@@ -165,25 +173,33 @@ function EditAccount({ selectedaccid }) {
                                     <option value="" disabled>
                                         --Select Office--
                                     </option>
-                                    {offData.map((option) => (
+                                    {[
+                                        ...new Map(
+                                            offData.map((item) => [
+                                                item.offabbr,
+                                                item,
+                                            ])
+                                        ).values(),
+                                    ].map((option) => (
                                         <option
                                             key={option.offid}
                                             value={option.offabbr}
                                         >
                                             {option.offabbr}
                                         </option>
-                                    ))}{" "}
-                                </select>{" "}
+                                    ))}
+                                </select>
                             </label>
                             <div className="flex justify-center gap-6">
-                                <a href="#main">
-                                    <button className="btn btn-outline px-6 text-[#194F90] bg-[#FFDB75] hover:bg-[#f3cd64] hover:text-[#194F90] mt-2">
-                                        Back
-                                    </button>
-                                </a>
+                                <button
+                                    className="btn bg-[#FFDB75] text-[#194F90] font-semibold  hover:bg-[#f3cd64] hover:text-[#194F90] rounded-md px-6 py-2"
+                                    onClick={() => setShowEdit(false)}
+                                >
+                                    Back
+                                </button>
                                 <button
                                     type="button"
-                                    className="btn btn-outline px-6 text-[#194F90] bg-[#FFDB75] hover:bg-[#f3cd64] hover:text-[#194F90] mt-2"
+                                    className="btn bg-[#FFDB75] text-[#194F90] font-semibold hover:bg-[#f3cd64] hover:text-[#194F90] rounded-md px-6 py-2"
                                     onClick={editAcc}
                                 >
                                     Save
