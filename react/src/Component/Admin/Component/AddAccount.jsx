@@ -52,7 +52,6 @@ function AddAccount() {
             );
             const getDataResult = await getRes.json();
             setoffData(getDataResult);
-            setSearchResults(getDataResult);
         };
         getData();
     }, [branch]);
@@ -137,12 +136,11 @@ function AddAccount() {
                                 Assign Office:
                                 {/* Assuming this is a dropdown */}
                                 <select
-                                    placeholder="Enter Password"
-                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                    value={formData.admrole}
                                     onChange={handleChange}
                                     name="admrole"
                                 >
-                                    <option value="" disabled selected>
+                                    <option value="" disabled>
                                         --Select Office--
                                     </option>
                                     {offData.map((option) => (
