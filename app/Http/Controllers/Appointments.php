@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Appointment;
 use Illuminate\Support\Facades\Log;
+use App\Mail\ConfirmAppointment;
+use App\Mail\DoneAppointment;
+use App\Mail\CancelAppointment;
+use Illuminate\Support\Facades\Mail;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class Appointments extends Controller
 {
@@ -99,33 +104,34 @@ class Appointments extends Controller
         ]);
     }
 
-    public function delapt($aptId)
-    {
-        $apt = Appointment::find($aptId);
-        $apt->delete();
-        return response()->json([
-            'status' => 200,
-            'messages' => 'Successfully deleted appointment',
-        ]);
-    }
-    public function uptodone($aptId)
-    {
-        $apt = Appointment::find($aptId);
-        $apt->aptstatus = 'done';
-        try {
-            $apt->save();
-            return response()->json([
-                'status' => 200,
-                'messages' => 'Successfully updated appointment',
-                'data' => $apt,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 400,
-                'error' => 'Failed to update appointment',
-            ], 400);
-        }
-    }
+    // public function delapt($aptId)
+    // {
+    //     $apt = Appointment::find($aptId);
+    //     $apt->delete();
+    //     return response()->json([
+    //         'status' => 200,
+    //         'messages' => 'Successfully deleted appointment',
+    //     ]);
+    // }
+
+    // public function uptodone($aptId)
+    // {
+    //     $apt = Appointment::find($aptId);
+    //     $apt->aptstatus = 'done';
+    //     try {
+    //         $apt->save();
+    //         return response()->json([
+    //             'status' => 200,
+    //             'messages' => 'Successfully updated appointment',
+    //             'data' => $apt,
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'status' => 400,
+    //             'error' => 'Failed to update appointment',
+    //         ], 400);
+    //     }
+    // }
 
     public function reschedule(Request $request, int $aptId)
     {
@@ -154,5 +160,92 @@ class Appointments extends Controller
                 'error' => 'Failed to reschedule appointment. Please ensure the new date is valid.',
             ], 400);
         }
+    }
+
+
+    public function confirmAppointment($id)
+    {
+        Log::info('Starting appointment confirmation process for ID: ' . $id);
+        $appointment = Appointment::find($id);
+        if (!$appointment) {
+            Log::error('Appointment not found for ID: ' . $id);
+            return response()->json(['error' => 'Appointment not found.'], 404);
+        }
+
+        $appointment->aptstatus = 'confirmed';
+        try {
+            $appointment->save();
+            Log::info('Appointment status saved as confirmed for ID: ' . $id);
+        } catch (\Exception $e) {
+            Log::error('Error saving appointment status: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to save appointment status.'], 500);
+        }
+
+        // Generate PDF using DomPDF
+        try {
+            $pdf = PDF::loadView('pdf.appointment', compact('appointment'));
+            $pdfFilePath = storage_path('app/public/AppointmentDetails.pdf');
+            $pdf->save($pdfFilePath);
+            Log::info('PDF generated successfully for appointment ID: ' . $id);
+        } catch (\Exception $e) {
+            Log::error('Error generating PDF: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to generate PDF.'], 500);
+        }
+
+        // Send confirmation email with PDF attachment
+        try {
+            Log::info('Sending confirmation email to: ' . $appointment->aptemail);
+            Mail::to($appointment->aptemail)->send(new ConfirmAppointment($appointment, $pdfFilePath));
+            Log::info('Confirmation email sent successfully to: ' . $appointment->aptemail);
+        } catch (\Exception $e) {
+            Log::error('Error sending confirmation email: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to send confirmation email.'], 500);
+        }
+
+        Log::info('Appointment confirmed and email sent for appointment ID: ' . $id);
+        return response()->json(['success' => true, 'message' => 'Appointment confirmed and email sent.']);
+    }
+    public function doneAppointment($id)
+    {
+        $appointment = Appointment::find($id);
+        if (!$appointment) {
+            return response()->json(['error' => 'Appointment not found.'], 404);
+        }
+
+        $appointment->aptstatus = 'done';
+        $appointment->save();
+
+        // Send done email
+        Mail::to($appointment->aptemail)->send(new DoneAppointment($appointment));
+
+        return response()->json(['success' => true, 'message' => 'Appointment marked as done and email sent.']);
+    }
+
+    public function cancelAppointment($id)
+    {
+        $appointment = Appointment::find($id);
+        if (!$appointment) {
+            return response()->json(['error' => 'Appointment not found.'], 404);
+        }
+
+        $appointment->aptstatus = 'cancelled';
+        $appointment->save();
+
+        // Send cancel email
+        Mail::to($appointment->aptemail)->send(new CancelAppointment($appointment));
+
+        return response()->json(['success' => true, 'message' => 'Appointment cancelled and email sent.']);
+    }
+
+    public function deleteAppointment($id)
+    {
+        $appointment = Appointment::find($id);
+        if (!$appointment) {
+            return response()->json(['error' => 'Appointment not found.'], 404);
+        }
+
+        $appointment->delete();
+
+        return response()->json(['success' => true, 'message' => 'Appointment deleted.']);
     }
 }
