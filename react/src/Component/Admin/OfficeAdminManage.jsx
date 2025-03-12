@@ -76,8 +76,12 @@ function OfficeAdminManage() {
     };
 
     return (
-        <div className="carousel w-full h-full">
-            <div className="carousel-item w-full h-full" id="main">
+        <div className="relative w-full h-full overflow-hidden">
+            <div
+                className={`absolute w-full h-full transition-transform duration-500 ${
+                    showEdit ? "-translate-x-full" : "translate-x-0"
+                }`}
+            >
                 <div className="flex justify-center  h-full w-full">
                     <div className="flex flex-col items-center gap-[20px]">
                         <input
@@ -173,48 +177,61 @@ function OfficeAdminManage() {
                     </div>
 
                     <dialog ref={purposeModal} className="modal">
-                        <div className="modal-box text-white bg-[#194F90]">
-                            <h3 className="font-bold text-lg">
-                                Insert Purpose
-                            </h3>
-                            <p className="py-4">
-                                Office Name: {selectedOffname}
-                            </p>
+                        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 backdrop:bg-black/50">
+                            <div className="modal-box text-white bg-[#194F90]">
+                                <h3 className="font-bold text-lg">
+                                    Insert Purpose
+                                </h3>
+                                <p className="py-4">
+                                    Office Name: {selectedOffname}
+                                </p>
 
-                            <form onSubmit={handlePurposeInsert}>
-                                <input
-                                    type="text"
-                                    value={purpose}
-                                    onChange={(e) => setPurpose(e.target.value)}
-                                    placeholder="Enter purpose"
-                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] mb-4"
-                                />
-                                <div className="modal-action">
-                                    <button
-                                        type="submit"
-                                        className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
-                                    >
-                                        Insert
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            purposeModal.current.close();
-                                            window.location.reload();
-                                        }}
-                                        className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
-                                    >
-                                        Close
-                                    </button>
-                                </div>
-                            </form>
+                                <form onSubmit={handlePurposeInsert}>
+                                    <input
+                                        type="text"
+                                        value={purpose}
+                                        onChange={(e) =>
+                                            setPurpose(e.target.value)
+                                        }
+                                        placeholder="Enter purpose"
+                                        className="text-gray-800 bg-white w-full mt-1 py-2 px-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] mb-4"
+                                    />
+                                    <div className="modal-action flex justify-center gap-4">
+                                        <button
+                                            type="submit"
+                                            className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
+                                        >
+                                            Insert
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                purposeModal.current.close();
+                                                window.location.reload();
+                                            }}
+                                            className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
+                                        >
+                                            Close
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </dialog>
                 </div>
             </div>
 
-            <div className="carousel-item w-full h-full" id="edit">
-                {showEdit && <EditOffice selectedOffid={selectedOffid} />}
+            <div
+                className={`absolute w-full h-full transition-transform duration-500 ${
+                    showEdit ? "translate-x-0" : "translate-x-full"
+                }`}
+            >
+                {showEdit && (
+                    <EditOffice
+                        selectedOffid={selectedOffid}
+                        setShowEdit={setShowEdit}
+                    />
+                )}
             </div>
         </div>
     );
