@@ -220,9 +220,9 @@ function AppointmentsAdmin() {
     return (
         <div className="flex justify-center h-full">
             {loading && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-white opacity-75">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-white opacity-85">
                     <p className="text-3xl text-[#194F90] font-bold">
-                        Processing...
+                        Loading Appointments...
                     </p>
                 </div>
             )}
@@ -461,6 +461,11 @@ function AppointmentsAdmin() {
                                             </span>
                                         </div>
                                     </th>
+                                    {role !== "superadmin" && (
+                                        <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
+                                            Tools
+                                        </th>
+                                    )}
                                 </tr>
                             </thead>
 
@@ -502,72 +507,82 @@ function AppointmentsAdmin() {
                                             <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                                                 {apt.aptemail}
                                             </td>
-                                            <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                <button
-                                                    className="text-[9px] group relative inline-block overflow-hidden border border-green-600 px-3 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
-                                                    onClick={() =>
-                                                        handleConfirm(apt.aptid)
-                                                    }
-                                                    disabled={
-                                                        apt.aptstatus !==
-                                                        "ongoing"
-                                                    }
-                                                >
-                                                    <span className="absolute inset-x-0 bottom-0 h-[2px] bg-green-600 transition-all group-hover:h-full group-active:bg-green-500"></span>
-                                                    <span className="relative text-[12px] font-medium text-green-600 transition-colors group-hover:text-white">
-                                                        Confirm
-                                                    </span>
-                                                </button>
-                                                <button
-                                                    className="ml-4 text-[9px] group relative inline-block overflow-hidden border border-yellow-600 px-3 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
-                                                    onClick={() =>
-                                                        handleDone(apt.aptid)
-                                                    }
-                                                    disabled={
-                                                        apt.aptstatus !==
-                                                        "confirmed"
-                                                    }
-                                                >
-                                                    <span className="absolute inset-x-0 bottom-0 h-[2px] bg-yellow-600 transition-all group-hover:h-full group-active:bg-yellow-500"></span>
-                                                    <span className="relative text-[12px] font-medium text-yellow-600 transition-colors group-hover:text-white">
-                                                        Done
-                                                    </span>
-                                                </button>
-                                                <button
-                                                    className="ml-4 text-[9px] group relative inline-block overflow-hidden border border-blue-600 px-3 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
-                                                    onClick={() =>
-                                                        handleCancel(apt.aptid)
-                                                    }
-                                                    disabled={
-                                                        apt.aptstatus ===
-                                                            "done" ||
-                                                        apt.aptstatus ===
-                                                            "cancelled"
-                                                    }
-                                                >
-                                                    <span className="absolute inset-x-0 bottom-0 h-[2px] bg-blue-600 transition-all group-hover:h-full group-active:bg-blue-500"></span>
-                                                    <span className="relative text-[12px] font-medium text-blue-600 transition-colors group-hover:text-white">
-                                                        Cancel
-                                                    </span>
-                                                </button>
-                                                <button
-                                                    className="ml-4 text-[9px] group relative inline-block overflow-hidden border border-red-600 px-3 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
-                                                    onClick={() =>
-                                                        handleDelete(apt.aptid)
-                                                    }
-                                                    disabled={
-                                                        apt.aptstatus !==
-                                                            "done" &&
-                                                        apt.aptstatus !==
-                                                            "cancelled"
-                                                    }
-                                                >
-                                                    <span className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600 transition-all group-hover:h-full group-active:bg-red-500"></span>
-                                                    <span className="relative text-[12px] font-medium text-red-600 transition-colors group-hover:text-white">
-                                                        Delete
-                                                    </span>
-                                                </button>
-                                            </td>
+                                            {role !== "superadmin" && (
+                                                <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                                    <button
+                                                        className="text-[9px] group relative inline-block overflow-hidden border border-green-600 px-3 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        onClick={() =>
+                                                            handleConfirm(
+                                                                apt.aptid
+                                                            )
+                                                        }
+                                                        disabled={
+                                                            apt.aptstatus !==
+                                                            "ongoing"
+                                                        }
+                                                    >
+                                                        <span className="absolute inset-x-0 bottom-0 h-[2px] bg-green-600 transition-all group-hover:h-full group-active:bg-green-500"></span>
+                                                        <span className="relative text-[12px] font-medium text-green-600 transition-colors group-hover:text-white">
+                                                            Confirm
+                                                        </span>
+                                                    </button>
+                                                    <button
+                                                        className="ml-4 text-[9px] group relative inline-block overflow-hidden border border-yellow-600 px-3 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        onClick={() =>
+                                                            handleDone(
+                                                                apt.aptid
+                                                            )
+                                                        }
+                                                        disabled={
+                                                            apt.aptstatus !==
+                                                            "confirmed"
+                                                        }
+                                                    >
+                                                        <span className="absolute inset-x-0 bottom-0 h-[2px] bg-yellow-600 transition-all group-hover:h-full group-active:bg-yellow-500"></span>
+                                                        <span className="relative text-[12px] font-medium text-yellow-600 transition-colors group-hover:text-white">
+                                                            Done
+                                                        </span>
+                                                    </button>
+                                                    <button
+                                                        className="ml-4 text-[9px] group relative inline-block overflow-hidden border border-blue-600 px-3 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        onClick={() =>
+                                                            handleCancel(
+                                                                apt.aptid
+                                                            )
+                                                        }
+                                                        disabled={
+                                                            apt.aptstatus ===
+                                                                "done" ||
+                                                            apt.aptstatus ===
+                                                                "cancelled"
+                                                        }
+                                                    >
+                                                        <span className="absolute inset-x-0 bottom-0 h-[2px] bg-blue-600 transition-all group-hover:h-full group-active:bg-blue-500"></span>
+                                                        <span className="relative text-[12px] font-medium text-blue-600 transition-colors group-hover:text-white">
+                                                            Cancel
+                                                        </span>
+                                                    </button>
+                                                    <button
+                                                        className="ml-4 text-[9px] group relative inline-block overflow-hidden border border-red-600 px-3 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        onClick={() =>
+                                                            handleDelete(
+                                                                apt.aptid
+                                                            )
+                                                        }
+                                                        disabled={
+                                                            apt.aptstatus !==
+                                                                "done" &&
+                                                            apt.aptstatus !==
+                                                                "cancelled"
+                                                        }
+                                                    >
+                                                        <span className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600 transition-all group-hover:h-full group-active:bg-red-500"></span>
+                                                        <span className="relative text-[12px] font-medium text-red-600 transition-colors group-hover:text-white">
+                                                            Delete
+                                                        </span>
+                                                    </button>
+                                                </td>
+                                            )}
                                         </tr>
                                     ))}
                             </tbody>
@@ -575,40 +590,44 @@ function AppointmentsAdmin() {
                     </div>
                 )}
 
-                <dialog
-                    ref={modalRef}
-                    className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 backdrop:bg-black/50"
-                >
-                    <div className="modal-box text-white bg-[#194F90]">
-                        <h3 className="font-bold text-lg">{modalTitle}</h3>
-                        <p className="py-4">{confirmationMessage}</p>
-                        <p className="py-4">
-                            Appointment Number: {selectedAppointmentNum}
-                        </p>
-                        <div className="modal-action flex justify-center gap-4">
-                            <button
-                                className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
-                                type="button"
-                                onClick={() => {
-                                    action(); // Execute action
-                                    modalRef.current.close();
-                                }}
-                            >
-                                Confirm
-                            </button>
-                            <button
-                                type="button"
-                                className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
-                                onClick={() => {
-                                    modalRef.current.close();
-                                }}
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                </dialog>
+                {searchResults.length === 0 && (
+                    <p>No appointments found for the selected criteria.</p>
+                )}
             </div>
+
+            <dialog
+                ref={modalRef}
+                className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 backdrop:bg-black/50"
+            >
+                <div className="modal-box text-white bg-[#194F90]">
+                    <h3 className="font-bold text-lg">{modalTitle}</h3>
+                    <p className="py-4">{confirmationMessage}</p>
+                    <p className="py-4">
+                        Appointment Number: {selectedAppointmentNum}
+                    </p>
+                    <div className="modal-action flex justify-center gap-4">
+                        <button
+                            className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
+                            type="button"
+                            onClick={() => {
+                                action(); // Execute action
+                                modalRef.current.close();
+                            }}
+                        >
+                            Confirm
+                        </button>
+                        <button
+                            type="button"
+                            className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
+                            onClick={() => {
+                                modalRef.current.close();
+                            }}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </dialog>
         </div>
     );
 }
