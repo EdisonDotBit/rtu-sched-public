@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation, Link } from "react-router-dom";
 import Logo from "../Component/Subcomponent/Asset/rtu_logo_v3.png";
 import { useAuth } from "../Hooks/useAuth";
@@ -7,6 +7,7 @@ function SupAdminLayout() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const location = useLocation();
     const { logout } = useAuth();
+
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
@@ -102,7 +103,9 @@ function SupAdminLayout() {
                                     />
                                 </svg>
                                 <span className="text-base sm:text-lg text-white font-bold uppercase px-2">
-                                    SUPER ADMIN
+                                    {localStorage
+                                        .getItem("role")
+                                        ?.replace(/['"]+/g, "") || "Admin"}
                                 </span>
                             </div>
                             <button

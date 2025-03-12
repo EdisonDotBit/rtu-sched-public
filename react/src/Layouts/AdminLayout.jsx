@@ -102,7 +102,9 @@ function AdminLayout() {
                                     />
                                 </svg>
                                 <span className="text-base sm:text-lg text-white font-bold uppercase px-2">
-                                    ADMIN
+                                    {localStorage
+                                        .getItem("role")
+                                        ?.replace(/['"]+/g, "") || "Admin"}
                                 </span>
                             </div>
                             <button
