@@ -36,10 +36,18 @@ const AppRouter = () => (
         <AuthProvider>
             <StudentAuthProvider>
                 <Routes>
-                    <Route path="feedback" element={<Feedback />} />
+                    <Route path="*" element={<NotFound />} />
+                    <Route path="rtu/login" element={<LoginAdmin />} />
 
                     {/* Admin Routes */}
-                    <Route path="/rtu/admin" element={<AdminLayout />}>
+                    <Route
+                        path="/rtu/admin"
+                        element={
+                            <ProtectedRoute>
+                                <AdminLayout />
+                            </ProtectedRoute>
+                        }
+                    >
                         <Route
                             path=""
                             element={
@@ -81,9 +89,6 @@ const AppRouter = () => (
                             }
                         />
                     </Route>
-
-                    <Route path="*" element={<NotFound />} />
-                    <Route path="rtu/login" element={<LoginAdmin />} />
 
                     <Route
                         path="/rtu/suppa"
@@ -219,6 +224,8 @@ const AppRouter = () => (
                     />
                     <Route path="/reset-password" element={<ResetPassword />} />
                     <Route path="/" element={<Navigate to="/student" />} />
+
+                    <Route path="feedback" element={<Feedback />} />
                 </Routes>
             </StudentAuthProvider>
         </AuthProvider>
