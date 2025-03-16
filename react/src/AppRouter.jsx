@@ -50,12 +50,9 @@ const AppRouter = () => (
                     >
                         <Route
                             path=""
-                            element={
-                                <ProtectedRoute>
-                                    <Feedbacks />
-                                </ProtectedRoute>
-                            }
+                            element={<Navigate to="/rtu/admin/feedback" />}
                         />
+
                         <Route
                             path="office"
                             element={
@@ -90,6 +87,7 @@ const AppRouter = () => (
                         />
                     </Route>
 
+                    {/* Super Admin Routes */}
                     <Route
                         path="/rtu/suppa"
                         element={
@@ -100,12 +98,9 @@ const AppRouter = () => (
                     >
                         <Route
                             path=""
-                            element={
-                                <ProtectedRoute>
-                                    <Feedbacks />
-                                </ProtectedRoute>
-                            }
+                            element={<Navigate to="/rtu/suppa/feedbacks" />}
                         />
+
                         <Route
                             path="feedbacks"
                             element={
@@ -163,8 +158,6 @@ const AppRouter = () => (
                             element={<ViewAppointments />}
                         />
                     </Route>
-
-                    <Route path="/test" element={<AddOffice />} />
 
                     {/* Student Routes */}
                     <Route path="/student" element={<StudentLayout />}>
