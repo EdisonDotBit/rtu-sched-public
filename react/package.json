@@ -16,6 +16,7 @@
         "autoprefixer": "^10.4.21",
         "ave": "^0.0.1-0",
         "axios": "^1.8.3",
+        "buffer": "^6.0.3",
         "html2canvas": "^1.4.1",
         "jspdf": "^3.0.0",
         "react": "^19.0.0",
