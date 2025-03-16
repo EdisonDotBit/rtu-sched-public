@@ -38,7 +38,7 @@ function GuestLayout() {
                         <div className="flex items-center gap-2">
                             <NavLink to="../guest">
                                 <img
-                                    className="h-auto w-[200px] lg:w-56"
+                                    className="h-auto w-[140px] lg:w-43"
                                     src={Logo}
                                     alt="University Logo"
                                 />
@@ -172,21 +172,6 @@ function GuestLayout() {
                                 <span className="ml-3">View Appointment</span>
                             </NavLink>
                         </nav>
-
-                        {/* Spacer to push Send Feedback to the bottom */}
-                        <div className="flex-grow"></div>
-
-                        {/* Send Feedback Link moved here */}
-                        <NavLink
-                            to="/feedback"
-                            className="text-center mb-6 text-sm underline text-blue-200"
-                            onClick={(e) => {
-                                e.preventDefault(); // Prevents default navigation
-                                window.open("/feedback", "_blank"); // Opens the link in a new tab
-                            }}
-                        >
-                            Send Feedback
-                        </NavLink>
                     </aside>
 
                     {/* Main Content Area */}

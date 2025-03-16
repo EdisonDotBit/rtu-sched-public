@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation, Link } from "react-router-dom";
 import Logo from "../Component/Subcomponent/Asset/rtu_logo_v3.png";
 import { useAuth } from "../Hooks/useAuth";
@@ -7,6 +7,7 @@ function SupAdminLayout() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const location = useLocation();
     const { logout } = useAuth();
+
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
@@ -45,7 +46,7 @@ function SupAdminLayout() {
                         <div className="flex items-center gap-2">
                             <NavLink to="feedbacks">
                                 <img
-                                    className="h-auto w-[200px] lg:w-56"
+                                    className="h-auto w-[140px] lg:w-43"
                                     src={Logo}
                                     alt="University Logo"
                                 />
@@ -102,7 +103,9 @@ function SupAdminLayout() {
                                     />
                                 </svg>
                                 <span className="text-base sm:text-lg text-white font-bold uppercase px-2">
-                                    SUPER ADMIN
+                                    {localStorage
+                                        .getItem("role")
+                                        ?.replace(/['"]+/g, "") || "Admin"}
                                 </span>
                             </div>
                             <button
@@ -297,7 +300,7 @@ function SupAdminLayout() {
                 </div>
 
                 {/* Footer */}
-                <footer className="h-9 border-t text-center text-xs text-[#3c4043] flex items-center justify-center">
+                <footer className="h-9 border-t border-gray-300 text-center text-xs text-[#3c4043] flex items-center justify-center">
                     <p>
                         Copyright © 2024 - All rights reserved by Rizal
                         Technological University

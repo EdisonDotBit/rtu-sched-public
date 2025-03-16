@@ -47,7 +47,7 @@ function Login() {
                 <img
                     src={Logo}
                     alt="RTU Online Appointment Logo"
-                    className="w-[300px] lg:w-[400px]"
+                    className="w-[300px] lg:w-[350px]"
                 />
             </div>
             <div className="w-full max-w-md bg-[#194F90] rounded-lg shadow-md p-6 md:px-8 lg:px-10">

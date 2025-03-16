@@ -6,7 +6,6 @@ use App\Http\Controllers\Appointments;
 use App\Http\Controllers\Offices;
 use App\Http\Controllers\Admins;
 use App\Http\Controllers\UserController;
-use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,12 +18,12 @@ use App\Models\User;
 |
 */
 
-// 🛡️ Sanctum authentication for getting user info
+//  Sanctum authentication for getting user info
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// 🏥 Appointments Routes
+//  Appointments Routes
 Route::controller(Appointments::class)->group(function () {
     Route::post('setappt', 'newapt');
     Route::get('searchappt/{aptid}', 'getapt');
@@ -35,9 +34,13 @@ Route::controller(Appointments::class)->group(function () {
     Route::delete('/delappt/{aptid}', 'delapt');
     Route::put('updone/{aptid}', 'uptodone');
     Route::put('resched/{aptid}', 'reschedule');
+    Route::post('appointments/confirm/{id}', 'confirmAppointment');
+    Route::post('appointments/done/{id}', 'doneAppointment');
+    Route::post('appointments/cancel/{id}', 'cancelAppointment');
+    Route::delete('appointments/{id}', 'deleteAppointment');
 });
 
-// 🏢 Office Routes
+//  Office Routes
 Route::controller(Offices::class)->group(function () {
     Route::get('office/all', 'index');
     Route::get('office/bybranch/{offbranch}', 'filterByBranch');
@@ -51,7 +54,7 @@ Route::controller(Offices::class)->group(function () {
     Route::get('office/purposes/{officeAbbr}', 'getPurposes');
 });
 
-// 🔑 Admin Routes
+//  Admin Routes
 Route::controller(Admins::class)->group(function () {
     Route::post('admin/add', 'create');
     Route::get('admin/all', 'index');

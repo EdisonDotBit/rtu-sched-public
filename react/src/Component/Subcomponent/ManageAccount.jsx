@@ -291,6 +291,10 @@ function ManageAccount() {
                                     </button>
                                 )}
                             </div>
+                            <div className="block text-white text-xs mt-2 italic">
+                                Note: Please enter the student number that is
+                                associated with your institutional email.
+                            </div>
                         </div>
 
                         {isPinInputVisible && (

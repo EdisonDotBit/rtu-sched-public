@@ -54,13 +54,23 @@ function SetAppointment() {
     }, [user]);
 
     useEffect(() => {
-        const getData = async () => {
-            const getRes = await fetch(`${apiBaseUrl}/api/office/all`);
-            const getDataResult = await getRes.json();
-            setOffice(getDataResult);
-        };
-        getData();
-    }, []);
+        if (formData.aptbranch) {
+            // Only fetch if a branch is selected
+            const fetchOffices = async () => {
+                try {
+                    const response = await axios.get(
+                        `${apiBaseUrl}/api/office/all`,
+                        { params: { branch: formData.aptbranch } } // Pass branch as query param
+                    );
+                    setOffice(response.data); // Update office state with filtered data
+                } catch (error) {
+                    console.error("Error fetching offices:", error);
+                }
+            };
+
+            fetchOffices();
+        }
+    }, [formData.aptbranch, apiBaseUrl]);
 
     useEffect(() => {
         const getData = async () => {
@@ -136,10 +146,19 @@ function SetAppointment() {
 
     const handleBranchSelect = () => {
         setIsBranchSelected(true);
+        setIsOfficeSelected(false); // Reset office selection when changing branches
+        setFormData((prevData) => ({
+            ...prevData,
+            aptoffice: "", // Clear selected office
+        }));
     };
 
     const handleOfficeSelect = () => {
         setIsOfficeSelected(true);
+        setFormData((prevData) => ({
+            ...prevData,
+            aptpurpose: "", // Reset selected purpose when changing office
+        }));
     };
 
     const handleTimeSelect = () => {
@@ -442,43 +461,40 @@ function SetAppointment() {
                         }}
                     >
                         <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] p-6 w-full">
-                            <h2> Your appointment number is:</h2>
-                            <h1 className="underline"> {succData.aptid}</h1>
-                            <PDFDownloadLink
-                                document={<PDFFile succData={succData} />}
-                                fileName="RTU-Appointment-Receipt.pdf"
+                            <button
+                                className="cursor-pointer absolute top-1 right-1 text-white hover:text-gray-300 transition duration-300 focus:outline-none"
+                                onClick={() => modals.current.close()}
                             >
-                                {({ loading }) =>
-                                    loading ? (
-                                        <div>
-                                            <Loading />
-                                        </div>
-                                    ) : (
-                                        <button
-                                            type="button"
-                                            className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
-                                            onClick={() => {
-                                                setTimeout(() => {
-                                                    window.location.reload();
-                                                }, 500);
-                                            }}
-                                        >
-                                            Download
-                                        </button>
-                                    )
-                                }
-                            </PDFDownloadLink>
-                            <div className="item-center modal-action text-sm">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-6 w-6 text-white"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    strokeWidth={2}
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                </svg>
+                            </button>
+                            <h2>Appointment has been Set Successfully</h2>
+
+                            <div className="item-center modal-action text-sm text-center">
                                 <label style={{ verticalAlign: "middle" }}>
                                     <b>
                                         <br />
-                                        **Reminder that appointment number is
-                                        important**
+                                        Kindly wait for the office to confirm
+                                        your appointment.
+                                        <br />
+                                        Confirmation will be sent via email.
                                     </b>
                                 </label>
                             </div>
-                            <h4 className="text-xs mt-2">
-                                Note: clicking download reloads the page.
+                            <h4 className="text-xs mt-6">
+                                Note: Click the "X" to go back home.
                             </h4>
                         </div>
                     </dialog>

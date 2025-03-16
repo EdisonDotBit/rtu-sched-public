@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../Component/Subcomponent/Asset/rtu_logo_v3.png";
 import { useStudentAuth } from "../Hooks/useStudentAuth";
@@ -9,6 +9,7 @@ function StudentLayout() {
     const location = useLocation();
     const navigate = useNavigate();
     const { studentLogout, user, loading } = useStudentAuth();
+    const studentNumberModal = useRef(null);
 
     // Only log user when it's actually available
     if (user) {
@@ -16,11 +17,22 @@ function StudentLayout() {
     }
 
     useEffect(() => {
-        // If user is null after loading, redirect to login
+        // Redirect to login if user is not authenticated
         if (!loading && !user) {
             navigate("/student/login", { replace: true });
         }
-    }, [loading, user, navigate]);
+
+        // Only show modal if the student number is NOT verified and NOT on the manage account page
+        if (
+            user &&
+            !user.is_verified &&
+            location.pathname !== "/student/manage-account"
+        ) {
+            studentNumberModal.current?.showModal(); // Safe check before calling showModal()
+        } else {
+            studentNumberModal.current?.close(); //  Safe check before calling close()
+        }
+    }, [loading, user, navigate, location.pathname]); // Include location.pathname in dependencies
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
@@ -72,7 +84,7 @@ function StudentLayout() {
                         <div className="flex items-center gap-2">
                             <NavLink to="../student">
                                 <img
-                                    className="h-auto w-[200px] lg:w-56"
+                                    className="h-auto w-[140px] lg:w-43"
                                     src={Logo}
                                     alt="University Logo"
                                 />
@@ -239,21 +251,6 @@ function StudentLayout() {
                                 <span className="ml-3">View Appointment</span>
                             </NavLink>
                         </nav>
-
-                        {/* Spacer to push Send Feedback to the bottom */}
-                        <div className="flex-grow"></div>
-
-                        {/* Send Feedback Link moved here */}
-                        <NavLink
-                            to="/feedback"
-                            className="text-center mb-6 text-sm underline text-blue-200"
-                            onClick={(e) => {
-                                e.preventDefault(); // Prevents default navigation
-                                window.open("/feedback", "_blank"); // Opens the link in a new tab
-                            }}
-                        >
-                            Send Feedback
-                        </NavLink>
                     </aside>
 
                     {/* Main Content Area */}
@@ -270,6 +267,59 @@ function StudentLayout() {
                     </p>
                 </footer>
             </div>
+
+            {/* Verification Modal */}
+            <dialog
+                ref={studentNumberModal}
+                className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 backdrop:bg-black/50"
+                onKeyDown={(event) => {
+                    if (event.key === "Escape") {
+                        event.preventDefault();
+                    }
+                }}
+            >
+                <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] p-6 w-full">
+                    <button
+                        className="cursor-pointer absolute top-1 right-1 text-white hover:text-gray-300 transition duration-300 focus:outline-none"
+                        onClick={() => studentNumberModal.current.close()}
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 text-white"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M6 18L18 6M6 6l12 12"
+                            />
+                        </svg>
+                    </button>
+                    <h2 className="text-xl font-semibold">
+                        Student Number Verification Required
+                    </h2>
+
+                    <p className="text-sm text-center mt-2">
+                        Your student number is not yet verified. Please verify
+                        it in the Manage Account section.
+                    </p>
+
+                    <div className="modal-action text-center mt-4">
+                        <button
+                            className="py-2 px-4 bg-[#FFDB75] text-[#194F90] font-semibold rounded-lg hover:bg-[#f3cd64] transition duration-200"
+                            onClick={() => {
+                                studentNumberModal.current.close(); // Close the modal
+                                navigate("/student/manage-account"); // Navigate to manage account
+                            }}
+                        >
+                            Go to Manage Account
+                        </button>
+                    </div>
+                </div>
+            </dialog>
         </>
     );
 }

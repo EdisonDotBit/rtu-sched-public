@@ -45,7 +45,7 @@ function AdminLayout() {
                         <div className="flex items-center gap-2">
                             <NavLink to="feedback">
                                 <img
-                                    className="h-auto w-[200px] lg:w-56"
+                                    className="h-auto w-[140px] lg:w-43"
                                     src={Logo}
                                     alt="University Logo"
                                 />
@@ -102,7 +102,9 @@ function AdminLayout() {
                                     />
                                 </svg>
                                 <span className="text-base sm:text-lg text-white font-bold uppercase px-2">
-                                    ADMIN
+                                    {localStorage
+                                        .getItem("role")
+                                        ?.replace(/['"]+/g, "") || "Admin"}
                                 </span>
                             </div>
                             <button
@@ -265,7 +267,7 @@ function AdminLayout() {
                 </div>
 
                 {/* Footer */}
-                <footer className="h-9 border-t text-center text-xs text-[#3c4043] flex items-center justify-center">
+                <footer className="h-9 border-t border-gray-300 text-center text-xs text-[#3c4043] flex items-center justify-center">
                     <p>
                         Copyright © 2024 - All rights reserved by Rizal
                         Technological University

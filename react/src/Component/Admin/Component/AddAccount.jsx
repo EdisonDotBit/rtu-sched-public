@@ -2,12 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../../Hooks/useAuth";
 
-function AddAccount() {
+function AddAccount({ setShowAdd }) {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const { branch } = useAuth();
     const [formData, setFormData] = useState({
         admname: "",
-        // admempnum: "",
         admuser: "",
         admpass: "",
         admrole: "",
@@ -35,9 +34,9 @@ function AddAccount() {
                 `${apiBaseUrl}/api/admin/add`,
                 formData
             );
-
             if (res.status === 200) {
                 alert(res.data.messages);
+                setShowAdd(false);
                 window.location.reload();
             }
         } catch (error) {
@@ -52,7 +51,6 @@ function AddAccount() {
             );
             const getDataResult = await getRes.json();
             setoffData(getDataResult);
-            setSearchResults(getDataResult);
         };
         getData();
     }, [branch]);
@@ -78,18 +76,7 @@ function AddAccount() {
                                     placeholder="Enter Admin Name"
                                 />
                             </label>
-                            {/* Employee Number */}
-                            {/* <label className="block text-white">
-                                Employee Number
-                                <input
-                                    className="text-gray-500 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
-                                    name="admempnum"
-                                    value={formData.admempnum}
-                                    onChange={handleChange}
-                                    type="text"
-                                    placeholder="SA-D-B0-1"
-                                />
-                            </label> */}
+
                             {/* Username */}
                             <label className="block text-white">
                                 Username:
@@ -139,15 +126,23 @@ function AddAccount() {
                                 <select
                                     placeholder="Enter Password"
                                     className="text-gray-800 bg-white w-full mt-1 py-2 px-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                    value={formData.admrole}
                                     onChange={handleChange}
                                     name="admrole"
                                 >
-                                    <option value="" disabled selected>
+                                    <option value="" disabled>
                                         --Select Office--
                                     </option>
-                                    {offData.map((option) => (
+                                    {[
+                                        ...new Map(
+                                            offData.map((item) => [
+                                                item.offabbr,
+                                                item,
+                                            ])
+                                        ).values(),
+                                    ].map((option) => (
                                         <option
-                                            key={option}
+                                            key={option.offid}
                                             value={option.offabbr}
                                         >
                                             {option.offabbr}
@@ -156,28 +151,17 @@ function AddAccount() {
                                 </select>
                             </label>
 
-                            {/* Office Branch */}
-                            <label className="block text-white">
-                                Branch:
-                                <input
-                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
-                                    name="admbranch"
-                                    value={formData.admbranch}
-                                    onChange={handleChange}
-                                    type="text"
-                                    readOnly
-                                />
-                            </label>
-
                             <div className="flex justify-center gap-6">
-                                <a href="#main">
-                                    <button className="btn btn-outline px-6 text-[#194F90] bg-[#FFDB75] hover:bg-[#f3cd64] hover:text-[#194F90] mt-2">
-                                        Back
-                                    </button>
-                                </a>
+                                <button
+                                    className="btn bg-[#FFDB75] text-[#194F90] font-semibold  hover:bg-[#f3cd64] hover:text-[#194F90] rounded-md px-6 py-2"
+                                    onClick={() => setShowAdd(false)}
+                                >
+                                    Back
+                                </button>
+
                                 <button
                                     type="button"
-                                    className="btn btn-outline px-6 text-[#194F90] bg-[#FFDB75] hover:bg-[#f3cd64] hover:text-[#194F90] mt-2"
+                                    className="btn bg-[#FFDB75] text-[#194F90] font-semibold  hover:bg-[#f3cd64] hover:text-[#194F90] rounded-md px-6 py-2"
                                     onClick={createAcc}
                                 >
                                     Add Account

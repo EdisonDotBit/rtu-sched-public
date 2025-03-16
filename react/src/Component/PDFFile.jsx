@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
 const PDFFile = ({ succData }) => {
     return (
         <Document>
-            <Page style={styles.body}>
+            <Page style={styles.body} id="pdf-content">
                 <View style={[styles.row, { justifyContent: "center" }]}>
                     <Image style={{ width: 200, height: 40 }} src={Qwe} />
                 </View>

@@ -9,6 +9,7 @@ function AccountSettingsAdmin() {
     const [selectedAdmName, setSelectedAdmName] = useState("");
     const modals = useRef(null);
     const [showEdit, setShowEdit] = useState(false);
+    const [showAdd, setShowAdd] = useState(false);
     const [searchResults, setSearchResults] = useState([]);
     const [admname, setadmname] = useState("");
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -68,8 +69,12 @@ function AccountSettingsAdmin() {
         modals.current.showModal();
     };
     return (
-        <div className="carousel w-full h-full">
-            <div className="carousel-item w-full h-full" id="main">
+        <div className="relative w-full h-full overflow-hidden">
+            <div
+                className={`absolute w-full h-full transition-transform duration-500 ${
+                    showAdd || showEdit ? "-translate-x-full" : "translate-x-0"
+                }`}
+            >
                 <div className="flex justify-center  h-full w-full">
                     <div className="flex flex-col items-center gap-[20px]">
                         <input
@@ -79,11 +84,12 @@ function AccountSettingsAdmin() {
                             onChange={(e) => setadmname(e.target.value)}
                         />
                         <div className="flex justify-end w-full">
-                            <a href="#add">
-                                <button className="btn bg-[#194F90] hover:bg-[#123A69] text-white rounded-md border-0 inline-block px-8 py-2 text-md font-medium focus:relative">
-                                    + Add Admin Account
-                                </button>
-                            </a>
+                            <button
+                                className="btn bg-[#194F90] hover:bg-[#123A69] text-white rounded-md border-0 inline-block px-8 py-2 text-md font-medium focus:relative"
+                                onClick={() => setShowAdd(true)}
+                            >
+                                + Add Admin Account
+                            </button>
                         </div>
 
                         {searchResults.length !== 0 && (
@@ -224,12 +230,25 @@ function AccountSettingsAdmin() {
                     </dialog>
                 </div>
             </div>
-            <div className="carousel-item w-full h-[700px]" id="add">
-                <AddAccount />
+            <div
+                className={`absolute w-full h-full transition-transform duration-500 ${
+                    showAdd ? "translate-x-0" : "translate-x-full"
+                }`}
+            >
+                <AddAccount setShowAdd={setShowAdd} />
             </div>
 
-            <div className="carousel-item w-full h-full" id="edit">
-                {showEdit && <EditAccount selectedaccid={selectedaccid} />}
+            <div
+                className={`absolute w-full h-full transition-transform duration-500 ${
+                    showEdit ? "translate-x-0" : "translate-x-full"
+                }`}
+            >
+                {showEdit && (
+                    <EditAccount
+                        selectedaccid={selectedaccid}
+                        setShowEdit={setShowEdit}
+                    />
+                )}
             </div>
         </div>
     );
