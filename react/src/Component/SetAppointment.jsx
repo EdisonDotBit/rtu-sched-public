@@ -54,13 +54,23 @@ function SetAppointment() {
     }, [user]);
 
     useEffect(() => {
-        const getData = async () => {
-            const getRes = await fetch(`${apiBaseUrl}/api/office/all`);
-            const getDataResult = await getRes.json();
-            setOffice(getDataResult);
-        };
-        getData();
-    }, []);
+        if (formData.aptbranch) {
+            // Only fetch if a branch is selected
+            const fetchOffices = async () => {
+                try {
+                    const response = await axios.get(
+                        `${apiBaseUrl}/api/office/all`,
+                        { params: { branch: formData.aptbranch } } // Pass branch as query param
+                    );
+                    setOffice(response.data); // Update office state with filtered data
+                } catch (error) {
+                    console.error("Error fetching offices:", error);
+                }
+            };
+
+            fetchOffices();
+        }
+    }, [formData.aptbranch, apiBaseUrl]);
 
     useEffect(() => {
         const getData = async () => {
@@ -136,10 +146,19 @@ function SetAppointment() {
 
     const handleBranchSelect = () => {
         setIsBranchSelected(true);
+        setIsOfficeSelected(false); // Reset office selection when changing branches
+        setFormData((prevData) => ({
+            ...prevData,
+            aptoffice: "", // Clear selected office
+        }));
     };
 
     const handleOfficeSelect = () => {
         setIsOfficeSelected(true);
+        setFormData((prevData) => ({
+            ...prevData,
+            aptpurpose: "", // Reset selected purpose when changing office
+        }));
     };
 
     const handleTimeSelect = () => {
