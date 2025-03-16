@@ -45,7 +45,7 @@ function AdminLayout() {
                         <div className="flex items-center gap-2">
                             <NavLink to="feedback">
                                 <img
-                                    className="h-auto w-[200px] lg:w-56"
+                                    className="h-auto w-[140px] lg:w-43"
                                     src={Logo}
                                     alt="University Logo"
                                 />
