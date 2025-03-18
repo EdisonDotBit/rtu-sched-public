@@ -23,9 +23,11 @@ const Purpose = ({ formData, setFormData }) => {
 
     useEffect(() => {
         const fetchPurposes = async () => {
+            if (!formData.aptoffice || !formData.aptbranch) return;
+
             try {
                 const response = await fetch(
-                    `${apiBaseUrl}/api/office/purposes/${formData.aptoffice}`
+                    `${apiBaseUrl}/api/office/purposes/${formData.aptoffice}/${formData.aptbranch}`
                 );
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -37,10 +39,7 @@ const Purpose = ({ formData, setFormData }) => {
             }
         };
         fetchPurposes();
-
-        // // Reset dropdown values when the office changes
-        // setDropdowns([{ id: 0, value: "" }]);
-    }, [formData.aptoffice]);
+    }, [formData.aptoffice, formData.aptbranch]);
 
     // Function to add a new dropdown
     const addDropdown = () => {
