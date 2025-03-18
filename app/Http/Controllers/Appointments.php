@@ -10,6 +10,7 @@ use App\Mail\DoneAppointment;
 use App\Mail\CancelAppointment;
 use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
 
 class Appointments extends Controller
 {
@@ -67,11 +68,18 @@ class Appointments extends Controller
         $apt->aptemail = $request->input('aptemail');
         $apt->apttime = $request->input('apttime');
 
+        // Handle file uploads (attachments)
+        if ($request->hasFile('aptattach')) {
+            $uploadedFiles = [];
+            foreach ($request->file('aptattach') as $file) {
+                $filePath = $file->store('appointments', 'public'); // Store in storage/app/public/appointments
+                $uploadedFiles[] = $filePath;
+            }
+            $apt->aptattach = json_encode($uploadedFiles); // Store file paths as JSON in DB
+        }
 
         try {
             $apt->save();
-
-            // $apt->makeHidden(['aptid', 'aptname', 'aptstudnum', 'aptpnumber', 'aptemail']);
 
             return response()->json([
                 'status' => 200,
@@ -87,6 +95,7 @@ class Appointments extends Controller
         }
     }
 
+
     public function getapt(int $aptid)
     {
         $apt = Appointment::find($aptid);
@@ -97,6 +106,9 @@ class Appointments extends Controller
                 'message' => 'Appointment not found',
             ], 404);
         }
+
+        // Decode JSON attachments for frontend
+        $apt->aptattach = json_decode($apt->aptattach, true);
 
         return response()->json([
             'status' => 200,
@@ -242,6 +254,14 @@ class Appointments extends Controller
         $appointment = Appointment::find($id);
         if (!$appointment) {
             return response()->json(['error' => 'Appointment not found.'], 404);
+        }
+
+        // Delete stored files
+        if ($appointment->aptattach) {
+            $attachments = json_decode($appointment->aptattach, true);
+            foreach ($attachments as $file) {
+                Storage::disk('public')->delete($file);
+            }
         }
 
         $appointment->delete();
