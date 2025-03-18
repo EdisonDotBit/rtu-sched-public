@@ -251,6 +251,7 @@ function AppointmentsAdmin() {
                     >
                         <option value="">All</option>
                         <option value="ongoing">Ongoing</option>
+                        <option value="confirmed">Confirmed</option>
                         <option value="done">Done</option>
                         <option value="cancelled">Cancelled</option>
                     </select>
