@@ -22,6 +22,7 @@ function GuestSetAppointment() {
         aptemail: "",
         aptpnumber: "",
         apttime: "",
+        aptattach: [],
         isConfirmed: false,
     });
 
@@ -37,15 +38,26 @@ function GuestSetAppointment() {
     const [isTimeSelected, setIsTimeSelected] = useState(false);
     const [isInputFilled, setIsInputFilled] = useState(false);
     const [errors, setErrors] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
-        const getData = async () => {
-            const getRes = await fetch(`${apiBaseUrl}/api/office/all`);
-            const getDataResult = await getRes.json();
-            setOffice(getDataResult);
-        };
-        getData();
-    }, []);
+        if (formData.aptbranch) {
+            // Only fetch if a branch is selected
+            const fetchOffices = async () => {
+                try {
+                    const response = await axios.get(
+                        `${apiBaseUrl}/api/office/all`,
+                        { params: { branch: formData.aptbranch } } // Pass branch as query param
+                    );
+                    setOffice(response.data); // Update office state with filtered data
+                } catch (error) {
+                    console.error("Error fetching offices:", error);
+                }
+            };
+
+            fetchOffices();
+        }
+    }, [formData.aptbranch, apiBaseUrl]);
 
     useEffect(() => {
         const getData = async () => {
@@ -115,6 +127,10 @@ function GuestSetAppointment() {
     const setApt = async (e) => {
         e.preventDefault();
 
+        // Prevent multiple submissions
+        if (isSubmitting) return;
+        setIsSubmitting(true);
+
         // Count how many times the student has an appointment in the selected office
         const officeCount = appointments.reduce((count, appointment) => {
             if (
@@ -127,32 +143,64 @@ function GuestSetAppointment() {
             return count;
         }, 0);
 
-        // If guest already has an appointment in this office, prevent another booking
+        // If student already has an appointment in this office, prevent another booking
         if (officeCount >= 1) {
             openmodal1(); // Show modal to notify student
-            return; // Exit function
-        } else {
-            try {
-                const res = await axios.post(
-                    `${apiBaseUrl}/api/setappt`,
-                    formData
-                );
+            setIsSubmitting(false);
+            return;
+        }
 
-                if (res.status === 200) {
-                    openmodal(res.data.data); // Show success modal
+        try {
+            const formDataToSend = new FormData();
+
+            // Append all form fields
+            Object.keys(formData).forEach((key) => {
+                if (key === "aptattach" && Array.isArray(formData[key])) {
+                    formData[key].forEach((file) => {
+                        formDataToSend.append("aptattach[]", file); // Append each file
+                    });
+                } else {
+                    formDataToSend.append(key, formData[key]);
                 }
-            } catch (error) {
-                alert("Appointment failed. Please check your details");
+            });
+
+            console.log("Submitting appointment...", formDataToSend);
+
+            // Send the request once with FormData (for both text & file data)
+            const res = await axios.post(
+                `${apiBaseUrl}/api/setappt`,
+                formDataToSend,
+                {
+                    headers: { "Content-Type": "multipart/form-data" },
+                }
+            );
+
+            if (res.status === 200) {
+                openmodal(res.data.data); // Show success modal
             }
+        } catch (error) {
+            console.error("Appointment failed:", error);
+            alert("Appointment failed. Please check your details");
+        } finally {
+            setIsSubmitting(false); // Reset after request completes
         }
     };
-
     const handleBranchSelect = () => {
         setIsBranchSelected(true);
+        setIsOfficeSelected(false); // Reset office selection when changing branches
+        setFormData((prevData) => ({
+            ...prevData,
+            aptoffice: "", // Clear selected office
+        }));
     };
 
     const handleOfficeSelect = () => {
         setIsOfficeSelected(true);
+        setFormData((prevData) => ({
+            ...prevData,
+            aptpurpose: "", // Reset selected purpose when changing office
+            aptattach: [], // Reset attached files
+        }));
     };
 
     const handleTimeSelect = () => {
