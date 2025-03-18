@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Office;
+use Illuminate\Support\Facades\Log;
 
 class Offices extends Controller
 {
@@ -72,7 +73,7 @@ class Offices extends Controller
         $validatedData = $request->validate([
             'offname' => 'required|string|max:255',
             'offlimit' => 'required|integer',
-            'offabbr' => 'required|string|max:50|unique:offices',
+            'offabbr' => 'required|string|max:50|unique:offices,offabbr,NULL,id,offbranch,' . $request->input('offbranch'),
             'offbranch' => 'required|string|max:255',
         ]);
 
@@ -91,7 +92,7 @@ class Offices extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 400,
-                'error' => 'Failed to add an office. Please ensure all fields are filled correctly.',
+                'error' => 'Failed to add an office. Please double check the details.',
             ], 400);
         }
     }
@@ -117,7 +118,7 @@ class Offices extends Controller
     {
         $validatedData = $request->validate([
             'offname' => 'required|string|max:255',
-            'offabbr' => 'required|string|max:50|unique:offices,offabbr,' . $offid,
+            'offabbr' => 'required|string|max:50|unique:offices,offabbr,' . $offid . ',id,offbranch,' . $request->input('offbranch'),
             'offlimit' => 'required|integer',
         ]);
 
@@ -138,41 +139,49 @@ class Offices extends Controller
 
             return response()->json([
                 'status' => 200,
-                'messages' => 'Successfully edited an office',
+                'message' => 'Office updated successfully.',
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 400,
-                'error' => 'Failed to edit the office. Please ensure all fields are filled correctly.',
+                'error' => 'Failed to update the office. Please double check the details.',
             ], 400);
         }
     }
-
-    public function getPurposes($officeAbbr)
+    public function getPurposes($officeAbbr, $offBranch)
     {
-        $office = Office::where('offabbr', $officeAbbr)->first();
+        $office = Office::where('offabbr', $officeAbbr)
+            ->where('offbranch', $offBranch) // Ensure branch matches
+            ->first();
 
         if ($office) {
             $purposes = $office->purposes()->pluck('purpose');
             return response()->json($purposes, 200);
         }
 
-        return response()->json(['message' => 'Office not found'], 404);
+        return response()->json(['message' => 'Office not found in this branch'], 404);
     }
+
 
     public function addPurpose(Request $request)
     {
         $validatedData = $request->validate([
-            'officeId' => 'required|exists:offices,id',
+            'officeId' => 'required|exists:offices,offid',
             'purpose' => 'required|string',
         ]);
 
         $office = Office::find($validatedData['officeId']);
         if ($office) {
-            $office->purposes()->create(['purpose' => $validatedData['purpose']]);
-            return response()->json(['status' => 200, 'message' => 'Purpose inserted successfully']);
-        }
+            if (method_exists($office, 'purposes')) {
+                $office->purposes()->create(['purpose' => $validatedData['purpose']]);
 
+
+                return response()->json(['status' => 200, 'message' => 'Purpose inserted successfully']);
+            } else {
+
+                return response()->json(['status' => 500, 'message' => 'Internal Server Error. Relationship missing.'], 500);
+            }
+        }
         return response()->json(['status' => 404, 'message' => 'Office not found'], 404);
     }
 }
