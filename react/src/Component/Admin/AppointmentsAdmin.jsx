@@ -16,6 +16,8 @@ function AppointmentsAdmin() {
     const [modalTitle, setModalTitle] = useState("");
     const [action, setAction] = useState(null);
     const modalRef = useRef(null);
+    const [selectedAttachments, setSelectedAttachments] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const getData = async () => {
         setLoading(true);
@@ -217,6 +219,16 @@ function AppointmentsAdmin() {
         );
     };
 
+    const openAttachmentModal = (attachments) => {
+        setSelectedAttachments(JSON.parse(attachments)); // Convert JSON string back to array
+        setIsModalOpen(true);
+    };
+
+    const closeAttachmentModal = () => {
+        setSelectedAttachments([]);
+        setIsModalOpen(false);
+    };
+
     return (
         <div className="flex justify-center h-full">
             {loading && (
@@ -259,11 +271,11 @@ function AppointmentsAdmin() {
 
                 {searchResults.length !== 0 && (
                     <div className="overflow-x-auto overflow-y-auto mb-4">
-                        <table className="border border-gray-200 min-w-full divide-y-2 divide-gray-200 bg-white">
-                            <thead className="ltr:text-center rtl:text-center text-[8.5px] lg:text-[10px]">
+                        <table className="border border-gray-200 w-full divide-y-2 divide-gray-200 bg-white text-[10px]">
+                            <thead className="ltr:text-center rtl:text-center">
                                 <tr>
                                     <th
-                                        className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900 cursor-pointer"
+                                        className="whitespace-nowrap p-2 font-semibold text-gray-900 cursor-pointer"
                                         onClick={() => sortData("aptid")}
                                     >
                                         <div className="flex items-center justify-center">
@@ -282,7 +294,7 @@ function AppointmentsAdmin() {
                                         </div>
                                     </th>
                                     <th
-                                        className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900 cursor-pointer"
+                                        className="whitespace-nowrap p-2  font-semibold text-gray-900 cursor-pointer"
                                         onClick={() => sortData("apttype")}
                                     >
                                         <div className="flex items-center justify-center">
@@ -300,7 +312,7 @@ function AppointmentsAdmin() {
                                         </div>
                                     </th>
                                     <th
-                                        className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900 cursor-pointer"
+                                        className="whitespace-nowrap p-2  font-semibold text-gray-900 cursor-pointer"
                                         onClick={() => sortData("aptname")}
                                     >
                                         <div className="flex items-center justify-center">
@@ -318,7 +330,7 @@ function AppointmentsAdmin() {
                                         </div>
                                     </th>
                                     <th
-                                        className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900 cursor-pointer"
+                                        className="whitespace-nowrap p-2  font-semibold text-gray-900 cursor-pointer"
                                         onClick={() => sortData("aptbranch")}
                                     >
                                         <div className="flex items-center justify-center">
@@ -336,7 +348,7 @@ function AppointmentsAdmin() {
                                         </div>
                                     </th>
                                     <th
-                                        className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900"
+                                        className="whitespace-nowrap p-2  font-semibold text-gray-900"
                                         onClick={() => sortData("aptoffice")}
                                     >
                                         <div className="flex items-center justify-center">
@@ -354,7 +366,7 @@ function AppointmentsAdmin() {
                                         </div>
                                     </th>
                                     <th
-                                        className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900"
+                                        className="whitespace-nowrap p-2  font-semibold text-gray-900"
                                         onClick={() => sortData("aptdate")}
                                     >
                                         <div className="flex items-center justify-center">
@@ -372,7 +384,7 @@ function AppointmentsAdmin() {
                                         </div>
                                     </th>
                                     <th
-                                        className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900"
+                                        className="whitespace-nowrap p-2 font-semibold text-gray-900"
                                         onClick={() => sortData("apttime")}
                                     >
                                         <div className="flex items-center justify-center">
@@ -390,7 +402,7 @@ function AppointmentsAdmin() {
                                         </div>
                                     </th>
                                     <th
-                                        className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900"
+                                        className="whitespace-nowrap p-2 font-semibold text-gray-900"
                                         onClick={() => sortData("aptpurpose")}
                                     >
                                         <div className="flex items-center justify-center">
@@ -408,7 +420,7 @@ function AppointmentsAdmin() {
                                         </div>
                                     </th>
                                     <th
-                                        className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900"
+                                        className="whitespace-nowrap p-2  font-semibold text-gray-900"
                                         onClick={() => sortData("aptstudnum")}
                                     >
                                         <div className="flex items-center justify-center">
@@ -427,7 +439,7 @@ function AppointmentsAdmin() {
                                         </div>
                                     </th>
                                     <th
-                                        className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900"
+                                        className="whitespace-nowrap p-2  font-semibold text-gray-900"
                                         onClick={() => sortData("aptstatus")}
                                     >
                                         <div className="flex items-center justify-center">
@@ -445,7 +457,7 @@ function AppointmentsAdmin() {
                                         </div>
                                     </th>
                                     <th
-                                        className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900"
+                                        className="whitespace-nowrap p-2  font-semibold text-gray-900"
                                         onClick={() => sortData("aptemail")}
                                     >
                                         <div className="flex items-center justify-center">
@@ -462,56 +474,81 @@ function AppointmentsAdmin() {
                                             </span>
                                         </div>
                                     </th>
+
+                                    <th className="whitespace-nowrap p-2 font-semibold text-gray-900">
+                                        Attachments
+                                    </th>
+
                                     {role !== "superadmin" && (
-                                        <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
+                                        <th className="whitespace-nowrap p-2  font-semibold text-gray-900">
                                             Tools
                                         </th>
                                     )}
                                 </tr>
                             </thead>
 
-                            <tbody className="divide-y divide-gray-200 text-[8.5px] lg:text-[10px] text-center">
+                            <tbody className="divide-y divide-gray-200 text-center">
                                 {searchResults
                                     .slice(0, 20)
                                     .map((apt, index) => (
                                         <tr key={index}>
-                                            <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                            <td className="whitespace-nowrap p-2 text-gray-900">
                                                 {apt.aptid}
                                             </td>
-                                            <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                                            <td className="whitespace-nowrap p-2 text-gray-900">
                                                 {apt.apttype}
                                             </td>
-                                            <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                            <td className="whitespace-nowrap p-2 text-gray-700">
                                                 {apt.aptname}
                                             </td>
-                                            <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                            <td className="whitespace-nowrap p-2 text-gray-700">
                                                 {apt.aptbranch}
                                             </td>
-                                            <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                            <td className="whitespace-nowrap p-2 text-gray-700">
                                                 {apt.aptoffice}
                                             </td>
-                                            <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                            <td className="whitespace-nowrap p-2 text-gray-700">
                                                 {apt.aptdate}
                                             </td>
-                                            <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                            <td className="whitespace-nowrap p-2 text-gray-700">
                                                 {apt.apttime}
                                             </td>
-                                            <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                            <td className="whitespace-nowrap p-2 text-gray-700">
                                                 {apt.aptpurpose}
                                             </td>
-                                            <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                            <td className="whitespace-nowrap p-2 text-gray-700">
                                                 {apt.aptstudnum}
                                             </td>
-                                            <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                            <td className="whitespace-nowrap p-2 text-gray-700">
                                                 {apt.aptstatus}
                                             </td>
-                                            <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                            <td className="whitespace-nowrap p-2 text-gray-700">
                                                 {apt.aptemail}
                                             </td>
-                                            {role !== "superadmin" && (
-                                                <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+
+                                            <td className="whitespace-nowrap p-2 text-gray-700">
+                                                {apt.aptattach ? (
                                                     <button
-                                                        className="text-[9px] group relative inline-block overflow-hidden border border-green-600 px-3 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        onClick={() =>
+                                                            openAttachmentModal(
+                                                                apt.aptattach
+                                                            )
+                                                        }
+                                                        className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                                                    >
+                                                        View
+                                                    </button>
+                                                ) : (
+                                                    <span className="text-gray-400">
+                                                        No Attachments
+                                                    </span>
+                                                )}
+                                            </td>
+
+                                            {role !== "superadmin" && (
+                                                <td className="whitespace-nowrap p-2 text-gray-700">
+                                                    <button
+                                                        className=" group relative inline-block overflow-hidden border border-green-600 px-2 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
                                                         onClick={() =>
                                                             handleConfirm(
                                                                 apt.aptid
@@ -523,12 +560,12 @@ function AppointmentsAdmin() {
                                                         }
                                                     >
                                                         <span className="absolute inset-x-0 bottom-0 h-[2px] bg-green-600 transition-all group-hover:h-full group-active:bg-green-500"></span>
-                                                        <span className="relative text-[12px] font-medium text-green-600 transition-colors group-hover:text-white">
+                                                        <span className="relative font-medium text-green-600 transition-colors group-hover:text-white">
                                                             Confirm
                                                         </span>
                                                     </button>
                                                     <button
-                                                        className="ml-4 text-[9px] group relative inline-block overflow-hidden border border-yellow-600 px-3 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        className="ml-4  group relative inline-block overflow-hidden border border-yellow-600 px-2 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
                                                         onClick={() =>
                                                             handleDone(
                                                                 apt.aptid
@@ -540,12 +577,12 @@ function AppointmentsAdmin() {
                                                         }
                                                     >
                                                         <span className="absolute inset-x-0 bottom-0 h-[2px] bg-yellow-600 transition-all group-hover:h-full group-active:bg-yellow-500"></span>
-                                                        <span className="relative text-[12px] font-medium text-yellow-600 transition-colors group-hover:text-white">
+                                                        <span className="relative font-medium text-yellow-600 transition-colors group-hover:text-white">
                                                             Done
                                                         </span>
                                                     </button>
                                                     <button
-                                                        className="ml-4 text-[9px] group relative inline-block overflow-hidden border border-blue-600 px-3 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        className="ml-4 group relative inline-block overflow-hidden border border-blue-600 px-2 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
                                                         onClick={() =>
                                                             handleCancel(
                                                                 apt.aptid
@@ -559,12 +596,12 @@ function AppointmentsAdmin() {
                                                         }
                                                     >
                                                         <span className="absolute inset-x-0 bottom-0 h-[2px] bg-blue-600 transition-all group-hover:h-full group-active:bg-blue-500"></span>
-                                                        <span className="relative text-[12px] font-medium text-blue-600 transition-colors group-hover:text-white">
+                                                        <span className="relative font-medium text-blue-600 transition-colors group-hover:text-white">
                                                             Cancel
                                                         </span>
                                                     </button>
                                                     <button
-                                                        className="ml-4 text-[9px] group relative inline-block overflow-hidden border border-red-600 px-3 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        className="ml-4 group relative inline-block overflow-hidden border border-red-600 px-2 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
                                                         onClick={() =>
                                                             handleDelete(
                                                                 apt.aptid
@@ -578,7 +615,7 @@ function AppointmentsAdmin() {
                                                         }
                                                     >
                                                         <span className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600 transition-all group-hover:h-full group-active:bg-red-500"></span>
-                                                        <span className="relative text-[12px] font-medium text-red-600 transition-colors group-hover:text-white">
+                                                        <span className="relative font-medium text-red-600 transition-colors group-hover:text-white">
                                                             Delete
                                                         </span>
                                                     </button>
@@ -629,6 +666,75 @@ function AppointmentsAdmin() {
                     </div>
                 </div>
             </dialog>
+
+            {isModalOpen && (
+                <dialog
+                    open
+                    className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] bg-[#194F90] rounded-lg shadow-lg p-6 backdrop:bg-black/50"
+                    onKeyDown={(event) => {
+                        if (event.key === "Escape") {
+                            event.preventDefault();
+                        }
+                    }}
+                >
+                    <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] px-4 w-full">
+                        {/* Modal Title */}
+                        <h2 className="text-xl font-semibold mb-4">
+                            View Attachments
+                        </h2>
+
+                        {/* Attachments Container */}
+                        <div className="flex flex-col gap-4 w-full max-h-[500px] overflow-y-auto p-4 bg-white ">
+                            {selectedAttachments.map((file, index) => (
+                                <div
+                                    key={index}
+                                    className="flex flex-col items-center p-4 border-b"
+                                >
+                                    {file.endsWith(".png") ||
+                                    file.endsWith(".jpg") ||
+                                    file.endsWith(".jpeg") ? (
+                                        <img
+                                            src={`${
+                                                import.meta.env
+                                                    .VITE_API_BASE_URL
+                                            }/storage/${file}`}
+                                            alt="Attachment"
+                                            className="w-full h-[400px] object-contain bg-white p-2 rounded-lg"
+                                        />
+                                    ) : file.endsWith(".pdf") ? (
+                                        <iframe
+                                            src={`${
+                                                import.meta.env
+                                                    .VITE_API_BASE_URL
+                                            }/storage/${file}`}
+                                            className="w-full h-[400px] bg-white p-2 rounded-lg"
+                                        ></iframe>
+                                    ) : (
+                                        <a
+                                            href={`${
+                                                import.meta.env
+                                                    .VITE_API_BASE_URL
+                                            }/storage/${file}`}
+                                            download
+                                            className="text-blue-600 underline"
+                                        >
+                                            Download File
+                                        </a>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Close Button */}
+                        <button
+                            onClick={closeAttachmentModal}
+                            className="mt-4 px-6 py-2 bg-[#FFDB75] text-[#194F90] font-semibold rounded-md hover:bg-[#f3cd64] transition"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </dialog>
+            )}
         </div>
     );
 }
