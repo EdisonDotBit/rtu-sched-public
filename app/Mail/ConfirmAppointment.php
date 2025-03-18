@@ -31,7 +31,7 @@ class ConfirmAppointment extends Mailable
             ->view('emails.confirm-appointment') // Blade email template
             // Attach the PDF file
             ->attach($this->pdfFilePath, [
-                'as' => 'AppointmentDetails.pdf',
+                'as' => 'RTU-Appointment-Receipt.pdf',
                 'mime' => 'application/pdf',
             ])
             ->with([

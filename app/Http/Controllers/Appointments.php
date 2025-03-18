@@ -184,7 +184,7 @@ class Appointments extends Controller
         // Generate PDF using DomPDF
         try {
             $pdf = PDF::loadView('pdf.appointment', compact('appointment'));
-            $pdfFilePath = storage_path('app/public/AppointmentDetails.pdf');
+            $pdfFilePath = storage_path('app/public/RTU-Appointment-Receipt.pdf');
             $pdf->save($pdfFilePath);
             Log::info('PDF generated successfully for appointment ID: ' . $id);
         } catch (\Exception $e) {
