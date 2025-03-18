@@ -200,31 +200,35 @@ function AccountSettingsAdmin() {
                     </div>
 
                     <dialog ref={modals} className="modal">
-                        <div className="modal-box text-white bg-[#194F90]">
-                            <h3 className="font-bold text-lg">
-                                Do you really want to delete Account?
-                            </h3>
-                            <p className="py-4">
-                                Account Name: {selectedAdmName}
-                            </p>
-                            <div className="modal-action">
-                                <button
-                                    type="button"
-                                    className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
-                                    onClick={(e) => deleteAcc(e, selectedaccid)}
-                                >
-                                    Confirm
-                                </button>
-                                <button
-                                    type="button"
-                                    className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
-                                    onClick={() => {
-                                        modals.current.close();
-                                        window.location.reload();
-                                    }}
-                                >
-                                    Close
-                                </button>
+                        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 backdrop:bg-black/50">
+                            <div className="modal-box text-white bg-[#194F90]">
+                                <h3 className="font-bold text-lg">
+                                    Do you really want to delete Account?
+                                </h3>
+                                <p className="py-4">
+                                    Account Name: {selectedAdmName}
+                                </p>
+                                <div className="modal-action flex justify-center gap-4">
+                                    <button
+                                        type="button"
+                                        className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
+                                        onClick={(e) =>
+                                            deleteAcc(e, selectedaccid)
+                                        }
+                                    >
+                                        Confirm
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
+                                        onClick={() => {
+                                            modals.current.close();
+                                            window.location.reload();
+                                        }}
+                                    >
+                                        Close
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </dialog>
