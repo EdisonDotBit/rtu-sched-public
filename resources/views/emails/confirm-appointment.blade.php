@@ -120,7 +120,7 @@
 
             <!-- Instructions -->
             <p class="instructions">
-                Please find the attached PDF for more details.
+                Please find and print the attached PDF before going to the appointed office.
             </p>
         </div>
 

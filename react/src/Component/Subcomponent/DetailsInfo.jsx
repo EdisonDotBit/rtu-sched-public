@@ -236,7 +236,7 @@ function DetailsInfo({ aptData, appointments }) {
             </div>
 
             <dialog ref={modalRef1} className="modal">
-                <div className="modal-box w-full max-w-3xl min-h-[50vh] sm:min-h-[60vh] lg:min-h-[70vh] overflow-y-auto flex flex-col justify-start items-center text-white bg-gray-100">
+                <div className="p-4 fixed rounded-lg top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl min-h-[50vh] sm:min-h-[60vh] lg:min-h-[70vh] overflow-y-auto flex flex-col justify-start items-center text-white bg-gray-100">
                     <h1 className="font-bold text-3xl text-black mb-6">
                         Reschedule Appointment
                     </h1>
@@ -257,9 +257,9 @@ function DetailsInfo({ aptData, appointments }) {
                         />
                     </div>
 
-                    <div className="modal-action">
+                    <div className="modal-action flex justify-center gap-4">
                         <button
-                            className={`px-4 text-sm font-semibold border-none rounded-md ${
+                            className={`px-6 py-2 text-sm font-semibold border-none rounded-md ${
                                 isTimeSelected
                                     ? "bg-[#194F90] hover:bg-[#123A69]"
                                     : "bg-gray-400 cursor-not-allowed"
@@ -273,7 +273,7 @@ function DetailsInfo({ aptData, appointments }) {
 
                         <button
                             type="button"
-                            className="btn border-none bg-[#194F90] text-white hover:bg-[#123A69]"
+                            className="px-6 py-2 text-sm font-semibold border-none rounded-md bg-[#194F90] hover:bg-[#123A69]"
                             onClick={() => {
                                 modalRef1.current.close();
                             }}
@@ -285,28 +285,32 @@ function DetailsInfo({ aptData, appointments }) {
             </dialog>
 
             <dialog ref={modalRef2} className="modal">
-                <div className="modal-box flex flex-col items-center justify-center text-white bg-[#194F90]">
-                    <h3 className="font-bold text-lg">
-                        Do you want to delete this appointment?
-                    </h3>
-                    <p className="py-4">Appointment Number: {aptData.aptid}</p>
-                    <div className="modal-action gap-4">
-                        <button
-                            type="button"
-                            className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
-                            onClick={(e) => handleDelete(e, aptData.aptid)}
-                        >
-                            Confirm
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
-                            onClick={() => {
-                                modalRef2.current.close();
-                            }}
-                        >
-                            Close
-                        </button>
+                <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 backdrop:bg-black/50">
+                    <div className="modal-box text-white bg-[#194F90]">
+                        <h3 className="font-bold text-lg">
+                            Do you want to delete this appointment?
+                        </h3>
+                        <p className="py-4">
+                            Appointment Number: {aptData.aptid}
+                        </p>
+                        <div className="modal-action flex justify-center gap-4">
+                            <button
+                                type="button"
+                                className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
+                                onClick={(e) => handleDelete(e, aptData.aptid)}
+                            >
+                                Confirm
+                            </button>
+                            <button
+                                type="button"
+                                className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
+                                onClick={() => {
+                                    modalRef2.current.close();
+                                }}
+                            >
+                                Close
+                            </button>
+                        </div>
                     </div>
                 </div>
             </dialog>
