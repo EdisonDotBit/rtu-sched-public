@@ -79,7 +79,7 @@ function AdminLayout() {
                 <div className="flex flex-1 overflow-hidden">
                     {/* Sidebar */}
                     <aside
-                        className={`fixed inset-y-0 left-0 z-30 w-72 sm:w-60 bg-[#194F90] transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
+                        className={`fixed inset-y-0 left-0 z-30 w-48 bg-[#194F90] transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
                             isSidebarOpen
                                 ? "translate-x-0"
                                 : "-translate-x-full"
@@ -127,7 +127,7 @@ function AdminLayout() {
                                 </svg>
                             </button>
                         </div>
-                        <nav className="text-sm flex flex-col flex-1 overflow-y-auto">
+                        <nav className="flex flex-col flex-1 overflow-y-auto text-xs">
                             <NavLink
                                 to="/rtu/admin/feedback"
                                 className={`relative flex items-center px-6 sm:px-8 py-4 sm:py-6 text-white hover:bg-[#123A69] ${
@@ -158,7 +158,7 @@ function AdminLayout() {
                                         d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"
                                     />
                                 </svg>
-                                <span className="ml-4">View Feedbacks</span>
+                                <span className="ml-4">Feedbacks</span>
                             </NavLink>
                             <NavLink
                                 to="/rtu/admin/appointments"
@@ -261,7 +261,7 @@ function AdminLayout() {
                     </aside>
 
                     {/* Main Content Area */}
-                    <main className="flex-1 bg-gray-50 p-6 sm:p-10 rounded-lg overflow-y-auto transition-all duration-300">
+                    <main className="flex-1 bg-gray-50 p-6 overflow-y-auto transition-all duration-300">
                         <Outlet />
                     </main>
                 </div>
