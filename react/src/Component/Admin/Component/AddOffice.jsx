@@ -34,7 +34,7 @@ function AddOffice({ setShowAdd }) {
                 window.location.reload();
             }
         } catch (error) {
-            alert("Error adding office. Please check the fields.");
+            alert("Error adding office. Please double check the details.");
         }
     };
 
