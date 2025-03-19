@@ -21,7 +21,8 @@ class Appointment extends Model
         'aptpnumber',
         'aptemail',
         'apttime',
-        'aptattach'
+        'aptattach',
+        'aptother'
     ];
 
     protected $casts = [

@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('aptstatus')->default('ongoing')->nullable(false);
             $table->time('apttime')->nullable(false);
             $table->json('aptattach')->nullable();
+            $table->string('aptother')->nullable(false);
             $table->timestamps();
         });
     }

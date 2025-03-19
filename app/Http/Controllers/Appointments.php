@@ -20,20 +20,6 @@ class Appointments extends Controller
         return $apt;
     }
 
-    // public function allRoles(string $aptrole)
-    // {
-    //     $apt = Appointment::where('aptoffice', $aptrole)
-    //         ->where('aptstatus', $'ongoing')->get();
-
-    //     return $apt;
-    // }
-
-    // public function allRoles(string $aptrole)
-    // {
-    //     $apt = Appointment::where('aptoffice', $aptrole)->get();
-    //     return $apt;
-    // }
-
     public function allRolesAndBranch(string $aptrole, string $aptbranch)
     {
         $apt = Appointment::where('aptoffice', $aptrole)
@@ -67,6 +53,7 @@ class Appointments extends Controller
         $apt->aptpnumber = $request->input('aptpnumber');
         $apt->aptemail = $request->input('aptemail');
         $apt->apttime = $request->input('apttime');
+        $apt->aptother = $request->input('aptother');
 
         // Handle file uploads (attachments)
         if ($request->hasFile('aptattach')) {
