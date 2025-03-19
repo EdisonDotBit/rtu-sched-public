@@ -18,6 +18,8 @@ function AppointmentsAdmin() {
     const modalRef = useRef(null);
     const [selectedAttachments, setSelectedAttachments] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isOtherPurposeModalOpen, setOtherPurposeModalOpen] = useState(false);
+    const [selectedOtherPurpose, setSelectedOtherPurpose] = useState("");
 
     const getData = async () => {
         setLoading(true);
@@ -229,6 +231,16 @@ function AppointmentsAdmin() {
         setIsModalOpen(false);
     };
 
+    const openOtherPurposeModal = (purpose) => {
+        setSelectedOtherPurpose(purpose);
+        setOtherPurposeModalOpen(true);
+    };
+
+    const closeOtherPurposeModal = () => {
+        setOtherPurposeModalOpen(false);
+        setSelectedOtherPurpose("");
+    };
+
     return (
         <div className="flex justify-center h-full">
             {loading && (
@@ -419,6 +431,12 @@ function AppointmentsAdmin() {
                                             </span>
                                         </div>
                                     </th>
+
+                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
+                                        Specified <br />
+                                        Others
+                                    </th>
+
                                     <th
                                         className="whitespace-nowrap p-2  font-semibold text-gray-900"
                                         onClick={() => sortData("aptstudnum")}
@@ -516,6 +534,25 @@ function AppointmentsAdmin() {
                                             <td className="whitespace-nowrap p-2 text-gray-700">
                                                 {apt.aptpurpose}
                                             </td>
+                                            <td className="whitespace-nowrap p-2 text-gray-700 text-center">
+                                                {apt.aptother ? (
+                                                    <button
+                                                        onClick={() =>
+                                                            openOtherPurposeModal(
+                                                                apt.aptother
+                                                            )
+                                                        }
+                                                        className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                                                    >
+                                                        View
+                                                    </button>
+                                                ) : (
+                                                    <span className="text-gray-400">
+                                                        N/A
+                                                    </span>
+                                                )}
+                                            </td>
+
                                             <td className="whitespace-nowrap p-2 text-gray-700">
                                                 {apt.aptstudnum}
                                             </td>
@@ -540,7 +577,7 @@ function AppointmentsAdmin() {
                                                     </button>
                                                 ) : (
                                                     <span className="text-gray-400">
-                                                        No Attachments
+                                                        N/A
                                                     </span>
                                                 )}
                                             </td>
@@ -565,7 +602,7 @@ function AppointmentsAdmin() {
                                                         </span>
                                                     </button>
                                                     <button
-                                                        className="ml-4  group relative inline-block overflow-hidden border border-yellow-600 px-2 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        className="ml-2  group relative inline-block overflow-hidden border border-yellow-600 px-2 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
                                                         onClick={() =>
                                                             handleDone(
                                                                 apt.aptid
@@ -582,7 +619,7 @@ function AppointmentsAdmin() {
                                                         </span>
                                                     </button>
                                                     <button
-                                                        className="ml-4 group relative inline-block overflow-hidden border border-blue-600 px-2 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        className="ml-2 group relative inline-block overflow-hidden border border-blue-600 px-2 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
                                                         onClick={() =>
                                                             handleCancel(
                                                                 apt.aptid
@@ -601,7 +638,7 @@ function AppointmentsAdmin() {
                                                         </span>
                                                     </button>
                                                     <button
-                                                        className="ml-4 group relative inline-block overflow-hidden border border-red-600 px-2 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        className="ml-2 group relative inline-block overflow-hidden border border-red-600 px-2 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
                                                         onClick={() =>
                                                             handleDelete(
                                                                 apt.aptid
@@ -728,6 +765,38 @@ function AppointmentsAdmin() {
                         {/* Close Button */}
                         <button
                             onClick={closeAttachmentModal}
+                            className="mt-4 px-6 py-2 bg-[#FFDB75] text-[#194F90] font-semibold rounded-md hover:bg-[#f3cd64] transition"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </dialog>
+            )}
+
+            {isOtherPurposeModalOpen && (
+                <dialog
+                    open
+                    className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50%] bg-[#194F90] rounded-lg shadow-lg p-6 backdrop:bg-black/50"
+                    onKeyDown={(event) => {
+                        if (event.key === "Escape") {
+                            event.preventDefault();
+                        }
+                    }}
+                >
+                    <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] px-4 w-full">
+                        {/* Modal Title */}
+                        <h2 className="text-xl font-semibold mb-4">
+                            View Other Purpose
+                        </h2>
+
+                        {/* Display Other Purpose */}
+                        <div className="w-full max-h-[300px] overflow-y-auto p-4 bg-white text-gray-800 rounded-lg">
+                            <p className="text-md">{selectedOtherPurpose}</p>
+                        </div>
+
+                        {/* Close Button */}
+                        <button
+                            onClick={closeOtherPurposeModal}
                             className="mt-4 px-6 py-2 bg-[#FFDB75] text-[#194F90] font-semibold rounded-md hover:bg-[#f3cd64] transition"
                         >
                             Close
