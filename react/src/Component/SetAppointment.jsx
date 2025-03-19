@@ -6,9 +6,6 @@ import Confirmation from "./Subcomponent/Confirmation";
 import SelectBranch from "./Subcomponent/SelectBranch";
 import axios from "axios";
 import TimePicker from "./Subcomponent/TimePicker";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import PDFFile from "./PDFFile";
-import Loading from "./Subcomponent/Loading";
 import { useStudentAuth } from "../Hooks/useStudentAuth";
 
 function SetAppointment() {
@@ -26,6 +23,7 @@ function SetAppointment() {
         aptpnumber: user ? user.contact_number : "",
         apttime: "",
         aptattach: [],
+        aptother: "",
         isConfirmed: false,
     });
 
@@ -93,6 +91,15 @@ function SetAppointment() {
             formData.aptpurpose === "--Select Purpose--"
         ) {
             newErrors.aptpurpose = "Please select a purpose.";
+        }
+
+        // Validate "Other" Field (Required only if "Other" is selected)
+        if (
+            formData.aptpurpose &&
+            formData.aptpurpose.toLowerCase().includes("other") && // Check if "Other" or "Others" is selected
+            (!formData.aptother || formData.aptother.trim() === "")
+        ) {
+            newErrors.aptother = "Please specify the other purposes here.";
         }
 
         // Ensure all required fields are filled
@@ -187,6 +194,7 @@ function SetAppointment() {
         setFormData((prevData) => ({
             ...prevData,
             aptpurpose: "", // Reset selected purpose when changing office
+            aptother: "",
             aptattach: [], // Reset attached files
         }));
     };
