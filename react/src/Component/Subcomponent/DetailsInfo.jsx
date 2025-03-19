@@ -198,16 +198,34 @@ function DetailsInfo({ aptData, appointments }) {
                             {aptData.aptid ? aptData.aptid : "N/A"}
                         </dd>
                     </div>
+                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
+                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
+                            Appointment Status
+                        </dt>
+                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
+                            {aptData.aptstatus ? aptData.aptstatus : "N/A"}
+                        </dd>
+                    </div>
                 </dl>
             </div>
 
             <div className="flex justify-evenly mb-4">
                 <button
-                    className="flex justify-center items-center bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-md w-1/3 mr-2"
+                    className={`flex justify-center items-center py-2 px-4 rounded-md w-1/3 mr-2 ${
+                        ["confirmed", "cancelled", "done"].includes(
+                            aptData.aptstatus?.toLowerCase()
+                        )
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-red-500 hover:bg-red-700 text-white"
+                    }`}
                     onClick={() => openModal2(aptData)}
+                    disabled={["confirmed"].includes(
+                        aptData.aptstatus?.toLowerCase()
+                    )}
                 >
                     Delete
                 </button>
+
                 <PDFDownloadLink
                     document={<PDFFile succData={aptData} />}
                     fileName="RTU-Appointment-Receipt.pdf"
@@ -228,8 +246,23 @@ function DetailsInfo({ aptData, appointments }) {
                     }
                 </PDFDownloadLink>
                 <button
-                    className="flex justify-center items-center bg-blue-500 hover:bg-blue-800 text-white py-2 px-4 rounded-md w-1/3 ml-2"
+                    className={`flex justify-center items-center py-2 px-4 rounded-md w-1/3 ml-2 ${(() => {
+                        const today = new Date();
+                        const aptDate = new Date(aptData.aptdate);
+                        const diffInDays =
+                            (aptDate - today) / (1000 * 60 * 60 * 24);
+                        return aptData.rescheduled || diffInDays <= 2
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-blue-500 hover:bg-blue-800 text-white";
+                    })()}`}
                     onClick={() => openModal1(formData)}
+                    disabled={(() => {
+                        const today = new Date();
+                        const aptDate = new Date(aptData.aptdate);
+                        const diffInDays =
+                            (aptDate - today) / (1000 * 60 * 60 * 24);
+                        return aptData.rescheduled || diffInDays <= 2;
+                    })()}
                 >
                     Reschedule
                 </button>

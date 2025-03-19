@@ -169,9 +169,9 @@ const Purpose = ({ formData, setFormData, errors }) => {
                         <textarea
                             placeholder="Enter Other Concerns"
                             type="text"
-                            maxLength="200"
-                            rows="3"
-                            onBlur={handleBlur}
+                            maxLength="200" // Limit input to 200 characters
+                            rows="3" // Initial height of the textarea
+                            onBlur={handleBlur} // Track blur
                             name="aptother"
                             className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] resize-y"
                             value={formData.aptother || ""}
@@ -179,7 +179,7 @@ const Purpose = ({ formData, setFormData, errors }) => {
                                 const newValue = e.target.value;
                                 setFormData((prevFormData) => ({
                                     ...prevFormData,
-                                    aptother: newValue,
+                                    aptother: newValue, // Update aptother in formData
                                 }));
                             }}
                         />
