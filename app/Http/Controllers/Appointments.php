@@ -143,8 +143,17 @@ class Appointments extends Controller
             ], 404);
         }
 
+        // Check if the appointment has already been rescheduled
+        if ($apt->rescheduled) {
+            return response()->json([
+                'status' => 403,
+                'message' => 'This appointment has already been rescheduled.',
+            ], 403);
+        }
+
         $apt->aptdate = $request->input('aptdate');
         $apt->apttime = $request->input('apttime');
+        $apt->rescheduled = true; // Mark as rescheduled
 
         try {
             $apt->save();
@@ -160,6 +169,7 @@ class Appointments extends Controller
             ], 400);
         }
     }
+
 
 
     public function confirmAppointment($id)
