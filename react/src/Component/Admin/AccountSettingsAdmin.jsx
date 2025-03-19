@@ -120,7 +120,9 @@ function AccountSettingsAdmin() {
                                                 <tr key={index}>
                                                     <td
                                                         className={`whitespace-nowrap text-gray-700 ${
-                                                            Account.admid === 1
+                                                            Account.admid ===
+                                                                1 ||
+                                                            Account.admid === 2
                                                                 ? "px-8 py-5"
                                                                 : "px-4 py-2"
                                                         }`}
@@ -129,7 +131,9 @@ function AccountSettingsAdmin() {
                                                     </td>
                                                     <td
                                                         className={`whitespace-nowrap text-gray-700 ${
-                                                            Account.admid === 1
+                                                            Account.admid ===
+                                                                1 ||
+                                                            Account.admid === 2
                                                                 ? "px-8 py-5"
                                                                 : "px-4 py-2"
                                                         }`}
@@ -138,7 +142,9 @@ function AccountSettingsAdmin() {
                                                     </td>
                                                     <td
                                                         className={`whitespace-nowrap text-gray-700 ${
-                                                            Account.admid === 1
+                                                            Account.admid ===
+                                                                1 ||
+                                                            Account.admid === 2
                                                                 ? "px-8 py-5"
                                                                 : "px-4 py-2"
                                                         }`}
@@ -148,7 +154,9 @@ function AccountSettingsAdmin() {
 
                                                     <td
                                                         className={`whitespace-nowrap text-gray-700 ${
-                                                            Account.admid === 1
+                                                            Account.admid ===
+                                                                1 ||
+                                                            Account.admid === 2
                                                                 ? "px-8 py-5"
                                                                 : "px-4 py-2"
                                                         }`}
@@ -163,33 +171,36 @@ function AccountSettingsAdmin() {
                                                             href="#edit"
                                                         >
                                                             {Account.admid !==
-                                                                1 && (
-                                                                <button className="group relative inline-block overflow-hidden border border-indigo-600 px-8 py-3 focus:outline-none focus:ring">
-                                                                    <span className="absolute inset-x-0 bottom-0 h-[2px] bg-indigo-600 transition-all group-hover:h-full group-active:bg-indigo-500"></span>
-                                                                    <span className="relative text-sm font-medium text-indigo-600 transition-colors group-hover:text-white">
-                                                                        Edit
+                                                                1 &&
+                                                                Account.admid !==
+                                                                    2 && (
+                                                                    <button className="group relative inline-block overflow-hidden border border-indigo-600 px-8 py-3 focus:outline-none focus:ring">
+                                                                        <span className="absolute inset-x-0 bottom-0 h-[2px] bg-indigo-600 transition-all group-hover:h-full group-active:bg-indigo-500"></span>
+                                                                        <span className="relative text-sm font-medium text-indigo-600 transition-colors group-hover:text-white">
+                                                                            Edit
+                                                                        </span>
+                                                                    </button>
+                                                                )}
+                                                        </a>
+
+                                                        {Account.admid !== 1 &&
+                                                            Account.admid !==
+                                                                2 && (
+                                                                <button
+                                                                    className="ml-4 group relative inline-block overflow-hidden border border-red-600 px-8 py-3 focus:outline-none focus:ring"
+                                                                    onClick={() =>
+                                                                        openmodal(
+                                                                            Account.admid,
+                                                                            Account.admname
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <span className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600 transition-all group-hover:h-full group-active:bg-red-500"></span>{" "}
+                                                                    <span className="relative text-sm font-medium text-red-600 transition-colors group-hover:text-white">
+                                                                        Delete
                                                                     </span>
                                                                 </button>
                                                             )}
-                                                        </a>
-
-                                                        {Account.admid !==
-                                                            1 && (
-                                                            <button
-                                                                className="ml-4 group relative inline-block overflow-hidden border border-red-600 px-8 py-3 focus:outline-none focus:ring"
-                                                                onClick={() =>
-                                                                    openmodal(
-                                                                        Account.admid,
-                                                                        Account.admname
-                                                                    )
-                                                                }
-                                                            >
-                                                                <span className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600 transition-all group-hover:h-full group-active:bg-red-500"></span>{" "}
-                                                                <span className="relative text-sm font-medium text-red-600 transition-colors group-hover:text-white">
-                                                                    Delete
-                                                                </span>
-                                                            </button>
-                                                        )}
                                                     </td>
                                                 </tr>
                                             ))}
