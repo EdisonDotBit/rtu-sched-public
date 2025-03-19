@@ -55,6 +55,7 @@ function InputDetails({ formData, setFormData, errors }) {
                         <Purpose
                             formData={formData}
                             setFormData={setFormData}
+                            errors={errors}
                         />
                         <label className="block text-white mt-4">
                             Attach Files (PDF & Image):
@@ -123,7 +124,7 @@ function InputDetails({ formData, setFormData, errors }) {
                         <label className="block text-white">
                             Student Number:
                             <input
-                                className="text-gray-800 bg-gray-300 w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                className="cursor-not-allowed text-gray-800 bg-gray-300 w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
                                 name="aptstudnum"
                                 value={formData.aptstudnum}
                                 onChange={handleChange}
@@ -143,7 +144,7 @@ function InputDetails({ formData, setFormData, errors }) {
                         <label className="block text-white">
                             Full Name:
                             <input
-                                className="text-gray-800 bg-gray-300 w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                className="cursor-not-allowed text-gray-800 bg-gray-300 w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
                                 name="aptname"
                                 value={formData.aptname}
                                 onChange={handleChange}
@@ -163,7 +164,7 @@ function InputDetails({ formData, setFormData, errors }) {
                         <label className="block text-white">
                             Contact Number:
                             <input
-                                className="text-gray-800 bg-gray-300 w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                className="cursor-not-allowed text-gray-800 bg-gray-300 w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
                                 name="aptpnumber"
                                 value={formData.aptpnumber}
                                 onChange={handleChange}
@@ -183,7 +184,7 @@ function InputDetails({ formData, setFormData, errors }) {
                         <label className="block text-white">
                             Institute Email:
                             <input
-                                className="text-gray-800 bg-gray-300 w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                className="cursor-not-allowed text-gray-800 bg-gray-300 w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
                                 name="aptemail"
                                 value={formData.aptemail}
                                 onChange={handleChange}

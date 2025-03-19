@@ -55,6 +55,7 @@ function GuestDetails({ formData, setFormData, errors }) {
                         <Purpose
                             formData={formData}
                             setFormData={setFormData}
+                            errors={errors}
                         />
                         <label className="block text-white mt-4">
                             Attach Files (PDF & Image):
