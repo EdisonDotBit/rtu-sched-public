@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useDebouncedEffect } from "../../Hooks/useDebouncedEffect";
 
 function ManageAcc() {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -11,30 +12,34 @@ function ManageAcc() {
     });
     const [showPassword, setShowPassword] = useState(false);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const items = JSON.parse(localStorage.getItem("user"));
-            if (items) {
-                try {
-                    console.log(items);
-                    const getRes = await axios.get(
-                        `${apiBaseUrl}/api/admin/informa/${items}`
-                    );
-                    const responseData = getRes.data.data; // Corrected response data access
-                    setFormData({
-                        admuser: responseData.admuser || "",
-                        admpass: responseData.admpass || "",
-                        admname: responseData.admname || "",
-                        admid: responseData.admid || "",
-                    });
-                    console.log(responseData);
-                } catch (error) {
-                    console.error("Error fetching office data:", error);
+    useDebouncedEffect(
+        () => {
+            const fetchData = async () => {
+                const items = JSON.parse(localStorage.getItem("user"));
+                if (items) {
+                    try {
+                        console.log(items);
+                        const getRes = await axios.get(
+                            `${apiBaseUrl}/api/admin/informa/${items}`
+                        );
+                        const responseData = getRes.data.data; // Corrected response data access
+                        setFormData({
+                            admuser: responseData.admuser || "",
+                            admpass: responseData.admpass || "",
+                            admname: responseData.admname || "",
+                            admid: responseData.admid || "",
+                        });
+                        console.log(responseData);
+                    } catch (error) {
+                        console.error("Error fetching office data:", error);
+                    }
                 }
-            }
-        };
-        fetchData();
-    }, [apiBaseUrl]);
+            };
+            fetchData();
+        },
+        [apiBaseUrl],
+        500
+    );
 
     const handleChange = (e) => {
         const { name, value } = e.target;
