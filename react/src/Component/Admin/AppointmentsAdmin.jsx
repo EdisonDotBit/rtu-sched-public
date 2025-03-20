@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../../Hooks/useAuth";
 import axios from "axios";
+import { useDebouncedEffect } from "../../Hooks/useDebouncedEffect";
 
 function AppointmentsAdmin() {
     const [aptemail, setAptEmail] = useState("");
@@ -43,9 +44,9 @@ function AppointmentsAdmin() {
         }
     };
 
-    useEffect(() => {
+    useDebouncedEffect(() => {
         getData();
-    }, [role, branch, apiBaseUrl]);
+    }, [role, branch, apiBaseUrl, 500]);
 
     const handleReload = () => {
         getData();
@@ -283,7 +284,7 @@ function AppointmentsAdmin() {
 
                 {searchResults.length !== 0 && (
                     <div className="overflow-x-auto overflow-y-auto mb-4">
-                        <table className="border border-gray-200 w-full divide-y-2 divide-gray-200 bg-white text-[10px]">
+                        <table className="table-auto shadow-md rounded border border-gray-200 w-full divide-y-2 divide-gray-200 bg-white text-[10px]">
                             <thead className="ltr:text-center rtl:text-center">
                                 <tr>
                                     <th
