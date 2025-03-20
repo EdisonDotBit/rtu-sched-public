@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useDebouncedEffect } from "../../Hooks/useDebouncedEffect";
 
 function Feedbacks() {
     const [feedbacks, setFeedback] = useState([]);
@@ -7,26 +8,30 @@ function Feedbacks() {
     const modals = useRef(null);
     const [selectedFeedback, setSelectedFeedback] = useState({ name: "" });
 
-    useEffect(() => {
-        const getData = async () => {
-            const getRes = await fetch(`${apiBaseUrl}/api/feedbacks`);
-            const getDataResult = await getRes.json();
+    useDebouncedEffect(
+        () => {
+            const getData = async () => {
+                const getRes = await fetch(`${apiBaseUrl}/api/feedbacks`);
+                const getDataResult = await getRes.json();
 
-            if (getRes.status === 200) {
-                const totalRatings = getDataResult.reduce(
-                    (acc, feedback) => acc + feedback.rating,
-                    0
-                );
-                const averageRating =
-                    getDataResult.length > 0
-                        ? totalRatings / getDataResult.length
-                        : 0;
-                setAvg(averageRating);
-                setFeedback(getDataResult);
-            }
-        };
-        getData();
-    }, [apiBaseUrl]);
+                if (getRes.status === 200) {
+                    const totalRatings = getDataResult.reduce(
+                        (acc, feedback) => acc + feedback.rating,
+                        0
+                    );
+                    const averageRating =
+                        getDataResult.length > 0
+                            ? totalRatings / getDataResult.length
+                            : 0;
+                    setAvg(averageRating);
+                    setFeedback(getDataResult);
+                }
+            };
+            getData();
+        },
+        [apiBaseUrl],
+        500
+    );
 
     const openModal = (feedItem) => {
         setSelectedFeedback(feedItem);
