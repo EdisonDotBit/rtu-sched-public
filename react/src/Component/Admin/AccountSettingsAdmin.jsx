@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import AddAccount from "./Component/AddAccount";
 import EditAccount from "./Component/EditAccount";
 import { useAuth } from "../../Hooks/useAuth";
+import { useDebouncedEffect } from "../../Hooks/useDebouncedEffect";
 
 function AccountSettingsAdmin() {
     const [accountsData, setAccountsData] = useState([]);
@@ -15,19 +16,23 @@ function AccountSettingsAdmin() {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const { branch } = useAuth();
 
-    useEffect(() => {
-        const getData = async () => {
-            const getRes = await fetch(
-                `${apiBaseUrl}/api/admin/bybranch/${branch}`
-            );
-            const getDataResult = await getRes.json();
-            setAccountsData(getDataResult);
-            setSearchResults(getDataResult);
-        };
-        getData();
-    }, [branch]);
+    useDebouncedEffect(
+        () => {
+            const getData = async () => {
+                const getRes = await fetch(
+                    `${apiBaseUrl}/api/admin/bybranch/${branch}`
+                );
+                const getDataResult = await getRes.json();
+                setAccountsData(getDataResult);
+                setSearchResults(getDataResult);
+            };
+            getData();
+        },
+        [branch],
+        500
+    );
 
-    useEffect(() => {
+    useDebouncedEffect(() => {
         const filteredResults = accountsData.filter((account) => {
             return account.admname
                 .toLowerCase()
@@ -95,7 +100,7 @@ function AccountSettingsAdmin() {
                         {searchResults.length !== 0 && (
                             // add overflow-x-auto if list gets long
                             <div className="border border-gray-200">
-                                <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
+                                <table className="table-auto  shadow-md rounded min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
                                     <thead className="ltr:text-center rtl:text-center">
                                         <tr>
                                             <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
