@@ -340,12 +340,14 @@ function SetAppointment() {
                                             setFormData={setFormData}
                                             limit={limit}
                                             appointments={appointments}
+                                            userRole={user ? user.role : ""}
                                         />
                                         <TimePicker
                                             formData={formData}
                                             setFormData={setFormData}
-                                            appointments={appointments}
                                             limit={limit}
+                                            appointments={appointments}
+                                            userRole={user ? user.role : ""}
                                             setTimeSelected={handleTimeSelect}
                                         />
                                     </div>
