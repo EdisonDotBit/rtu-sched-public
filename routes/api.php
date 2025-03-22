@@ -51,7 +51,11 @@ Route::controller(Offices::class)->group(function () {
     Route::put('office/edit/{offid}', 'edoff');
     Route::get('office/find/{offabbr}', 'findAbbr');
     Route::post('office/addPurpose', 'addPurpose');
-    Route::get('office/purposes/{officeAbbr}/{offBranch}', 'getPurposes');
+    Route::get('office/purposes/{offabbr}/{offBranch}', 'getPurposes');
+    Route::post('office/toggle-date', 'toggleDisabledDate');
+    Route::get('office/disabled-dates/{offabbr}/{branch}', 'getDisabledDates');
+    Route::post('office/toggle-slot', 'toggleDisabledSlot');
+    Route::get('office/disabled-slots/{offabbr}/{branch}', 'getDisabledSlots');
 });
 
 //  Admin Routes

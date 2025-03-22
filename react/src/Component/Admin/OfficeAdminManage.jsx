@@ -17,6 +17,19 @@ function OfficeAdminManage() {
     const [showEdit, setShowEdit] = useState(false);
     const [selectedOffice, setSelectedOffice] = useState(null);
     const [purpose, setPurpose] = useState("");
+    const dateTimeModal = useRef(null);
+    const [disabledDates, setDisabledDates] = useState([]);
+    const [disabledTimes, setDisabledTimes] = useState([]);
+    const [calendarKey, setCalendarKey] = useState(0);
+    const [timePickerKey, setTimePickerKey] = useState(0);
+    const [formData, setFormData] = useState({
+        aptoffice: "",
+        aptbranch: branch,
+        aptdate: "",
+        apttime: "",
+    });
+    const isDateDisabled = disabledDates.includes(formData.aptdate);
+    const isTimeDisabled = disabledTimes.includes(formData.apttime);
 
     useDebouncedEffect(
         () => {
@@ -77,6 +90,133 @@ function OfficeAdminManage() {
             }
         } catch (error) {
             console.error("Error:", error);
+        }
+    };
+
+    const openDateTimeModal = (office) => {
+        setSelectedOffice(office);
+        setFormData((prev) => ({
+            ...prev,
+            aptoffice: office.offabbr,
+            aptbranch: office.offbranch,
+        }));
+        dateTimeModal.current.showModal();
+    };
+
+    const fetchDisabledDates = async () => {
+        if (!selectedOffice) return; // Ensure the selected office is defined
+        try {
+            const endpoint = `${apiBaseUrl}/api/office/disabled-dates/${selectedOffice.offabbr}/${branch}`;
+            console.log("Fetching disabled dates from:", endpoint);
+            const resp = await fetch(endpoint);
+            if (!resp.ok) throw new Error(resp.statusText);
+            const disabledDates = await resp.json(); // Fetch disabled dates as an array
+            console.log("Disabled Dates:", disabledDates);
+
+            // Set the state for disabled dates
+            setDisabledDates(disabledDates.map((item) => item.date));
+        } catch (error) {
+            console.error("Error fetching disabled dates:", error);
+        }
+    };
+
+    const fetchDisabledSlots = async () => {
+        if (!selectedOffice || !formData.aptdate) return; // Ensure office and date are defined
+        try {
+            const endpoint = `${apiBaseUrl}/api/office/disabled-slots/${selectedOffice.offabbr}/${branch}`;
+            console.log("Fetching disabled time slots from:", endpoint);
+            const resp = await fetch(endpoint);
+            if (!resp.ok) throw new Error(resp.statusText);
+            const disabledSlots = await resp.json(); // Fetch disabled slots as an array
+            console.log("Disabled Time Slots:", disabledSlots);
+
+            // Filter time slots specific to the currently selected date
+            const timeSlotsForDate = disabledSlots
+                .filter((item) => item.date === formData.aptdate && item.time)
+                .map((item) => item.time);
+
+            // Update the state for disabled time slots
+            setDisabledTimes(timeSlotsForDate);
+        } catch (error) {
+            console.error("Error fetching disabled time slots:", error);
+        }
+    };
+
+    useDebouncedEffect(
+        () => {
+            if (selectedOffice) {
+                fetchDisabledDates();
+            }
+
+            if (selectedOffice && formData.aptdate) {
+                fetchDisabledSlots();
+            }
+        },
+        [selectedOffice, formData.aptdate, branch, apiBaseUrl],
+        500
+    );
+
+    const handleDateToggle = async (date) => {
+        const payload = {
+            date: date, // Date in "YYYY-MM-DD" format
+            time: null, // Null means toggling the entire date
+            aptoffice: selectedOffice?.offabbr, // Office abbreviation
+            aptbranch: branch, // Branch name
+        };
+
+        console.log("Toggling Date with payload:", payload);
+
+        try {
+            const res = await fetch(`${apiBaseUrl}/api/office/toggle-date`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+            if (res.ok) {
+                const result = await res.json();
+                alert(result.message); // Notify whether the date was disabled or enabled
+                fetchDisabledDates(); // Refresh the disabled slots
+                setCalendarKey((prevKey) => prevKey + 1);
+            } else {
+                const errText = await res.text();
+                console.error("Toggle Date Failed:", errText);
+                alert("Error toggling Date. Please try again.");
+            }
+        } catch (error) {
+            console.error("Error in handleDateToggle:", error);
+            alert("An unexpected error occurred while toggling Date");
+        }
+    };
+
+    const handleTimeToggle = async (date, time) => {
+        const payload = {
+            date: date, // Date in "YYYY-MM-DD" format
+            time: time, // Specific time to toggle
+            aptoffice: selectedOffice?.offabbr, // Office abbreviation
+            aptbranch: branch, // Branch name
+        };
+
+        console.log("Toggling Time with payload:", payload);
+
+        try {
+            const res = await fetch(`${apiBaseUrl}/api/office/toggle-slot`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+            if (res.ok) {
+                const result = await res.json();
+                alert(result.message); // Notify whether the time was disabled or enabled
+                fetchDisabledSlots(); // Refresh the disabled slots
+                setTimePickerKey((prevKey) => prevKey + 1);
+            } else {
+                const errText = await res.text();
+                console.error("Toggle Time Failed:", errText);
+                alert("Error toggling Time. Please try again.");
+            }
+        } catch (error) {
+            console.error("Error in handleTimeToggle:", error);
+            alert("An unexpected error occurred while toggling Time");
         }
     };
 
@@ -172,6 +312,20 @@ function OfficeAdminManage() {
                                                                 Purpose
                                                             </span>
                                                         </button>
+
+                                                        <button
+                                                            className="ml-4 group relative inline-block overflow-hidden border border-blue-600 px-8 py-3 focus:outline-none focus:ring"
+                                                            onClick={() =>
+                                                                openDateTimeModal(
+                                                                    office
+                                                                )
+                                                            }
+                                                        >
+                                                            <span className="absolute inset-x-0 bottom-0 h-[2px] bg-blue-600 transition-all group-hover:h-full group-active:bg-blue-500"></span>
+                                                            <span className="relative text-sm font-medium text-blue-600 transition-colors group-hover:text-white">
+                                                                Date & Time
+                                                            </span>
+                                                        </button>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -221,6 +375,99 @@ function OfficeAdminManage() {
                                     </div>
                                 </form>
                             </div>
+                        </div>
+                    </dialog>
+
+                    <dialog ref={dateTimeModal} className="modal">
+                        <div className="p-6 fixed rounded-lg top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl min-h-[60vh] lg:min-h-[70vh] overflow-y-auto flex flex-col justify-start items-center text-black bg-gray-50 shadow-lg">
+                            <h3 className="font-bold text-lg">
+                                Manage Date & Time
+                            </h3>
+                            <p className="py-2 text-gray-700">
+                                Office:{" "}
+                                {selectedOffice?.offname ||
+                                    "No Office Selected"}
+                            </p>
+
+                            {/* Container for Calendar and TimePicker */}
+                            <div className="modal-action flex justify-center items-center gap-10">
+                                {/* Calendar Section */}
+                                <div className="flex flex-col items-center justify-center">
+                                    <Calendar
+                                        key={calendarKey}
+                                        formData={formData}
+                                        setFormData={setFormData}
+                                        limit={selectedOffice?.offlimit || 10}
+                                        appointments={offData}
+                                        userRole={role}
+                                        disabledDates={disabledDates}
+                                    />
+                                    {/* Toggle Date Button */}
+                                    <button
+                                        className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg w-full"
+                                        onClick={async () => {
+                                            if (formData.aptdate) {
+                                                await handleDateToggle(
+                                                    formData.aptdate
+                                                );
+                                            } else {
+                                                alert(
+                                                    "Please select a date to toggle."
+                                                );
+                                            }
+                                        }}
+                                    >
+                                        {isDateDisabled
+                                            ? "Enable Date"
+                                            : "Disable Date"}
+                                    </button>
+                                </div>
+
+                                {/* TimePicker Section */}
+                                <div className="flex flex-col items-center justify-center">
+                                    <TimePicker
+                                        key={timePickerKey}
+                                        formData={formData}
+                                        setFormData={setFormData}
+                                        limit={selectedOffice?.offlimit || 10}
+                                        appointments={offData}
+                                        setTimeSelected={() => {}}
+                                        userRole={role}
+                                        disabledTimes={disabledTimes}
+                                    />
+                                    {/* Toggle Time Button */}
+                                    <button
+                                        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg w-full"
+                                        onClick={async () => {
+                                            if (
+                                                formData.aptdate &&
+                                                formData.apttime
+                                            ) {
+                                                await handleTimeToggle(
+                                                    formData.aptdate,
+                                                    formData.apttime
+                                                );
+                                            } else {
+                                                alert(
+                                                    "Please select a date and time to toggle."
+                                                );
+                                            }
+                                        }}
+                                    >
+                                        {isTimeDisabled
+                                            ? "Enable Time"
+                                            : "Disable Time"}
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Close Button */}
+                            <button
+                                className="mt-6 px-4 py-2 bg-red-600 text-white rounded-lg"
+                                onClick={() => dateTimeModal.current.close()}
+                            >
+                                Close
+                            </button>
                         </div>
                     </dialog>
                 </div>

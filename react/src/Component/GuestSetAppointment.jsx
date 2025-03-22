@@ -352,6 +352,7 @@ function GuestSetAppointment() {
                                             setFormData={setFormData}
                                             limit={limit}
                                             appointments={appointments}
+                                            userRole={formData.apttype}
                                         />
                                         <TimePicker
                                             formData={formData}
@@ -359,6 +360,7 @@ function GuestSetAppointment() {
                                             appointments={appointments}
                                             limit={limit}
                                             setTimeSelected={handleTimeSelect}
+                                            userRole={formData.apttype}
                                         />
                                     </div>
                                     <div className="flex w-full justify-evenly">
