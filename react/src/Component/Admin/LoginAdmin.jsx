@@ -2,10 +2,15 @@ import { useState } from "react";
 import { useAuth } from "../../Hooks/useAuth";
 import Logo from "../Subcomponent/Asset/rtu_logo_v3.png";
 import axios from "axios";
+
 function LoginAdmin() {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const [showPassword, setShowPassword] = useState(false);
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState({
+        admuser: "",
+        admpass: "",
+    });
+
     const { login } = useAuth();
 
     const handleChange = (e) => {
@@ -30,6 +35,7 @@ function LoginAdmin() {
                 login({
                     user: formData.admuser,
                     role: response.data.admrole,
+                    branch: response.data.admbranch,
                 });
                 alert("Login Success");
             }
@@ -99,7 +105,7 @@ function LoginAdmin() {
                             <div className="flex justify-center gap-6">
                                 <button
                                     type="button"
-                                    className="btn btn-outline px-6 text-[#194F90] bg-[#FFDB75] hover:bg-[#f3cd64] hover:text-[#194F90] mt-2"
+                                    className="btn bg-[#FFDB75] text-[#194F90] font-semibold hover:bg-[#f3cd64] hover:text-[#194F90] rounded-md px-6 py-2 mt-4"
                                     onClick={handleLogin}
                                 >
                                     Sign in

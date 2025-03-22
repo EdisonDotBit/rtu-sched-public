@@ -7,68 +7,69 @@ import {
     View,
     StyleSheet,
 } from "@react-pdf/renderer";
-import Qwe from "../Component/Subcomponent/Asset/rtu-logo.png";
-import { Font } from "@react-pdf/renderer";
+import Logo from "../Component/Subcomponent/Asset/rtu_logo_v3.png";
 
-// Font.register({
-//     family: "Poppins",
-//     src: "http://fonts.gstatic.com/s/poppins/v1/TDTjCH39JjVycIF24TlO-Q.ttf",
-//     fontStyle: "normal",
-//     fontWeight: "normal",
-// });
-
+// Define styles
 const styles = StyleSheet.create({
     body: {
         paddingTop: 35,
         paddingBottom: 65,
         paddingHorizontal: 35,
+        fontFamily: "Helvetica",
     },
-
     title: {
-        // Title of the page
-        margin: 12,
-        marginBottom: 16,
-        fontSize: 24,
-        textAlign: "justify",
-        fontWeight: "heavy",
+        fontSize: 15,
+        fontWeight: "bold",
         textDecoration: "underline",
+        textAlign: "left",
+        marginBottom: 20,
     },
-
     primaryText: {
-        // Most used texts especially for content inside the header texts
-        margin: 12,
-        marginBottom: 2,
         fontSize: 10,
-        textAlign: "justify",
-        fontFamily: "Helvetica",
+        marginBottom: 10,
+        textAlign: "left",
     },
-
     secondaryText: {
-        // For header or heading texts
-        margin: 12,
-        fontSize: 14,
-        textAlign: "justify",
-        fontFamily: "Helvetica",
+        fontSize: 12,
+        textDecoration: "underline",
+        fontWeight: "bold",
+        marginTop: 20,
+        marginBottom: 10,
     },
-
-    thirdText: {
-        // Used for detailed instructions located below the page (optional)
-        margin: 12,
-        fontSize: 6,
-        textAlign: "justify",
-        fontFamily: "Helvetica",
+    imageContainer: {
+        display: "flex",
+        alignItems: "center",
+        marginBottom: 20,
     },
-
     image: {
-        marginVertical: 15,
-        marginHorizontal: 100,
-        width: 200,
-        height: 40,
+        width: 250,
+        height: "auto",
     },
-
+    paragraph: {
+        marginBottom: 15,
+    },
+    bottomParagraph: {
+        marginTop: 24,
+        paddingTop: 8,
+        borderTop: "1px solid black",
+    },
+    bulletList: {
+        marginLeft: 20,
+        fontSize: 8,
+    },
+    bulletItem: {
+        fontSize: 8,
+        marginBottom: 4,
+    },
+    link: {
+        textDecoration: "underline",
+        fontWeight: "bold",
+        fontSize: 8,
+        marginLeft: 20,
+    },
     pageNumber: {
         position: "absolute",
-        fontSize: 12,
+        fontSize: 8,
         bottom: 30,
         left: 0,
         right: 0,
@@ -76,186 +77,84 @@ const styles = StyleSheet.create({
         color: "grey",
         fontStyle: "italic",
     },
-
-    column: {
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-    },
-
-    row: {
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center",
-        gap: 60,
-    },
-    bottomParagraph: {
-        marginTop: 24,
-        borderTopWidth: 1,
-        borderTopColor: "black",
-        paddingTop: 8,
-    },
-    paragraph: {
-        marginTop: 10,
-        borderTopWidth: 1,
-        borderTopColor: "black",
-        paddingTop: 8,
-    },
-
-    bottomText: {
-        fontSize: 10,
-        textAlign: "center",
-    },
-    bulletList: {
-        marginLeft: 20,
-    },
-
-    bulletItem: {
-        fontSize: 10,
-        marginBottom: 4,
-    },
-
-    link: {
-        textDecoration: "underline",
-        fontWeight: "bold",
-        fontSize: 12,
-        marginLeft: 20,
-    },
 });
 
 const PDFFile = ({ succData }) => {
     return (
         <Document>
             <Page style={styles.body}>
-                <View style={[styles.row, { justifyContent: "center" }]}>
-                    <Image style={{ width: 200, height: 40 }} src={Qwe} />
+                {/* Logo */}
+                <View style={styles.imageContainer}>
+                    <Image style={styles.image} src={Logo} />
                 </View>
 
-                <View style={[styles.row, { justifyContent: "center" }]}>
-                    <Text style={styles.title} fixed>
-                        RTU Appointment Slip
-                    </Text>
-                </View>
+                {/* Title */}
+                <Text style={styles.title}>RTU Appointment Slip</Text>
+
+                {/* Appointment Number */}
                 <View style={styles.paragraph}>
                     <Text style={styles.primaryText}>
                         Your Appointment Number is: {succData.aptid}
                     </Text>
-
                     <Text style={styles.primaryText}>
                         Print a copy of this page.
                     </Text>
+                </View>
 
-                    <Text
-                        style={[
-                            styles.secondaryText,
-                            {
-                                marginTop: 24,
-                                textDecoration: "underline",
-                                fontWeight: "heavy",
-                            },
-                        ]}
-                    >
-                        Personal Information
-                    </Text>
+                {/* Personal Information */}
+                <Text style={styles.secondaryText}>Personal Information</Text>
+                <Text style={styles.primaryText}>
+                    Student or ID Number / Type: {succData.aptstudnum}
+                </Text>
+                <Text style={styles.primaryText}>
+                    Full Name: {succData.aptname}
+                </Text>
+                <Text style={styles.primaryText}>
+                    Contact Number: {succData.aptpnumber}
+                </Text>
+                <Text style={styles.primaryText}>
+                    Email Address: {succData.aptemail}
+                </Text>
 
-                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                        Student or ID Number / Type: {succData.aptstudnum}
-                    </Text>
+                {/* Appointment Information */}
+                <Text style={styles.secondaryText}>
+                    Appointment Information
+                </Text>
+                <Text style={styles.primaryText}>
+                    Branch: {succData.aptbranch}
+                </Text>
+                <Text style={styles.primaryText}>
+                    Office: {succData.aptoffice}
+                </Text>
+                <Text style={styles.primaryText}>
+                    Purpose: {succData.aptpurpose}
+                </Text>
+                <Text style={styles.primaryText}>Date: {succData.aptdate}</Text>
+                <Text style={styles.primaryText}>Time: {succData.apttime}</Text>
 
-                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                        Full Name: {succData.aptname}
-                    </Text>
-
-                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                        Contact Number: {succData.aptpnumber}
-                    </Text>
-
-                    <Text style={[styles.primaryText, { fontWeight: "heavy" }]}>
-                        Email Address: {succData.aptemail}
-                    </Text>
-
-                    <Text
-                        style={[
-                            styles.secondaryText,
-                            {
-                                marginTop: 24,
-                                textDecoration: "underline",
-                                fontWeight: "heavy",
-                            },
-                        ]}
-                    >
-                        Appointment Information
-                    </Text>
-
-                    <View style={styles.column}>
-                        <Text
-                            style={[
-                                styles.primaryText,
-                                { fontWeight: "heavy" },
-                            ]}
-                        >
-                            Branch: {succData.aptbranch}
+                {/* Reminder */}
+                <View style={styles.bottomParagraph}>
+                    <Text style={styles.primaryText}>Reminder:</Text>
+                    <View style={styles.bulletList}>
+                        <Text style={styles.bulletItem}>
+                            • Bring your specified Valid ID / Soft Copy
+                            Registration Form
                         </Text>
-
-                        <Text
-                            style={[
-                                styles.primaryText,
-                                { fontWeight: "heavy" },
-                            ]}
-                        >
-                            Office: {succData.aptoffice}
+                        <Text style={styles.bulletItem}>
+                            • If you miss the appointment on the said date, it
+                            will be automatically cancelled.
                         </Text>
-
-                        <Text
-                            style={[
-                                styles.primaryText,
-                                { fontWeight: "heavy" },
-                            ]}
-                        >
-                            Purpose: {succData.aptpurpose}
+                        <Text style={styles.bulletItem}>
+                            • You may submit feedback at:
                         </Text>
-
-                        <Text
-                            style={[
-                                styles.primaryText,
-                                { fontWeight: "heavy" },
-                            ]}
-                        >
-                            Date: {succData.aptdate}
+                        <Text style={styles.link}>
+                            rtu-online-appointment/feedback.com
                         </Text>
-                        <Text
-                            style={[
-                                styles.primaryText,
-                                { fontWeight: "heavy" },
-                            ]}
-                        >
-                            Time: {succData.apttime}
-                        </Text>
-                    </View>
-                    <View style={styles.bottomParagraph}>
-                        <Text style={styles.primaryText}>Reminder:</Text>
-                        <Text style={styles.primaryText}></Text>
-                        <View style={styles.bulletList}>
-                            <Text style={styles.bulletItem}>
-                                • Bring your specified Valid ID / Soft Copy
-                                Registration Form
-                            </Text>
-                            <Text style={styles.bulletItem}></Text>
-                            <Text style={styles.bulletItem}>
-                                • If you miss the appointment on the said date,
-                                it will be automatically cancelled.
-                            </Text>
-                            <Text style={styles.bulletItem}></Text>
-                            <Text style={styles.bulletItem}>
-                                • You may submit a feedback at:
-                            </Text>
-                            <Text style={styles.link}>
-                                rtu-online-appointment/feedback.com
-                            </Text>
-                        </View>
                     </View>
                 </View>
-                <Text style={[styles.pageNumber, { fontStyle: "italic" }]}>
+
+                {/* Footer */}
+                <Text style={styles.pageNumber}>
                     "Forever true to the gold and blue~"
                 </Text>
             </Page>

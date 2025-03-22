@@ -31,6 +31,8 @@ class Admins extends Controller
         $adm->admname = $request->input('admname');
         // $adm->admempnum = $request->input('admempnum');
         $adm->admrole = $request->input('admrole');
+        // $adm->admbranch = $request->user()->admbranch;
+        $adm->admbranch = $request->input('admbranch');
 
         try {
             $adm->save();
@@ -78,6 +80,7 @@ class Admins extends Controller
         $adm->admuser = $request->input('admuser');
         $adm->admpass = $request->input('admpass');
         $adm->admname = $request->input('admname');
+        $adm->admrole = $request->input('admrole');
         // $adm->admempnum = $request->input('admempnum');
         try {
             $adm->save();
@@ -107,6 +110,7 @@ class Admins extends Controller
                 'message' => 'Login successful',
                 'admuser' => $user->admuser,
                 'admrole' => $user->admrole,
+                'admbranch' => $user->admbranch,
             ]);
         }
 
@@ -132,5 +136,11 @@ class Admins extends Controller
             'status' => 200,
             'data' => $adm,
         ]);
+    }
+
+    public function filterByBranch($admbranch)
+    {
+        $adm = Admin::where('admbranch', $admbranch)->get();
+        return response()->json($adm);
     }
 }

@@ -1,3 +1,4 @@
+// src/hooks/useAuth.jsx
 import { createContext, useContext, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "./useLocalStorage";
@@ -5,30 +6,29 @@ import { useLocalStorage } from "./useLocalStorage";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useLocalStorage("user", null); // Key for user
-    const [role, setRole] = useLocalStorage("role", null); // Key for role
+    const [user, setUser] = useLocalStorage("user", null);
+    const [role, setRole] = useLocalStorage("role", null);
+    const [branch, setBranch] = useLocalStorage("branch", null);
     const navigate = useNavigate();
 
-    // Call this function when you want to authenticate the user
     const login = async (data) => {
-        setUser(data.user); // This sets 'user' in local storage
-        setRole(data.role); // This sets 'role' in local storage
-        if (data.user === "admin") {
+        setUser(data.user);
+        setRole(data.role);
+        setBranch(data.branch); // Ensure branch is set correctly
+        if (data.role === "superadmin") {
             navigate("/rtu/suppa");
         } else {
             navigate("/rtu/admin");
         }
     };
 
-    // Call this function to sign out the logged-in user
     const logout = () => {
-        setUser(null); // Clear user from state and local storage
-        setRole(null); // Clear role from state and local storage
-
-        // Remove the newly created keys from local storage (this is optional)
+        setUser(null);
+        setRole(null);
+        setBranch(null);
         localStorage.removeItem("admuser");
         localStorage.removeItem("admrole");
-
+        localStorage.removeItem("admbranch");
         navigate("/rtu/login", { replace: true });
     };
 
@@ -36,10 +36,11 @@ export const AuthProvider = ({ children }) => {
         () => ({
             user,
             role,
+            branch,
             login,
             logout,
         }),
-        [user, role]
+        [user, role, branch]
     );
 
     return (

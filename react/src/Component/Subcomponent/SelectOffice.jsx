@@ -10,6 +10,8 @@ function SelectOffice({
     const [expanded, setExpanded] = useState(false);
     const [options, setOptions] = useState([]);
 
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
     const handleOfficeSelection = (selectedOffAbbr, limits) => {
         setFormData((prevFormData) => ({
             ...prevFormData,
@@ -21,9 +23,11 @@ function SelectOffice({
     };
 
     const fetchPurposes = async (officeAbbr) => {
+        if (!formData.aptbranch) return;
+
         try {
             const response = await fetch(
-                `${apiBaseUrl}/api/office/purposes/${officeAbbr}`
+                `${apiBaseUrl}/api/office/purposes/${officeAbbr}/${formData.aptbranch}`
             );
             const data = await response.json();
             setOptions(data);

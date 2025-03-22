@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-function EditAccount({ selectedaccid }) {
+function EditAccount({ selectedaccid, setShowEdit }) {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState({
+        admuser: "",
+        admpass: "",
+        admname: "",
+        admrole: "",
+    });
+    const [offData, setOffData] = useState([]);
     const [showPassword, setShowPassword] = useState(false);
+    const [selectedOffice, setSelectedOffice] = useState("");
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -17,6 +24,11 @@ function EditAccount({ selectedaccid }) {
         e.preventDefault(); // Prevent page reload
         console.log(formData); // Log the formData
 
+        if (formData.admrole === "") {
+            alert("Please select an office.");
+            return;
+        }
+
         try {
             const res = await axios.put(
                 `${apiBaseUrl}/api/admin/edit/${selectedaccid}`,
@@ -26,6 +38,10 @@ function EditAccount({ selectedaccid }) {
             if (res.status === 200) {
                 console.log(res.data.message); // Log success message
                 alert("Admin edited successfully.");
+                setShowEdit(false);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 100);
             }
         } catch (error) {
             alert(
@@ -35,7 +51,7 @@ function EditAccount({ selectedaccid }) {
     };
 
     useEffect(() => {
-        const getData = async () => {
+        const getAccountData = async () => {
             try {
                 const getRes = await axios.get(
                     `${apiBaseUrl}/api/admin/info/${selectedaccid}`
@@ -48,15 +64,24 @@ function EditAccount({ selectedaccid }) {
                     admrole: responseData.admrole,
                     // admempnum: responseData.admempnum,
                 });
+                setSelectedOffice(responseData.admrole); // Preselect the current assigned office
             } catch (error) {
-                console.error("Error fetching office data:", error); // Log the error if there's an issue with the request
-                // Handle the error gracefully, such as showing an error message to the user
+                console.error("Error fetching account data:", error); // Log the error if there's an issue with the request // Handle the error gracefully, such as showing an error message to the user
+            }
+        };
+        const getOfficesData = async () => {
+            try {
+                const getRes = await axios.get(`${apiBaseUrl}/api/office/all`);
+                setOffData(getRes.data);
+            } catch (error) {
+                console.error("Error fetching office data:", error); // Log the error if there's an issue with the request // Handle the error gracefully, such as showing an error message to the user
             }
         };
 
         // Ensure selectedaccid has a value before fetching data
         if (selectedaccid) {
-            getData();
+            getAccountData();
+            getOfficesData();
         }
     }, [selectedaccid]); // Add selectedaccid as a dependency
 
@@ -133,29 +158,48 @@ function EditAccount({ selectedaccid }) {
                                     </div>
                                 </label>
                             </div>
-
                             {/* Assigned Office */}
                             <label className="block text-white">
-                                Assigned office:
-                                <input
-                                    className="text-gray-500 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                Assigned Office:
+                                <select
+                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
                                     name="admrole"
-                                    value={formData.admrole}
-                                    onChange={handleChange}
-                                    type="text"
-                                    disabled
-                                />
+                                    value={selectedOffice}
+                                    onChange={(e) => {
+                                        handleChange(e);
+                                        setSelectedOffice(e.target.value);
+                                    }}
+                                >
+                                    <option value="" disabled>
+                                        --Select Office--
+                                    </option>
+                                    {[
+                                        ...new Map(
+                                            offData.map((item) => [
+                                                item.offabbr,
+                                                item,
+                                            ])
+                                        ).values(),
+                                    ].map((option) => (
+                                        <option
+                                            key={option.offid}
+                                            value={option.offabbr}
+                                        >
+                                            {option.offabbr}
+                                        </option>
+                                    ))}
+                                </select>
                             </label>
-
                             <div className="flex justify-center gap-6">
-                                <a href="#main">
-                                    <button className="btn btn-outline px-6 text-[#194F90] bg-[#FFDB75] hover:bg-[#f3cd64] hover:text-[#194F90] mt-2">
-                                        Back
-                                    </button>
-                                </a>
+                                <button
+                                    className="btn bg-[#FFDB75] text-[#194F90] font-semibold  hover:bg-[#f3cd64] hover:text-[#194F90] rounded-md px-6 py-2"
+                                    onClick={() => setShowEdit(false)}
+                                >
+                                    Back
+                                </button>
                                 <button
                                     type="button"
-                                    className="btn btn-outline px-6 text-[#194F90] bg-[#FFDB75] hover:bg-[#f3cd64] hover:text-[#194F90] mt-2"
+                                    className="btn bg-[#FFDB75] text-[#194F90] font-semibold hover:bg-[#f3cd64] hover:text-[#194F90] rounded-md px-6 py-2"
                                     onClick={editAcc}
                                 >
                                     Save

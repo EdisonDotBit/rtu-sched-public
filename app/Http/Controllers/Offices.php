@@ -4,13 +4,35 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Office;
+use App\Models\DisabledDate;
+use App\Models\DisabledSlot;
 
 class Offices extends Controller
 {
-    public function index()
+    // Get all offices, or filter by branch if 'branch' query parameter is provided
+    public function index(Request $request)
     {
-        $offices = Office::all();
-        return $offices;
+        $branch = $request->query('branch');
+        if ($branch) {
+            $offices = Office::where('offbranch', $branch)->get();
+        } else {
+            $offices = Office::all();
+        }
+        return response()->json($offices, 200);
+    }
+
+    public function filterByBranch($offbranch)
+    {
+        $off = Office::where('offbranch', $offbranch)->get();
+        return response()->json($off, 200);
+    }
+
+    public function filterByBranchRole($offbranch, $offabbr)
+    {
+        $off = Office::where('offbranch', $offbranch)
+            ->where('offabbr', $offabbr)
+            ->get();
+        return response()->json($off, 200);
     }
 
     public function findAbbr($abbr)
@@ -33,32 +55,45 @@ class Offices extends Controller
     public function deloff($offid)
     {
         $off = Office::find($offid);
-        $off->delete();
-        return response()->json([
-            'status' => 200,
-            'messages' => 'successfully deleted appointment',
-        ]);
-    }
-
-    public function addoff(Request $request)
-    {
-        $off = new Office();
-        $off->offname = $request->input('offname');
-        $off->offlimit = $request->input('offlimit');
-        $off->offabbr = $request->input('offabbr');
-
-
-
-        try {
-            $off->save();
+        if ($off) {
+            $off->delete();
             return response()->json([
                 'status' => 200,
-                'messages' => 'successfully added an office',
+                'messages' => 'Successfully deleted the office',
             ]);
+        }
+        return response()->json([
+            'status' => 404,
+            'error' => 'Office not found',
+        ], 404);
+    }
+
+    // Add a new office linked to a specific branch
+    public function addoff(Request $request)
+    {
+        $validatedData = $request->validate([
+            'offname' => 'required|string|max:255',
+            'offlimit' => 'required|integer',
+            'offabbr' => 'required|string|max:50|unique:offices,offabbr,NULL,id,offbranch,' . $request->input('offbranch'),
+            'offbranch' => 'required|string|max:255',
+        ]);
+
+        try {
+            $off = new Office();
+            $off->offname = $validatedData['offname'];
+            $off->offlimit = $validatedData['offlimit'];
+            $off->offabbr = $validatedData['offabbr'];
+            $off->offbranch = $validatedData['offbranch'];
+            $off->save();
+
+            return response()->json([
+                'status' => 200,
+                'messages' => 'Successfully added an office',
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 400,
-                'error' => 'Failed to add an Office. Please ensure all fields are filled correctly.',
+                'error' => 'Failed to add an office. Please double check the details.',
             ], 400);
         }
     }
@@ -70,7 +105,7 @@ class Offices extends Controller
         if (!$off) {
             return response()->json([
                 'status' => 404,
-                'message' => 'Appointment not found',
+                'message' => 'Office not found',
             ], 404);
         }
 
@@ -79,54 +114,144 @@ class Offices extends Controller
             'data' => $off,
         ]);
     }
+
     public function edoff(Request $request, $offid)
     {
+        $validatedData = $request->validate([
+            'offname' => 'required|string|max:255',
+            'offabbr' => 'required|string|max:50|unique:offices,offabbr,' . $offid . ',id,offbranch,' . $request->input('offbranch'),
+            'offlimit' => 'required|integer',
+        ]);
+
         $off = Office::find($offid);
-        $off->offname = $request->input('offname');
-        $off->offabbr = $request->input('offabbr');
-        $off->offlimit = $request->input('offlimit');
+
+        if (!$off) {
+            return response()->json([
+                'status' => 404,
+                'error' => 'Office not found',
+            ], 404);
+        }
+
         try {
+            $off->offname = $validatedData['offname'];
+            $off->offabbr = $validatedData['offabbr'];
+            $off->offlimit = $validatedData['offlimit'];
             $off->save();
+
             return response()->json([
                 'status' => 200,
-                'messages' => 'successfully edited an office',
-            ]);
+                'message' => 'Office updated successfully.',
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 400,
-                'error' => 'Failed to edit an Office. Please ensure all fields are filled correctly.',
+                'error' => 'Failed to update the office. Please double check the details.',
             ], 400);
         }
     }
-
-
-    public function getPurposes($officeAbbr)
+    public function getPurposes($officeAbbr, $offBranch)
     {
-        $office = Office::where('offabbr', $officeAbbr)->first();
+        $office = Office::where('offabbr', $officeAbbr)
+            ->where('offbranch', $offBranch) // Ensure branch matches
+            ->first();
 
         if ($office) {
             $purposes = $office->purposes()->pluck('purpose');
-            return response()->json($purposes);
-        } else {
-            return response()->json(['message' => 'Office not found'], 404);
+            return response()->json($purposes, 200);
         }
+
+        return response()->json(['message' => 'Office not found in this branch'], 404);
     }
 
 
     public function addPurpose(Request $request)
     {
-        $officeId = $request->input('officeId');
-        $purpose = $request->input('purpose');
+        $validatedData = $request->validate([
+            'officeId' => 'required|exists:offices,offid',
+            'purpose' => 'required|string',
+        ]);
 
-        // Debug log to check if the data is received correctly 
-        error_log("Office ID: $officeId, Purpose: $purpose");
-
-        $office = Office::find($officeId);
+        $office = Office::find($validatedData['officeId']);
         if ($office) {
-            $office->purposes()->create(['purpose' => $purpose]);
-            return response()->json(['status' => 200, 'message' => 'Purpose inserted successfully']);
+            if (method_exists($office, 'purposes')) {
+                $office->purposes()->create(['purpose' => $validatedData['purpose']]);
+
+
+                return response()->json(['status' => 200, 'message' => 'Purpose inserted successfully']);
+            } else {
+
+                return response()->json(['status' => 500, 'message' => 'Internal Server Error. Relationship missing.'], 500);
+            }
+        }
+        return response()->json(['status' => 404, 'message' => 'Office not found'], 404);
+    }
+
+    public function getDisabledDates($offabbr, $branch)
+    {
+        $disabledDates = DisabledDate::where('aptoffice', $offabbr)
+            ->where('aptbranch', $branch)
+            ->get();
+        return response()->json($disabledDates, 200);
+    }
+
+    public function toggleDisabledDate(Request $request)
+    {
+        $validatedData = $request->validate([
+            'date' => 'required|date',
+            'time' => 'nullable|string', // if null, disable the whole day
+            'aptoffice' => 'required|string',
+            'aptbranch' => 'required|string',
+        ]);
+
+        // Look for an existing record
+        $disabledDate = DisabledDate::where('aptoffice', $validatedData['aptoffice'])
+            ->where('aptbranch', $validatedData['aptbranch'])
+            ->where('date', $validatedData['date'])
+            ->where('time', $validatedData['time'])
+            ->first();
+
+        if ($disabledDate) {
+            // Found record means it's currently disabled – so enable it by deleting the record.
+            $disabledDate->delete();
+            return response()->json(['message' => 'Date/Time enabled'], 200);
         } else {
-            return response()->json(['status' => 404, 'message' => 'Office not found'], 404);
+            // Not found: create a new record to disable the date/time.
+            DisabledDate::create($validatedData);
+            return response()->json(['message' => 'Date/Time disabled'], 201);
+        }
+    }
+
+    public function getDisabledSlots($offabbr, $branch)
+    {
+        $disabledSlots = DisabledSlot::where('aptoffice', $offabbr)
+            ->where('aptbranch', $branch)
+            ->get();
+        return response()->json($disabledSlots, 200);
+    }
+
+    public function toggleDisabledSlot(Request $request)
+    {
+        $validatedData = $request->validate([
+            'date' => 'required|date',
+            'time' => 'nullable|string', // If null, whole day is disabled; otherwise, specific time slot
+            'aptoffice' => 'required|string',
+            'aptbranch' => 'required|string',
+        ]);
+
+        $disabledSlot = DisabledSlot::where('aptoffice', $validatedData['aptoffice'])
+            ->where('aptbranch', $validatedData['aptbranch'])
+            ->where('date', $validatedData['date'])
+            ->where('time', $validatedData['time'])
+            ->first();
+
+        if ($disabledSlot) {
+            // If the record exists, it means the slot is disabled. Re-enable it by deleting.
+            $disabledSlot->delete();
+            return response()->json(['message' => 'Slot enabled'], 200);
+        } else {
+            // If the record does not exist, disable the slot by creating a new entry.
+            DisabledSlot::create($validatedData);
+            return response()->json(['message' => 'Slot disabled'], 201);
         }
     }
 }

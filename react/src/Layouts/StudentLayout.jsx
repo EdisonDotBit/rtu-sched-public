@@ -1,29 +1,60 @@
 import { useEffect, useRef, useState } from "react";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../Component/Subcomponent/Asset/rtu_logo_v3.png";
+import { useStudentAuth } from "../Hooks/useStudentAuth";
 
 function StudentLayout() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const modals = useRef(null);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const location = useLocation();
+    const navigate = useNavigate();
+    const { studentLogout, user, loading } = useStudentAuth();
+    const studentNumberModal = useRef(null);
+
+    // Only log user when it's actually available
+    if (user) {
+        console.log("User object:", user);
+    }
+
+    useEffect(() => {
+        // Redirect to login if user is not authenticated
+        if (!loading && !user) {
+            navigate("/student/login", { replace: true });
+        }
+
+        // Only show modal if the student number is NOT verified and NOT on the manage account page
+        if (
+            user &&
+            !user.is_verified &&
+            location.pathname !== "/student/manage-account"
+        ) {
+            studentNumberModal.current?.showModal(); // Safe check before calling showModal()
+        } else {
+            studentNumberModal.current?.close(); //  Safe check before calling close()
+        }
+    }, [loading, user, navigate, location.pathname]); // Include location.pathname in dependencies
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
 
-    const openModal = () => {
-        modals.current.showModal();
+    const toggleDropdown = () => {
+        setIsDropdownOpen(!isDropdownOpen);
     };
 
-    useEffect(() => {
-        const modalShown = sessionStorage.getItem("modalShown");
+    const handleSignOut = () => {
+        studentLogout();
+    };
 
-        // If it's the first visit, show the modal
-        if (!modalShown) {
-            openModal();
-            sessionStorage.setItem("modalShown", "true"); // Mark that the modal has been shown
-        }
-    }, []);
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <p className="text-3xl text-[#194F90] font-bold">
+                    Loading Data...
+                </p>
+            </div>
+        );
+    }
 
     return (
         <>
@@ -53,19 +84,50 @@ function StudentLayout() {
                         <div className="flex items-center gap-2">
                             <NavLink to="../student">
                                 <img
-                                    className="h-auto w-[200px] lg:w-56"
+                                    className="h-auto w-[140px] lg:w-43"
                                     src={Logo}
                                     alt="University Logo"
                                 />
                             </NavLink>
                         </div>
                     </div>
-                    <div className="flex items-center pr-4">
-                        <NavLink to="../guest">
-                            <button className="text-sm text-gray-500 hover:text-[#123A69]">
-                                Change to Guest
-                            </button>
-                        </NavLink>
+                    <div className="relative">
+                        <button
+                            className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#123A69] focus:outline-none"
+                            onClick={toggleDropdown}
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth="1.5"
+                                stroke="currentColor"
+                                className="w-6 h-6"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M15.75 7.5A3.75 3.75 0 1 1 12 3.75a3.75 3.75 0 0 1 3.75 3.75zM9 10.5h6a6 6 0 0 1 6 6v.75a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 17.25v-.75a6 6 0 0 1 6-6z"
+                                />
+                            </svg>
+                            <span>{user?.role || "Loading..."}</span>
+                        </button>
+                        {isDropdownOpen && (
+                            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg">
+                                <NavLink
+                                    to="/student/manage-account"
+                                    className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                                >
+                                    Manage Account
+                                </NavLink>
+                                <button
+                                    className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
+                                    onClick={handleSignOut}
+                                >
+                                    Sign Out
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </header>
 
@@ -96,7 +158,9 @@ function StudentLayout() {
                                     />
                                 </svg>
                                 <span className="text-base sm:text-lg text-white font-bold uppercase px-2">
-                                    STUDENT
+                                    <span>
+                                        {user?.full_name || "Loading..."}
+                                    </span>
                                 </span>
                             </div>
                             <button
@@ -148,7 +212,7 @@ function StudentLayout() {
                                     <path
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
-                                        d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"
+                                        d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907                                        -2.185a48.208 48.208 0 0 1 1.927-.184"
                                     />
                                 </svg>
                                 <span className="ml-3">Set Appointment</span>
@@ -187,21 +251,6 @@ function StudentLayout() {
                                 <span className="ml-3">View Appointment</span>
                             </NavLink>
                         </nav>
-
-                        {/* Spacer to push Send Feedback to the bottom */}
-                        <div className="flex-grow"></div>
-
-                        {/* Send Feedback Link moved here */}
-                        <NavLink
-                            to="/feedback"
-                            className="text-center mb-6 text-sm underline text-blue-200"
-                            onClick={(e) => {
-                                e.preventDefault(); // Prevents default navigation
-                                window.open("/feedback", "_blank"); // Opens the link in a new tab
-                            }}
-                        >
-                            Send Feedback
-                        </NavLink>
                     </aside>
 
                     {/* Main Content Area */}
@@ -211,52 +260,66 @@ function StudentLayout() {
                 </div>
 
                 {/* Footer */}
-                <footer className="h-9 border-t text-center text-xs text-[#3c4043] flex items-center justify-center">
+                <footer className="h-9 border-t border-gray-300 text-center text-xs text-[#3c4043] flex items-center justify-center">
                     <p>
                         Copyright © 2024 - All rights reserved by Rizal
                         Technological University
                     </p>
                 </footer>
-
-                {/* Modal */}
-                <dialog
-                    ref={modals}
-                    className="modal"
-                    onKeyDown={(event) => {
-                        if (event.key === "Escape") {
-                            event.preventDefault();
-                        }
-                    }}
-                >
-                    <div className="modal-box flex flex-col justify-center items-center text-white bg-[#194F90]">
-                        <h3 className="font-bold text-lg">
-                            Welcome to Rizal Technological University!
-                        </h3>
-                        <p>
-                            **For New Student and Alumni, please select Guest**
-                        </p>
-                        <div className="modal-action">
-                            <NavLink to="../guest">
-                                <button
-                                    type="button"
-                                    className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
-                                >
-                                    Guest
-                                </button>
-                            </NavLink>
-                            <button
-                                type="button"
-                                className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
-                                onClick={() => {
-                                    modals.current.close();
-                                }}
-                            >
-                                Student
-                            </button>
-                        </div>
-                    </div>
-                </dialog>
             </div>
+
+            {/* Verification Modal */}
+            <dialog
+                ref={studentNumberModal}
+                className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 backdrop:bg-black/50"
+                onKeyDown={(event) => {
+                    if (event.key === "Escape") {
+                        event.preventDefault();
+                    }
+                }}
+            >
+                <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] p-6 w-full">
+                    <button
+                        className="cursor-pointer absolute top-1 right-1 text-white hover:text-gray-300 transition duration-300 focus:outline-none"
+                        onClick={() => studentNumberModal.current.close()}
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 text-white"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M6 18L18 6M6 6l12 12"
+                            />
+                        </svg>
+                    </button>
+                    <h2 className="text-xl font-semibold">
+                        Student Number Verification Required
+                    </h2>
+
+                    <p className="text-sm text-center mt-2">
+                        Your student number is not yet verified. Please verify
+                        it in the Manage Account section.
+                    </p>
+
+                    <div className="modal-action text-center mt-4">
+                        <button
+                            className="py-2 px-4 bg-[#FFDB75] text-[#194F90] font-semibold rounded-lg hover:bg-[#f3cd64] transition duration-200"
+                            onClick={() => {
+                                studentNumberModal.current.close(); // Close the modal
+                                navigate("/student/manage-account"); // Navigate to manage account
+                            }}
+                        >
+                            Go to Manage Account
+                        </button>
+                    </div>
+                </div>
+            </dialog>
         </>
     );
 }

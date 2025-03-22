@@ -6,22 +6,24 @@ import Confirmation from "./Subcomponent/Confirmation";
 import SelectBranch from "./Subcomponent/SelectBranch";
 import axios from "axios";
 import TimePicker from "./Subcomponent/TimePicker";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import PDFFile from "./PDFFile";
-import Loading from "./Subcomponent/Loading";
+import { useStudentAuth } from "../Hooks/useStudentAuth";
 
 function SetAppointment() {
+    const { user } = useStudentAuth();
+
     const [formData, setFormData] = useState({
-        apttype: "Student",
+        apttype: user ? user.role : "",
         aptbranch: "",
         aptoffice: "",
-        aptname: "",
+        aptname: user ? user.full_name : "",
         aptpurpose: "",
-        aptstudnum: "",
+        aptstudnum: user ? user.student_number : "",
         aptdate: "",
-        aptemail: "",
-        aptpnumber: "",
+        aptemail: user ? user.email : "",
+        aptpnumber: user ? user.contact_number : "",
         apttime: "",
+        aptattach: [],
+        aptother: "",
         isConfirmed: false,
     });
 
@@ -37,16 +39,38 @@ function SetAppointment() {
     const [isTimeSelected, setIsTimeSelected] = useState(false);
     const [isInputFilled, setIsInputFilled] = useState(false);
     const [errors, setErrors] = useState({});
-    const [isConfirmed, setIsConfirmed] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
-        const getData = async () => {
-            const getRes = await fetch(`${apiBaseUrl}/api/office/all`);
-            const getDataResult = await getRes.json();
-            setOffice(getDataResult);
-        };
-        getData();
-    }, []);
+        if (user) {
+            setFormData((prevData) => ({
+                ...prevData,
+                aptname: user.full_name,
+                aptstudnum: user.student_number,
+                aptemail: user.email,
+                aptpnumber: user.contact_number,
+            }));
+        }
+    }, [user]);
+
+    useEffect(() => {
+        if (formData.aptbranch) {
+            // Only fetch if a branch is selected
+            const fetchOffices = async () => {
+                try {
+                    const response = await axios.get(
+                        `${apiBaseUrl}/api/office/all`,
+                        { params: { branch: formData.aptbranch } } // Pass branch as query param
+                    );
+                    setOffice(response.data); // Update office state with filtered data
+                } catch (error) {
+                    console.error("Error fetching offices:", error);
+                }
+            };
+
+            fetchOffices();
+        }
+    }, [formData.aptbranch, apiBaseUrl]);
 
     useEffect(() => {
         const getData = async () => {
@@ -61,7 +85,7 @@ function SetAppointment() {
         // Perform validation
         const newErrors = {};
 
-        // Validate Purpose
+        // Validate Purpose (Required)
         if (
             !formData.aptpurpose ||
             formData.aptpurpose === "--Select Purpose--"
@@ -69,38 +93,23 @@ function SetAppointment() {
             newErrors.aptpurpose = "Please select a purpose.";
         }
 
-        // Validate Student Number (Format: ####-######)
-        if (!formData.aptstudnum) {
-            newErrors.aptstudnum = "Student number is required.";
-        } else if (!/^[0-9]{4}-[0-9]{6}$/.test(formData.aptstudnum)) {
-            newErrors.aptstudnum =
-                "Student number must follow the format ####-######.";
-        }
-
-        // Validate Name (Ensure it's not empty and has at least 10 characters)
-        if (!formData.aptname) {
-            newErrors.aptname = "Full name is required.";
-        } else if (formData.aptname.length < 10) {
-            newErrors.aptname = "Full name must be at least 10 characters.";
-        }
-
-        // Validate Contact Number (Ensure it's valid and 11 digits)
-        if (!formData.aptpnumber) {
-            newErrors.aptpnumber = "Contact number is required.";
-        } else if (
-            formData.aptpnumber &&
-            !/^[0-9]{11}$/.test(formData.aptpnumber)
+        // Validate "Other" Field (Required only if "Other" is selected)
+        if (
+            formData.aptpurpose &&
+            formData.aptpurpose.toLowerCase().includes("other") && // Check if "Other" or "Others" is selected
+            (!formData.aptother || formData.aptother.trim() === "")
         ) {
-            newErrors.aptpnumber = "Contact number must be 11 digits long.";
+            newErrors.aptother = "Please specify the other purposes here.";
         }
 
-        // Validate Email (Ensure it's not empty and ends with @rtu.edu.ph)
-        if (!formData.aptemail) {
+        // Ensure all required fields are filled
+        if (!formData.aptstudnum)
+            newErrors.aptstudnum = "Student number is required.";
+        if (!formData.aptname) newErrors.aptname = "Full name is required.";
+        if (!formData.aptpnumber)
+            newErrors.aptpnumber = "Contact number is required.";
+        if (!formData.aptemail)
             newErrors.aptemail = "Institute email is required.";
-        } else if (!/^\d{4}-\d{6}@rtu\.edu\.ph$/.test(formData.aptemail)) {
-            newErrors.aptemail =
-                "Institute Email must be in the format ####-######@rtu.edu.ph.";
-        }
 
         // Check if the form is valid
         const isFormValid = Object.keys(newErrors).length === 0;
@@ -111,39 +120,83 @@ function SetAppointment() {
 
     const setApt = async (e) => {
         e.preventDefault();
-        const emailCount = appointments.reduce((count, appointment) => {
-            if (appointment.aptemail === formData.aptemail) {
+
+        // Prevent multiple submissions
+        if (isSubmitting) return;
+        setIsSubmitting(true);
+
+        // Count how many times the student has an appointment in the selected office
+        const officeCount = appointments.reduce((count, appointment) => {
+            if (
+                appointment.aptoffice === formData.aptoffice && // Same Office
+                appointment.aptbranch === formData.aptbranch && // Same Branch
+                appointment.aptstudnum === formData.aptstudnum // Same Student Number
+            ) {
                 count++;
             }
             return count;
         }, 0);
 
-        // Check if emailCount is greater than or equal to 3
-        if (emailCount >= 3) {
-            openmodal1();
-            return; // Exit function if already three appointments
-        } else {
-            try {
-                const res = await axios.post(
-                    `${apiBaseUrl}/api/setappt`,
-                    formData
-                );
+        // If student already has an appointment in this office, prevent another booking
+        if (officeCount >= 1) {
+            openmodal1(); // Show modal to notify student
+            setIsSubmitting(false);
+            return;
+        }
 
-                if (res.status === 200) {
-                    openmodal(res.data.data);
+        try {
+            const formDataToSend = new FormData();
+
+            // Append all form fields
+            Object.keys(formData).forEach((key) => {
+                if (key === "aptattach" && Array.isArray(formData[key])) {
+                    formData[key].forEach((file) => {
+                        formDataToSend.append("aptattach[]", file); // Append each file
+                    });
+                } else {
+                    formDataToSend.append(key, formData[key]);
                 }
-            } catch (error) {
-                alert("Appointment failed. Please check your details");
+            });
+
+            console.log("Submitting appointment...", formDataToSend);
+
+            // Send the request once with FormData (for both text & file data)
+            const res = await axios.post(
+                `${apiBaseUrl}/api/setappt`,
+                formDataToSend,
+                {
+                    headers: { "Content-Type": "multipart/form-data" },
+                }
+            );
+
+            if (res.status === 200) {
+                openmodal(res.data.data); // Show success modal
             }
+        } catch (error) {
+            console.error("Appointment failed:", error);
+            alert("Appointment failed. Please check your details");
+        } finally {
+            setIsSubmitting(false); // Reset after request completes
         }
     };
 
     const handleBranchSelect = () => {
         setIsBranchSelected(true);
+        setIsOfficeSelected(false); // Reset office selection when changing branches
+        setFormData((prevData) => ({
+            ...prevData,
+            aptoffice: "", // Clear selected office
+        }));
     };
 
     const handleOfficeSelect = () => {
         setIsOfficeSelected(true);
+        setFormData((prevData) => ({
+            ...prevData,
+            aptpurpose: "", // Reset selected purpose when changing office
+            aptother: "",
+            aptattach: [], // Reset attached files
+        }));
     };
 
     const handleTimeSelect = () => {
@@ -185,7 +238,7 @@ function SetAppointment() {
                         <div className="mb-8">
                             <div className="w-full bg-gray-300 rounded-full">
                                 <div
-                                    class=" p-0.5 text-center text-xs font-medium leading-none text-primary-100 rounded-md bg-amber-400"
+                                    className=" p-0.5 text-center text-xs font-medium leading-none text-primary-100 rounded-md bg-amber-400"
                                     style={{ width: `${step * 20}%` }}
                                 >
                                     {step * 20}%
@@ -287,12 +340,17 @@ function SetAppointment() {
                                             setFormData={setFormData}
                                             limit={limit}
                                             appointments={appointments}
+                                            userRole={user ? user.role : ""}
+                                            setIsTimeSelected={
+                                                setIsTimeSelected
+                                            }
                                         />
                                         <TimePicker
                                             formData={formData}
                                             setFormData={setFormData}
-                                            appointments={appointments}
                                             limit={limit}
+                                            appointments={appointments}
+                                            userRole={user ? user.role : ""}
                                             setTimeSelected={handleTimeSelect}
                                         />
                                     </div>
@@ -438,68 +496,65 @@ function SetAppointment() {
 
                     <dialog
                         ref={modals}
-                        className="modal"
+                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 backdrop:bg-black/50"
                         onKeyDown={(event) => {
                             if (event.key === "Escape") {
                                 event.preventDefault();
                             }
                         }}
                     >
-                        <div className="modal-box flex flex-col justify-center items-center text-white bg-[#194F90]">
-                            <h2> Your appointment number is:</h2>
-                            <h1 className="underline"> {succData.aptid}</h1>
-                            <PDFDownloadLink
-                                document={<PDFFile succData={succData} />}
-                                fileName="RTU-Appointment-Receipt.pdf"
+                        <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] p-6 w-full">
+                            <button
+                                className="cursor-pointer absolute top-1 right-1 text-white hover:text-gray-300 transition duration-300 focus:outline-none"
+                                onClick={() => modals.current.close()}
                             >
-                                {({ loading }) =>
-                                    loading ? (
-                                        <div>
-                                            <Loading />
-                                        </div>
-                                    ) : (
-                                        <button
-                                            type="button"
-                                            className="btn btn-outline text-white hover:bg-white hover:text-[#194F90] mt-6"
-                                            onClick={() => {
-                                                setTimeout(() => {
-                                                    window.location.reload();
-                                                }, 500);
-                                            }}
-                                        >
-                                            Download
-                                        </button>
-                                    )
-                                }
-                            </PDFDownloadLink>
-                            <div className="item-center modal-action text-sm">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-6 w-6 text-white"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    strokeWidth={2}
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                </svg>
+                            </button>
+                            <h2>Appointment has been Set Successfully</h2>
+
+                            <div className="item-center modal-action text-sm text-center">
                                 <label style={{ verticalAlign: "middle" }}>
                                     <b>
                                         <br />
-                                        **Reminder that appointment number is
-                                        important**
+                                        Kindly wait for the office to confirm
+                                        your appointment.
+                                        <br />
+                                        Confirmation will be sent via email.
                                     </b>
                                 </label>
                             </div>
-                            <h4 className="text-xs mt-2">
-                                Note: clicking download reloads the page.
+                            <h4 className="text-xs mt-6">
+                                Note: Click the "X" to go back home.
                             </h4>
                         </div>
                     </dialog>
 
                     <dialog
                         ref={modals1}
-                        className="modal"
+                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 backdrop:bg-black/50"
                         onKeyDown={(event) => {
                             if (event.key === "Escape") {
                                 event.preventDefault();
                             }
                         }}
                     >
-                        <div className="modal-box relative flex flex-col justify-center items-center text-white bg-[#194F90]">
+                        <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] p-6 w-full">
                             {/* Close button with SVG */}
                             <button
-                                className="absolute top-2 right-2 p-2 transition duration-300 focus:outline-none"
+                                className="absolute top-1 right-1 text-white hover:text-gray-300 transition duration-300 focus:outline-none"
                                 onClick={() => modals1.current.close()}
                             >
                                 <svg
@@ -523,11 +578,11 @@ function SetAppointment() {
                                     Appointment Failed
                                 </h1>
                                 <h3 className="text-md">
-                                    You already have three (3) ongoing
-                                    appointments.
+                                    You already have an ongoing appointment in
+                                    this office.
                                 </h3>
                                 <h4 className="text-gray-200 text-xs mt-2">
-                                    Note: Accomplish those transactions before
+                                    Note: Accomplish the transaction before
                                     scheduling another appointment.
                                 </h4>
                                 <h4 className="text-gray-200 text-xs mt-2">
