@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Office;
+use App\Models\DisabledDate;
+use App\Models\DisabledSlot;
 
 class Offices extends Controller
 {
@@ -182,5 +184,74 @@ class Offices extends Controller
             }
         }
         return response()->json(['status' => 404, 'message' => 'Office not found'], 404);
+    }
+
+    public function getDisabledDates($offabbr, $branch)
+    {
+        $disabledDates = DisabledDate::where('aptoffice', $offabbr)
+            ->where('aptbranch', $branch)
+            ->get();
+        return response()->json($disabledDates, 200);
+    }
+
+    public function toggleDisabledDate(Request $request)
+    {
+        $validatedData = $request->validate([
+            'date' => 'required|date',
+            'time' => 'nullable|string', // if null, disable the whole day
+            'aptoffice' => 'required|string',
+            'aptbranch' => 'required|string',
+        ]);
+
+        // Look for an existing record
+        $disabledDate = DisabledDate::where('aptoffice', $validatedData['aptoffice'])
+            ->where('aptbranch', $validatedData['aptbranch'])
+            ->where('date', $validatedData['date'])
+            ->where('time', $validatedData['time'])
+            ->first();
+
+        if ($disabledDate) {
+            // Found record means it's currently disabled – so enable it by deleting the record.
+            $disabledDate->delete();
+            return response()->json(['message' => 'Date/Time enabled'], 200);
+        } else {
+            // Not found: create a new record to disable the date/time.
+            DisabledDate::create($validatedData);
+            return response()->json(['message' => 'Date/Time disabled'], 201);
+        }
+    }
+
+    public function getDisabledSlots($offabbr, $branch)
+    {
+        $disabledSlots = DisabledSlot::where('aptoffice', $offabbr)
+            ->where('aptbranch', $branch)
+            ->get();
+        return response()->json($disabledSlots, 200);
+    }
+
+    public function toggleDisabledSlot(Request $request)
+    {
+        $validatedData = $request->validate([
+            'date' => 'required|date',
+            'time' => 'nullable|string', // If null, whole day is disabled; otherwise, specific time slot
+            'aptoffice' => 'required|string',
+            'aptbranch' => 'required|string',
+        ]);
+
+        $disabledSlot = DisabledSlot::where('aptoffice', $validatedData['aptoffice'])
+            ->where('aptbranch', $validatedData['aptbranch'])
+            ->where('date', $validatedData['date'])
+            ->where('time', $validatedData['time'])
+            ->first();
+
+        if ($disabledSlot) {
+            // If the record exists, it means the slot is disabled. Re-enable it by deleting.
+            $disabledSlot->delete();
+            return response()->json(['message' => 'Slot enabled'], 200);
+        } else {
+            // If the record does not exist, disable the slot by creating a new entry.
+            DisabledSlot::create($validatedData);
+            return response()->json(['message' => 'Slot disabled'], 201);
+        }
     }
 }
