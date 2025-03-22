@@ -341,6 +341,9 @@ function SetAppointment() {
                                             limit={limit}
                                             appointments={appointments}
                                             userRole={user ? user.role : ""}
+                                            setIsTimeSelected={
+                                                setIsTimeSelected
+                                            }
                                         />
                                         <TimePicker
                                             formData={formData}

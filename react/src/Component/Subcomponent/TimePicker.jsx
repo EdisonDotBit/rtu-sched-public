@@ -59,7 +59,6 @@ const TimePicker = ({
                 setTimeSelected(!!availableTime);
             }
 
-            // ✅ Add delay before setting loading to false
             setTimeout(() => {
                 setLoading(false);
             }, 1000); // ⏳ 1-second delay
@@ -78,7 +77,48 @@ const TimePicker = ({
                 )
                     return;
 
-                setLoading(true); // ✅ Start loading
+                setLoading(true);
+                try {
+                    const endpoint = `${apiBaseUrl}/api/office/disabled-slots/${formData.aptoffice}/${formData.aptbranch}`;
+                    console.log("Fetching disabled time slots from:", endpoint);
+                    const res = await fetch(endpoint);
+                    if (!res.ok) throw new Error(res.statusText);
+                    const data = await res.json();
+
+                    const fetchedTimes = data
+                        .filter(
+                            (item) =>
+                                item.date === formData.aptdate && item.time
+                        )
+                        .map((item) => item.time);
+
+                    setDisabledTime([...fetchedTimes]);
+                } catch (error) {
+                    console.error("Error fetching disabled time slots:", error);
+                } finally {
+                    setTimeout(() => {
+                        setLoading(false);
+                    }, 1000); // ⏳ 1-second delay
+                }
+            };
+
+            fetchDisabledSlots();
+        },
+        [apiBaseUrl, formData.aptoffice, formData.aptbranch, formData.aptdate],
+        500
+    );
+
+    useDebouncedEffect(
+        () => {
+            const fetchDisabledSlots = async () => {
+                if (
+                    !formData.aptoffice ||
+                    !formData.aptbranch ||
+                    !formData.aptdate
+                )
+                    return;
+
+                setLoading(true);
                 try {
                     const endpoint = `${apiBaseUrl}/api/office/disabled-slots/${formData.aptoffice}/${formData.aptbranch}`;
                     console.log("Fetching disabled time slots from:", endpoint);
@@ -110,14 +150,15 @@ const TimePicker = ({
     );
 
     const handleTimeClick = (time) => {
+        // Prevent clicking if the time slot is explicitly disabled for students or guests.
         if (
-            loading ||
-            userRole === "Student" ||
-            (userRole === "Guest" && disabledTime.includes(time))
+            (userRole === "Student" || userRole === "Guest") &&
+            disabledTime.includes(time)
         ) {
             return;
         }
 
+        // Update the selected time in the form data.
         setFormData((prevFormData) => ({
             ...prevFormData,
             apttime: time,
@@ -126,7 +167,7 @@ const TimePicker = ({
     };
 
     return (
-        <div className="container w-full mx-auto max-w-md p-4 text-black md:ml-10">
+        <div className="container w-full mx-auto max-w-md p-4 text-black">
             <h2 className="text-2xl font-semibold mb-4">Select a Time</h2>
 
             {loading ? ( // ✅ Show loading state while fetching
@@ -141,10 +182,11 @@ const TimePicker = ({
                             key={index}
                             onClick={() => handleTimeClick(time)}
                             disabled={
-                                loading ||
-                                userRole === "Student" ||
+                                loading || // Disable if loading
+                                (userRole === "Student" &&
+                                    disabledTime.includes(time)) || // Disable for students if time is disabled
                                 (userRole === "Guest" &&
-                                    disabledTime.includes(time))
+                                    disabledTime.includes(time)) // Disable for guests if time is disabled
                             }
                             className={`flex justify-center items-center p-4 border border-gray-300 rounded-lg focus:outline-none transition-colors ${
                                 formData.apttime === time

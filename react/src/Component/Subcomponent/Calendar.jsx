@@ -1,30 +1,35 @@
 import { useEffect, useState } from "react";
 import Loading from "./Loading";
-import { useDebouncedEffect } from "../../Hooks/useDebouncedEffect";
+import { fetchHolidays } from "../../../../resources/js/fetchHolidays";
 
-const Calendar = ({ formData, setFormData, limit, appointments, userRole }) => {
+const Calendar = ({
+    formData,
+    setFormData,
+    limit,
+    appointments,
+    userRole,
+    setIsTimeSelected,
+}) => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-    const [disabledDates, setDisabledDates] = useState([
-        // Holidays
-        "2024-01-01",
-        "2024-03-28",
-        "2024-03-29",
-        "2024-04-09",
-        "2024-05-01",
-        "2024-06-12",
-        "2024-08-26",
-        "2024-11-30",
-        "2024-12-25",
-        "2024-12-30",
-    ]);
+    const [disabledDates, setDisabledDates] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [rerender, setRerender] = useState(false);
 
+    // Fetch holidays and disabled dates on component mount
     useEffect(() => {
-        const getData = async () => {
+        const fetchData = async () => {
             setIsLoading(true);
 
+            // Fetch holidays
+            const year = new Date().getFullYear();
+            const holidays = await fetchHolidays(year);
+            const holidayDates = holidays.map(
+                (holiday) =>
+                    holiday.start.date || holiday.start.dateTime.slice(0, 10)
+            );
+
+            // Fetch disabled dates set by the admin
             const counts = {};
             appointments.forEach((item) => {
                 const date = item.aptdate;
@@ -37,17 +42,23 @@ const Calendar = ({ formData, setFormData, limit, appointments, userRole }) => {
                 (date) => counts[date] >= limit
             );
 
+            // Combine holidays and admin-disabled dates
             setDisabledDates((prevDisabledDates) => {
                 return Array.from(
-                    new Set([...prevDisabledDates, ...datesToDisable])
+                    new Set([
+                        ...prevDisabledDates,
+                        ...datesToDisable,
+                        ...holidayDates,
+                    ])
                 );
             });
             setIsLoading(false);
         };
 
-        getData();
-    }, [formData.aptoffice]);
+        fetchData();
+    }, [formData.aptoffice, appointments, limit]);
 
+    // Fetch disabled dates from the backend API
     useEffect(() => {
         const fetchDisabledDates = async () => {
             if (!formData.aptoffice || !formData.aptbranch) return;
@@ -69,11 +80,12 @@ const Calendar = ({ formData, setFormData, limit, appointments, userRole }) => {
                 console.error("Error fetching disabled dates:", error);
             }
         };
+
         fetchDisabledDates();
     }, [apiBaseUrl, formData.aptoffice, formData.aptbranch]);
 
+    // Handle date selection
     const handleDateClick = (day) => {
-        // Create a formatted date string (YYYY-MM-DD)
         const formattedDate = `${currentDate.getFullYear()}-${(
             currentDate.getMonth() + 1
         )
@@ -82,9 +94,10 @@ const Calendar = ({ formData, setFormData, limit, appointments, userRole }) => {
 
         console.log("Clicked date:", formattedDate);
 
+        // For students and guests, prevent clicking on explicitly disabled dates.
         if (
-            userRole === "Student" ||
-            (userRole === "Guest" && disabledDates.includes(formattedDate))
+            (userRole === "Student" || userRole === "Guest") &&
+            disabledDates.includes(formattedDate)
         ) {
             return;
         }
@@ -93,12 +106,17 @@ const Calendar = ({ formData, setFormData, limit, appointments, userRole }) => {
         setFormData((prevFormData) => ({
             ...prevFormData,
             aptdate: formattedDate,
-            apttime: "",
+            apttime: "", // Reset the time selection
         }));
+
+        // Reset isTimeSelected to false
+        setIsTimeSelected(false);
+
         console.log(limit);
         setRerender((prev) => !prev);
     };
 
+    // Navigation handlers
     const handlePrevYear = () => {
         setCurrentDate(
             (prevDate) =>
@@ -127,6 +145,7 @@ const Calendar = ({ formData, setFormData, limit, appointments, userRole }) => {
         );
     };
 
+    // Check if a date is disabled
     const isPastDate = (day) => {
         const selectedDate = new Date(
             currentDate.getFullYear(),
@@ -147,8 +166,8 @@ const Calendar = ({ formData, setFormData, limit, appointments, userRole }) => {
             return true;
         }
 
-        // For students only:
-        if (userRole === "Student") {
+        // For students, disable dates that are explicitly in the disabledDates array.
+        if (userRole === "Student" || userRole === "Guest") {
             const formatted = `${selectedDate.getFullYear()}-${(
                 selectedDate.getMonth() + 1
             )
@@ -165,10 +184,12 @@ const Calendar = ({ formData, setFormData, limit, appointments, userRole }) => {
         return false;
     };
 
+    // Get the number of days in the current month
     const getDaysInMonth = (month, year) => {
         return new Date(year, month + 1, 0).getDate();
     };
 
+    // Render the calendar days
     const renderCalendarDays = () => {
         const currentYear = currentDate.getFullYear();
         const currentMonth = currentDate.getMonth();
@@ -177,12 +198,14 @@ const Calendar = ({ formData, setFormData, limit, appointments, userRole }) => {
 
         let calendarDays = [];
 
+        // Add empty cells for days before the first day of the month
         for (let i = 0; i < firstDayOfMonth; i++) {
             calendarDays.push(
                 <td key={`empty-${i}`} className="border border-gray-200"></td>
             );
         }
 
+        // Add days of the month
         for (let day = 1; day <= totalDays; day++) {
             const formattedDate = `${currentYear}-${(currentMonth + 1)
                 .toString()
@@ -190,6 +213,7 @@ const Calendar = ({ formData, setFormData, limit, appointments, userRole }) => {
 
             let className = "border border-gray-200";
 
+            // Highlight weekends
             if (
                 new Date(currentYear, currentMonth, day).getDay() === 0 ||
                 new Date(currentYear, currentMonth, day).getDay() === 6
@@ -197,18 +221,21 @@ const Calendar = ({ formData, setFormData, limit, appointments, userRole }) => {
                 className += " text-red-500";
             }
 
+            // Highlight selected date
             if (formData.aptdate === formattedDate) {
                 className += " bg-blue-600 text-white";
             }
 
+            // Disable past dates
             if (isPastDate(day)) {
                 className += " pointer-events-none opacity-50";
             }
 
+            // Highlight disabled dates
             if (disabledDates.includes(formattedDate)) {
                 if (userRole === "Student" || userRole === "Guest") {
                     className +=
-                        " bg-gray-300 text-gray-500 pointer-events-none cursor-not-allowed"; // Disabled for students
+                        " bg-gray-300 text-gray-500 pointer-events-none cursor-not-allowed"; // Disabled for students and guests
                 } else {
                     className += " bg-yellow-300 text-gray-900"; // Highlighted but still clickable for admins
                 }
@@ -228,6 +255,7 @@ const Calendar = ({ formData, setFormData, limit, appointments, userRole }) => {
             );
         }
 
+        // Split days into rows
         const rows = [];
         let cells = [];
 

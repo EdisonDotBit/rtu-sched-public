@@ -30,6 +30,7 @@ function OfficeAdminManage() {
     });
     const isDateDisabled = disabledDates.includes(formData.aptdate);
     const isTimeDisabled = disabledTimes.includes(formData.apttime);
+    const [isTimeSelected, setIsTimeSelected] = useState(false);
 
     useDebouncedEffect(
         () => {
@@ -401,6 +402,7 @@ function OfficeAdminManage() {
                                         appointments={offData}
                                         userRole={role}
                                         disabledDates={disabledDates}
+                                        setIsTimeSelected={setIsTimeSelected}
                                     />
                                     {/* Toggle Date Button */}
                                     <button
