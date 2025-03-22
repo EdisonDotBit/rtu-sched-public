@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import EditOffice from "./Component/EditOffice";
 import { useAuth } from "../../Hooks/useAuth";
+import { useDebouncedEffect } from "../../Hooks/useDebouncedEffect";
 import Calendar from "../Subcomponent/Calendar";
 import TimePicker from "../Subcomponent/TimePicker";
 
@@ -17,17 +18,21 @@ function OfficeAdminManage() {
     const [selectedOffice, setSelectedOffice] = useState(null);
     const [purpose, setPurpose] = useState("");
 
-    useEffect(() => {
-        const getData = async () => {
-            const getRes = await fetch(
-                `${apiBaseUrl}/api/office/bybranchrole/${branch}/${role}`
-            );
-            const getDataResult = await getRes.json();
-            setoffData(getDataResult);
-            setSearchResults(getDataResult);
-        };
-        getData();
-    }, [branch, role]);
+    useDebouncedEffect(
+        () => {
+            const getData = async () => {
+                const getRes = await fetch(
+                    `${apiBaseUrl}/api/office/bybranchrole/${branch}/${role}`
+                );
+                const getDataResult = await getRes.json();
+                setoffData(getDataResult);
+                setSearchResults(getDataResult);
+            };
+            getData();
+        },
+        [branch, role],
+        500
+    );
 
     useEffect(() => {
         const filteredResults = offData.filter((office) => {
@@ -95,7 +100,7 @@ function OfficeAdminManage() {
                         {searchResults.length !== 0 && (
                             // add overflow-x-auto if list gets long
                             <div className="border border-gray-200">
-                                <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
+                                <table className="table-auto  shadow-md rounded min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
                                     <thead className="ltr:text-center rtl:text-center">
                                         <tr>
                                             <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">

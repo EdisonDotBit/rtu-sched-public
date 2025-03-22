@@ -181,7 +181,7 @@ function GuestLayout() {
                 </div>
 
                 {/* Footer */}
-                <footer className="h-9 border-t text-center text-xs text-[#3c4043] flex items-center justify-center">
+                <footer className="h-9 border-t border-gray-300 text-center text-xs text-[#3c4043] flex items-center justify-center">
                     <p>
                         Copyright © 2024 - All rights reserved by Rizal
                         Technological University

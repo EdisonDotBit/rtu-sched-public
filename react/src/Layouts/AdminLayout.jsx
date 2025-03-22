@@ -79,7 +79,7 @@ function AdminLayout() {
                 <div className="flex flex-1 overflow-hidden">
                     {/* Sidebar */}
                     <aside
-                        className={`fixed inset-y-0 left-0 z-30 w-72 sm:w-60 bg-[#194F90] transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
+                        className={`fixed inset-y-0 left-0 z-30 w-46 bg-[#194F90] transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
                             isSidebarOpen
                                 ? "translate-x-0"
                                 : "-translate-x-full"
@@ -127,11 +127,11 @@ function AdminLayout() {
                                 </svg>
                             </button>
                         </div>
-                        <nav className="text-sm flex flex-col flex-1 overflow-y-auto">
+                        <nav className="flex flex-col flex-1 overflow-y-auto text-xs">
                             <NavLink
-                                to="/rtu/admin/feedback"
+                                to="/rtu/admin/dashboard"
                                 className={`relative flex items-center px-6 sm:px-8 py-4 sm:py-6 text-white hover:bg-[#123A69] ${
-                                    location.pathname === "/rtu/admin/feedback"
+                                    location.pathname === "/rtu/admin/dashboard"
                                         ? "bg-[#123A69]"
                                         : ""
                                 }`}
@@ -139,7 +139,7 @@ function AdminLayout() {
                                 <span
                                     className={`absolute left-0 h-full w-1.5 bg-[#FFDB75] ${
                                         location.pathname ===
-                                        "/rtu/admin/feedback"
+                                        "/rtu/admin/dashboard"
                                             ? "opacity-100"
                                             : "opacity-0"
                                     }`}
@@ -155,10 +155,11 @@ function AdminLayout() {
                                     <path
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
-                                        d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"
+                                        d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z"
                                     />
                                 </svg>
-                                <span className="ml-4">View Feedbacks</span>
+
+                                <span className="ml-4">Dashboard</span>
                             </NavLink>
                             <NavLink
                                 to="/rtu/admin/appointments"
@@ -223,7 +224,39 @@ function AdminLayout() {
                                         d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z"
                                     />
                                 </svg>
-                                <span className="ml-4">Manage Office</span>
+                                <span className="ml-4">Office</span>
+                            </NavLink>
+                            <NavLink
+                                to="/rtu/admin/feedback"
+                                className={`relative flex items-center px-6 sm:px-8 py-4 sm:py-6 text-white hover:bg-[#123A69] ${
+                                    location.pathname === "/rtu/admin/feedback"
+                                        ? "bg-[#123A69]"
+                                        : ""
+                                }`}
+                            >
+                                <span
+                                    className={`absolute left-0 h-full w-1.5 bg-[#FFDB75] ${
+                                        location.pathname ===
+                                        "/rtu/admin/feedback"
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                    }`}
+                                ></span>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                    className="w-7 h-7 mr-1"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"
+                                    />
+                                </svg>
+                                <span className="ml-4">Feedbacks</span>
                             </NavLink>
                             <NavLink
                                 to="/rtu/admin/manage"
@@ -261,7 +294,7 @@ function AdminLayout() {
                     </aside>
 
                     {/* Main Content Area */}
-                    <main className="flex-1 bg-gray-50 p-6 sm:p-10 rounded-lg overflow-y-auto transition-all duration-300">
+                    <main className="flex-1 bg-gray-50 p-6 overflow-y-auto transition-all duration-300">
                         <Outlet />
                     </main>
                 </div>

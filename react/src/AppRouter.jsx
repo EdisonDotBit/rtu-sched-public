@@ -30,6 +30,7 @@ import ForgotPasswordAuthentication from "./Component/Authentication/ForgotPassw
 import ResetPassword from "./Component/Authentication/ResetPassword.jsx";
 import ProtectedRegisterRoute from "./ProtectedRegisterRoute.jsx";
 import ProtectedForgotRoute from "./ProtectedForgotRoute.jsx";
+import Dashboard from "./Component/Admin/Dashboard.jsx";
 
 const AppRouter = () => (
     <>
@@ -50,7 +51,16 @@ const AppRouter = () => (
                     >
                         <Route
                             path=""
-                            element={<Navigate to="/rtu/admin/feedback" />}
+                            element={<Navigate to="/rtu/admin/dashboard" />}
+                        />
+
+                        <Route
+                            path="dashboard"
+                            element={
+                                <ProtectedRoute>
+                                    <Dashboard />
+                                </ProtectedRoute>
+                            }
                         />
 
                         <Route
@@ -61,6 +71,7 @@ const AppRouter = () => (
                                 </ProtectedRoute>
                             }
                         />
+
                         <Route
                             path="manage"
                             element={
@@ -98,7 +109,16 @@ const AppRouter = () => (
                     >
                         <Route
                             path=""
-                            element={<Navigate to="/rtu/suppa/feedbacks" />}
+                            element={<Navigate to="/rtu/suppa/dashboard" />}
+                        />
+
+                        <Route
+                            path="dashboard"
+                            element={
+                                <ProtectedRoute>
+                                    <Dashboard />
+                                </ProtectedRoute>
+                            }
                         />
 
                         <Route

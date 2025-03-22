@@ -51,7 +51,7 @@ Route::controller(Offices::class)->group(function () {
     Route::put('office/edit/{offid}', 'edoff');
     Route::get('office/find/{offabbr}', 'findAbbr');
     Route::post('office/addPurpose', 'addPurpose');
-    Route::get('office/purposes/{officeAbbr}', 'getPurposes');
+    Route::get('office/purposes/{officeAbbr}/{offBranch}', 'getPurposes');
 });
 
 //  Admin Routes

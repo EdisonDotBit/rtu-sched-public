@@ -45,14 +45,20 @@ function AddAccount({ setShowAdd }) {
     };
 
     useEffect(() => {
-        const getData = async () => {
-            const getRes = await fetch(
-                `${apiBaseUrl}/api/office/bybranch/${branch}`
-            );
-            const getDataResult = await getRes.json();
-            setoffData(getDataResult);
-        };
-        getData();
+        if (offData.length === 0) {
+            const getData = async () => {
+                try {
+                    const getRes = await fetch(
+                        `${apiBaseUrl}/api/office/bybranch/${branch}`
+                    );
+                    const getDataResult = await getRes.json();
+                    setoffData(getDataResult);
+                } catch (error) {
+                    console.error("Fetch error:", error);
+                }
+            };
+            getData();
+        }
     }, [branch]);
 
     return (

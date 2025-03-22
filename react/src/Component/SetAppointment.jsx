@@ -6,9 +6,6 @@ import Confirmation from "./Subcomponent/Confirmation";
 import SelectBranch from "./Subcomponent/SelectBranch";
 import axios from "axios";
 import TimePicker from "./Subcomponent/TimePicker";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import PDFFile from "./PDFFile";
-import Loading from "./Subcomponent/Loading";
 import { useStudentAuth } from "../Hooks/useStudentAuth";
 
 function SetAppointment() {
@@ -25,6 +22,8 @@ function SetAppointment() {
         aptemail: user ? user.email : "",
         aptpnumber: user ? user.contact_number : "",
         apttime: "",
+        aptattach: [],
+        aptother: "",
         isConfirmed: false,
     });
 
@@ -40,6 +39,7 @@ function SetAppointment() {
     const [isTimeSelected, setIsTimeSelected] = useState(false);
     const [isInputFilled, setIsInputFilled] = useState(false);
     const [errors, setErrors] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         if (user) {
@@ -93,6 +93,15 @@ function SetAppointment() {
             newErrors.aptpurpose = "Please select a purpose.";
         }
 
+        // Validate "Other" Field (Required only if "Other" is selected)
+        if (
+            formData.aptpurpose &&
+            formData.aptpurpose.toLowerCase().includes("other") && // Check if "Other" or "Others" is selected
+            (!formData.aptother || formData.aptother.trim() === "")
+        ) {
+            newErrors.aptother = "Please specify the other purposes here.";
+        }
+
         // Ensure all required fields are filled
         if (!formData.aptstudnum)
             newErrors.aptstudnum = "Student number is required.";
@@ -112,6 +121,10 @@ function SetAppointment() {
     const setApt = async (e) => {
         e.preventDefault();
 
+        // Prevent multiple submissions
+        if (isSubmitting) return;
+        setIsSubmitting(true);
+
         // Count how many times the student has an appointment in the selected office
         const officeCount = appointments.reduce((count, appointment) => {
             if (
@@ -127,20 +140,43 @@ function SetAppointment() {
         // If student already has an appointment in this office, prevent another booking
         if (officeCount >= 1) {
             openmodal1(); // Show modal to notify student
-            return; // Exit function
-        } else {
-            try {
-                const res = await axios.post(
-                    `${apiBaseUrl}/api/setappt`,
-                    formData
-                );
+            setIsSubmitting(false);
+            return;
+        }
 
-                if (res.status === 200) {
-                    openmodal(res.data.data); // Show success modal
+        try {
+            const formDataToSend = new FormData();
+
+            // Append all form fields
+            Object.keys(formData).forEach((key) => {
+                if (key === "aptattach" && Array.isArray(formData[key])) {
+                    formData[key].forEach((file) => {
+                        formDataToSend.append("aptattach[]", file); // Append each file
+                    });
+                } else {
+                    formDataToSend.append(key, formData[key]);
                 }
-            } catch (error) {
-                alert("Appointment failed. Please check your details");
+            });
+
+            console.log("Submitting appointment...", formDataToSend);
+
+            // Send the request once with FormData (for both text & file data)
+            const res = await axios.post(
+                `${apiBaseUrl}/api/setappt`,
+                formDataToSend,
+                {
+                    headers: { "Content-Type": "multipart/form-data" },
+                }
+            );
+
+            if (res.status === 200) {
+                openmodal(res.data.data); // Show success modal
             }
+        } catch (error) {
+            console.error("Appointment failed:", error);
+            alert("Appointment failed. Please check your details");
+        } finally {
+            setIsSubmitting(false); // Reset after request completes
         }
     };
 
@@ -158,6 +194,8 @@ function SetAppointment() {
         setFormData((prevData) => ({
             ...prevData,
             aptpurpose: "", // Reset selected purpose when changing office
+            aptother: "",
+            aptattach: [], // Reset attached files
         }));
     };
 

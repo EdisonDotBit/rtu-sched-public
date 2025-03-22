@@ -10,6 +10,7 @@ use App\Mail\DoneAppointment;
 use App\Mail\CancelAppointment;
 use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
 
 class Appointments extends Controller
 {
@@ -18,20 +19,6 @@ class Appointments extends Controller
         $apt = Appointment::where('aptstatus', 'ongoing')->get();
         return $apt;
     }
-
-    // public function allRoles(string $aptrole)
-    // {
-    //     $apt = Appointment::where('aptoffice', $aptrole)
-    //         ->where('aptstatus', $'ongoing')->get();
-
-    //     return $apt;
-    // }
-
-    // public function allRoles(string $aptrole)
-    // {
-    //     $apt = Appointment::where('aptoffice', $aptrole)->get();
-    //     return $apt;
-    // }
 
     public function allRolesAndBranch(string $aptrole, string $aptbranch)
     {
@@ -66,12 +53,20 @@ class Appointments extends Controller
         $apt->aptpnumber = $request->input('aptpnumber');
         $apt->aptemail = $request->input('aptemail');
         $apt->apttime = $request->input('apttime');
+        $apt->aptother = $request->input('aptother');
 
+        // Handle file uploads (attachments)
+        if ($request->hasFile('aptattach')) {
+            $uploadedFiles = [];
+            foreach ($request->file('aptattach') as $file) {
+                $filePath = $file->store('appointments', 'public'); // Store in storage/app/public/appointments
+                $uploadedFiles[] = $filePath;
+            }
+            $apt->aptattach = json_encode($uploadedFiles); // Store file paths as JSON in DB
+        }
 
         try {
             $apt->save();
-
-            // $apt->makeHidden(['aptid', 'aptname', 'aptstudnum', 'aptpnumber', 'aptemail']);
 
             return response()->json([
                 'status' => 200,
@@ -87,6 +82,7 @@ class Appointments extends Controller
         }
     }
 
+
     public function getapt(int $aptid)
     {
         $apt = Appointment::find($aptid);
@@ -97,6 +93,9 @@ class Appointments extends Controller
                 'message' => 'Appointment not found',
             ], 404);
         }
+
+        // Decode JSON attachments for frontend
+        $apt->aptattach = json_decode($apt->aptattach, true);
 
         return response()->json([
             'status' => 200,
@@ -144,8 +143,17 @@ class Appointments extends Controller
             ], 404);
         }
 
+        // Check if the appointment has already been rescheduled
+        if ($apt->rescheduled) {
+            return response()->json([
+                'status' => 403,
+                'message' => 'This appointment has already been rescheduled.',
+            ], 403);
+        }
+
         $apt->aptdate = $request->input('aptdate');
         $apt->apttime = $request->input('apttime');
+        $apt->rescheduled = true; // Mark as rescheduled
 
         try {
             $apt->save();
@@ -161,6 +169,7 @@ class Appointments extends Controller
             ], 400);
         }
     }
+
 
 
     public function confirmAppointment($id)
@@ -242,6 +251,14 @@ class Appointments extends Controller
         $appointment = Appointment::find($id);
         if (!$appointment) {
             return response()->json(['error' => 'Appointment not found.'], 404);
+        }
+
+        // Delete stored files
+        if ($appointment->aptattach) {
+            $attachments = json_decode($appointment->aptattach, true);
+            foreach ($attachments as $file) {
+                Storage::disk('public')->delete($file);
+            }
         }
 
         $appointment->delete();

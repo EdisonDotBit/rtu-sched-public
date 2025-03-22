@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import AddAccount from "./Component/AddAccount";
 import EditAccount from "./Component/EditAccount";
 import { useAuth } from "../../Hooks/useAuth";
+import { useDebouncedEffect } from "../../Hooks/useDebouncedEffect";
 
 function AccountSettingsAdmin() {
     const [accountsData, setAccountsData] = useState([]);
@@ -15,19 +16,23 @@ function AccountSettingsAdmin() {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const { branch } = useAuth();
 
-    useEffect(() => {
-        const getData = async () => {
-            const getRes = await fetch(
-                `${apiBaseUrl}/api/admin/bybranch/${branch}`
-            );
-            const getDataResult = await getRes.json();
-            setAccountsData(getDataResult);
-            setSearchResults(getDataResult);
-        };
-        getData();
-    }, [branch]);
+    useDebouncedEffect(
+        () => {
+            const getData = async () => {
+                const getRes = await fetch(
+                    `${apiBaseUrl}/api/admin/bybranch/${branch}`
+                );
+                const getDataResult = await getRes.json();
+                setAccountsData(getDataResult);
+                setSearchResults(getDataResult);
+            };
+            getData();
+        },
+        [branch],
+        500
+    );
 
-    useEffect(() => {
+    useDebouncedEffect(() => {
         const filteredResults = accountsData.filter((account) => {
             return account.admname
                 .toLowerCase()
@@ -95,7 +100,7 @@ function AccountSettingsAdmin() {
                         {searchResults.length !== 0 && (
                             // add overflow-x-auto if list gets long
                             <div className="border border-gray-200">
-                                <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
+                                <table className="table-auto  shadow-md rounded min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
                                     <thead className="ltr:text-center rtl:text-center">
                                         <tr>
                                             <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
@@ -120,7 +125,9 @@ function AccountSettingsAdmin() {
                                                 <tr key={index}>
                                                     <td
                                                         className={`whitespace-nowrap text-gray-700 ${
-                                                            Account.admid === 1
+                                                            Account.admid ===
+                                                                1 ||
+                                                            Account.admid === 2
                                                                 ? "px-8 py-5"
                                                                 : "px-4 py-2"
                                                         }`}
@@ -129,7 +136,9 @@ function AccountSettingsAdmin() {
                                                     </td>
                                                     <td
                                                         className={`whitespace-nowrap text-gray-700 ${
-                                                            Account.admid === 1
+                                                            Account.admid ===
+                                                                1 ||
+                                                            Account.admid === 2
                                                                 ? "px-8 py-5"
                                                                 : "px-4 py-2"
                                                         }`}
@@ -138,7 +147,9 @@ function AccountSettingsAdmin() {
                                                     </td>
                                                     <td
                                                         className={`whitespace-nowrap text-gray-700 ${
-                                                            Account.admid === 1
+                                                            Account.admid ===
+                                                                1 ||
+                                                            Account.admid === 2
                                                                 ? "px-8 py-5"
                                                                 : "px-4 py-2"
                                                         }`}
@@ -148,7 +159,9 @@ function AccountSettingsAdmin() {
 
                                                     <td
                                                         className={`whitespace-nowrap text-gray-700 ${
-                                                            Account.admid === 1
+                                                            Account.admid ===
+                                                                1 ||
+                                                            Account.admid === 2
                                                                 ? "px-8 py-5"
                                                                 : "px-4 py-2"
                                                         }`}
@@ -163,33 +176,36 @@ function AccountSettingsAdmin() {
                                                             href="#edit"
                                                         >
                                                             {Account.admid !==
-                                                                1 && (
-                                                                <button className="group relative inline-block overflow-hidden border border-indigo-600 px-8 py-3 focus:outline-none focus:ring">
-                                                                    <span className="absolute inset-x-0 bottom-0 h-[2px] bg-indigo-600 transition-all group-hover:h-full group-active:bg-indigo-500"></span>
-                                                                    <span className="relative text-sm font-medium text-indigo-600 transition-colors group-hover:text-white">
-                                                                        Edit
+                                                                1 &&
+                                                                Account.admid !==
+                                                                    2 && (
+                                                                    <button className="group relative inline-block overflow-hidden border border-indigo-600 px-8 py-3 focus:outline-none focus:ring">
+                                                                        <span className="absolute inset-x-0 bottom-0 h-[2px] bg-indigo-600 transition-all group-hover:h-full group-active:bg-indigo-500"></span>
+                                                                        <span className="relative text-sm font-medium text-indigo-600 transition-colors group-hover:text-white">
+                                                                            Edit
+                                                                        </span>
+                                                                    </button>
+                                                                )}
+                                                        </a>
+
+                                                        {Account.admid !== 1 &&
+                                                            Account.admid !==
+                                                                2 && (
+                                                                <button
+                                                                    className="ml-4 group relative inline-block overflow-hidden border border-red-600 px-8 py-3 focus:outline-none focus:ring"
+                                                                    onClick={() =>
+                                                                        openmodal(
+                                                                            Account.admid,
+                                                                            Account.admname
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <span className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600 transition-all group-hover:h-full group-active:bg-red-500"></span>{" "}
+                                                                    <span className="relative text-sm font-medium text-red-600 transition-colors group-hover:text-white">
+                                                                        Delete
                                                                     </span>
                                                                 </button>
                                                             )}
-                                                        </a>
-
-                                                        {Account.admid !==
-                                                            1 && (
-                                                            <button
-                                                                className="ml-4 group relative inline-block overflow-hidden border border-red-600 px-8 py-3 focus:outline-none focus:ring"
-                                                                onClick={() =>
-                                                                    openmodal(
-                                                                        Account.admid,
-                                                                        Account.admname
-                                                                    )
-                                                                }
-                                                            >
-                                                                <span className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600 transition-all group-hover:h-full group-active:bg-red-500"></span>{" "}
-                                                                <span className="relative text-sm font-medium text-red-600 transition-colors group-hover:text-white">
-                                                                    Delete
-                                                                </span>
-                                                            </button>
-                                                        )}
                                                     </td>
                                                 </tr>
                                             ))}
@@ -200,31 +216,35 @@ function AccountSettingsAdmin() {
                     </div>
 
                     <dialog ref={modals} className="modal">
-                        <div className="modal-box text-white bg-[#194F90]">
-                            <h3 className="font-bold text-lg">
-                                Do you really want to delete Account?
-                            </h3>
-                            <p className="py-4">
-                                Account Name: {selectedAdmName}
-                            </p>
-                            <div className="modal-action">
-                                <button
-                                    type="button"
-                                    className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
-                                    onClick={(e) => deleteAcc(e, selectedaccid)}
-                                >
-                                    Confirm
-                                </button>
-                                <button
-                                    type="button"
-                                    className="btn btn-outline text-white hover:bg-white hover:text-[#194F90]"
-                                    onClick={() => {
-                                        modals.current.close();
-                                        window.location.reload();
-                                    }}
-                                >
-                                    Close
-                                </button>
+                        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 backdrop:bg-black/50">
+                            <div className="modal-box text-white bg-[#194F90]">
+                                <h3 className="font-bold text-lg">
+                                    Do you really want to delete Account?
+                                </h3>
+                                <p className="py-4">
+                                    Account Name: {selectedAdmName}
+                                </p>
+                                <div className="modal-action flex justify-center gap-4">
+                                    <button
+                                        type="button"
+                                        className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
+                                        onClick={(e) =>
+                                            deleteAcc(e, selectedaccid)
+                                        }
+                                    >
+                                        Confirm
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
+                                        onClick={() => {
+                                            modals.current.close();
+                                            window.location.reload();
+                                        }}
+                                    >
+                                        Close
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </dialog>
