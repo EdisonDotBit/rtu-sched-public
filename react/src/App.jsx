@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-function App() {
+function App({ children }) {
     return (
-        <>
-            <div className="flex h-screen bg-gray-100"></div>
-        </>
+        <div className="flex flex-col min-h-screen bg-gray-100">
+            {children} {/* Render the child components (e.g., Routes) */}
+            <ToastContainer />
+        </div>
     );
 }
 
