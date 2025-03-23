@@ -10,35 +10,36 @@ function AddOffice({ setShowAdd, onSuccess }) {
     const [formData, setFormData] = useState({
         offabbr: "",
         offname: "",
-        offlimit: "",
+        offlimit: "", // Initialize as empty string to allow empty input
     });
 
     const handleChange = useCallback((e) => {
         const { name, value } = e.target;
         setFormData((prevState) => ({
             ...prevState,
-            [name]: name === "offlimit" ? Number(value) : value, // Convert to number for offlimit
+            [name]: value, // Keep as string to allow empty input
         }));
     }, []);
 
     const addoff = async (e) => {
         e.preventDefault();
 
-        // Basic validation
-        if (!formData.offname || !formData.offabbr || !formData.offlimit) {
-            toast.error("Please fill out all fields."); // Show error toast
-            return;
-        }
+        // Convert offlimit to a number before submission
+        const offlimitNumber =
+            formData.offlimit === "" ? 0 : Number(formData.offlimit);
 
-        // Validate appointment limit (must be a number)
-        if (isNaN(formData.offlimit)) {
-            toast.error("Appointment limit must be a number."); // Show error toast
+        // Basic validation
+        if (!formData.offname || !formData.offabbr || offlimitNumber <= 0) {
+            toast.error(
+                "Please fill out all fields and ensure the limit is a positive number."
+            ); // Show error toast
             return;
         }
 
         try {
             const res = await axios.post(`${apiBaseUrl}/api/office/add`, {
                 ...formData,
+                offlimit: offlimitNumber, // Send as number
                 offbranch: branch,
             });
 
