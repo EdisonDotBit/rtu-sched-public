@@ -5,11 +5,13 @@ import Logo from "../Subcomponent/Asset/rtu_logo_v3.png";
 import Cookies from "js-cookie";
 import { useStudentAuth } from "../../Hooks/useStudentAuth";
 import { Navigate } from "react-router-dom";
+import { toast } from "react-toastify"; // Import toast
+import "react-toastify/dist/ReactToastify.css"; // Import the CSS
 
 function Register() {
     const [formData, setFormData] = useState({
         username: "",
-        email: "",
+        student_number: "", // Add student_number field
         contact_number: "",
         password: "",
         full_name: "",
@@ -42,8 +44,6 @@ function Register() {
                 { withCredentials: true }
             );
 
-            console.log("Registration Response:", response.data); // Debugging
-
             if (response.status === 201) {
                 // Store only username & password in cookies
                 Cookies.set(
@@ -57,12 +57,17 @@ function Register() {
 
                 // Redirect to authentication
                 navigate("/student/authenticate");
+                toast.success(
+                    "Verification PIN sent to your institutional email."
+                ); // Show success toast
             } else {
-                alert("Unexpected response from the server.");
+                toast.error("Unexpected response from the server."); // Show error toast
             }
         } catch (error) {
             console.error("Registration Error:", error.response?.data || error);
-            alert(error.response?.data?.message || "Registration failed.");
+            toast.error(
+                error.response?.data?.message || "Registration failed."
+            ); // Show error toast
         } finally {
             setLoading(false);
         }
@@ -103,19 +108,19 @@ function Register() {
                             </label>
                         </div>
 
-                        {/* Email */}
+                        {/* Student Number */}
                         <div>
                             <label className="block text-white">
-                                Email:
+                                Student Number:
                                 <input
-                                    type="email"
-                                    name="email"
-                                    value={formData.email}
+                                    type="text"
+                                    name="student_number"
+                                    value={formData.student_number}
                                     onChange={handleChange}
-                                    placeholder="Ex: 2021-1018##@rtu.edu.ph"
+                                    placeholder="Ex: 2021-1018##"
                                     required
-                                    pattern="^\d{4}-\d{6}@rtu\.edu\.ph$"
-                                    title="Email must be in the format ####-######@rtu.edu.ph"
+                                    pattern="^\d{4}-\d{6}$"
+                                    title="Student number must be in the format ####-######."
                                     className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] transition"
                                 />
                             </label>
@@ -132,8 +137,6 @@ function Register() {
                                     onChange={handleChange}
                                     placeholder="Enter Full Name"
                                     required
-                                    // pattern="^[A-Z][a-zA-Z' -]{1,99}$"
-                                    // title="Only letters, hyphens, and apostrophes are allowed."
                                     className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] transition"
                                 />
                             </label>
