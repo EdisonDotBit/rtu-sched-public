@@ -32,7 +32,6 @@ function StudentLayout() {
     // Handle sign-out
     const handleSignOut = () => {
         studentLogout();
-        toast.success("Signed out successfully."); // Show success toast
     };
 
     // Show loading state while fetching user data
