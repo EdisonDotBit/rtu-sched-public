@@ -43,14 +43,9 @@ const ProtectedStudentRoute = ({ children }) => {
 };
 
 const ProtectedVerificationRoute = ({ children }) => {
-    const registrationData = Cookies.get("registration_data");
     const passwordResetData = Cookies.get("password_reset_data");
 
-    return registrationData && passwordResetData ? (
-        children
-    ) : (
-        <Navigate to="/student/login" />
-    );
+    return passwordResetData ? children : <Navigate to="/student/login" />;
 };
 
 export {
