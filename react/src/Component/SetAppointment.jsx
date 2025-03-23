@@ -331,32 +331,50 @@ function SetAppointment() {
                                     <h2 className="text-lg text-center font-semibold">
                                         Step 3: Select Available Time and Date
                                     </h2>
-                                    <h4 className="text-center text-sm min-w-full  text-gray-500 mb-4">
+                                    <h4 className="text-center text-sm min-w-full text-gray-500 mb-4">
                                         Click the box to select date and time
                                     </h4>
-                                    <div className="flex flex-col sm:flex-row justify-center items-center ">
-                                        <Calendar
-                                            formData={formData}
-                                            setFormData={setFormData}
-                                            limit={limit}
-                                            appointments={appointments}
-                                            userRole={user ? user.role : ""}
-                                            setIsTimeSelected={
-                                                setIsTimeSelected
-                                            }
-                                        />
-                                        <TimePicker
-                                            formData={formData}
-                                            setFormData={setFormData}
-                                            limit={limit}
-                                            appointments={appointments}
-                                            userRole={user ? user.role : ""}
-                                            setTimeSelected={handleTimeSelect}
-                                        />
+                                    <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-4xl">
+                                        {/* Container for Calendar and TimePicker */}
+                                        <div className="flex flex-col lg:flex-row justify-center items-center gap-8">
+                                            {/* Calendar */}
+                                            <div className="w-full lg:w-1/2">
+                                                <Calendar
+                                                    formData={formData}
+                                                    setFormData={setFormData}
+                                                    limit={limit}
+                                                    appointments={appointments}
+                                                    userRole={
+                                                        user ? user.role : ""
+                                                    }
+                                                    setIsTimeSelected={
+                                                        setIsTimeSelected
+                                                    }
+                                                />
+                                            </div>
+
+                                            {/* TimePicker */}
+                                            <div className="w-full lg:w-1/2">
+                                                <TimePicker
+                                                    formData={formData}
+                                                    setFormData={setFormData}
+                                                    limit={limit}
+                                                    appointments={appointments}
+                                                    userRole={
+                                                        user ? user.role : ""
+                                                    }
+                                                    setTimeSelected={
+                                                        handleTimeSelect
+                                                    }
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="flex w-full justify-evenly mt-1">
+
+                                    {/* Navigation Buttons */}
+                                    <div className="flex w-full justify-evenly mt-6">
                                         <button
-                                            className=" bg-red-700 hover:bg-red-900 text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
+                                            className="bg-red-700 hover:bg-red-900 text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
                                             onClick={prevStep}
                                         >
                                             Previous
