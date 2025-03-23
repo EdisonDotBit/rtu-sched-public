@@ -2,6 +2,8 @@ import { createContext, useContext, useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const StudentAuthContext = createContext();
 
@@ -11,13 +13,20 @@ export const StudentAuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [token, setToken] = useState(Cookies.get("studentToken"));
 
+    // Handle token changes (e.g., when cookies are updated)
     useEffect(() => {
-        const handleCookieChange = () => setToken(Cookies.get("studentToken"));
+        const handleCookieChange = () => {
+            const newToken = Cookies.get("studentToken");
+            if (newToken !== token) {
+                setToken(newToken);
+            }
+        };
 
         window.addEventListener("storage", handleCookieChange);
         return () => window.removeEventListener("storage", handleCookieChange);
-    }, []);
+    }, [token]);
 
+    // Fetch user info when token changes
     useEffect(() => {
         const fetchUser = async () => {
             if (token) {
@@ -34,6 +43,7 @@ export const StudentAuthProvider = ({ children }) => {
                 } catch (error) {
                     console.error("Failed to fetch user info", error);
                     setUser(null);
+                    toast.error("Session expired. Please log in again."); // Show error toast
                 } finally {
                     setLoading(false);
                 }
@@ -45,6 +55,7 @@ export const StudentAuthProvider = ({ children }) => {
         fetchUser();
     }, [token]);
 
+    // Student login function
     const studentLogin = async (data) => {
         try {
             setLoading(true);
@@ -55,27 +66,37 @@ export const StudentAuthProvider = ({ children }) => {
             );
 
             if (response.status === 200 && response.data.token) {
+                // Set the token in cookies
                 Cookies.set("studentToken", response.data.token, {
-                    expires: 7,
+                    expires: 7, // Token expires in 7 days
                 });
+
+                // Update the token state immediately
+                setToken(response.data.token);
+
+                // Update the user state
                 setUser(response.data.user);
 
-                // Force a reload to make sure state is refreshed
-                window.location.href = "/student/set-appointment";
+                // Show success toast
+                toast.success("Login successful!");
+
+                // Redirect to the set-appointment page
+                navigate("/student/set-appointment");
             } else {
                 throw new Error("Login successful but no token received.");
             }
         } catch (error) {
             console.error("Student login failed:", error);
-            alert(
-                "Login failed: " +
-                    (error.response?.data?.message || error.message)
-            );
+            toast.error(
+                error.response?.data?.message ||
+                    "Login failed. Please try again."
+            ); // Show error toast
         } finally {
             setLoading(false);
         }
     };
 
+    // Student logout function
     const studentLogout = async () => {
         if (token) {
             try {
@@ -89,31 +110,26 @@ export const StudentAuthProvider = ({ children }) => {
                 );
             } catch (error) {
                 console.error("Logout failed", error);
-                // Handle 401 Unauthorized error gracefully
                 if (error.response?.status === 401) {
                     console.log("Token is invalid or expired.");
                 }
             } finally {
                 Cookies.remove("studentToken");
-                console.log("Token removed from cookies");
-                setToken(null); // Update the token state
+                setToken(null);
                 setUser(null);
-                console.log("User state cleared");
-                // Navigate to the login page
+                toast.success("Logged out successfully!"); // Show success toast
                 navigate("/student/login");
             }
         } else {
-            // If no token, clear user state and navigate to login
-            console.log(
-                "No token found. Clearing user state and navigating to login."
-            );
             setUser(null);
             navigate("/student/login");
         }
     };
 
+    // Check if the student is authenticated
     const isStudentAuthenticated = () => !!token;
 
+    // Memoized context value
     const value = useMemo(
         () => ({
             user,
