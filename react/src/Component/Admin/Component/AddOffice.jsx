@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import axios from "axios";
 import { useAuth } from "../../../Hooks/useAuth";
 
-function AddOffice({ setShowAdd }) {
+function AddOffice({ setShowAdd, onSuccess }) {
+    // Add onSuccess prop
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const { branch } = useAuth();
     const [formData, setFormData] = useState({
@@ -11,16 +12,28 @@ function AddOffice({ setShowAdd }) {
         offlimit: "",
     });
 
-    const handleChange = (e) => {
+    const handleChange = useCallback((e) => {
         const { name, value } = e.target;
         setFormData((prevState) => ({
             ...prevState,
-            [name]: value,
+            [name]: name === "offlimit" ? Number(value) : value, // Convert to number for offlimit
         }));
-    };
+    }, []);
 
     const addoff = async (e) => {
         e.preventDefault();
+
+        // Basic validation
+        if (!formData.offname || !formData.offabbr || !formData.offlimit) {
+            alert("Please fill out all fields.");
+            return;
+        }
+
+        // Validate appointment limit (must be a number)
+        if (isNaN(formData.offlimit)) {
+            alert("Appointment limit must be a number.");
+            return;
+        }
 
         try {
             const res = await axios.post(`${apiBaseUrl}/api/office/add`, {
@@ -31,10 +44,23 @@ function AddOffice({ setShowAdd }) {
             if (res.status === 200) {
                 console.log(res.data.message);
                 alert("Office added successfully.");
-                window.location.reload();
+                onSuccess(); // Call the onSuccess callback to refetch data
+                setShowAdd(false); // Close the AddOffice modal
             }
         } catch (error) {
-            alert("Error adding office. Please double check the details.");
+            if (error.response) {
+                // Server responded with an error
+                alert(
+                    error.response.data.error ||
+                        "Error adding office. Please double check the details."
+                );
+            } else if (error.request) {
+                // No response received
+                alert("No response from the server. Please try again.");
+            } else {
+                // Other errors
+                alert("An unexpected error occurred. Please try again.");
+            }
         }
     };
 
@@ -57,6 +83,7 @@ function AddOffice({ setShowAdd }) {
                                     onChange={handleChange}
                                     type="text"
                                     placeholder="Enter Office Name"
+                                    aria-label="Office Name"
                                 />
                             </label>
 
@@ -70,6 +97,7 @@ function AddOffice({ setShowAdd }) {
                                     onChange={handleChange}
                                     type="text"
                                     placeholder="e.g. MISO"
+                                    aria-label="Office Abbreviation"
                                 />
                             </label>
 
@@ -81,15 +109,10 @@ function AddOffice({ setShowAdd }) {
                                     name="offlimit"
                                     value={formData.offlimit}
                                     onChange={handleChange}
-                                    onInput={(e) => {
-                                        // Use onInput event to handle input
-                                        e.target.value = e.target.value.replace(
-                                            /[^0-9]/g,
-                                            ""
-                                        ); // Remove non-numeric characters
-                                    }}
-                                    type="text"
+                                    type="number"
+                                    min="1"
                                     placeholder="e.g. 180 = 20 appointments per time slot"
+                                    aria-label="Appointment Limit"
                                 />
                             </label>
 

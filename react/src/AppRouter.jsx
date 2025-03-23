@@ -31,215 +31,228 @@ import ResetPassword from "./Component/Authentication/ResetPassword.jsx";
 import ProtectedRegisterRoute from "./ProtectedRegisterRoute.jsx";
 import ProtectedForgotRoute from "./ProtectedForgotRoute.jsx";
 import Dashboard from "./Component/Admin/Dashboard.jsx";
+import App from "./App.jsx";
 
 const AppRouter = () => (
     <>
         <AuthProvider>
             <StudentAuthProvider>
-                <Routes>
-                    <Route path="*" element={<NotFound />} />
-                    <Route path="rtu/login" element={<LoginAdmin />} />
+                <App>
+                    <Routes>
+                        <Route path="*" element={<NotFound />} />
+                        <Route path="rtu/login" element={<LoginAdmin />} />
 
-                    {/* Admin Routes */}
-                    <Route
-                        path="/rtu/admin"
-                        element={
-                            <ProtectedRoute>
-                                <AdminLayout />
-                            </ProtectedRoute>
-                        }
-                    >
+                        {/* Admin Routes */}
                         <Route
-                            path=""
-                            element={<Navigate to="/rtu/admin/dashboard" />}
-                        />
-
-                        <Route
-                            path="dashboard"
+                            path="/rtu/admin"
                             element={
                                 <ProtectedRoute>
-                                    <Dashboard />
+                                    <AdminLayout />
                                 </ProtectedRoute>
                             }
-                        />
+                        >
+                            <Route
+                                path=""
+                                element={<Navigate to="/rtu/admin/dashboard" />}
+                            />
 
+                            <Route
+                                path="dashboard"
+                                element={
+                                    <ProtectedRoute>
+                                        <Dashboard />
+                                    </ProtectedRoute>
+                                }
+                            />
+
+                            <Route
+                                path="office"
+                                element={
+                                    <ProtectedRoute>
+                                        <OfficeAdminManage />
+                                    </ProtectedRoute>
+                                }
+                            />
+
+                            <Route
+                                path="manage"
+                                element={
+                                    <ProtectedRoute>
+                                        <ManageAcc />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="feedback"
+                                element={
+                                    <ProtectedRoute>
+                                        <Feedbacks />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="appointments"
+                                element={
+                                    <ProtectedRoute>
+                                        <AppointmentsAdmin />
+                                    </ProtectedRoute>
+                                }
+                            />
+                        </Route>
+
+                        {/* Super Admin Routes */}
                         <Route
-                            path="office"
+                            path="/rtu/suppa"
                             element={
                                 <ProtectedRoute>
-                                    <OfficeAdminManage />
+                                    <SupAdminLayout />
                                 </ProtectedRoute>
                             }
-                        />
+                        >
+                            <Route
+                                path=""
+                                element={<Navigate to="/rtu/suppa/dashboard" />}
+                            />
 
-                        <Route
-                            path="manage"
-                            element={
-                                <ProtectedRoute>
-                                    <ManageAcc />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="feedback"
-                            element={
-                                <ProtectedRoute>
-                                    <Feedbacks />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="appointments"
-                            element={
-                                <ProtectedRoute>
-                                    <AppointmentsAdmin />
-                                </ProtectedRoute>
-                            }
-                        />
-                    </Route>
+                            <Route
+                                path="dashboard"
+                                element={
+                                    <ProtectedRoute>
+                                        <Dashboard />
+                                    </ProtectedRoute>
+                                }
+                            />
 
-                    {/* Super Admin Routes */}
-                    <Route
-                        path="/rtu/suppa"
-                        element={
-                            <ProtectedRoute>
-                                <SupAdminLayout />
-                            </ProtectedRoute>
-                        }
-                    >
-                        <Route
-                            path=""
-                            element={<Navigate to="/rtu/suppa/dashboard" />}
-                        />
+                            <Route
+                                path="feedbacks"
+                                element={
+                                    <ProtectedRoute>
+                                        <Feedbacks />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="manage"
+                                element={
+                                    <ProtectedRoute>
+                                        <ManageAcc />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="offices"
+                                element={
+                                    <ProtectedRoute>
+                                        <OfficelistAdmin />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="appointments"
+                                element={
+                                    <ProtectedRoute>
+                                        <AppointmentsAdmin />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="accounts"
+                                element={
+                                    <ProtectedRoute>
+                                        <AccountSettingsAdmin />
+                                    </ProtectedRoute>
+                                }
+                            />
+                        </Route>
 
-                        <Route
-                            path="dashboard"
-                            element={
-                                <ProtectedRoute>
-                                    <Dashboard />
-                                </ProtectedRoute>
-                            }
-                        />
+                        {/* Guest Routes */}
+                        <Route path="/guest" element={<GuestLayout />}>
+                            <Route
+                                path=""
+                                element={
+                                    <Navigate to="/guest/set-appointment" />
+                                }
+                            />
+                            <Route
+                                path="set-appointment"
+                                element={<GuestSetAppointment />}
+                            />
+                            <Route
+                                path="view-appointment"
+                                element={<ViewAppointments />}
+                            />
+                        </Route>
 
-                        <Route
-                            path="feedbacks"
-                            element={
-                                <ProtectedRoute>
-                                    <Feedbacks />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="manage"
-                            element={
-                                <ProtectedRoute>
-                                    <ManageAcc />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="offices"
-                            element={
-                                <ProtectedRoute>
-                                    <OfficelistAdmin />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="appointments"
-                            element={
-                                <ProtectedRoute>
-                                    <AppointmentsAdmin />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="accounts"
-                            element={
-                                <ProtectedRoute>
-                                    <AccountSettingsAdmin />
-                                </ProtectedRoute>
-                            }
-                        />
-                    </Route>
+                        {/* Student Routes */}
+                        <Route path="/student" element={<StudentLayout />}>
+                            <Route
+                                path=""
+                                element={
+                                    <Navigate to="/student/set-appointment" />
+                                }
+                            />
+                            <Route
+                                path="set-appointment"
+                                element={
+                                    <ProtectedStudentRoute>
+                                        <SetAppointment />
+                                    </ProtectedStudentRoute>
+                                }
+                            />
+                            <Route
+                                path="view-appointment"
+                                element={
+                                    <ProtectedStudentRoute>
+                                        <ViewAppointments />
+                                    </ProtectedStudentRoute>
+                                }
+                            />
 
-                    {/* Guest Routes */}
-                    <Route path="/guest" element={<GuestLayout />}>
-                        <Route
-                            path=""
-                            element={<Navigate to="/guest/set-appointment" />}
-                        />
-                        <Route
-                            path="set-appointment"
-                            element={<GuestSetAppointment />}
-                        />
-                        <Route
-                            path="view-appointment"
-                            element={<ViewAppointments />}
-                        />
-                    </Route>
+                            <Route
+                                path="manage-account"
+                                element={
+                                    <ProtectedStudentRoute>
+                                        <ManageAccount />
+                                    </ProtectedStudentRoute>
+                                }
+                            />
+                        </Route>
 
-                    {/* Student Routes */}
-                    <Route path="/student" element={<StudentLayout />}>
+                        {/* Authentication Routes for Students */}
+                        <Route path="/student/login" element={<Login />} />
                         <Route
-                            path=""
-                            element={<Navigate to="/student/set-appointment" />}
+                            path="/student/register"
+                            element={<Register />}
                         />
                         <Route
-                            path="set-appointment"
+                            path="/student/authenticate"
                             element={
-                                <ProtectedStudentRoute>
-                                    <SetAppointment />
-                                </ProtectedStudentRoute>
+                                <ProtectedRegisterRoute>
+                                    <Authentication />
+                                </ProtectedRegisterRoute>
                             }
                         />
                         <Route
-                            path="view-appointment"
-                            element={
-                                <ProtectedStudentRoute>
-                                    <ViewAppointments />
-                                </ProtectedStudentRoute>
-                            }
+                            path="/student/forgot-password"
+                            element={<ForgotPassword />}
                         />
-
                         <Route
-                            path="manage-account"
+                            path="/student/forgot-password-authenticate"
                             element={
-                                <ProtectedStudentRoute>
-                                    <ManageAccount />
-                                </ProtectedStudentRoute>
+                                <ProtectedForgotRoute>
+                                    <ForgotPasswordAuthentication />
+                                </ProtectedForgotRoute>
                             }
                         />
-                    </Route>
+                        <Route
+                            path="/reset-password"
+                            element={<ResetPassword />}
+                        />
+                        <Route path="/" element={<Navigate to="/student" />} />
 
-                    {/* Authentication Routes for Students */}
-                    <Route path="/student/login" element={<Login />} />
-                    <Route path="/student/register" element={<Register />} />
-                    <Route
-                        path="/student/authenticate"
-                        element={
-                            <ProtectedRegisterRoute>
-                                <Authentication />
-                            </ProtectedRegisterRoute>
-                        }
-                    />
-                    <Route
-                        path="/student/forgot-password"
-                        element={<ForgotPassword />}
-                    />
-                    <Route
-                        path="/student/forgot-password-authenticate"
-                        element={
-                            <ProtectedForgotRoute>
-                                <ForgotPasswordAuthentication />
-                            </ProtectedForgotRoute>
-                        }
-                    />
-                    <Route path="/reset-password" element={<ResetPassword />} />
-                    <Route path="/" element={<Navigate to="/student" />} />
-
-                    <Route path="feedback" element={<Feedback />} />
-                </Routes>
+                        <Route path="feedback" element={<Feedback />} />
+                    </Routes>
+                </App>
             </StudentAuthProvider>
         </AuthProvider>
     </>

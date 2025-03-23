@@ -1,83 +1,106 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import AddOffice from "./Component/AddOffice";
 import EditOffice from "./Component/EditOffice";
 import { useAuth } from "../../Hooks/useAuth";
 import { useDebouncedEffect } from "../../Hooks/useDebouncedEffect";
+import { toast } from "react-toastify"; // Import toast
+import "react-toastify/dist/ReactToastify.css"; // Import the CSS
 
 function OfficelistAdmin() {
     const [offabbr, setoffabbr] = useState("");
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const { branch } = useAuth();
     const [offData, setoffData] = useState([]);
-    const [searchResults, setSearchResults] = useState([]);
-    const modals = useRef(null);
     const [selectedOffid, setSelectedOffid] = useState(null);
     const [selectedOffname, setSelectedOffname] = useState("");
     const [showAdd, setShowAdd] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
 
+    const modals = useRef(null);
+
+    // Fetch office data
+    const fetchOfficeData = useCallback(async () => {
+        try {
+            const getRes = await fetch(
+                `${apiBaseUrl}/api/office/bybranch/${branch}`
+            );
+            const getDataResult = await getRes.json();
+            setoffData(getDataResult);
+        } catch (error) {
+            console.error("Error fetching office data:", error);
+            toast.error("Failed to fetch office data. Please try again later.");
+        }
+    }, [apiBaseUrl, branch]);
+
     useDebouncedEffect(
         () => {
-            const getData = async () => {
-                const getRes = await fetch(
-                    `${apiBaseUrl}/api/office/bybranch/${branch}`
-                );
-                const getDataResult = await getRes.json();
-                setoffData(getDataResult);
-                setSearchResults(getDataResult);
-            };
-            getData();
+            fetchOfficeData();
         },
-        [branch],
+        [fetchOfficeData],
         500
     );
 
-    useEffect(() => {
-        const filteredResults = offData.filter((office) => {
-            return office.offabbr.toLowerCase().includes(offabbr.toLowerCase());
-        });
-        setSearchResults(filteredResults);
+    // Memoized search results
+    const searchResults = useMemo(() => {
+        return offData.filter((office) =>
+            office.offabbr.toLowerCase().includes(offabbr.toLowerCase())
+        );
     }, [offabbr, offData]);
 
-    const toEdit = (e, officeNum) => {
+    // Open edit modal
+    const toEdit = useCallback((e, officeNum) => {
         setShowEdit(true);
         setSelectedOffid(officeNum);
         window.location.href = "#edit";
         e.preventDefault();
-    };
-    const openmodal = (officeNum, officeName) => {
+    }, []);
+
+    // Open delete confirmation modal
+    const openmodal = useCallback((officeNum, officeName) => {
         setSelectedOffid(officeNum);
         setSelectedOffname(officeName);
         modals.current.showModal();
+    }, []);
+
+    // Delete office
+    const deleteOff = useCallback(
+        async (e, id) => {
+            e.preventDefault();
+            try {
+                const deleteRes = await fetch(
+                    `${apiBaseUrl}/api/office/delete/${id}`,
+                    {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
+                if (deleteRes.ok) {
+                    // Remove the deleted office from the local state
+                    setoffData((prevData) =>
+                        prevData.filter((office) => office.offid !== id)
+                    );
+                    toast.success("Office deleted successfully.");
+                    modals.current.close();
+                } else {
+                    toast.error("Failed to delete office. Please try again.");
+                }
+            } catch (error) {
+                console.error("Error deleting office:", error);
+                toast.error(
+                    "An unexpected error occurred. Please try again later."
+                );
+            }
+        },
+        [apiBaseUrl]
+    );
+
+    // Callback function to refetch data after adding or editing an office
+    const handleSuccess = () => {
+        fetchOfficeData(); // Refetch the office data
     };
 
-    const deleteOff = async (e, id) => {
-        e.preventDefault();
-        try {
-            const deleteRes = await fetch(
-                `${apiBaseUrl}/api/office/delete/${id}`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
-            if (deleteRes.ok) {
-                // Remove the deleted appointment from the local state
-                setoffData((prevData) =>
-                    prevData.filter((office) => office.offid !== id)
-                );
-                setSearchResults((prevResults) =>
-                    prevResults.filter((office) => office.offid !== id)
-                );
-                alert("Office deleted successfully.");
-                window.location.reload();
-            }
-        } catch (error) {
-            alert("Error deleting an office. Please try again later.");
-        }
-    };
     return (
         <div className="relative w-full h-full overflow-hidden">
             <div
@@ -85,7 +108,7 @@ function OfficelistAdmin() {
                     showAdd || showEdit ? "-translate-x-full" : "translate-x-0"
                 }`}
             >
-                <div className="flex justify-center  h-full w-full">
+                <div className="flex justify-center h-full w-full">
                     <div className="flex flex-col items-center gap-[20px]">
                         <input
                             className="text-gray-800 bg-white mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] w-[300px] xsm:w-[200px] sm:w-[300px] text-md"
@@ -93,20 +116,19 @@ function OfficelistAdmin() {
                             placeholder="Enter Office Abbreviation"
                             value={offabbr}
                             onChange={(e) => setoffabbr(e.target.value)}
+                            aria-label="Search Office Abbreviation"
                         />
                         <div className="flex justify-end w-full">
-                            <a href="#add" onClick={() => setShowAdd(true)}>
-                                <button
-                                    className="btn bg-[#194F90] hover:bg-[#123A69] text-white rounded-md border-0 inline-block px-8 py-2 text-md font-medium focus:relative"
-                                    onClick={() => setShowAdd(true)}
-                                >
-                                    + Add Office
-                                </button>
-                            </a>
+                            <button
+                                className="btn bg-[#194F90] hover:bg-[#123A69] text-white rounded-md border-0 inline-block px-8 py-2 text-md font-medium focus:relative"
+                                onClick={() => setShowAdd(true)}
+                                aria-label="Add Office"
+                            >
+                                + Add Office
+                            </button>
                         </div>
 
                         {searchResults.length !== 0 && (
-                            // add overflow-x-auto if list gets long
                             <div className="border border-gray-200">
                                 <table className="table-auto shadow-md rounded min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
                                     <thead className="ltr:text-center rtl:text-center">
@@ -115,9 +137,7 @@ function OfficelistAdmin() {
                                                 Office Name
                                             </th>
                                             <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
-                                                Office
-                                                <br />
-                                                Abbreviation
+                                                Office Abbreviation
                                             </th>
                                             <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
                                                 Office Limit
@@ -149,22 +169,21 @@ function OfficelistAdmin() {
                                                         {office.offbranch}
                                                     </td>
                                                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                        <a
+                                                        <button
+                                                            className="group relative inline-block overflow-hidden border border-indigo-600 px-8 py-3 focus:outline-none focus:ring"
                                                             onClick={(e) =>
                                                                 toEdit(
                                                                     e,
                                                                     office.offid
                                                                 )
                                                             }
-                                                            href="#edit"
+                                                            aria-label={`Edit ${office.offname}`}
                                                         >
-                                                            <button className="group relative inline-block overflow-hidden border border-indigo-600 px-8 py-3 focus:outline-none focus:ring">
-                                                                <span className="absolute inset-x-0 bottom-0 h-[2px] bg-indigo-600 transition-all group-hover:h-full group-active:bg-indigo-500"></span>
-                                                                <span className="relative text-sm font-medium text-indigo-600 transition-colors group-hover:text-white">
-                                                                    Edit
-                                                                </span>
-                                                            </button>
-                                                        </a>
+                                                            <span className="absolute inset-x-0 bottom-0 h-[2px] bg-indigo-600 transition-all group-hover:h-full group-active:bg-indigo-500"></span>
+                                                            <span className="relative text-sm font-medium text-indigo-600 transition-colors group-hover:text-white">
+                                                                Edit
+                                                            </span>
+                                                        </button>
 
                                                         <button
                                                             className="ml-4 group relative inline-block overflow-hidden border border-red-600 px-8 py-3 focus:outline-none focus:ring"
@@ -174,6 +193,7 @@ function OfficelistAdmin() {
                                                                     office.offname
                                                                 )
                                                             }
+                                                            aria-label={`Delete ${office.offname}`}
                                                         >
                                                             <span className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600 transition-all group-hover:h-full group-active:bg-red-500"></span>
                                                             <span className="relative text-sm font-medium text-red-600 transition-colors group-hover:text-white">
@@ -189,10 +209,18 @@ function OfficelistAdmin() {
                         )}
                     </div>
 
-                    <dialog ref={modals} className="modal">
+                    <dialog
+                        ref={modals}
+                        className="modal"
+                        aria-labelledby="delete-modal-title"
+                        aria-modal="true"
+                    >
                         <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 backdrop:bg-black/50">
                             <div className="modal-box text-white bg-[#194F90]">
-                                <h3 className="font-bold text-lg">
+                                <h3
+                                    id="delete-modal-title"
+                                    className="font-bold text-lg"
+                                >
                                     Do you really want to delete this office?
                                 </h3>
                                 <p className="py-4">
@@ -205,16 +233,15 @@ function OfficelistAdmin() {
                                         onClick={(e) =>
                                             deleteOff(e, selectedOffid)
                                         }
+                                        aria-label="Confirm Delete"
                                     >
                                         Confirm
                                     </button>
                                     <button
                                         type="button"
                                         className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
-                                        onClick={() => {
-                                            modals.current.close();
-                                            window.location.reload();
-                                        }}
+                                        onClick={() => modals.current.close()}
+                                        aria-label="Close Modal"
                                     >
                                         Close
                                     </button>
@@ -230,7 +257,7 @@ function OfficelistAdmin() {
                     showAdd ? "translate-x-0" : "translate-x-full"
                 }`}
             >
-                <AddOffice setShowAdd={setShowAdd} />
+                <AddOffice setShowAdd={setShowAdd} onSuccess={handleSuccess} />
             </div>
             <div
                 className={`absolute w-full h-full transition-transform duration-500 ${
@@ -241,6 +268,7 @@ function OfficelistAdmin() {
                     <EditOffice
                         selectedOffid={selectedOffid}
                         setShowEdit={setShowEdit}
+                        onSuccess={handleSuccess}
                     />
                 )}
             </div>

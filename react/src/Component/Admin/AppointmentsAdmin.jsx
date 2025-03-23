@@ -1,7 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../../Hooks/useAuth";
 import axios from "axios";
-import { useDebouncedEffect } from "../../Hooks/useDebouncedEffect";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { FaSync } from "react-icons/fa";
 
 function AppointmentsAdmin() {
     const [aptemail, setAptEmail] = useState("");
@@ -38,18 +40,28 @@ function AppointmentsAdmin() {
             setAptData(getDataResult);
             setSearchResults(getDataResult);
         } catch (error) {
-            console.error("Error fetching data:", error);
+            toast.error(
+                "Failed to fetch appointment data. Please try again later."
+            );
         } finally {
             setLoading(false);
         }
     };
 
-    useDebouncedEffect(() => {
-        getData();
-    }, [role, branch, apiBaseUrl, 500]);
+    useEffect(() => {
+        const interval = setInterval(() => {
+            getData(); // Fetch data every 60 seconds
+        }, 60000); // 60 seconds interval
 
-    const handleReload = () => {
-        getData();
+        getData(); // Fetch data immediately on component mount
+
+        return () => clearInterval(interval); // Cleanup interval on unmount
+    }, [role, branch, apiBaseUrl]);
+
+    const handleReload = async () => {
+        setLoading(true);
+        await getData();
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -115,11 +127,11 @@ function AppointmentsAdmin() {
                 {}
             );
             if (response.status === 200) {
-                alert("Appointment confirmed.");
-                window.location.reload();
+                toast.success("Appointment confirmed.");
+                getData(); // Refetch data
             }
         } catch (error) {
-            alert("Error confirming appointment.");
+            toast.error("Error confirming appointment.");
         } finally {
             setLoading(false);
         }
@@ -133,11 +145,11 @@ function AppointmentsAdmin() {
                 {}
             );
             if (response.status === 200) {
-                alert("Appointment marked as done.");
-                window.location.reload();
+                toast.success("Appointment marked as done.");
+                getData(); // Refetch data
             }
         } catch (error) {
-            alert("Error marking appointment as done.");
+            toast.error("Error marking appointment as done.");
         } finally {
             setLoading(false);
         }
@@ -151,11 +163,11 @@ function AppointmentsAdmin() {
                 {}
             );
             if (response.status === 200) {
-                alert("Appointment cancelled.");
-                window.location.reload();
+                toast.success("Appointment cancelled.");
+                getData(); // Refetch data
             }
         } catch (error) {
-            alert("Error cancelling appointment.");
+            toast.error("Error cancelling appointment.");
         } finally {
             setLoading(false);
         }
@@ -168,11 +180,11 @@ function AppointmentsAdmin() {
                 `${apiBaseUrl}/api/appointments/${id}`
             );
             if (response.status === 200) {
-                alert("Appointment deleted.");
-                window.location.reload();
+                toast.success("Appointment deleted.");
+                getData(); // Refetch data
             }
         } catch (error) {
-            alert("Error deleting appointment.");
+            toast.error("Error deleting appointment.");
         } finally {
             setLoading(false);
         }
@@ -245,10 +257,9 @@ function AppointmentsAdmin() {
     return (
         <div className="flex justify-center h-full">
             {loading && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-white opacity-85">
-                    <p className="text-3xl text-[#194F90] font-bold">
-                        Loading Appointments...
-                    </p>
+                <div className="fixed inset-0 z-50 flex justify-center items-center bg-gray-100/70">
+                    <FaSync className="animate-spin text-[#194F90] text-8xl" />{" "}
+                    {/* Spinner */}
                 </div>
             )}
             <div className="flex flex-col items-center gap-[20px] flex-1 w-full">
@@ -264,8 +275,13 @@ function AppointmentsAdmin() {
                     <button
                         onClick={handleReload}
                         className="text-blue-500 hover:text-blue-700 mr-6"
+                        disabled={loading}
                     >
-                        <i className="fas fa-sync-alt"></i>
+                        <FaSync
+                            className={`inline-block ${
+                                loading ? "animate-spin" : ""
+                            }`}
+                        />
                     </button>
 
                     <p className="text-sm">Sort Status by:</p>
@@ -693,13 +709,20 @@ function AppointmentsAdmin() {
                             Confirm
                         </button>
                         <button
-                            type="button"
                             className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
-                            onClick={() => {
-                                modalRef.current.close();
+                            type="button"
+                            onClick={async () => {
+                                try {
+                                    await action(); // Execute action
+                                    modalRef.current.close();
+                                } catch (error) {
+                                    toast.error(
+                                        "An error occurred while performing the action."
+                                    );
+                                }
                             }}
                         >
-                            Cancel
+                            Confirm
                         </button>
                     </div>
                 </div>
