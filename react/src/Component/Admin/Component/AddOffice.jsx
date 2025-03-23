@@ -1,9 +1,10 @@
 import React, { useState, useCallback } from "react";
 import axios from "axios";
 import { useAuth } from "../../../Hooks/useAuth";
+import { toast } from "react-toastify"; // Import toast
+import "react-toastify/dist/ReactToastify.css"; // Import the CSS
 
 function AddOffice({ setShowAdd, onSuccess }) {
-    // Add onSuccess prop
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const { branch } = useAuth();
     const [formData, setFormData] = useState({
@@ -25,13 +26,13 @@ function AddOffice({ setShowAdd, onSuccess }) {
 
         // Basic validation
         if (!formData.offname || !formData.offabbr || !formData.offlimit) {
-            alert("Please fill out all fields.");
+            toast.error("Please fill out all fields."); // Show error toast
             return;
         }
 
         // Validate appointment limit (must be a number)
         if (isNaN(formData.offlimit)) {
-            alert("Appointment limit must be a number.");
+            toast.error("Appointment limit must be a number."); // Show error toast
             return;
         }
 
@@ -42,24 +43,23 @@ function AddOffice({ setShowAdd, onSuccess }) {
             });
 
             if (res.status === 200) {
-                console.log(res.data.message);
-                alert("Office added successfully.");
+                toast.success("Office added successfully."); // Show success toast
                 onSuccess(); // Call the onSuccess callback to refetch data
                 setShowAdd(false); // Close the AddOffice modal
             }
         } catch (error) {
             if (error.response) {
                 // Server responded with an error
-                alert(
+                toast.error(
                     error.response.data.error ||
                         "Error adding office. Please double check the details."
-                );
+                ); // Show error toast
             } else if (error.request) {
                 // No response received
-                alert("No response from the server. Please try again.");
+                toast.error("No response from the server. Please try again."); // Show error toast
             } else {
                 // Other errors
-                alert("An unexpected error occurred. Please try again.");
+                toast.error("An unexpected error occurred. Please try again."); // Show error toast
             }
         }
     };
