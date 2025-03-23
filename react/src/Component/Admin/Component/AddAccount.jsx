@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import axios from "axios";
 import { useAuth } from "../../../Hooks/useAuth";
+import { toast } from "react-toastify"; // Import toast
+import "react-toastify/dist/ReactToastify.css"; // Import the CSS
 
-function AddAccount({ setShowAdd }) {
+function AddAccount({ setShowAdd, onSuccess }) {
+    // Add onSuccess prop
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const { branch } = useAuth();
     const [formData, setFormData] = useState({
@@ -14,19 +17,30 @@ function AddAccount({ setShowAdd }) {
     });
 
     const [offData, setoffData] = useState([]);
-
     const [showPassword, setShowPassword] = useState(false);
 
-    const handleChange = (e) => {
+    const handleChange = useCallback((e) => {
         const { name, value } = e.target;
         setFormData((prevState) => ({
             ...prevState,
             [name]: value,
         }));
-    };
+    }, []);
 
     const createAcc = async (e) => {
         e.preventDefault();
+
+        // Basic validation
+        if (
+            !formData.admname ||
+            !formData.admuser ||
+            !formData.admpass ||
+            !formData.admrole
+        ) {
+            toast.error("Please fill out all fields."); // Show error toast
+            return;
+        }
+
         console.log(formData);
 
         try {
@@ -35,31 +49,49 @@ function AddAccount({ setShowAdd }) {
                 formData
             );
             if (res.status === 200) {
-                alert(res.data.messages);
-                setShowAdd(false);
-                window.location.reload();
+                toast.success(res.data.messages); // Show success toast
+                setShowAdd(false); // Close the modal
+                setShowPassword(false); // Reset password visibility
+                onSuccess(); // Call the onSuccess function to refetch data in the parent
             }
         } catch (error) {
-            alert(error.response.data.error);
+            if (error.response) {
+                // Server responded with an error
+                toast.error(error.response.data.error); // Show error toast
+            } else if (error.request) {
+                // No response received
+                toast.error("No response from the server. Please try again."); // Show error toast
+            } else {
+                // Other errors
+                toast.error("An unexpected error occurred. Please try again."); // Show error toast
+            }
         }
     };
 
     useEffect(() => {
+        const getData = async () => {
+            try {
+                const getRes = await fetch(
+                    `${apiBaseUrl}/api/office/bybranch/${branch}`
+                );
+                const getDataResult = await getRes.json();
+                setoffData(getDataResult);
+            } catch (error) {
+                console.error("Fetch error:", error);
+                toast.error("Failed to fetch office data. Please try again."); // Show error toast
+            }
+        };
+
         if (offData.length === 0) {
-            const getData = async () => {
-                try {
-                    const getRes = await fetch(
-                        `${apiBaseUrl}/api/office/bybranch/${branch}`
-                    );
-                    const getDataResult = await getRes.json();
-                    setoffData(getDataResult);
-                } catch (error) {
-                    console.error("Fetch error:", error);
-                }
-            };
             getData();
         }
-    }, [branch]);
+    }, [branch, offData]);
+
+    const officeOptions = useMemo(() => {
+        return [
+            ...new Map(offData.map((item) => [item.offabbr, item])).values(),
+        ];
+    }, [offData]);
 
     return (
         <>
@@ -118,6 +150,12 @@ function AddAccount({ setShowAdd }) {
                                                 setShowPassword(!showPassword)
                                             }
                                             className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                                            aria-label={
+                                                showPassword
+                                                    ? "Hide password"
+                                                    : "Show password"
+                                            }
+                                            aria-pressed={showPassword}
                                         >
                                             {showPassword ? "Hide" : "Show"}
                                         </button>
@@ -139,14 +177,7 @@ function AddAccount({ setShowAdd }) {
                                     <option value="" disabled>
                                         --Select Office--
                                     </option>
-                                    {[
-                                        ...new Map(
-                                            offData.map((item) => [
-                                                item.offabbr,
-                                                item,
-                                            ])
-                                        ).values(),
-                                    ].map((option) => (
+                                    {officeOptions.map((option) => (
                                         <option
                                             key={option.offid}
                                             value={option.offabbr}

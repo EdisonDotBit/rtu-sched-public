@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios";
+import { toast } from "react-toastify"; // Import toast
+import "react-toastify/dist/ReactToastify.css"; // Import the CSS
 
-function EditAccount({ selectedaccid, setShowEdit }) {
+function EditAccount({ selectedaccid, setShowEdit, onSuccess }) {
+    // Add onSuccess prop
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const [formData, setFormData] = useState({
         admuser: "",
@@ -13,19 +16,22 @@ function EditAccount({ selectedaccid, setShowEdit }) {
     const [showPassword, setShowPassword] = useState(false);
     const [selectedOffice, setSelectedOffice] = useState("");
 
-    const handleChange = (e) => {
+    // Handle input changes
+    const handleChange = useCallback((e) => {
         const { name, value } = e.target;
         setFormData((prevState) => ({
             ...prevState,
             [name]: value,
         }));
-    };
-    const editAcc = async (e) => {
-        e.preventDefault(); // Prevent page reload
-        console.log(formData); // Log the formData
+    }, []);
 
-        if (formData.admrole === "") {
-            alert("Please select an office.");
+    // Handle form submission
+    const editAcc = async (e) => {
+        e.preventDefault();
+
+        // Basic validation
+        if (!formData.admname || !formData.admpass || !formData.admrole) {
+            toast.error("Please fill out all fields."); // Show error toast
             return;
         }
 
@@ -36,54 +42,71 @@ function EditAccount({ selectedaccid, setShowEdit }) {
             );
 
             if (res.status === 200) {
-                console.log(res.data.message); // Log success message
-                alert("Admin edited successfully.");
-                setShowEdit(false);
-                setTimeout(() => {
-                    window.location.reload();
-                }, 100);
+                toast.success("Admin edited successfully."); // Show success toast
+                setShowEdit(false); // Close the edit modal
+                onSuccess(); // Call the onSuccess function to refetch data in the parent
             }
         } catch (error) {
-            alert(
-                "Error editing admin. Please try again. Please double check the details"
-            ); // Notify the user of the error
+            if (error.response) {
+                // Server responded with an error
+                toast.error(
+                    error.response.data.error ||
+                        "Error editing admin. Please double check the details."
+                ); // Show error toast
+            } else if (error.request) {
+                // No response received
+                toast.error("No response from the server. Please try again."); // Show error toast
+            } else {
+                // Other errors
+                toast.error("An unexpected error occurred. Please try again."); // Show error toast
+            }
         }
     };
 
+    // Fetch account and office data
     useEffect(() => {
         const getAccountData = async () => {
             try {
                 const getRes = await axios.get(
                     `${apiBaseUrl}/api/admin/info/${selectedaccid}`
                 );
-                const responseData = getRes.data.data; // Corrected response data access
+                const responseData = getRes.data.data;
                 setFormData({
                     admuser: responseData.admuser,
                     admpass: responseData.admpass,
                     admname: responseData.admname,
                     admrole: responseData.admrole,
-                    // admempnum: responseData.admempnum,
                 });
-                setSelectedOffice(responseData.admrole); // Preselect the current assigned office
+                setSelectedOffice(responseData.admrole); // Set the selected office
             } catch (error) {
-                console.error("Error fetching account data:", error); // Log the error if there's an issue with the request // Handle the error gracefully, such as showing an error message to the user
+                console.error("Error fetching account data:", error);
+                toast.error("Failed to fetch account data. Please try again."); // Show error toast
             }
         };
+
         const getOfficesData = async () => {
             try {
                 const getRes = await axios.get(`${apiBaseUrl}/api/office/all`);
                 setOffData(getRes.data);
             } catch (error) {
-                console.error("Error fetching office data:", error); // Log the error if there's an issue with the request // Handle the error gracefully, such as showing an error message to the user
+                console.error("Error fetching office data:", error);
+                toast.error("Failed to fetch office data. Please try again."); // Show error toast
             }
         };
 
-        // Ensure selectedaccid has a value before fetching data
+        // Fetch data only if selectedaccid is valid
         if (selectedaccid) {
             getAccountData();
             getOfficesData();
         }
-    }, [selectedaccid]); // Add selectedaccid as a dependency
+    }, [selectedaccid]);
+
+    // Memoize office options to avoid unnecessary re-renders
+    const officeOptions = useMemo(() => {
+        return [
+            ...new Map(offData.map((item) => [item.offabbr, item])).values(),
+        ];
+    }, [offData]);
 
     return (
         <>
@@ -94,7 +117,8 @@ function EditAccount({ selectedaccid, setShowEdit }) {
                             <h2 className="text-white text-xl font-semibold text-center mt-4">
                                 Edit Admin Account
                             </h2>
-                            {/* Full Name */}
+
+                            {/* Admin Name */}
                             <label className="block text-white">
                                 Admin Name:
                                 <input
@@ -103,20 +127,10 @@ function EditAccount({ selectedaccid, setShowEdit }) {
                                     value={formData.admname}
                                     onChange={handleChange}
                                     type="text"
+                                    aria-label="Admin Name"
                                 />
                             </label>
-                            {/* Employee Number */}
-                            {/* <label className="block text-white">
-                                Employee Number
-                                <input
-                                    className="text-gray-500 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
-                                    name="admempnum"
-                                    value={formData.admempnum}
-                                    onChange={handleChange}
-                                    type="text"
-                                    placeholder="SA-D-B0-1"
-                                />
-                            </label> */}
+
                             {/* Username */}
                             <label className="block text-white">
                                 Username:
@@ -127,8 +141,10 @@ function EditAccount({ selectedaccid, setShowEdit }) {
                                     onChange={handleChange}
                                     type="text"
                                     disabled
+                                    aria-label="Username"
                                 />
                             </label>
+
                             {/* Password */}
                             <div className="relative w-full">
                                 <label className="block text-white">
@@ -142,9 +158,10 @@ function EditAccount({ selectedaccid, setShowEdit }) {
                                                 showPassword
                                                     ? "text"
                                                     : "password"
-                                            } // Toggle between text and password type
+                                            }
                                             placeholder="Enter Password"
                                             className="text-gray-800 bg-white w-full mt-1 py-2 px-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                            aria-label="Password"
                                         />
                                         <button
                                             type="button"
@@ -152,12 +169,19 @@ function EditAccount({ selectedaccid, setShowEdit }) {
                                                 setShowPassword(!showPassword)
                                             }
                                             className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                                            aria-label={
+                                                showPassword
+                                                    ? "Hide password"
+                                                    : "Show password"
+                                            }
+                                            aria-pressed={showPassword}
                                         >
                                             {showPassword ? "Hide" : "Show"}
                                         </button>
                                     </div>
                                 </label>
                             </div>
+
                             {/* Assigned Office */}
                             <label className="block text-white">
                                 Assigned Office:
@@ -169,18 +193,12 @@ function EditAccount({ selectedaccid, setShowEdit }) {
                                         handleChange(e);
                                         setSelectedOffice(e.target.value);
                                     }}
+                                    aria-label="Assigned Office"
                                 >
                                     <option value="" disabled>
                                         --Select Office--
                                     </option>
-                                    {[
-                                        ...new Map(
-                                            offData.map((item) => [
-                                                item.offabbr,
-                                                item,
-                                            ])
-                                        ).values(),
-                                    ].map((option) => (
+                                    {officeOptions.map((option) => (
                                         <option
                                             key={option.offid}
                                             value={option.offabbr}
@@ -190,9 +208,11 @@ function EditAccount({ selectedaccid, setShowEdit }) {
                                     ))}
                                 </select>
                             </label>
+
+                            {/* Buttons */}
                             <div className="flex justify-center gap-6">
                                 <button
-                                    className="btn bg-[#FFDB75] text-[#194F90] font-semibold  hover:bg-[#f3cd64] hover:text-[#194F90] rounded-md px-6 py-2"
+                                    className="btn bg-[#FFDB75] text-[#194F90] font-semibold hover:bg-[#f3cd64] hover:text-[#194F90] rounded-md px-6 py-2"
                                     onClick={() => setShowEdit(false)}
                                 >
                                     Back
