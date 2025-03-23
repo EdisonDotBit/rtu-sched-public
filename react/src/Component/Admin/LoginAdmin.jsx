@@ -5,6 +5,7 @@ import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
 import { toast } from "react-toastify"; // Import toast
 import "react-toastify/dist/ReactToastify.css"; // Import the CSS
+import { Navigate } from "react-router-dom";
 
 function LoginAdmin() {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -15,7 +16,16 @@ function LoginAdmin() {
     });
     const [loading, setLoading] = useState(false); // Loading state
 
-    const { login } = useAuth();
+    const { login, user, role } = useAuth();
+
+    // Redirect if the user is already authenticated
+    if (user) {
+        if (role === "superadmin") {
+            return <Navigate to="/rtu/suppa/dashboard" replace />;
+        } else {
+            return <Navigate to="/rtu/admin/dashboard" replace />;
+        }
+    }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
