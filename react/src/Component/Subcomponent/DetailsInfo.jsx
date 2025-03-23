@@ -4,7 +4,8 @@ import TimePicker from "./TimePicker";
 import axios from "axios";
 import PDFFile from "../PDFFile";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-function DetailsInfo({ aptData, appointments }) {
+
+function DetailsInfo({ aptData, appointments, userRole }) {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const [formData, setFormData] = useState({});
     const modalRef1 = useRef(null);
@@ -15,10 +16,12 @@ function DetailsInfo({ aptData, appointments }) {
     const openModal1 = () => {
         modalRef1.current.showModal();
     };
+
     const openModal2 = () => {
         modalRef2.current.showModal();
     };
 
+    // Fetch office limit and set form data
     useEffect(() => {
         const getData = async () => {
             const getRes = await fetch(
@@ -37,6 +40,7 @@ function DetailsInfo({ aptData, appointments }) {
         getData();
     }, [aptData]);
 
+    // Handle reschedule
     const handleReSched = async (e, id) => {
         e.preventDefault();
         try {
@@ -56,6 +60,7 @@ function DetailsInfo({ aptData, appointments }) {
         }
     };
 
+    // Handle delete
     const handleDelete = async (e, id) => {
         e.preventDefault();
         try {
@@ -209,6 +214,7 @@ function DetailsInfo({ aptData, appointments }) {
                 </dl>
             </div>
 
+            {/* Action Buttons */}
             <div className="flex justify-evenly mb-4">
                 <button
                     className={`flex justify-center items-center py-2 px-4 rounded-md w-1/3 mr-2 ${
@@ -268,6 +274,7 @@ function DetailsInfo({ aptData, appointments }) {
                 </button>
             </div>
 
+            {/* Reschedule Modal */}
             <dialog ref={modalRef1} className="modal">
                 <div className="p-4 fixed rounded-lg top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl min-h-[50vh] sm:min-h-[60vh] lg:min-h-[70vh] overflow-y-auto flex flex-col justify-start items-center text-white bg-gray-100">
                     <h1 className="font-bold text-3xl text-black mb-6">
@@ -280,6 +287,8 @@ function DetailsInfo({ aptData, appointments }) {
                             setFormData={setFormData}
                             limit={limit}
                             appointments={appointments}
+                            userRole={userRole} // Pass userRole to Calendar
+                            setIsTimeSelected={setIsTimeSelected}
                         />
                         <TimePicker
                             formData={formData}
@@ -287,6 +296,7 @@ function DetailsInfo({ aptData, appointments }) {
                             limit={limit}
                             appointments={appointments}
                             setTimeSelected={handleTimeSelect}
+                            userRole={userRole} // Pass userRole to TimePicker
                         />
                     </div>
 
@@ -317,6 +327,7 @@ function DetailsInfo({ aptData, appointments }) {
                 </div>
             </dialog>
 
+            {/* Delete Modal */}
             <dialog ref={modalRef2} className="modal">
                 <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 backdrop:bg-black/50">
                     <div className="modal-box text-white bg-[#194F90]">
