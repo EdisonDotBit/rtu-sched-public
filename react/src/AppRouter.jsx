@@ -172,7 +172,7 @@ const AppRouter = () => (
 
                     {/* Use `ProtectedVerificationRoute` for password reset verification */}
                     <Route
-                        path="/reset-password"
+                        path="/student/reset-password"
                         element={
                             <ProtectedVerificationRoute>
                                 <ResetPassword />
