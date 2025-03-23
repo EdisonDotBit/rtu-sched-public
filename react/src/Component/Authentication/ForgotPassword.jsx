@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Logo from "../Subcomponent/Asset/rtu_logo_v3.png";
 import { useStudentAuth } from "../../Hooks/useStudentAuth";
 import { Navigate } from "react-router-dom";
@@ -8,8 +10,6 @@ import { Navigate } from "react-router-dom";
 function ForgotPassword() {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
-    const [message, setMessage] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const { isStudentAuthenticated } = useStudentAuth();
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -21,8 +21,6 @@ function ForgotPassword() {
 
     const handleRequestPin = async (e) => {
         e.preventDefault();
-        setMessage("");
-        setErrorMessage("");
         setLoading(true);
 
         try {
@@ -31,16 +29,25 @@ function ForgotPassword() {
                 { email },
                 { withCredentials: true }
             );
+
             if (response.data.success) {
-                setMessage(response.data.message);
-                navigate("/student/forgot-password-authenticate", {
-                    state: {
-                        email,
-                    },
-                });
+                toast.success(response.data.message); // Show success toast
+
+                // Add a small delay before navigation
+                setTimeout(() => {
+                    navigate("/student/forgot-password-authenticate", {
+                        state: { email },
+                    });
+                }, 2000); // 2-second delay
+            } else {
+                throw new Error("Failed to send verification email.");
             }
         } catch (error) {
-            setErrorMessage("Failed to send verification email.");
+            console.error("Error:", error);
+            toast.error(
+                error.response?.data?.message ||
+                    "Failed to send verification email."
+            ); // Show error toast
         } finally {
             setLoading(false);
         }
@@ -48,6 +55,20 @@ function ForgotPassword() {
 
     return (
         <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100 py-8 font-roboto">
+            {/* Toast Container */}
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
+
+            {/* Logo */}
             <div className="mb-4">
                 <img
                     src={Logo}
@@ -55,11 +76,15 @@ function ForgotPassword() {
                     className="w-[300px] lg:w-[400px]"
                 />
             </div>
+
+            {/* Forgot Password Form */}
             <div className="w-full max-w-md bg-[#194F90] rounded-lg shadow-md p-6 md:px-8 lg:px-10">
                 <form onSubmit={handleRequestPin} className="space-y-6">
                     <h2 className="text-white text-2xl font-semibold text-center">
                         Forgot Password
                     </h2>
+
+                    {/* Email Input */}
                     <div>
                         <label className="block text-white">Email:</label>
                         <input
@@ -71,6 +96,8 @@ function ForgotPassword() {
                             required
                         />
                     </div>
+
+                    {/* Submit Button */}
                     <button
                         type="submit"
                         className="w-full py-2 px-4 bg-[#FFDB75] text-[#194F90] font-semibold rounded-lg hover:bg-[#f3cd64] transition duration-200"
@@ -78,16 +105,6 @@ function ForgotPassword() {
                     >
                         {loading ? "Processing..." : "Send Verification PIN"}
                     </button>
-                    {message && (
-                        <p className="text-green-400 text-center mt-4">
-                            {message}
-                        </p>
-                    )}
-                    {errorMessage && (
-                        <p className="text-red-400 text-center mt-4">
-                            {errorMessage}
-                        </p>
-                    )}
                 </form>
             </div>
         </div>
