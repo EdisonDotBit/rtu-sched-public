@@ -701,16 +701,6 @@ function AppointmentsAdmin() {
                         <button
                             className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
                             type="button"
-                            onClick={() => {
-                                action(); // Execute action
-                                modalRef.current.close();
-                            }}
-                        >
-                            Confirm
-                        </button>
-                        <button
-                            className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
-                            type="button"
                             onClick={async () => {
                                 try {
                                     await action(); // Execute action
@@ -723,6 +713,15 @@ function AppointmentsAdmin() {
                             }}
                         >
                             Confirm
+                        </button>
+                        <button
+                            className="mt-6 ml-4 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
+                            type="button"
+                            onClick={() => {
+                                modalRef.current.close();
+                            }}
+                        >
+                            Cancel
                         </button>
                     </div>
                 </div>
