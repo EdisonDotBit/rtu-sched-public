@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useStudentAuth } from "../../Hooks/useStudentAuth";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { toast } from "react-toastify"; // Import toast
+import "react-toastify/dist/ReactToastify.css"; // Import the CSS
 
 function ManageAccount() {
     const { user } = useStudentAuth();
@@ -17,19 +19,7 @@ function ManageAccount() {
     const [password, setPassword] = useState(""); // New password input
     const [showPassword, setShowPassword] = useState(false); // Toggle visibility
     const [confirmPassword, setConfirmPassword] = useState(""); // Confirm password input
-    const [isVerified, setIsVerified] = useState(false);
-    const [verificationMessage, setVerificationMessage] = useState("");
-    const [isVerifying, setIsVerifying] = useState(false);
     const [updateMessage, setUpdateMessage] = useState("");
-    const [verificationPin, setVerificationPin] = useState([
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-    ]); // 6-digit PIN
-    const [isPinInputVisible, setIsPinInputVisible] = useState(false); // Show PIN input after request
 
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -44,7 +34,6 @@ function ManageAccount() {
                 password: user.password,
                 role: user.role,
             });
-            setIsVerified(user.is_verified);
         }
     }, [user]);
 
@@ -59,93 +48,21 @@ function ManageAccount() {
         setPassword(e.target.value);
     };
 
-    // Handle PIN input changes
-    const handlePinChange = (index, value) => {
-        if (/^[0-9]?$/.test(value)) {
-            const newPin = [...verificationPin];
-            newPin[index] = value;
-            setVerificationPin(newPin);
-
-            if (value !== "" && index < 5) {
-                document.getElementById(`pin-${index + 1}`).focus();
-            }
-        }
-    };
-
-    // Request verification PIN with validation
-    const handleRequestVerification = async () => {
-        setIsVerifying(true);
-        setVerificationMessage("");
-
-        // Validate student number format
-        const studentNumberPattern = /^\d{4}-\d{6}$/; // Ensures ####-###### format
-        if (!studentNumberPattern.test(formData.student_number)) {
-            setVerificationMessage(
-                "Invalid student number format. Use YYYY-######."
-            );
-            setIsVerifying(false);
-            return;
-        }
-
-        try {
-            const token = Cookies.get("studentToken");
-            const response = await axios.post(
-                `${apiBaseUrl}/api/users/send-verification-email`,
-                { student_number: formData.student_number },
-                {
-                    withCredentials: true,
-                    headers: { Authorization: `Bearer ${token}` },
-                }
-            );
-
-            if (response.status === 200) {
-                setVerificationMessage("Verification PIN sent to your email.");
-                setIsPinInputVisible(true);
-            }
-        } catch (error) {
-            setVerificationMessage("Verification request failed. Try again.");
-        } finally {
-            setIsVerifying(false);
-        }
-    };
-
-    // Verify student number using PIN
-    const handleVerifyPin = async () => {
-        try {
-            const token = Cookies.get("studentToken");
-            const response = await axios.post(
-                `${apiBaseUrl}/api/users/verify-student-number`,
-                { pin: verificationPin },
-                {
-                    withCredentials: true,
-                    headers: { Authorization: `Bearer ${token}` },
-                }
-            );
-
-            if (response.status === 200) {
-                setVerificationMessage("Student number verified successfully!");
-                setIsVerified(true);
-                setIsPinInputVisible(false);
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000); // Optional delay for better UX
-            }
-        } catch (error) {
-            setVerificationMessage("Invalid PIN. Please try again.");
-        }
-    };
-
     // Handle account update
     const handleUpdate = async (e) => {
         e.preventDefault();
         setUpdateMessage("");
 
+        // Validate password match
+        if (password && password !== confirmPassword) {
+            toast.error("Passwords do not match."); // Show error toast
+            return;
+        }
+
         const token = Cookies.get("studentToken"); // Retrieve token here
 
         if (!token) {
-            setUpdateMessage(
-                "Authentication token not found. Please log in again."
-            );
+            toast.error("Authentication token not found. Please log in again."); // Show error toast
             return;
         }
 
@@ -156,14 +73,6 @@ function ManageAccount() {
                 password: password || undefined, // Only send password if it's set
             };
 
-            // If user entered a new password, include password confirmation
-            if (password) {
-                updateData.password = password;
-                updateData.password_confirmation = password; // Add this line
-            }
-
-            console.log("Sending update request:", updateData); // Log request data
-
             const response = await axios.put(
                 `${apiBaseUrl}/api/users/update`,
                 updateData,
@@ -173,19 +82,17 @@ function ManageAccount() {
                 }
             );
 
-            console.log("Update response:", response); // Log response
-
             if (response.status === 200) {
-                setUpdateMessage("Account updated successfully.");
+                toast.success("Account updated successfully."); // Show success toast
                 setTimeout(() => {
                     window.location.reload(); // Reload page after successful update
                 }, 1000); // Optional delay for better UX
             } else {
-                setUpdateMessage("Failed to update account. Please try again.");
+                toast.error("Failed to update account. Please try again."); // Show error toast
             }
         } catch (error) {
             console.error("Update failed:", error.response?.data || error);
-            setUpdateMessage("Failed to update account. Please try again.");
+            toast.error("Failed to update account. Please try again."); // Show error toast
         }
     };
 
@@ -197,12 +104,6 @@ function ManageAccount() {
                     <h2 className="text-white text-2xl font-semibold text-center">
                         Manage Account
                     </h2>
-
-                    {updateMessage && (
-                        <p className="text-green-400 text-center">
-                            {updateMessage}
-                        </p>
-                    )}
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -263,72 +164,15 @@ function ManageAccount() {
                             <label className="block text-white">
                                 Student Number:
                             </label>
-                            <div className="flex items-center gap-2 mt-1">
-                                <input
-                                    className={`text-gray-800 w-full py-2 px-3 border border-gray-300 rounded-lg ${
-                                        isVerified
-                                            ? "bg-gray-300 cursor-not-allowed"
-                                            : "bg-white"
-                                    }`}
-                                    name="student_number"
-                                    type="text"
-                                    value={formData.student_number}
-                                    onChange={handleChange}
-                                    disabled={isVerified}
-                                    placeholder="Ex: 2021-101###"
-                                    required
-                                    pattern="^\d{4}-\d{6}$"
-                                    title="Student number must be in the format ####-###### (e.g., 2021-101864)"
-                                />
-                                {!isVerified && (
-                                    <button
-                                        type="button"
-                                        className="py-2 px-3 bg-[#FFDB75] text-[#194F90] font-semibold rounded-lg hover:bg-[#f3cd64] transition"
-                                        onClick={handleRequestVerification}
-                                        disabled={isVerifying}
-                                    >
-                                        {isVerifying ? "Sending..." : "Verify"}
-                                    </button>
-                                )}
-                            </div>
-                            <div className="block text-white text-xs mt-2 italic">
-                                Note: Please enter the student number that is
-                                associated with your institutional email.
-                            </div>
+                            <input
+                                className="text-gray-800 bg-gray-300 cursor-not-allowed w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg"
+                                name="student_number"
+                                type="text"
+                                value={formData.student_number}
+                                readOnly
+                                disabled
+                            />
                         </div>
-
-                        {isPinInputVisible && (
-                            <div className="col-span-2">
-                                <label className="block text-white">
-                                    Enter Verification PIN:
-                                </label>
-                                <div className="flex gap-2">
-                                    {verificationPin.map((digit, index) => (
-                                        <input
-                                            key={index}
-                                            id={`pin-${index}`}
-                                            type="text"
-                                            value={digit}
-                                            maxLength={1}
-                                            onChange={(e) =>
-                                                handlePinChange(
-                                                    index,
-                                                    e.target.value
-                                                )
-                                            }
-                                            className="w-12 h-12 text-center text-xl border bg-white border-gray-300 rounded-lg"
-                                        />
-                                    ))}
-                                </div>
-                                <button
-                                    type="button"
-                                    className="mt-3 py-2 px-4 bg-[#FFDB75] text-[#194F90] font-semibold rounded-lg hover:bg-[#f3cd64] transition duration-200"
-                                    onClick={handleVerifyPin}
-                                >
-                                    Submit PIN
-                                </button>
-                            </div>
-                        )}
 
                         <div className="col-span-2">
                             <label className="block text-white">
@@ -339,9 +183,7 @@ function ManageAccount() {
                                     name="password"
                                     type={showPassword ? "text" : "password"} // Toggle password visibility
                                     value={password}
-                                    onChange={(e) =>
-                                        setPassword(e.target.value)
-                                    }
+                                    onChange={handlePasswordChange}
                                     placeholder="Enter New Password"
                                     className="text-gray-800 bg-white w-full mt-1 py-2 px-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
                                 />

@@ -117,38 +117,50 @@ class Offices extends Controller
 
     public function edoff(Request $request, $offid)
     {
-        $validatedData = $request->validate([
-            'offname' => 'required|string|max:255',
-            'offabbr' => 'required|string|max:50|unique:offices,offabbr,' . $offid . ',id,offbranch,' . $request->input('offbranch'),
-            'offlimit' => 'required|integer',
-        ]);
-
-        $off = Office::find($offid);
-
-        if (!$off) {
-            return response()->json([
-                'status' => 404,
-                'error' => 'Office not found',
-            ], 404);
-        }
-
         try {
+            $validatedData = $request->validate([
+                'offname' => 'required|string|max:255',
+                'offabbr' => 'required|string|max:50|unique:offices,offabbr,' . $offid . ',offid,offbranch,' . $request->input('offbranch'),
+                'offlimit' => 'required|integer',
+                'offbranch' => 'required|string|max:255',
+            ]);
+
+            $off = Office::find($offid);
+
+            if (!$off) {
+                return response()->json([
+                    'status' => 404,
+                    'error' => 'Office not found',
+                ], 404);
+            }
+
+            // Update the office details
             $off->offname = $validatedData['offname'];
             $off->offabbr = $validatedData['offabbr'];
             $off->offlimit = $validatedData['offlimit'];
+            $off->offbranch = $validatedData['offbranch'];
             $off->save();
 
             return response()->json([
                 'status' => 200,
                 'message' => 'Office updated successfully.',
             ], 200);
-        } catch (\Exception $e) {
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Handle validation errors
             return response()->json([
-                'status' => 400,
+                'status' => 422,
+                'error' => 'Validation failed.',
+                'messages' => $e->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            // Handle other exceptions
+            return response()->json([
+                'status' => 500,
                 'error' => 'Failed to update the office. Please double check the details.',
-            ], 400);
+            ], 500);
         }
     }
+
     public function getPurposes($officeAbbr, $offBranch)
     {
         $office = Office::where('offabbr', $officeAbbr)

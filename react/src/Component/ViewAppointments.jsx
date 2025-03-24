@@ -2,15 +2,21 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import DetailsInfo from "./Subcomponent/DetailsInfo";
 import Loading from "./Subcomponent/Loading";
+import { useStudentAuth } from "../Hooks/useStudentAuth"; // Import the hook
 
 function ViewAppointments() {
+    const { user } = useStudentAuth(); // Get the authenticated user
+    const userRole = user ? user.role : "Guest"; // Set userRole based on authentication
+
     const [aptid, setAptid] = useState("");
     const [aptData, setAptData] = useState({});
     const [error, setError] = useState(null);
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-    const [isLoading, setIsLoading] = useState();
+    const [isLoading, setIsLoading] = useState(false);
 
     const [appointments, setAppointments] = useState([]);
+
+    // Fetch all ongoing appointments
     useEffect(() => {
         const getData = async () => {
             const getRes = await fetch(`${apiBaseUrl}/api/allongoing`);
@@ -19,6 +25,8 @@ function ViewAppointments() {
         };
         getData();
     }, []);
+
+    // Handle search for a specific appointment
     const handleSearch = async () => {
         setIsLoading(true);
         setError(null);
@@ -79,6 +87,7 @@ function ViewAppointments() {
                                 <DetailsInfo
                                     aptData={aptData}
                                     appointments={appointments}
+                                    userRole={userRole} // Pass userRole to DetailsInfo
                                 />
                             )}
                         </div>

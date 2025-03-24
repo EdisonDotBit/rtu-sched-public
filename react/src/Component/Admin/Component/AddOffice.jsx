@@ -1,40 +1,67 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import axios from "axios";
 import { useAuth } from "../../../Hooks/useAuth";
+import { toast } from "react-toastify"; // Import toast
+import "react-toastify/dist/ReactToastify.css"; // Import the CSS
 
-function AddOffice({ setShowAdd }) {
+function AddOffice({ setShowAdd, onSuccess }) {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const { branch } = useAuth();
     const [formData, setFormData] = useState({
         offabbr: "",
         offname: "",
-        offlimit: "",
+        offlimit: "", // Initialize as empty string to allow empty input
     });
 
-    const handleChange = (e) => {
+    const handleChange = useCallback((e) => {
         const { name, value } = e.target;
         setFormData((prevState) => ({
             ...prevState,
-            [name]: value,
+            [name]: value, // Keep as string to allow empty input
         }));
-    };
+    }, []);
 
     const addoff = async (e) => {
         e.preventDefault();
 
+        // Convert offlimit to a number before submission
+        const offlimitNumber =
+            formData.offlimit === "" ? 0 : Number(formData.offlimit);
+
+        // Basic validation
+        if (!formData.offname || !formData.offabbr || offlimitNumber <= 0) {
+            toast.error(
+                "Please fill out all fields and ensure the limit is a positive number."
+            ); // Show error toast
+            return;
+        }
+
         try {
             const res = await axios.post(`${apiBaseUrl}/api/office/add`, {
                 ...formData,
+                offlimit: offlimitNumber, // Send as number
                 offbranch: branch,
             });
 
             if (res.status === 200) {
-                console.log(res.data.message);
-                alert("Office added successfully.");
-                window.location.reload();
+                toast.success("Office added successfully."); // Show success toast
+                onSuccess(); // Call the onSuccess callback to refetch data
+                setShowAdd(false); // Close the AddOffice modal
             }
         } catch (error) {
-            alert("Error adding office. Please double check the details.");
+            if (error.response) {
+                // Server responded with an error
+                toast.error(
+                    error.response.data.error ||
+                        "Error adding office. Please double check the details."
+                ); // Show error toast
+            } else if (error.request) {
+                // No response received
+                toast.error("No response from the server. Please try again."); // Show error toast
+            } else {
+                // Other errors
+                toast.error("An unexpected error occurred. Please try again."); // Show error toast
+            }
         }
     };
 
@@ -57,6 +84,7 @@ function AddOffice({ setShowAdd }) {
                                     onChange={handleChange}
                                     type="text"
                                     placeholder="Enter Office Name"
+                                    aria-label="Office Name"
                                 />
                             </label>
 
@@ -70,6 +98,7 @@ function AddOffice({ setShowAdd }) {
                                     onChange={handleChange}
                                     type="text"
                                     placeholder="e.g. MISO"
+                                    aria-label="Office Abbreviation"
                                 />
                             </label>
 
@@ -81,15 +110,10 @@ function AddOffice({ setShowAdd }) {
                                     name="offlimit"
                                     value={formData.offlimit}
                                     onChange={handleChange}
-                                    onInput={(e) => {
-                                        // Use onInput event to handle input
-                                        e.target.value = e.target.value.replace(
-                                            /[^0-9]/g,
-                                            ""
-                                        ); // Remove non-numeric characters
-                                    }}
-                                    type="text"
+                                    type="number"
+                                    min="1"
                                     placeholder="e.g. 180 = 20 appointments per time slot"
+                                    aria-label="Appointment Limit"
                                 />
                             </label>
 

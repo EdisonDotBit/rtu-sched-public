@@ -1,7 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../../Hooks/useAuth";
 import axios from "axios";
-import { useDebouncedEffect } from "../../Hooks/useDebouncedEffect";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { FaSync } from "react-icons/fa";
 
 function AppointmentsAdmin() {
     const [aptemail, setAptEmail] = useState("");
@@ -13,7 +15,6 @@ function AppointmentsAdmin() {
     const { role, branch } = useAuth();
     const [selectedAppointmentNum, setSelectedAppointmentNum] = useState(null);
     const [confirmationMessage, setConfirmationMessage] = useState("");
-    const [loading, setLoading] = useState(false);
     const [modalTitle, setModalTitle] = useState("");
     const [action, setAction] = useState(null);
     const modalRef = useRef(null);
@@ -21,9 +22,10 @@ function AppointmentsAdmin() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isOtherPurposeModalOpen, setOtherPurposeModalOpen] = useState(false);
     const [selectedOtherPurpose, setSelectedOtherPurpose] = useState("");
+    const [isProcessing, setIsProcessing] = useState(false);
 
+    // Fetch appointment data
     const getData = async () => {
-        setLoading(true);
         try {
             let endpoint;
 
@@ -38,20 +40,31 @@ function AppointmentsAdmin() {
             setAptData(getDataResult);
             setSearchResults(getDataResult);
         } catch (error) {
-            console.error("Error fetching data:", error);
-        } finally {
-            setLoading(false);
+            toast.error(
+                "Failed to fetch appointment data. Please try again later."
+            );
         }
     };
 
-    useDebouncedEffect(() => {
-        getData();
-    }, [role, branch, apiBaseUrl, 500]);
+    // Polling for data updates
+    useEffect(() => {
+        const interval = setInterval(() => {
+            getData(); // Fetch data every 60 seconds
+        }, 60000); // 60 seconds interval
 
-    const handleReload = () => {
-        getData();
+        getData(); // Fetch data immediately on component mount
+
+        return () => clearInterval(interval); // Cleanup interval on unmount
+    }, [role, branch, apiBaseUrl]);
+
+    // Handle manual refresh
+    const handleReload = async () => {
+        toast.info("Refreshing appointment data...");
+        await getData();
+        toast.success("Appointment data refreshed.");
     };
 
+    // Filter and sort data
     useEffect(() => {
         let filteredResults = aptData.filter((apt) => {
             return apt.aptemail.toLowerCase().includes(aptemail.toLowerCase());
@@ -66,13 +79,14 @@ function AppointmentsAdmin() {
         setSearchResults(filteredResults);
     }, [aptemail, aptData, filterStatus]);
 
+    // Handle appointment actions
     const handleConfirm = async (id) => {
         setModalTitle("Confirm Appointment");
         setConfirmationMessage(
             "Are you sure you want to confirm this appointment?"
         );
         setSelectedAppointmentNum(id);
-        setAction(() => () => confirmAppointment(id)); // Set action
+        setAction(() => () => confirmAppointment(id));
         modalRef.current.showModal();
     };
 
@@ -82,7 +96,7 @@ function AppointmentsAdmin() {
             "Are you sure you want to mark this appointment as done?"
         );
         setSelectedAppointmentNum(id);
-        setAction(() => () => markAppointmentDone(id)); // Set action
+        setAction(() => () => markAppointmentDone(id));
         modalRef.current.showModal();
     };
 
@@ -92,7 +106,7 @@ function AppointmentsAdmin() {
             "Are you sure you want to cancel this appointment?"
         );
         setSelectedAppointmentNum(id);
-        setAction(() => () => cancelAppointment(id)); // Set action
+        setAction(() => () => cancelAppointment(id));
         modalRef.current.showModal();
     };
 
@@ -102,82 +116,71 @@ function AppointmentsAdmin() {
             "Are you sure you want to delete this appointment?"
         );
         setSelectedAppointmentNum(id);
-        setAction(() => () => deleteAppointment(id)); // Set action
+        setAction(() => () => deleteAppointment(id));
         modalRef.current.showModal();
     };
 
-    // Define the appointment action functions...
+    // Appointment action functions
     const confirmAppointment = async (id) => {
-        setLoading(true);
         try {
             const response = await axios.post(
                 `${apiBaseUrl}/api/appointments/confirm/${id}`,
                 {}
             );
             if (response.status === 200) {
-                alert("Appointment confirmed.");
-                window.location.reload();
+                toast.success("Appointment confirmed.");
+                getData();
             }
         } catch (error) {
-            alert("Error confirming appointment.");
-        } finally {
-            setLoading(false);
+            toast.error("Error confirming appointment.");
         }
     };
 
     const markAppointmentDone = async (id) => {
-        setLoading(true);
         try {
             const response = await axios.post(
                 `${apiBaseUrl}/api/appointments/done/${id}`,
                 {}
             );
             if (response.status === 200) {
-                alert("Appointment marked as done.");
-                window.location.reload();
+                toast.success("Appointment marked as done.");
+                getData();
             }
         } catch (error) {
-            alert("Error marking appointment as done.");
-        } finally {
-            setLoading(false);
+            toast.error("Error marking appointment as done.");
         }
     };
 
     const cancelAppointment = async (id) => {
-        setLoading(true);
         try {
             const response = await axios.post(
                 `${apiBaseUrl}/api/appointments/cancel/${id}`,
                 {}
             );
             if (response.status === 200) {
-                alert("Appointment cancelled.");
-                window.location.reload();
+                toast.success("Appointment cancelled.");
+                getData();
             }
         } catch (error) {
-            alert("Error cancelling appointment.");
-        } finally {
-            setLoading(false);
+            toast.error("Error cancelling appointment.");
         }
     };
 
     const deleteAppointment = async (id) => {
-        setLoading(true);
         try {
             const response = await axios.delete(
                 `${apiBaseUrl}/api/appointments/${id}`
             );
             if (response.status === 200) {
-                alert("Appointment deleted.");
-                window.location.reload();
+                toast.success("Appointment deleted.");
+                getData();
             }
         } catch (error) {
-            alert("Error deleting appointment.");
-        } finally {
-            setLoading(false);
+            toast.error("Error deleting appointment.");
         }
     };
 
+    // Sort data
     const sortData = (key) => {
         let direction = "asc";
         if (sortConfig.key === key && sortConfig.direction === "asc") {
@@ -193,6 +196,7 @@ function AppointmentsAdmin() {
         setSearchResults(sortedData);
     };
 
+    // Sort arrow component
     const SortArrow = ({ direction }) => {
         if (direction === "asc") {
             return (
@@ -222,21 +226,25 @@ function AppointmentsAdmin() {
         );
     };
 
+    // Open attachment modal
     const openAttachmentModal = (attachments) => {
-        setSelectedAttachments(JSON.parse(attachments)); // Convert JSON string back to array
+        setSelectedAttachments(JSON.parse(attachments));
         setIsModalOpen(true);
     };
 
+    // Close attachment modal
     const closeAttachmentModal = () => {
         setSelectedAttachments([]);
         setIsModalOpen(false);
     };
 
+    // Open other purpose modal
     const openOtherPurposeModal = (purpose) => {
         setSelectedOtherPurpose(purpose);
         setOtherPurposeModalOpen(true);
     };
 
+    // Close other purpose modal
     const closeOtherPurposeModal = () => {
         setOtherPurposeModalOpen(false);
         setSelectedOtherPurpose("");
@@ -244,14 +252,8 @@ function AppointmentsAdmin() {
 
     return (
         <div className="flex justify-center h-full">
-            {loading && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-white opacity-85">
-                    <p className="text-3xl text-[#194F90] font-bold">
-                        Loading Appointments...
-                    </p>
-                </div>
-            )}
             <div className="flex flex-col items-center gap-[20px] flex-1 w-full">
+                {/* Search Input */}
                 <input
                     className="text-gray-800 bg-white mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] w-[300px] xsm:w-[200px] sm:w-[300px] text-md"
                     type="text"
@@ -260,12 +262,13 @@ function AppointmentsAdmin() {
                     onChange={(e) => setAptEmail(e.target.value)}
                 />
 
+                {/* Filter and Refresh Section */}
                 <div className="self-baseline flex items-center gap-2 mb-4">
                     <button
                         onClick={handleReload}
                         className="text-blue-500 hover:text-blue-700 mr-6"
                     >
-                        <i className="fas fa-sync-alt"></i>
+                        <FaSync className="inline-block" />
                     </button>
 
                     <p className="text-sm">Sort Status by:</p>
@@ -282,6 +285,7 @@ function AppointmentsAdmin() {
                     </select>
                 </div>
 
+                {/* Appointment Table */}
                 {searchResults.length !== 0 && (
                     <div className="overflow-x-auto overflow-y-auto mb-4">
                         <table className="table-auto shadow-md rounded border border-gray-200 w-full divide-y-2 divide-gray-200 bg-white text-[10px]">
@@ -671,9 +675,10 @@ function AppointmentsAdmin() {
                 )}
             </div>
 
+            {/* Confirmation Modal */}
             <dialog
                 ref={modalRef}
-                className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 backdrop:bg-black/50"
+                className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4"
             >
                 <div className="modal-box text-white bg-[#194F90]">
                     <h3 className="font-bold text-lg">{modalTitle}</h3>
@@ -683,18 +688,38 @@ function AppointmentsAdmin() {
                     </p>
                     <div className="modal-action flex justify-center gap-4">
                         <button
-                            className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
+                            className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90] disabled:opacity-50 disabled:cursor-not-allowed"
                             type="button"
-                            onClick={() => {
-                                action(); // Execute action
-                                modalRef.current.close();
+                            disabled={isProcessing} // Disable button when processing
+                            onClick={async () => {
+                                setIsProcessing(true); // Start processing
+                                try {
+                                    // Show a loading toast
+                                    await toast.promise(
+                                        action(), // Execute the action
+                                        {
+                                            pending: "Processing...", // Loading message
+                                            error: "An error occurred while performing the action.", // Error message
+                                        }
+                                    );
+                                    modalRef.current.close(); // Close the modal after the action is completed
+                                } catch (error) {
+                                    // Handle any errors
+                                    toast.error(
+                                        "An error occurred while performing the action."
+                                    );
+                                } finally {
+                                    setIsProcessing(false); // Reset processing state
+                                }
                             }}
                         >
-                            Confirm
+                            {isProcessing ? "Processing..." : "Confirm"}{" "}
+                            {/* Update button text */}
                         </button>
                         <button
+                            className="mt-6 ml-4 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90] disabled:opacity-50 disabled:cursor-not-allowed"
                             type="button"
-                            className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
+                            disabled={isProcessing} // Disable button when processing
                             onClick={() => {
                                 modalRef.current.close();
                             }}
@@ -705,10 +730,11 @@ function AppointmentsAdmin() {
                 </div>
             </dialog>
 
+            {/* Attachment Modal */}
             {isModalOpen && (
                 <dialog
                     open
-                    className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] bg-[#194F90] rounded-lg shadow-lg p-6 backdrop:bg-black/50"
+                    className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] bg-[#194F90] rounded-lg shadow-lg p-6"
                     onKeyDown={(event) => {
                         if (event.key === "Escape") {
                             event.preventDefault();
@@ -716,12 +742,9 @@ function AppointmentsAdmin() {
                     }}
                 >
                     <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] px-4 w-full">
-                        {/* Modal Title */}
                         <h2 className="text-xl font-semibold mb-4">
                             View Attachments
                         </h2>
-
-                        {/* Attachments Container */}
                         <div className="flex flex-col gap-4 w-full max-h-[500px] overflow-y-auto p-4 bg-white ">
                             {selectedAttachments.map((file, index) => (
                                 <div
@@ -762,8 +785,6 @@ function AppointmentsAdmin() {
                                 </div>
                             ))}
                         </div>
-
-                        {/* Close Button */}
                         <button
                             onClick={closeAttachmentModal}
                             className="mt-4 px-6 py-2 bg-[#FFDB75] text-[#194F90] font-semibold rounded-md hover:bg-[#f3cd64] transition"
@@ -774,10 +795,11 @@ function AppointmentsAdmin() {
                 </dialog>
             )}
 
+            {/* Other Purpose Modal */}
             {isOtherPurposeModalOpen && (
                 <dialog
                     open
-                    className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50%] bg-[#194F90] rounded-lg shadow-lg p-6 backdrop:bg-black/50"
+                    className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50%] bg-[#194F90] rounded-lg shadow-lg p-6"
                     onKeyDown={(event) => {
                         if (event.key === "Escape") {
                             event.preventDefault();
@@ -785,17 +807,12 @@ function AppointmentsAdmin() {
                     }}
                 >
                     <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] px-4 w-full">
-                        {/* Modal Title */}
                         <h2 className="text-xl font-semibold mb-4">
                             View Other Purpose
                         </h2>
-
-                        {/* Display Other Purpose */}
                         <div className="w-full max-h-[300px] overflow-y-auto p-4 bg-white text-gray-800 rounded-lg">
                             <p className="text-md">{selectedOtherPurpose}</p>
                         </div>
-
-                        {/* Close Button */}
                         <button
                             onClick={closeOtherPurposeModal}
                             className="mt-4 px-6 py-2 bg-[#FFDB75] text-[#194F90] font-semibold rounded-md hover:bg-[#f3cd64] transition"

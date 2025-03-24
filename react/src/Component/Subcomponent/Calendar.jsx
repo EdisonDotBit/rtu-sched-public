@@ -1,30 +1,37 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import Loading from "./Loading";
-import { useDebouncedEffect } from "../../Hooks/useDebouncedEffect";
+import { fetchHolidays } from "../../../../resources/js/fetchHolidays";
 
-const Calendar = ({ formData, setFormData, limit, appointments, userRole }) => {
+const Calendar = ({
+    formData,
+    setFormData,
+    limit,
+    appointments,
+    userRole,
+    setIsTimeSelected,
+}) => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-    const [disabledDates, setDisabledDates] = useState([
-        // Holidays
-        "2024-01-01",
-        "2024-03-28",
-        "2024-03-29",
-        "2024-04-09",
-        "2024-05-01",
-        "2024-06-12",
-        "2024-08-26",
-        "2024-11-30",
-        "2024-12-25",
-        "2024-12-30",
-    ]);
+    const [disabledDates, setDisabledDates] = useState([]); // For holidays and appointment-limited dates
+    const [manuallyDisabledDates, setManuallyDisabledDates] = useState([]); // For manually disabled dates
     const [isLoading, setIsLoading] = useState(true);
-    const [rerender, setRerender] = useState(false);
 
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+
+    // Fetch holidays and appointment-limited dates
     useEffect(() => {
-        const getData = async () => {
+        const fetchData = async () => {
             setIsLoading(true);
 
+            // Fetch holidays
+            const holidays = await fetchHolidays(currentYear);
+            const holidayDates = holidays.map(
+                (holiday) =>
+                    holiday.start.date || holiday.start.dateTime.slice(0, 10)
+            );
+
+            // Count appointments for the current office
             const counts = {};
             appointments.forEach((item) => {
                 const date = item.aptdate;
@@ -33,122 +40,127 @@ const Calendar = ({ formData, setFormData, limit, appointments, userRole }) => {
                 }
             });
 
+            // Disable dates where the appointment count exceeds the limit
             const datesToDisable = Object.keys(counts).filter(
                 (date) => counts[date] >= limit
             );
 
+            // Combine holidays and appointment-limited dates
             setDisabledDates((prevDisabledDates) => {
                 return Array.from(
-                    new Set([...prevDisabledDates, ...datesToDisable])
+                    new Set([...holidayDates, ...datesToDisable])
                 );
             });
+
             setIsLoading(false);
         };
 
-        getData();
-    }, [formData.aptoffice]);
+        fetchData();
+    }, [formData.aptoffice, limit, currentYear]); // Removed `appointments` from dependencies
 
+    // Fetch manually disabled dates from the backend API
     useEffect(() => {
         const fetchDisabledDates = async () => {
             if (!formData.aptoffice || !formData.aptbranch) return;
             try {
                 const endpoint = `${apiBaseUrl}/api/office/disabled-dates/${formData.aptoffice}/${formData.aptbranch}`;
-                console.log("Fetching disabled dates from:", endpoint);
                 const res = await fetch(endpoint);
-                if (!res.ok) {
-                    throw new Error(res.statusText);
-                }
+                if (!res.ok) throw new Error(res.statusText);
                 const data = await res.json();
-                console.log("Fetched disabled dates:", data);
-
                 const fetchedDates = data.map((item) => item.date);
-                setDisabledDates((prev) =>
-                    Array.from(new Set([...prev, ...fetchedDates]))
-                );
+                setManuallyDisabledDates(fetchedDates); // Store manually disabled dates separately
             } catch (error) {
                 console.error("Error fetching disabled dates:", error);
             }
         };
+
         fetchDisabledDates();
     }, [apiBaseUrl, formData.aptoffice, formData.aptbranch]);
 
-    const handleDateClick = (day) => {
-        // Create a formatted date string (YYYY-MM-DD)
-        const formattedDate = `${currentDate.getFullYear()}-${(
-            currentDate.getMonth() + 1
-        )
-            .toString()
-            .padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+    // Handle date selection
+    const handleDateClick = useCallback(
+        (day) => {
+            const formattedDate = `${currentYear}-${(currentMonth + 1)
+                .toString()
+                .padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
 
-        console.log("Clicked date:", formattedDate);
+            // Prevent selection if the date is disabled for non-admin users
+            if (
+                (userRole === "Student" || userRole === "Guest") &&
+                (disabledDates.includes(formattedDate) ||
+                    manuallyDisabledDates.includes(formattedDate))
+            ) {
+                return;
+            }
 
-        if (
-            userRole === "Student" ||
-            (userRole === "Guest" && disabledDates.includes(formattedDate))
-        ) {
-            return;
-        }
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                aptdate: formattedDate,
+                apttime: "",
+            }));
 
-        // Reset the selected time when changing the date
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            aptdate: formattedDate,
-            apttime: "",
-        }));
-        console.log(limit);
-        setRerender((prev) => !prev);
-    };
+            setIsTimeSelected(false);
+        },
+        [
+            currentYear,
+            currentMonth,
+            userRole,
+            disabledDates,
+            manuallyDisabledDates,
+            setFormData,
+            setIsTimeSelected,
+        ]
+    );
 
-    const handlePrevYear = () => {
+    // Navigation handlers
+    const handlePrevYear = useCallback(() => {
         setCurrentDate(
             (prevDate) =>
                 new Date(prevDate.getFullYear() - 1, prevDate.getMonth())
         );
-    };
+    }, []);
 
-    const handleNextYear = () => {
+    const handleNextYear = useCallback(() => {
         setCurrentDate(
             (prevDate) =>
                 new Date(prevDate.getFullYear() + 1, prevDate.getMonth())
         );
-    };
+    }, []);
 
-    const handlePrevMonth = () => {
+    const handlePrevMonth = useCallback(() => {
         setCurrentDate(
             (prevDate) =>
                 new Date(prevDate.getFullYear(), prevDate.getMonth() - 1)
         );
-    };
+    }, []);
 
-    const handleNextMonth = () => {
+    const handleNextMonth = useCallback(() => {
         setCurrentDate(
             (prevDate) =>
                 new Date(prevDate.getFullYear(), prevDate.getMonth() + 1)
         );
-    };
+    }, []);
 
-    const isPastDate = (day) => {
-        const selectedDate = new Date(
-            currentDate.getFullYear(),
-            currentDate.getMonth(),
-            day,
-            23,
-            59,
-            59
-        );
+    // Check if a date is disabled
+    const isPastDate = useCallback(
+        (day) => {
+            const selectedDate = new Date(
+                currentYear,
+                currentMonth,
+                day,
+                23,
+                59,
+                59
+            );
 
-        // Check if the selected date is in the past.
-        if (selectedDate < new Date()) {
-            return true;
-        }
+            // Disable past dates
+            if (selectedDate < new Date()) return true;
 
-        // Always disable weekends, regardless of role.
-        if (selectedDate.getDay() === 0 || selectedDate.getDay() === 6) {
-            return true;
-        }
+            // Disable weekends
+            if (selectedDate.getDay() === 0 || selectedDate.getDay() === 6)
+                return true;
 
-        // For students only:
-        if (userRole === "Student") {
+            // Disable holidays and appointment-limited dates for all users
             const formatted = `${selectedDate.getFullYear()}-${(
                 selectedDate.getMonth() + 1
             )
@@ -157,39 +169,60 @@ const Calendar = ({ formData, setFormData, limit, appointments, userRole }) => {
                 .getDate()
                 .toString()
                 .padStart(2, "0")}`;
-            if (disabledDates.includes(formatted)) {
+
+            if (disabledDates.includes(formatted)) return true;
+
+            // Disable manually disabled dates for non-admin users only
+            if (
+                (userRole === "Student" || userRole === "Guest") &&
+                manuallyDisabledDates.includes(formatted)
+            ) {
                 return true;
             }
-        }
 
-        return false;
-    };
+            return false;
+        },
+        [
+            currentYear,
+            currentMonth,
+            userRole,
+            disabledDates,
+            manuallyDisabledDates,
+        ]
+    );
 
-    const getDaysInMonth = (month, year) => {
+    // Get the number of days in the current month
+    const getDaysInMonth = useCallback((month, year) => {
         return new Date(year, month + 1, 0).getDate();
-    };
+    }, []);
 
-    const renderCalendarDays = () => {
-        const currentYear = currentDate.getFullYear();
-        const currentMonth = currentDate.getMonth();
+    // Render the calendar days
+    const renderCalendarDays = useMemo(() => {
         const totalDays = getDaysInMonth(currentMonth, currentYear);
         const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
 
         let calendarDays = [];
 
+        // Add empty cells for days before the first day of the month
         for (let i = 0; i < firstDayOfMonth; i++) {
             calendarDays.push(
-                <td key={`empty-${i}`} className="border border-gray-200"></td>
+                <td
+                    key={`empty-${i}`}
+                    className="border border-gray-200 h-4"
+                ></td>
             );
         }
 
+        // Add days of the month
         for (let day = 1; day <= totalDays; day++) {
             const formattedDate = `${currentYear}-${(currentMonth + 1)
                 .toString()
                 .padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
 
-            let className = "border border-gray-200";
+            let className =
+                "border border-gray-200 text-center transition-colors duration-200 h-10";
 
+            // Style weekends
             if (
                 new Date(currentYear, currentMonth, day).getDay() === 0 ||
                 new Date(currentYear, currentMonth, day).getDay() === 6
@@ -197,20 +230,23 @@ const Calendar = ({ formData, setFormData, limit, appointments, userRole }) => {
                 className += " text-red-500";
             }
 
+            // Style selected date
             if (formData.aptdate === formattedDate) {
                 className += " bg-blue-600 text-white";
             }
 
+            // Disable past dates and weekends
             if (isPastDate(day)) {
                 className += " pointer-events-none opacity-50";
             }
 
-            if (disabledDates.includes(formattedDate)) {
+            // Style manually disabled dates for non-admin users
+            if (manuallyDisabledDates.includes(formattedDate)) {
                 if (userRole === "Student" || userRole === "Guest") {
                     className +=
-                        " bg-gray-300 text-gray-500 pointer-events-none cursor-not-allowed"; // Disabled for students
+                        " bg-gray-300 text-gray-500 pointer-events-none cursor-not-allowed";
                 } else {
-                    className += " bg-yellow-300 text-gray-900"; // Highlighted but still clickable for admins
+                    className += " bg-yellow-300 text-gray-900";
                 }
             }
 
@@ -219,7 +255,7 @@ const Calendar = ({ formData, setFormData, limit, appointments, userRole }) => {
                     <button
                         type="button"
                         onClick={() => handleDateClick(day)}
-                        className="w-full h-full p-2 focus:outline-none"
+                        className="w-full h-full focus:outline-none hover:bg-blue-100"
                         disabled={isPastDate(day)}
                     >
                         {day}
@@ -228,6 +264,17 @@ const Calendar = ({ formData, setFormData, limit, appointments, userRole }) => {
             );
         }
 
+        // Fill remaining cells to complete the calendar grid
+        while (calendarDays.length < 42) {
+            calendarDays.push(
+                <td
+                    key={`empty-${calendarDays.length}`}
+                    className="border border-gray-200 h-10"
+                ></td>
+            );
+        }
+
+        // Split calendar days into rows
         const rows = [];
         let cells = [];
 
@@ -249,99 +296,103 @@ const Calendar = ({ formData, setFormData, limit, appointments, userRole }) => {
                 {row}
             </tr>
         ));
-    };
+    }, [
+        currentYear,
+        currentMonth,
+        formData.aptdate,
+        isPastDate,
+        disabledDates,
+        manuallyDisabledDates,
+        userRole,
+        handleDateClick,
+    ]);
 
     return (
         <div className="mx-auto max-w-xl p-4 text-black xsm:w-full sm:w-full">
-            {isLoading ? ( // Display loading text if isLoading is true
-                <div>
-                    <Loading />
-                </div>
+            {isLoading ? (
+                <Loading />
             ) : (
                 <>
-                    <div className="flex justify-between mb-4">
-                        <div>
-                            <button
-                                type="button"
-                                onClick={handlePrevYear}
-                                className=" bg-[#194F90] hover:bg-[#123A69] text-white  px-2 py-1 rounded xsm:text-xs sm:text-base"
-                            >
-                                Previous
-                            </button>
-                        </div>
+                    {/* Year Navigation */}
+                    <div className="flex justify-between items-center mb-4 gap-2 sm:gap-4">
+                        <button
+                            type="button"
+                            onClick={handlePrevYear}
+                            className="bg-[#194F90] hover:bg-[#123A69] text-white px-4 py-2 rounded-lg transition-colors duration-200"
+                        >
+                            Previous
+                        </button>
                         <div className="text-center">
-                            <div className="mb-2 font-semibold">Year</div>
-                            <div className="text-2xl">
-                                {currentDate.getFullYear()}
+                            <div className="mb-1 sm:mb-2 font-semibold text-sm sm:text-lg">
+                                Year
+                            </div>
+                            <div className="text-xl sm:text-2xl font-bold">
+                                {currentYear}
                             </div>
                         </div>
-                        <div>
-                            <button
-                                type="button"
-                                onClick={handleNextYear}
-                                className=" bg-[#194F90] hover:bg-[#123A69] text-white  px-5 py-1 rounded xsm:text-xs sm:text-base"
-                            >
-                                Next
-                            </button>
-                        </div>
+                        <button
+                            type="button"
+                            onClick={handleNextYear}
+                            className="bg-[#194F90] hover:bg-[#123A69] text-white px-4 py-2 rounded-lg transition-colors duration-200"
+                        >
+                            Next
+                        </button>
                     </div>
-                    <div className="flex justify-between mb-4">
-                        <div>
-                            <button
-                                type="button"
-                                onClick={handlePrevMonth}
-                                className=" bg-[#194F90] hover:bg-[#123A69] text-white px-2 py-1 rounded xsm:text-xs sm:text-base"
-                            >
-                                Previous
-                            </button>
-                        </div>
+
+                    {/* Month Navigation */}
+                    <div className="flex justify-between items-center mb-4 gap-2 sm:gap-4">
+                        <button
+                            type="button"
+                            onClick={handlePrevMonth}
+                            className="bg-[#194F90] hover:bg-[#123A69] text-white px-4 py-2 rounded-lg transition-colors duration-200"
+                        >
+                            Previous
+                        </button>
                         <div className="text-center">
-                            <div className="mb-2 font-semibold">Month</div>
-                            <div className="text-2xl">
-                                {currentDate
-                                    .toLocaleString("default", {
-                                        month: "long",
-                                    })
-                                    .padStart(2, "0")}
+                            <div className="mb-1 sm:mb-2 font-semibold text-sm sm:text-lg">
+                                Month
+                            </div>
+                            <div className="text-xl sm:text-2xl font-bold">
+                                {currentDate.toLocaleString("default", {
+                                    month: "long",
+                                })}
                             </div>
                         </div>
-                        <div>
-                            <button
-                                type="button"
-                                onClick={handleNextMonth}
-                                className=" bg-[#194F90] hover:bg-[#123A69] text-white  px-5 py-1 rounded xsm:text-xs sm:text-base"
-                            >
-                                Next
-                            </button>
-                        </div>
+                        <button
+                            type="button"
+                            onClick={handleNextMonth}
+                            className="bg-[#194F90] hover:bg-[#123A69] text-white px-4 py-2 rounded-lg transition-colors duration-200"
+                        >
+                            Next
+                        </button>
                     </div>
-                    <table className="xsm:w-full xsm:text-xs sm:w-full sm:text-base">
+
+                    {/* Calendar Table */}
+                    <table className="w-full text-sm">
                         <thead>
-                            <tr className="bg-[#194F90]">
-                                <th className="text-white border-r-2 border-r-white p-2">
+                            <tr className="bg-[#194F90] text-white">
+                                <th className="p-2 border-r-2 border-r-white">
                                     Sun
                                 </th>
-                                <th className="text-white border-r-2 border-r-white p-2">
+                                <th className="p-2 border-r-2 border-r-white">
                                     Mon
                                 </th>
-                                <th className="text-white border-r-2 border-r-white p-2">
+                                <th className="p-2 border-r-2 border-r-white">
                                     Tue
                                 </th>
-                                <th className="text-white border-r-2 border-r-white p-2">
+                                <th className="p-2 border-r-2 border-r-white">
                                     Wed
                                 </th>
-                                <th className="text-white border-r-2 border-r-white p-2">
+                                <th className="p-2 border-r-2 border-r-white">
                                     Thu
                                 </th>
-                                <th className="text-white border-r-2 border-r-white p-2">
+                                <th className="p-2 border-r-2 border-r-white">
                                     Fri
                                 </th>
-                                <th className="text-white p-2">Sat</th>
+                                <th className="p-2">Sat</th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white">
-                            {renderCalendarDays()}
-                        </tbody>
+                        <tbody className="bg-white">{renderCalendarDays}</tbody>
                     </table>
                 </>
             )}

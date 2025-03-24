@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Cookies from "js-cookie";
 import Logo from "../Subcomponent/Asset/rtu_logo_v3.png";
 import { useStudentAuth } from "../../Hooks/useStudentAuth";
-import Cookies from "js-cookie";
 
 function Authentication() {
     const navigate = useNavigate();
     const location = useLocation();
     const [pin, setPin] = useState(["", "", "", "", "", ""]);
     const [errorMessage, setErrorMessage] = useState("");
-    const [resendMessage, setResendMessage] = useState("");
     const [isResending, setIsResending] = useState(false);
 
     // Get the API base URL from environment variables
@@ -47,10 +48,6 @@ function Authentication() {
             if (response.status === 200 && response.data.success) {
                 // Retrieve stored registration data
                 const storedRegistrationData = Cookies.get("registration_data");
-                console.log(
-                    "Stored Registration Data:",
-                    storedRegistrationData
-                ); // Debugging
 
                 if (!storedRegistrationData) {
                     throw new Error(
@@ -80,8 +77,7 @@ function Authentication() {
                 );
             }
         } catch (error) {
-            console.error("Verification Error:", error);
-            setErrorMessage(error.message || "Verification failed.");
+            toast.error(error.message || "Verification failed."); // Show error toast
         }
     };
 
@@ -90,7 +86,6 @@ function Authentication() {
         if (isResending) return; // Prevent multiple clicks
 
         setIsResending(true);
-        setResendMessage(""); // Clear previous messages
 
         try {
             const response = await axios.post(
@@ -100,12 +95,12 @@ function Authentication() {
             );
 
             if (response.status === 200 && response.data.success) {
-                setResendMessage("A new PIN has been sent to your email.");
+                toast.success("A new PIN has been sent to your email.");
             } else {
-                setResendMessage("Failed to resend PIN. Try again later.");
+                throw new Error("Failed to resend PIN.");
             }
         } catch (error) {
-            setResendMessage("An error occurred. Please try again.");
+            toast.error("An error occurred. Please try again.");
         }
 
         // Allow resending after 30 seconds

@@ -3,51 +3,69 @@ import AddAccount from "./Component/AddAccount";
 import EditAccount from "./Component/EditAccount";
 import { useAuth } from "../../Hooks/useAuth";
 import { useDebouncedEffect } from "../../Hooks/useDebouncedEffect";
+import { toast } from "react-toastify"; // Import toast
+import "react-toastify/dist/ReactToastify.css"; // Import the CSS
 
 function AccountSettingsAdmin() {
+    // State management
     const [accountsData, setAccountsData] = useState([]);
     const [selectedaccid, setselectedaccid] = useState(null);
     const [selectedAdmName, setSelectedAdmName] = useState("");
-    const modals = useRef(null);
     const [showEdit, setShowEdit] = useState(false);
     const [showAdd, setShowAdd] = useState(false);
     const [searchResults, setSearchResults] = useState([]);
     const [admname, setadmname] = useState("");
+
+    // Refs and hooks
+    const modals = useRef(null);
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
     const { branch } = useAuth();
 
+    // Fetch data when branch changes (debounced to avoid excessive API calls)
     useDebouncedEffect(
         () => {
             const getData = async () => {
-                const getRes = await fetch(
-                    `${apiBaseUrl}/api/admin/bybranch/${branch}`
-                );
-                const getDataResult = await getRes.json();
-                setAccountsData(getDataResult);
-                setSearchResults(getDataResult);
+                try {
+                    const getRes = await fetch(
+                        `${apiBaseUrl}/api/admin/bybranch/${branch}`
+                    );
+                    const getDataResult = await getRes.json();
+                    setAccountsData(getDataResult);
+                    setSearchResults(getDataResult); // Initialize search results
+                } catch (error) {
+                    console.error("Error fetching admin data:", error);
+                    toast.error(
+                        "Failed to fetch admin data. Please try again."
+                    );
+                }
             };
             getData();
         },
         [branch],
-        500
+        500 // Debounce delay
     );
 
-    useDebouncedEffect(() => {
-        const filteredResults = accountsData.filter((account) => {
-            return account.admname
-                .toLowerCase()
-                .includes(admname.toLowerCase());
-        });
-        setSearchResults(filteredResults);
-    }, [admname, accountsData]);
+    // Filter search results when admname changes (debounced)
+    useDebouncedEffect(
+        () => {
+            const filteredResults = accountsData.filter((account) =>
+                account.admname.toLowerCase().includes(admname.toLowerCase())
+            );
+            setSearchResults(filteredResults);
+        },
+        [admname, accountsData],
+        300 // Debounce delay
+    );
 
+    // Open edit modal
     const toEdit = (e, accID) => {
+        e.preventDefault();
         setShowEdit(true);
         setselectedaccid(accID);
         window.location.href = "#edit";
-        e.preventDefault();
     };
 
+    // Delete account
     const deleteAcc = async (e, id) => {
         e.preventDefault();
         try {
@@ -61,33 +79,64 @@ function AccountSettingsAdmin() {
                 }
             );
             if (deleteRes.ok) {
-                alert("Account deleted successfully.");
-                window.location.reload();
+                toast.success("Account deleted successfully.");
+                // Remove the deleted account from the local state
+                setAccountsData((prevData) =>
+                    prevData.filter((account) => account.admid !== id)
+                );
+                modals.current.close();
+            } else {
+                toast.error("Failed to delete account. Please try again.");
             }
         } catch (error) {
-            alert("Error deleting an account. Please try again later.");
+            toast.error("An unexpected error occurred. Please try again.");
         }
     };
+
+    // Open delete confirmation modal
     const openmodal = (admid, admname) => {
         setselectedaccid(admid);
         setSelectedAdmName(admname);
         modals.current.showModal();
     };
+
+    // Callback function to refetch data after adding or editing an account
+    const handleSuccess = () => {
+        const getData = async () => {
+            try {
+                const getRes = await fetch(
+                    `${apiBaseUrl}/api/admin/bybranch/${branch}`
+                );
+                const getDataResult = await getRes.json();
+                setAccountsData(getDataResult);
+                setSearchResults(getDataResult);
+            } catch (error) {
+                console.error("Error fetching admin data:", error);
+                toast.error("Failed to fetch admin data. Please try again.");
+            }
+        };
+        getData();
+    };
+
     return (
         <div className="relative w-full h-full overflow-hidden">
+            {/* Main content */}
             <div
                 className={`absolute w-full h-full transition-transform duration-500 ${
                     showAdd || showEdit ? "-translate-x-full" : "translate-x-0"
                 }`}
             >
-                <div className="flex justify-center  h-full w-full">
+                <div className="flex justify-center h-full w-full">
                     <div className="flex flex-col items-center gap-[20px]">
+                        {/* Search input */}
                         <input
                             className="text-gray-800 bg-white mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] w-[300px] xsm:w-[200px] sm:w-[300px] text-md"
                             type="text"
                             placeholder="Enter Admin Name"
                             onChange={(e) => setadmname(e.target.value)}
                         />
+
+                        {/* Add Admin button */}
                         <div className="flex justify-end w-full">
                             <button
                                 className="btn bg-[#194F90] hover:bg-[#123A69] text-white rounded-md border-0 inline-block px-8 py-2 text-md font-medium focus:relative"
@@ -97,10 +146,10 @@ function AccountSettingsAdmin() {
                             </button>
                         </div>
 
+                        {/* Admin table */}
                         {searchResults.length !== 0 && (
-                            // add overflow-x-auto if list gets long
                             <div className="border border-gray-200">
-                                <table className="table-auto  shadow-md rounded min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
+                                <table className="table-auto shadow-md rounded min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
                                     <thead className="ltr:text-center rtl:text-center">
                                         <tr>
                                             <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
@@ -120,7 +169,7 @@ function AccountSettingsAdmin() {
 
                                     <tbody className="divide-y divide-gray-200 text-center">
                                         {searchResults
-                                            .slice(0, 9)
+                                            .slice(0, 9) // Limit to 9 rows for performance
                                             .map((Account, index) => (
                                                 <tr key={index}>
                                                     <td
@@ -156,7 +205,6 @@ function AccountSettingsAdmin() {
                                                     >
                                                         {Account.admrole}
                                                     </td>
-
                                                     <td
                                                         className={`whitespace-nowrap text-gray-700 ${
                                                             Account.admid ===
@@ -166,28 +214,31 @@ function AccountSettingsAdmin() {
                                                                 : "px-4 py-2"
                                                         }`}
                                                     >
-                                                        <a
-                                                            onClick={(e) =>
-                                                                toEdit(
-                                                                    e,
-                                                                    Account.admid
-                                                                )
-                                                            }
-                                                            href="#edit"
-                                                        >
-                                                            {Account.admid !==
-                                                                1 &&
-                                                                Account.admid !==
-                                                                    2 && (
+                                                        {/* Edit button */}
+                                                        {Account.admid !== 1 &&
+                                                            Account.admid !==
+                                                                2 && (
+                                                                <a
+                                                                    onClick={(
+                                                                        e
+                                                                    ) =>
+                                                                        toEdit(
+                                                                            e,
+                                                                            Account.admid
+                                                                        )
+                                                                    }
+                                                                    href="#edit"
+                                                                >
                                                                     <button className="group relative inline-block overflow-hidden border border-indigo-600 px-8 py-3 focus:outline-none focus:ring">
                                                                         <span className="absolute inset-x-0 bottom-0 h-[2px] bg-indigo-600 transition-all group-hover:h-full group-active:bg-indigo-500"></span>
                                                                         <span className="relative text-sm font-medium text-indigo-600 transition-colors group-hover:text-white">
                                                                             Edit
                                                                         </span>
                                                                     </button>
-                                                                )}
-                                                        </a>
+                                                                </a>
+                                                            )}
 
+                                                        {/* Delete button */}
                                                         {Account.admid !== 1 &&
                                                             Account.admid !==
                                                                 2 && (
@@ -215,6 +266,7 @@ function AccountSettingsAdmin() {
                         )}
                     </div>
 
+                    {/* Delete confirmation modal */}
                     <dialog ref={modals} className="modal">
                         <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 backdrop:bg-black/50">
                             <div className="modal-box text-white bg-[#194F90]">
@@ -237,10 +289,7 @@ function AccountSettingsAdmin() {
                                     <button
                                         type="button"
                                         className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
-                                        onClick={() => {
-                                            modals.current.close();
-                                            window.location.reload();
-                                        }}
+                                        onClick={() => modals.current.close()}
                                     >
                                         Close
                                     </button>
@@ -250,14 +299,17 @@ function AccountSettingsAdmin() {
                     </dialog>
                 </div>
             </div>
+
+            {/* Add Account component */}
             <div
                 className={`absolute w-full h-full transition-transform duration-500 ${
                     showAdd ? "translate-x-0" : "translate-x-full"
                 }`}
             >
-                <AddAccount setShowAdd={setShowAdd} />
+                <AddAccount setShowAdd={setShowAdd} onSuccess={handleSuccess} />
             </div>
 
+            {/* Edit Account component */}
             <div
                 className={`absolute w-full h-full transition-transform duration-500 ${
                     showEdit ? "translate-x-0" : "translate-x-full"
@@ -267,6 +319,7 @@ function AccountSettingsAdmin() {
                     <EditAccount
                         selectedaccid={selectedaccid}
                         setShowEdit={setShowEdit}
+                        onSuccess={handleSuccess}
                     />
                 )}
             </div>

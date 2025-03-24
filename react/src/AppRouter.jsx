@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import StudentLayout from "./Layouts/StudentLayout.jsx";
 import SetAppointment from "./Component/SetAppointment.jsx";
 import ViewAppointments from "./Component/ViewAppointments.jsx";
@@ -8,12 +8,17 @@ import SupAdminLayout from "./Layouts/SupAdminLayout.jsx";
 import AccountSettingsAdmin from "./Component/Admin/AccountSettingsAdmin.jsx";
 import OfficelistAdmin from "./Component/Admin/OfficelistAdmin.jsx";
 import AppointmentsAdmin from "./Component/Admin/AppointmentsAdmin.jsx";
-import AddOffice from "./Component/Admin/Component/AddOffice.jsx";
 import LoginAdmin from "./Component/Admin/LoginAdmin.jsx";
 import GuestSetAppointment from "./Component/GuestSetAppointment.jsx";
 import { AuthProvider } from "./Hooks/useAuth.jsx";
 import { StudentAuthProvider } from "./Hooks/useStudentAuth.jsx";
-import { ProtectedRoute } from "./ProtectedRoute.jsx";
+import {
+    ProtectedAdminRoute,
+    ProtectedStudentRoute,
+    ProtectedRegisterRoute,
+    ProtectedForgotRoute,
+    ProtectedVerificationRoute,
+} from "./ProtectedRoute.jsx";
 import AdminLayout from "./Layouts/AdminLayout.jsx";
 import NotFound from "./Component/NotFound.jsx";
 import Feedback from "./Component/Feedback.jsx";
@@ -22,20 +27,18 @@ import ManageAcc from "./Component/Admin/ManageAcc.jsx";
 import OfficeAdminManage from "./Component/Admin/OfficeAdminManage.jsx";
 import Login from "./Component/Authentication/Login.jsx";
 import Register from "./Component/Authentication/Register.jsx";
-import ProtectedStudentRoute from "./ProtectedStudentRoute.jsx";
 import Authentication from "./Component/Authentication/Authentication.jsx";
 import ManageAccount from "./Component/Subcomponent/ManageAccount.jsx";
 import ForgotPassword from "./Component/Authentication/ForgotPassword.jsx";
 import ForgotPasswordAuthentication from "./Component/Authentication/ForgotPasswordAuthentication.jsx";
 import ResetPassword from "./Component/Authentication/ResetPassword.jsx";
-import ProtectedRegisterRoute from "./ProtectedRegisterRoute.jsx";
-import ProtectedForgotRoute from "./ProtectedForgotRoute.jsx";
 import Dashboard from "./Component/Admin/Dashboard.jsx";
+import App from "./App.jsx";
 
 const AppRouter = () => (
-    <>
-        <AuthProvider>
-            <StudentAuthProvider>
+    <AuthProvider>
+        <StudentAuthProvider>
+            <App>
                 <Routes>
                     <Route path="*" element={<NotFound />} />
                     <Route path="rtu/login" element={<LoginAdmin />} />
@@ -44,57 +47,22 @@ const AppRouter = () => (
                     <Route
                         path="/rtu/admin"
                         element={
-                            <ProtectedRoute>
+                            <ProtectedAdminRoute>
                                 <AdminLayout />
-                            </ProtectedRoute>
+                            </ProtectedAdminRoute>
                         }
                     >
                         <Route
                             path=""
                             element={<Navigate to="/rtu/admin/dashboard" />}
                         />
-
-                        <Route
-                            path="dashboard"
-                            element={
-                                <ProtectedRoute>
-                                    <Dashboard />
-                                </ProtectedRoute>
-                            }
-                        />
-
-                        <Route
-                            path="office"
-                            element={
-                                <ProtectedRoute>
-                                    <OfficeAdminManage />
-                                </ProtectedRoute>
-                            }
-                        />
-
-                        <Route
-                            path="manage"
-                            element={
-                                <ProtectedRoute>
-                                    <ManageAcc />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="feedback"
-                            element={
-                                <ProtectedRoute>
-                                    <Feedbacks />
-                                </ProtectedRoute>
-                            }
-                        />
+                        <Route path="dashboard" element={<Dashboard />} />
+                        <Route path="office" element={<OfficeAdminManage />} />
+                        <Route path="manage" element={<ManageAcc />} />
+                        <Route path="feedback" element={<Feedbacks />} />
                         <Route
                             path="appointments"
-                            element={
-                                <ProtectedRoute>
-                                    <AppointmentsAdmin />
-                                </ProtectedRoute>
-                            }
+                            element={<AppointmentsAdmin />}
                         />
                     </Route>
 
@@ -102,64 +70,26 @@ const AppRouter = () => (
                     <Route
                         path="/rtu/suppa"
                         element={
-                            <ProtectedRoute>
+                            <ProtectedAdminRoute allowSuperadmin>
                                 <SupAdminLayout />
-                            </ProtectedRoute>
+                            </ProtectedAdminRoute>
                         }
                     >
                         <Route
                             path=""
                             element={<Navigate to="/rtu/suppa/dashboard" />}
                         />
-
-                        <Route
-                            path="dashboard"
-                            element={
-                                <ProtectedRoute>
-                                    <Dashboard />
-                                </ProtectedRoute>
-                            }
-                        />
-
-                        <Route
-                            path="feedbacks"
-                            element={
-                                <ProtectedRoute>
-                                    <Feedbacks />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="manage"
-                            element={
-                                <ProtectedRoute>
-                                    <ManageAcc />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="offices"
-                            element={
-                                <ProtectedRoute>
-                                    <OfficelistAdmin />
-                                </ProtectedRoute>
-                            }
-                        />
+                        <Route path="dashboard" element={<Dashboard />} />
+                        <Route path="feedbacks" element={<Feedbacks />} />
+                        <Route path="manage" element={<ManageAcc />} />
+                        <Route path="offices" element={<OfficelistAdmin />} />
                         <Route
                             path="appointments"
-                            element={
-                                <ProtectedRoute>
-                                    <AppointmentsAdmin />
-                                </ProtectedRoute>
-                            }
+                            element={<AppointmentsAdmin />}
                         />
                         <Route
                             path="accounts"
-                            element={
-                                <ProtectedRoute>
-                                    <AccountSettingsAdmin />
-                                </ProtectedRoute>
-                            }
+                            element={<AccountSettingsAdmin />}
                         />
                     </Route>
 
@@ -201,7 +131,6 @@ const AppRouter = () => (
                                 </ProtectedStudentRoute>
                             }
                         />
-
                         <Route
                             path="manage-account"
                             element={
@@ -215,6 +144,8 @@ const AppRouter = () => (
                     {/* Authentication Routes for Students */}
                     <Route path="/student/login" element={<Login />} />
                     <Route path="/student/register" element={<Register />} />
+
+                    {/* Use `ProtectedRegisterRoute` for email authentication */}
                     <Route
                         path="/student/authenticate"
                         element={
@@ -223,10 +154,13 @@ const AppRouter = () => (
                             </ProtectedRegisterRoute>
                         }
                     />
+
                     <Route
                         path="/student/forgot-password"
                         element={<ForgotPassword />}
                     />
+
+                    {/*  Use `ProtectedForgotRoute` to protect password reset authentication */}
                     <Route
                         path="/student/forgot-password-authenticate"
                         element={
@@ -235,14 +169,23 @@ const AppRouter = () => (
                             </ProtectedForgotRoute>
                         }
                     />
-                    <Route path="/reset-password" element={<ResetPassword />} />
-                    <Route path="/" element={<Navigate to="/student" />} />
 
+                    {/* Use `ProtectedVerificationRoute` for password reset verification */}
+                    <Route
+                        path="/student/reset-password"
+                        element={
+                            <ProtectedVerificationRoute>
+                                <ResetPassword />
+                            </ProtectedVerificationRoute>
+                        }
+                    />
+
+                    <Route path="/" element={<Navigate to="/student" />} />
                     <Route path="feedback" element={<Feedback />} />
                 </Routes>
-            </StudentAuthProvider>
-        </AuthProvider>
-    </>
+            </App>
+        </StudentAuthProvider>
+    </AuthProvider>
 );
 
 export default AppRouter;

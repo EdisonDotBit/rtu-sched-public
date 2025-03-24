@@ -19,13 +19,15 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'username' => 'required|unique:users',
-            'email' => 'required|email|unique:users',
+            'student_number' => 'required|string|unique:users', // Add student_number validation
             'contact_number' => 'nullable|string',
             'password' => 'required|min:6',
             'full_name' => 'required|string',
-            // 'student_number' => 'nullable|string|unique:users',
             'role' => 'required|in:Student,admin',
         ]);
+
+        // Generate email from student number
+        $email = $validated['student_number'] . '@rtu.edu.ph';
 
         // Generate a random 6-digit PIN
         $pin = random_int(100000, 999999);
@@ -34,11 +36,11 @@ class UserController extends Controller
         session([
             'registration_data' => [
                 'username' => $validated['username'],
-                'email' => $validated['email'],
+                'email' => $email, // Use generated email
                 'contact_number' => $validated['contact_number'],
                 'password' => $validated['password'],
                 'full_name' => $validated['full_name'],
-                // 'student_number' => $validated['student_number'],
+                'student_number' => $validated['student_number'], // Include student number
                 'role' => $validated['role'],
             ],
             'verification_pin' => $pin,
@@ -50,11 +52,11 @@ class UserController extends Controller
         Log::info('Session ID after storing PIN: ' . session()->getId());
 
         // Send email with PIN
-        Mail::to($validated['email'])->send(new SendVerificationPin($pin));
+        Mail::to($email)->send(new SendVerificationPin($pin));
 
         return response()->json([
             'success' => true,
-            'message' => 'A verification PIN has been sent to your email.'
+            'message' => 'A verification PIN has been sent to your institutional email.'
         ], 201);
     }
 
@@ -159,76 +161,6 @@ class UserController extends Controller
     {
         return response()->json($request->user());
     }
-
-    public function sendVerificationPin(Request $request)
-    {
-        $user = Auth::user();
-
-        if (!$user) {
-            return response()->json(['message' => 'User not authenticated'], 401);
-        }
-
-        $studentNumber = $request->input('student_number');
-        $pin = random_int(100000, 999999); // Generate a 6-digit verification PIN
-
-        // Store PIN and student number in session (like registration)
-        session([
-            'verification_pin' => $pin,
-            'verification_data' => [
-                'student_number' => $studentNumber,
-                'user_id' => $user->id,
-            ],
-        ]);
-
-        // Log stored PIN and session ID
-        Log::info('Stored Student Verification PIN: ' . session('verification_pin'));
-        Log::info('Session Data: ' . json_encode(session('verification_data')));
-
-        // Send the PIN to the user's institutional email
-        $email = $studentNumber . '@rtu.edu.ph';
-        Mail::to($email)->send(new StudentNumberVerificationMail($pin));
-
-        return response()->json(['success' => true, 'message' => 'Verification PIN sent successfully.'], 200);
-    }
-
-    public function verifyStudentNumberPin(Request $request)
-    {
-        $request->validate([
-            'pin' => 'required|array',
-        ]);
-
-        // Combine the PIN array into a single string
-        $enteredPin = implode('', $request->pin);
-        $sessionPin = session('verification_pin');
-        $verificationData = session('verification_data');
-
-        // Log for debugging
-        Log::info('Entered PIN: ' . $enteredPin);
-        Log::info('Stored PIN: ' . $sessionPin);
-        Log::info('Session Data: ' . json_encode($verificationData));
-
-        if (!$sessionPin || !$verificationData || (string)$enteredPin !== (string)$sessionPin) {
-            return response()->json(['success' => false, 'message' => 'Invalid verification PIN.'], 422);
-        }
-
-        // Retrieve the user from the database
-        $user = User::find($verificationData['user_id']);
-
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
-        // Update user details
-        $user->student_number = $verificationData['student_number'];
-        $user->is_verified = true;
-        $user->save();
-
-        // Clear session data after successful verification
-        session()->forget(['verification_pin', 'verification_data']);
-
-        return response()->json(['success' => true, 'message' => 'Student number verified successfully.'], 200);
-    }
-
 
     public function updateAccount(Request $request)
     {

@@ -1,7 +1,46 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useAuth } from "../../Hooks/useAuth"; // Ensure correct path
 import axios from "axios";
 import { useDebouncedEffect } from "../../Hooks/useDebouncedEffect";
+
+// Reusable Collapsible Section Component
+const CollapsibleSection = ({ title, isCollapsed, onToggle, children }) => (
+    <div>
+        <h2
+            className="mt-8 text-lg font-semibold text-[#123A69] inline-flex items-center cursor-pointer hover:text-[#194F90]"
+            onClick={onToggle}
+        >
+            {title}
+            <span
+                className="ml-2 transition-transform"
+                style={{
+                    transform: isCollapsed ? "rotate(-90deg)" : "rotate(0)",
+                }}
+            >
+                ▼
+            </span>
+        </h2>
+        {!isCollapsed && children}
+    </div>
+);
+
+// Reusable Table Row Component
+const TableRow = ({ office }) => (
+    <tr>
+        <td className="px-4 py-2 font-semibold">{office.officeName}</td>
+        <td className="px-4 py-2">{office.totalRequests}</td>
+        <td className="px-4 py-2 text-blue-600 font-medium">
+            {office.ongoing}
+        </td>
+        <td className="px-4 py-2 text-yellow-600 font-medium">
+            {office.confirmed}
+        </td>
+        <td className="px-4 py-2 text-green-600 font-medium">{office.done}</td>
+        <td className="px-4 py-2 text-red-600 font-medium">
+            {office.cancelled}
+        </td>
+    </tr>
+);
 
 const Dashboard = () => {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -18,17 +57,13 @@ const Dashboard = () => {
     const [isUserTypeCollapsed, setIsUserTypeCollapsed] = useState(false);
     const [isPurposeCollapsed, setIsPurposeCollapsed] = useState(false);
 
-    const getData = async () => {
+    const getData = useCallback(async () => {
         setLoading(true);
         try {
-            let endpoint;
-
-            // Determine endpoint based on user role
-            if (role === "superadmin") {
-                endpoint = `${apiBaseUrl}/api/branchapt/${branch}`;
-            } else {
-                endpoint = `${apiBaseUrl}/api/filteredapt/${role}/${branch}`;
-            }
+            let endpoint =
+                role === "superadmin"
+                    ? `${apiBaseUrl}/api/branchapt/${branch}`
+                    : `${apiBaseUrl}/api/filteredapt/${role}/${branch}`;
 
             console.log("Fetching from:", endpoint); // Debugging log
 
@@ -40,164 +75,17 @@ const Dashboard = () => {
             console.log("API Response Data:", data); // Debugging log
 
             // Process API response to fit expected state structure
-            setDashboardData({
+            const processedData = {
                 totalRequests: data.length,
+                appointmentsByUserType: processAppointmentsByUserType(
+                    data,
+                    role
+                ),
+                appointmentsByPurpose: processAppointmentsByPurpose(data, role),
+                officeSummaries: processOfficeSummaries(data, role),
+            };
 
-                appointmentsByUserType:
-                    role === "superadmin"
-                        ? data.reduce((acc, curr) => {
-                              const officeName =
-                                  curr.aptoffice || "Unknown Office";
-                              const userType = curr.apttype || "Unknown";
-
-                              let officeGroup = acc.find(
-                                  (item) => item.officeName === officeName
-                              );
-                              if (!officeGroup) {
-                                  officeGroup = { officeName, users: [] };
-                                  acc.push(officeGroup);
-                              }
-
-                              const existingUser = officeGroup.users.find(
-                                  (u) => u.userType === userType
-                              );
-                              if (existingUser) {
-                                  existingUser.count += 1;
-                              } else {
-                                  officeGroup.users.push({
-                                      userType,
-                                      count: 1,
-                                  });
-                              }
-
-                              return acc;
-                          }, [])
-                        : data.reduce((acc, curr) => {
-                              const userType = curr.apttype || "Unknown";
-                              const existingUserType = acc.find(
-                                  (item) => item.userType === userType
-                              );
-                              if (existingUserType) {
-                                  existingUserType.count += 1;
-                              } else {
-                                  acc.push({ userType, count: 1 });
-                              }
-                              return acc;
-                          }, []),
-
-                appointmentsByPurpose:
-                    role === "superadmin"
-                        ? data.reduce((acc, curr) => {
-                              const officeName =
-                                  curr.aptoffice || "Unknown Office"; // Office name
-                              const purposes = (curr.aptpurpose || "Unknown")
-                                  .split(", ")
-                                  .map((p) => p.trim());
-
-                              let officeGroup = acc.find(
-                                  (item) => item.officeName === officeName
-                              );
-                              if (!officeGroup) {
-                                  officeGroup = { officeName, purposes: [] };
-                                  acc.push(officeGroup);
-                              }
-
-                              purposes.forEach((purpose) => {
-                                  const existingPurpose =
-                                      officeGroup.purposes.find(
-                                          (p) => p.name === purpose
-                                      );
-                                  if (existingPurpose) {
-                                      existingPurpose.count += 1;
-                                  } else {
-                                      officeGroup.purposes.push({
-                                          name: purpose,
-                                          count: 1,
-                                      });
-                                  }
-                              });
-
-                              return acc;
-                          }, [])
-                        : data.reduce((acc, curr) => {
-                              const purposes = (curr.aptpurpose || "Unknown")
-                                  .split(", ")
-                                  .map((p) => p.trim());
-
-                              purposes.forEach((purpose) => {
-                                  const existingPurpose = acc.find(
-                                      (item) => item.purpose === purpose
-                                  );
-                                  if (existingPurpose) {
-                                      existingPurpose.count += 1;
-                                  } else {
-                                      acc.push({ purpose, count: 1 });
-                                  }
-                              });
-
-                              return acc;
-                          }, []),
-
-                officeSummaries:
-                    role === "superadmin"
-                        ? // Group data by office under the branch
-                          data.reduce((acc, curr) => {
-                              const officeName =
-                                  curr.aptoffice || "Unknown Office"; // Office name
-                              const existingOffice = acc.find(
-                                  (item) => item.officeName === officeName
-                              );
-
-                              if (existingOffice) {
-                                  existingOffice.totalRequests += 1;
-                                  existingOffice.ongoing +=
-                                      curr.aptstatus === "ongoing" ? 1 : 0;
-                                  existingOffice.confirmed +=
-                                      curr.aptstatus === "confirmed" ? 1 : 0;
-                                  existingOffice.done +=
-                                      curr.aptstatus === "done" ? 1 : 0;
-                                  existingOffice.cancelled +=
-                                      curr.aptstatus === "cancelled" ? 1 : 0;
-                              } else {
-                                  acc.push({
-                                      officeName,
-                                      totalRequests: 1,
-                                      ongoing:
-                                          curr.aptstatus === "ongoing" ? 1 : 0,
-                                      confirmed:
-                                          curr.aptstatus === "confirmed"
-                                              ? 1
-                                              : 0,
-                                      done: curr.aptstatus === "done" ? 1 : 0,
-                                      cancelled:
-                                          curr.aptstatus === "cancelled"
-                                              ? 1
-                                              : 0,
-                                  });
-                              }
-
-                              return acc;
-                          }, [])
-                        : // Show only the current office
-                          [
-                              {
-                                  officeName: role,
-                                  totalRequests: data.length,
-                                  ongoing: data.filter(
-                                      (item) => item.aptstatus === "ongoing"
-                                  ).length,
-                                  confirmed: data.filter(
-                                      (item) => item.aptstatus === "confirmed"
-                                  ).length,
-                                  done: data.filter(
-                                      (item) => item.aptstatus === "done"
-                                  ).length,
-                                  cancelled: data.filter(
-                                      (item) => item.aptstatus === "cancelled"
-                                  ).length,
-                              },
-                          ],
-            });
+            setDashboardData(processedData);
         } catch (err) {
             console.error("Error fetching dashboard data:", err);
             setError(
@@ -206,7 +94,20 @@ const Dashboard = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [role, branch, apiBaseUrl]);
+
+    const fetchAdminName = useCallback(async () => {
+        if (user) {
+            try {
+                const response = await axios.get(
+                    `${apiBaseUrl}/api/admin/informa/${user}`
+                );
+                setAdmname(response.data.data.admname);
+            } catch (error) {
+                console.error("Error fetching admin name:", error);
+            }
+        }
+    }, [user, apiBaseUrl]);
 
     useDebouncedEffect(
         () => {
@@ -220,23 +121,19 @@ const Dashboard = () => {
 
     useDebouncedEffect(
         () => {
-            const fetchAdminName = async () => {
-                if (user) {
-                    try {
-                        const response = await axios.get(
-                            `${apiBaseUrl}/api/admin/informa/${user}`
-                        );
-                        setAdmname(response.data.data.admname);
-                    } catch (error) {
-                        console.error("Error fetching admin name:", error);
-                    }
-                }
-            };
             fetchAdminName();
         },
-        [user, apiBaseUrl],
+        [fetchAdminName],
         500
     );
+
+    const toggleUserTypeCollapsed = useCallback(() => {
+        setIsUserTypeCollapsed((prev) => !prev);
+    }, []);
+
+    const togglePurposeCollapsed = useCallback(() => {
+        setIsPurposeCollapsed((prev) => !prev);
+    }, []);
 
     if (loading) {
         return (
@@ -290,140 +187,100 @@ const Dashboard = () => {
             </div>
 
             {/* Appointments by User Type */}
-            <div className="mt-8">
-                <h2
-                    className="text-lg font-semibold text-[#123A69] inline-flex items-center cursor-pointer hover:text-[#194F90]"
-                    onClick={(e) => {
-                        e.stopPropagation(); // Prevents click event from affecting the parent container
-                        setIsUserTypeCollapsed(!isUserTypeCollapsed);
-                    }}
-                >
-                    Appointments by User Type
-                    <span
-                        className="ml-2 transition-transform"
-                        style={{
-                            transform: isUserTypeCollapsed
-                                ? "rotate(-90deg)"
-                                : "rotate(0)",
-                        }}
-                    >
-                        ▼
-                    </span>
-                </h2>
-
-                {!isUserTypeCollapsed &&
-                    (dashboardData.appointmentsByUserType.length > 0 ? (
-                        role === "superadmin" ? (
-                            dashboardData.appointmentsByUserType.map(
-                                (office, index) => (
-                                    <div key={index} className="mt-4">
-                                        <h3 className="text-md font-semibold text-[#194F90]">
-                                            {office.officeName}
-                                        </h3>
-                                        <ul className="mt-2 space-y-2">
-                                            {office.users.map((user, idx) => (
-                                                <li
-                                                    key={idx}
-                                                    className="flex justify-between bg-white shadow-sm px-4 py-2 rounded"
-                                                >
-                                                    <span>{user.userType}</span>
-                                                    <span>{user.count}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                )
+            <CollapsibleSection
+                title="Appointments by User Type"
+                isCollapsed={isUserTypeCollapsed}
+                onToggle={toggleUserTypeCollapsed}
+            >
+                {dashboardData.appointmentsByUserType.length > 0 ? (
+                    role === "superadmin" ? (
+                        dashboardData.appointmentsByUserType.map(
+                            (office, index) => (
+                                <div key={index} className="mt-4">
+                                    <h3 className="text-md font-semibold text-[#194F90]">
+                                        {office.officeName}
+                                    </h3>
+                                    <ul className="mt-2 space-y-2">
+                                        {office.users.map((user, idx) => (
+                                            <li
+                                                key={idx}
+                                                className="flex justify-between bg-white shadow-sm px-4 py-2 rounded"
+                                            >
+                                                <span>{user.userType}</span>
+                                                <span>{user.count}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
                             )
-                        ) : (
-                            <ul className="mt-4 space-y-2">
-                                {dashboardData.appointmentsByUserType.map(
-                                    (user, index) => (
-                                        <li
-                                            key={index}
-                                            className="flex justify-between bg-white shadow-sm px-4 py-2 rounded"
-                                        >
-                                            <span>{user.userType}</span>
-                                            <span>{user.count}</span>
-                                        </li>
-                                    )
-                                )}
-                            </ul>
                         )
                     ) : (
-                        <p className="text-gray-500 mt-4">No data available.</p>
-                    ))}
-            </div>
+                        <ul className="mt-4 space-y-2">
+                            {dashboardData.appointmentsByUserType.map(
+                                (user, index) => (
+                                    <li
+                                        key={index}
+                                        className="flex justify-between bg-white shadow-sm px-4 py-2 rounded"
+                                    >
+                                        <span>{user.userType}</span>
+                                        <span>{user.count}</span>
+                                    </li>
+                                )
+                            )}
+                        </ul>
+                    )
+                ) : (
+                    <p className="text-gray-500 mt-4">No data available.</p>
+                )}
+            </CollapsibleSection>
 
             {/* Appointments by Purpose */}
-            <div className="mt-8">
-                <h2
-                    className="text-lg font-semibold text-[#123A69] inline-flex items-center cursor-pointer hover:text-[#194F90]"
-                    onClick={(e) => {
-                        e.stopPropagation(); // Prevents click event from propagating to parent
-                        setIsPurposeCollapsed(!isPurposeCollapsed);
-                    }}
-                >
-                    Appointments by Purpose
-                    <span
-                        className="ml-2 transition-transform"
-                        style={{
-                            transform: isPurposeCollapsed
-                                ? "rotate(-90deg)"
-                                : "rotate(0)",
-                        }}
-                    >
-                        ▼
-                    </span>
-                </h2>
-
-                {!isPurposeCollapsed &&
-                    (dashboardData.appointmentsByPurpose.length > 0 ? (
-                        role === "superadmin" ? (
-                            dashboardData.appointmentsByPurpose.map(
-                                (office, index) => (
-                                    <div key={index} className="mt-4">
-                                        <h3 className="text-md font-semibold text-[#194F90]">
-                                            {office.officeName}
-                                        </h3>
-                                        <ul className="mt-2 space-y-2">
-                                            {office.purposes.map(
-                                                (purpose, idx) => (
-                                                    <li
-                                                        key={idx}
-                                                        className="flex justify-between bg-white shadow-sm px-4 py-2 rounded"
-                                                    >
-                                                        <span>
-                                                            {purpose.name}
-                                                        </span>
-                                                        <span>
-                                                            {purpose.count}
-                                                        </span>
-                                                    </li>
-                                                )
-                                            )}
-                                        </ul>
-                                    </div>
-                                )
+            <CollapsibleSection
+                title="Appointments by Purpose"
+                isCollapsed={isPurposeCollapsed}
+                onToggle={togglePurposeCollapsed}
+            >
+                {dashboardData.appointmentsByPurpose.length > 0 ? (
+                    role === "superadmin" ? (
+                        dashboardData.appointmentsByPurpose.map(
+                            (office, index) => (
+                                <div key={index} className="mt-4">
+                                    <h3 className="text-md font-semibold text-[#194F90]">
+                                        {office.officeName}
+                                    </h3>
+                                    <ul className="mt-2 space-y-2">
+                                        {office.purposes.map((purpose, idx) => (
+                                            <li
+                                                key={idx}
+                                                className="flex justify-between bg-white shadow-sm px-4 py-2 rounded"
+                                            >
+                                                <span>{purpose.name}</span>
+                                                <span>{purpose.count}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
                             )
-                        ) : (
-                            <ul className="mt-4 space-y-2">
-                                {dashboardData.appointmentsByPurpose.map(
-                                    (purpose, index) => (
-                                        <li
-                                            key={index}
-                                            className="flex justify-between bg-white shadow-sm p-2 rounded"
-                                        >
-                                            <span>{purpose.purpose}</span>
-                                            <span>{purpose.count}</span>
-                                        </li>
-                                    )
-                                )}
-                            </ul>
                         )
                     ) : (
-                        <p className="text-gray-500 mt-4">No data available.</p>
-                    ))}
-            </div>
+                        <ul className="mt-4 space-y-2">
+                            {dashboardData.appointmentsByPurpose.map(
+                                (purpose, index) => (
+                                    <li
+                                        key={index}
+                                        className="flex justify-between bg-white shadow-sm p-2 rounded"
+                                    >
+                                        <span>{purpose.purpose}</span>
+                                        <span>{purpose.count}</span>
+                                    </li>
+                                )
+                            )}
+                        </ul>
+                    )
+                ) : (
+                    <p className="text-gray-500 mt-4">No data available.</p>
+                )}
+            </CollapsibleSection>
 
             {/* Office Summaries Section */}
             <div className="mt-8">
@@ -447,26 +304,7 @@ const Dashboard = () => {
                         <tbody className="divide-y divide-gray-200 text-center">
                             {dashboardData.officeSummaries.map(
                                 (office, index) => (
-                                    <tr key={index}>
-                                        <td className="px-4 py-2 font-semibold">
-                                            {office.officeName}
-                                        </td>
-                                        <td className="px-4 py-2">
-                                            {office.totalRequests}
-                                        </td>
-                                        <td className="px-4 py-2 text-blue-600 font-medium">
-                                            {office.ongoing}
-                                        </td>
-                                        <td className="px-4 py-2 text-yellow-600 font-medium">
-                                            {office.confirmed}
-                                        </td>
-                                        <td className="px-4 py-2 text-green-600 font-medium">
-                                            {office.done}
-                                        </td>
-                                        <td className="px-4 py-2 text-red-600 font-medium">
-                                            {office.cancelled}
-                                        </td>
-                                    </tr>
+                                    <TableRow key={index} office={office} />
                                 )
                             )}
                         </tbody>
@@ -479,6 +317,142 @@ const Dashboard = () => {
             </div>
         </div>
     );
+};
+
+// Helper functions for data processing
+const processAppointmentsByUserType = (data, role) => {
+    return role === "superadmin"
+        ? data.reduce((acc, curr) => {
+              const officeName = curr.aptoffice || "Unknown Office";
+              const userType = curr.apttype || "Unknown";
+
+              let officeGroup = acc.find(
+                  (item) => item.officeName === officeName
+              );
+              if (!officeGroup) {
+                  officeGroup = { officeName, users: [] };
+                  acc.push(officeGroup);
+              }
+
+              const existingUser = officeGroup.users.find(
+                  (u) => u.userType === userType
+              );
+              if (existingUser) {
+                  existingUser.count += 1;
+              } else {
+                  officeGroup.users.push({ userType, count: 1 });
+              }
+
+              return acc;
+          }, [])
+        : data.reduce((acc, curr) => {
+              const userType = curr.apttype || "Unknown";
+              const existingUserType = acc.find(
+                  (item) => item.userType === userType
+              );
+              if (existingUserType) {
+                  existingUserType.count += 1;
+              } else {
+                  acc.push({ userType, count: 1 });
+              }
+              return acc;
+          }, []);
+};
+
+const processAppointmentsByPurpose = (data, role) => {
+    return role === "superadmin"
+        ? data.reduce((acc, curr) => {
+              const officeName = curr.aptoffice || "Unknown Office";
+              const purposes = (curr.aptpurpose || "Unknown")
+                  .split(", ")
+                  .map((p) => p.trim());
+
+              let officeGroup = acc.find(
+                  (item) => item.officeName === officeName
+              );
+              if (!officeGroup) {
+                  officeGroup = { officeName, purposes: [] };
+                  acc.push(officeGroup);
+              }
+
+              purposes.forEach((purpose) => {
+                  const existingPurpose = officeGroup.purposes.find(
+                      (p) => p.name === purpose
+                  );
+                  if (existingPurpose) {
+                      existingPurpose.count += 1;
+                  } else {
+                      officeGroup.purposes.push({ name: purpose, count: 1 });
+                  }
+              });
+
+              return acc;
+          }, [])
+        : data.reduce((acc, curr) => {
+              const purposes = (curr.aptpurpose || "Unknown")
+                  .split(", ")
+                  .map((p) => p.trim());
+
+              purposes.forEach((purpose) => {
+                  const existingPurpose = acc.find(
+                      (item) => item.purpose === purpose
+                  );
+                  if (existingPurpose) {
+                      existingPurpose.count += 1;
+                  } else {
+                      acc.push({ purpose, count: 1 });
+                  }
+              });
+
+              return acc;
+          }, []);
+};
+
+const processOfficeSummaries = (data, role) => {
+    return role === "superadmin"
+        ? data.reduce((acc, curr) => {
+              const officeName = curr.aptoffice || "Unknown Office";
+              const existingOffice = acc.find(
+                  (item) => item.officeName === officeName
+              );
+
+              if (existingOffice) {
+                  existingOffice.totalRequests += 1;
+                  existingOffice.ongoing +=
+                      curr.aptstatus === "ongoing" ? 1 : 0;
+                  existingOffice.confirmed +=
+                      curr.aptstatus === "confirmed" ? 1 : 0;
+                  existingOffice.done += curr.aptstatus === "done" ? 1 : 0;
+                  existingOffice.cancelled +=
+                      curr.aptstatus === "cancelled" ? 1 : 0;
+              } else {
+                  acc.push({
+                      officeName,
+                      totalRequests: 1,
+                      ongoing: curr.aptstatus === "ongoing" ? 1 : 0,
+                      confirmed: curr.aptstatus === "confirmed" ? 1 : 0,
+                      done: curr.aptstatus === "done" ? 1 : 0,
+                      cancelled: curr.aptstatus === "cancelled" ? 1 : 0,
+                  });
+              }
+
+              return acc;
+          }, [])
+        : [
+              {
+                  officeName: role,
+                  totalRequests: data.length,
+                  ongoing: data.filter((item) => item.aptstatus === "ongoing")
+                      .length,
+                  confirmed: data.filter(
+                      (item) => item.aptstatus === "confirmed"
+                  ).length,
+                  done: data.filter((item) => item.aptstatus === "done").length,
+                  cancelled: data.filter(
+                      (item) => item.aptstatus === "cancelled"
+                  ).length,
+              },
+          ];
 };
 
 export default Dashboard;

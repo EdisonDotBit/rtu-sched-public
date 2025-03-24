@@ -1,25 +1,26 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Logo from "../Subcomponent/Asset/rtu_logo_v3.png";
 import { useStudentAuth } from "../../Hooks/useStudentAuth";
 import { Navigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 function ForgotPasswordAuthentication() {
     const navigate = useNavigate();
     const location = useLocation();
     const [pin, setPin] = useState(["", "", "", "", "", ""]);
-    const [errorMessage, setErrorMessage] = useState("");
-    const [resendMessage, setResendMessage] = useState("");
     const [isResending, setIsResending] = useState(false);
+    const [loading, setLoading] = useState(false); // Add loading state
     const { isStudentAuthenticated } = useStudentAuth();
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
     // If user is already logged in, redirect them to set-appointment
     if (isStudentAuthenticated()) {
         return <Navigate to="/student/set-appointment" />;
     }
-
-    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
     const handleChange = (e, index) => {
         const value = e.target.value;
@@ -38,6 +39,8 @@ function ForgotPasswordAuthentication() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true); // Set loading to true when the form is submitted
+
         try {
             const response = await axios.post(
                 `${apiBaseUrl}/api/users/verify-password-reset-pin`,
@@ -46,16 +49,38 @@ function ForgotPasswordAuthentication() {
             );
 
             if (response.status === 200 && response.data.success) {
-                navigate("/reset-password", {
-                    state: {
-                        message: response.data.message,
-                    },
-                });
+                // Set the password_reset_data cookie
+                Cookies.set(
+                    "password_reset_data",
+                    JSON.stringify({ email: location.state?.email }),
+                    { expires: 1 }
+                ); // Expires in 1 day
+
+                toast.success(response.data.message); // Show success toast
+
+                // Add a small delay before navigation
+                setTimeout(() => {
+                    navigate("/student/reset-password", {
+                        state: {
+                            message: response.data.message,
+                        },
+                    });
+                }, 2000); // 2-second delay
+            } else {
+                throw new Error(
+                    response.data.message || "Verification failed."
+                );
             }
         } catch (error) {
-            setErrorMessage(
+            console.error(
+                "Error during PIN verification:",
+                error.response?.data || error.message
+            ); // Debugging
+            toast.error(
                 error.response?.data?.message || "Verification failed."
-            );
+            ); // Show error toast
+        } finally {
+            setLoading(false); // Set loading to false when the request is complete
         }
     };
 
@@ -63,31 +88,50 @@ function ForgotPasswordAuthentication() {
         if (isResending) return; // Prevent multiple clicks
 
         setIsResending(true);
-        setResendMessage(""); // Clear previous messages
+        toast.info("Resending PIN..."); // Show info toast
 
         try {
             const response = await axios.post(
                 `${apiBaseUrl}/api/users/request-password-reset`,
-                { email: location.state?.email }, // ✅ Email is now correctly sent
+                { email: location.state?.email },
                 { withCredentials: true }
             );
 
             if (response.status === 200 && response.data.success) {
-                setResendMessage("A new PIN has been sent to your email.");
+                toast.success("A new PIN has been sent to your email."); // Show success toast
             } else {
-                setResendMessage("Failed to resend PIN. Try again later.");
+                throw new Error("Failed to resend PIN. Try again later.");
             }
         } catch (error) {
-            setResendMessage("An error occurred. Please try again.");
             console.error("Resend PIN Error:", error.response?.data || error);
+            toast.error(
+                error.response?.data?.message ||
+                    "An error occurred. Please try again."
+            ); // Show error toast
+        } finally {
+            // Allow resending after 20 seconds
+            setTimeout(() => {
+                setIsResending(false); // Enable the resend button after 20 seconds
+            }, 20000);
         }
-
-        // Allow resending after 30 seconds
-        setTimeout(() => setIsResending(false), 30000);
     };
 
     return (
         <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100 py-8 font-roboto">
+            {/* Toast Container */}
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
+
+            {/* Logo */}
             <div className="mb-4">
                 <img
                     src={Logo}
@@ -96,6 +140,7 @@ function ForgotPasswordAuthentication() {
                 />
             </div>
 
+            {/* Verify PIN Form */}
             <div className="w-full max-w-md bg-[#194F90] rounded-lg shadow-md p-6 md:px-8 lg:px-10">
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <h2 className="text-white text-2xl font-semibold text-center">
@@ -105,18 +150,6 @@ function ForgotPasswordAuthentication() {
                     <p className="text-white text-sm text-center mt-4">
                         Kindly check the email that will receive the PIN.
                     </p>
-
-                    {/* Display Messages */}
-                    {location.state?.message && (
-                        <p className="text-green-400 text-center">
-                            {location.state.message}
-                        </p>
-                    )}
-                    {errorMessage && (
-                        <p className="text-red-400 text-center">
-                            {errorMessage}
-                        </p>
-                    )}
 
                     {/* PIN Input Fields */}
                     <div className="flex justify-center gap-2">
@@ -133,13 +166,16 @@ function ForgotPasswordAuthentication() {
                         ))}
                     </div>
 
+                    {/* Verify PIN Button */}
                     <button
                         type="submit"
                         className="w-full py-2 px-4 bg-[#FFDB75] text-[#194F90] font-semibold rounded-lg hover:bg-[#f3cd64] transition duration-200"
+                        disabled={loading} // Disable the button when loading
                     >
-                        Verify PIN
+                        {loading ? "Processing..." : "Verify PIN"}
                     </button>
 
+                    {/* Resend Code Section */}
                     <p className="text-white text-sm text-center mt-4">
                         Didn't receive a PIN?{" "}
                         <button
@@ -152,7 +188,7 @@ function ForgotPasswordAuthentication() {
                                     : ""
                             }`}
                         >
-                            {isResending ? "Resend in 30s..." : "Resend Code"}
+                            {isResending ? "Resend in 20s..." : "Resend Code"}
                         </button>
                     </p>
                 </form>
