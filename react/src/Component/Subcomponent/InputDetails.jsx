@@ -1,4 +1,6 @@
 import React, { useState, useRef } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Purpose from "./Purpose";
 
 function InputDetails({ formData, setFormData, errors }) {
@@ -9,20 +11,22 @@ function InputDetails({ formData, setFormData, errors }) {
         aptemail: false,
     });
 
-    const fileInputRef = useRef(null); // Create a ref for the file input
+    const fileInputRef = useRef(null); // Ref for file input
 
+    // Handle input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prevState) => ({
-            ...prevState,
+        setFormData((prev) => ({
+            ...prev,
             [name]: value,
         }));
     };
 
+    // Handle input blur (for validation)
     const handleBlur = (e) => {
         const { name } = e.target;
-        setTouched((prevState) => ({
-            ...prevState,
+        setTouched((prev) => ({
+            ...prev,
             [name]: true,
         }));
     };
@@ -34,7 +38,8 @@ function InputDetails({ formData, setFormData, errors }) {
             ...prev,
             aptattach: [...prev.aptattach, ...files], // Append selected files
         }));
-        fileInputRef.current.value = ""; // Clear the file input so users can reselect
+        fileInputRef.current.value = ""; // Clear the file input
+        toast.success(`${files.length} file(s) added.`);
     };
 
     // Handle file removal
@@ -43,161 +48,140 @@ function InputDetails({ formData, setFormData, errors }) {
             ...prev,
             aptattach: prev.aptattach.filter((_, i) => i !== index), // Remove file by index
         }));
+        toast.info("File removed.");
     };
 
     return (
-        <>
-            <div className="w-full h-auto flex justify-center">
-                {/* Main container */}
-                <div className="w-full md:w-3/4 lg:w-[55%] border border-gray-300 bg-[#194F90] rounded-md shadow-md p-8">
-                    {/* Purpose Selection (Dropdown) */}
-                    <div className="mb-6">
-                        <Purpose
-                            formData={formData}
-                            setFormData={setFormData}
-                            errors={errors}
-                        />
-                        <label className="block text-white mt-4">
-                            Attach Files (PDF & Image):
-                            <div className="mt-4">
-                                <button
-                                    type="button"
-                                    onClick={() => fileInputRef.current.click()}
-                                    className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
-                                >
-                                    Choose Files
-                                </button>
-                                <input
-                                    type="file"
-                                    ref={fileInputRef}
-                                    multiple
-                                    accept="image/*, application/pdf"
-                                    className="hidden"
-                                    onChange={handleFileChange}
-                                />
-                            </div>
-                        </label>
-                        {/* Display selected files */}
-                        <div className="mt-4 bg-white p-4 rounded-lg shadow-inner">
-                            <h3 className="text-gray-800 font-medium mb-2">
-                                Selected Files:
-                            </h3>
-                            {formData.aptattach.length > 0 ? (
-                                <ul className="space-y-2">
-                                    {formData.aptattach.map((file, index) => (
-                                        <li
-                                            key={index}
-                                            className="flex items-center justify-between bg-gray-100 p-2 rounded-lg shadow-sm overflow-hidden"
+        <div className="w-full h-auto flex justify-center">
+            {/* Main container */}
+            <div className="w-full md:w-3/4 lg:w-[55%] border border-gray-300 bg-[#194F90] rounded-md shadow-md p-8">
+                {/* Purpose Selection */}
+                <div className="mb-6">
+                    <Purpose
+                        formData={formData}
+                        setFormData={setFormData}
+                        errors={errors}
+                    />
+
+                    {/* File Upload Section */}
+                    <label className="block text-white mt-4">
+                        Attach Files (PDF & Image):
+                        <div className="mt-4">
+                            <button
+                                type="button"
+                                onClick={() => fileInputRef.current.click()}
+                                className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
+                                aria-label="Choose files"
+                            >
+                                Choose Files
+                            </button>
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                multiple
+                                accept="image/*, application/pdf"
+                                className="hidden"
+                                onChange={handleFileChange}
+                                aria-label="File input"
+                            />
+                        </div>
+                    </label>
+
+                    {/* Display selected files */}
+                    <div className="mt-4 bg-white p-4 rounded-lg shadow-inner">
+                        <h3 className="text-gray-800 font-medium mb-2">
+                            Selected Files:
+                        </h3>
+                        {formData.aptattach.length > 0 ? (
+                            <ul className="space-y-2">
+                                {formData.aptattach.map((file, index) => (
+                                    <li
+                                        key={index}
+                                        className="flex items-center justify-between bg-gray-100 p-2 rounded-lg shadow-sm overflow-hidden"
+                                    >
+                                        <span
+                                            className="text-gray-800 truncate w-44"
+                                            title={file.name}
                                         >
-                                            {/* Show file name with truncation */}
-                                            <span className="text-gray-800 truncate w-44">
-                                                {file.name}
-                                            </span>
-                                            {/* Remove file button */}
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    removeFile(index)
-                                                }
-                                                className="text-red-600 hover:text-red-800 transition"
-                                            >
-                                                ✕
-                                            </button>
-                                        </li>
-                                    ))}
-                                </ul>
-                            ) : (
-                                <p className="text-gray-500 text-sm">
-                                    No files selected yet.
+                                            {file.name}
+                                        </span>
+                                        <button
+                                            type="button"
+                                            onClick={() => removeFile(index)}
+                                            className="text-red-600 hover:text-red-800 transition"
+                                            aria-label="Remove file"
+                                        >
+                                            ✕
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="text-gray-500 text-sm">
+                                No files selected yet.
+                            </p>
+                        )}
+                    </div>
+                </div>
+
+                {/* Personal Details Section */}
+                <div className="flex flex-col space-y-4">
+                    <h2 className="text-white text-xl font-semibold text-center mt-2">
+                        Personal Details
+                    </h2>
+
+                    {/* Input Fields */}
+                    {[
+                        {
+                            label: "Student Number",
+                            name: "aptstudnum",
+                            type: "text",
+                            placeholder: "e.g. 2021-######",
+                        },
+                        {
+                            label: "Full Name",
+                            name: "aptname",
+                            type: "text",
+                            placeholder: "e.g. Juan A. Dela Cruz",
+                        },
+                        {
+                            label: "Contact Number",
+                            name: "aptpnumber",
+                            type: "tel",
+                            placeholder: "09#########",
+                        },
+                        {
+                            label: "Institute Email",
+                            name: "aptemail",
+                            type: "email",
+                            placeholder: "e.g. 2021-######@rtu.edu.ph",
+                        },
+                    ].map((field) => (
+                        <div key={field.name}>
+                            <label className="block text-white">
+                                {field.label}:
+                                <input
+                                    className="cursor-not-allowed text-gray-800 bg-gray-300 w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
+                                    name={field.name}
+                                    value={formData[field.name]}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    type={field.type}
+                                    placeholder={field.placeholder}
+                                    disabled
+                                    aria-label={field.label}
+                                />
+                            </label>
+                            {touched[field.name] && errors[field.name] && (
+                                <p className="text-[#FFDB75] text-sm !mt-2">
+                                    {errors[field.name]}
                                 </p>
                             )}
                         </div>
-                    </div>
-
-                    {/* Personal Details Section */}
-                    <div className="flex flex-col space-y-4">
-                        <h2 className="text-white text-xl font-semibold text-center mt-2">
-                            Personal Details
-                        </h2>
-
-                        {/* Student Number */}
-                        <label className="block text-white">
-                            Student Number:
-                            <input
-                                className="cursor-not-allowed text-gray-800 bg-gray-300 w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
-                                name="aptstudnum"
-                                value={formData.aptstudnum}
-                                onChange={handleChange}
-                                onBlur={handleBlur} // Track blur
-                                type="text"
-                                placeholder="e.g. 2021-######"
-                                disabled
-                            />
-                        </label>
-                        {touched.aptstudnum && errors.aptstudnum && (
-                            <p className="text-[#FFDB75] text-sm !mt-2">
-                                {errors.aptstudnum}
-                            </p>
-                        )}
-
-                        {/* Full Name */}
-                        <label className="block text-white">
-                            Full Name:
-                            <input
-                                className="cursor-not-allowed text-gray-800 bg-gray-300 w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
-                                name="aptname"
-                                value={formData.aptname}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                type="text"
-                                placeholder="e.g. Juan A. Dela Cruz"
-                                disabled
-                            />
-                        </label>
-                        {touched.aptname && errors.aptname && (
-                            <p className="text-[#FFDB75] text-sm !mt-2">
-                                {errors.aptname}
-                            </p>
-                        )}
-
-                        {/* Contact Number */}
-                        <label className="block text-white">
-                            Contact Number:
-                            <input
-                                className="cursor-not-allowed text-gray-800 bg-gray-300 w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
-                                name="aptpnumber"
-                                value={formData.aptpnumber}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                type="tel"
-                                placeholder="09#########"
-                                disabled
-                            />
-                        </label>
-                        {touched.aptpnumber && errors.aptpnumber && (
-                            <p className="text-[#FFDB75] text-sm !mt-2">
-                                {errors.aptpnumber}
-                            </p>
-                        )}
-
-                        {/* Institute Email */}
-                        <label className="block text-white">
-                            Institute Email:
-                            <input
-                                className="cursor-not-allowed text-gray-800 bg-gray-300 w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
-                                name="aptemail"
-                                value={formData.aptemail}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                type="email"
-                                placeholder="e.g. 2021-######@rtu.edu.ph"
-                                disabled
-                            />
-                        </label>
-                    </div>
+                    ))}
                 </div>
             </div>
-        </>
+        </div>
     );
 }
 
