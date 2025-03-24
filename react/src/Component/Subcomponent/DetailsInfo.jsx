@@ -4,59 +4,56 @@ import TimePicker from "./TimePicker";
 import axios from "axios";
 import PDFFile from "../PDFFile";
 import { PDFDownloadLink } from "@react-pdf/renderer";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function DetailsInfo({ aptData, appointments, userRole }) {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState({
+        aptoffice: aptData.aptoffice,
+        aptbranch: aptData.aptbranch,
+    });
     const modalRef1 = useRef(null);
     const modalRef2 = useRef(null);
-    const [limit, setLimit] = useState();
+    const [limit, setLimit] = useState(null);
     const [isTimeSelected, setIsTimeSelected] = useState(false);
 
-    const openModal1 = () => {
-        modalRef1.current.showModal();
-    };
-
-    const openModal2 = () => {
-        modalRef2.current.showModal();
-    };
-
-    // Fetch office limit and set form data
+    // Fetch office limit only once on component mount
     useEffect(() => {
-        const getData = async () => {
-            const getRes = await fetch(
-                `${apiBaseUrl}/api/office/find/${aptData.aptoffice}`
-            );
-            if (getRes.status === 200) {
-                const getDataResult = await getRes.json();
-                setLimit(getDataResult.data.offlimit);
-                setFormData((prevFormData) => ({
-                    ...prevFormData,
-                    aptoffice: aptData.aptoffice,
-                    aptbranch: aptData.aptbranch,
-                }));
+        const fetchOfficeLimit = async () => {
+            try {
+                const response = await axios.get(
+                    `${apiBaseUrl}/api/office/find/${aptData.aptoffice}`
+                );
+                if (response.status === 200) {
+                    setLimit(response.data.data.offlimit);
+                }
+            } catch (error) {
+                toast.error("Failed to fetch office limit.");
+                console.error("Error fetching office limit:", error);
             }
         };
-        getData();
-    }, [aptData]);
+
+        fetchOfficeLimit();
+    }, [apiBaseUrl, aptData.aptoffice]);
 
     // Handle reschedule
     const handleReSched = async (e, id) => {
         e.preventDefault();
         try {
-            const updateRes = await axios.put(
+            const response = await axios.put(
                 `${apiBaseUrl}/api/resched/${id}`,
                 formData
             );
-            if (updateRes.status === 200) {
-                alert("Appointment update successful. Page will reload.");
-                window.location.reload();
-            } else {
-                alert("Failed to update appointment.");
+            if (response.status === 200) {
+                toast.success(
+                    "Appointment rescheduled successfully. Page will reload."
+                );
+                setTimeout(() => window.location.reload(), 2000);
             }
         } catch (error) {
-            console.error("Error updating appointment:", error);
-            alert("Error updating appointment. Please try again later.");
+            toast.error("Failed to reschedule appointment.");
+            console.error("Error rescheduling appointment:", error);
         }
     };
 
@@ -64,23 +61,31 @@ function DetailsInfo({ aptData, appointments, userRole }) {
     const handleDelete = async (e, id) => {
         e.preventDefault();
         try {
-            const deleteRes = await axios.delete(
+            const response = await axios.delete(
                 `${apiBaseUrl}/api/delappt/${id}`
             );
-            if (deleteRes.status === 200) {
-                alert("Appointment deleted successfully. Page will reload");
-                window.location.reload();
-            } else {
-                alert("Failed to delete appointment.");
+            if (response.status === 200) {
+                toast.success(
+                    "Appointment deleted successfully. Page will reload."
+                );
+                setTimeout(() => window.location.reload(), 2000);
             }
         } catch (error) {
+            toast.error("Failed to delete appointment.");
             console.error("Error deleting appointment:", error);
-            alert("Error deleting appointment. Please try again later.");
         }
     };
 
-    const handleTimeSelect = () => {
-        setIsTimeSelected(true);
+    // Open modals
+    const openModal1 = () => modalRef1.current.showModal();
+    const openModal2 = () => modalRef2.current.showModal();
+
+    // Disable reschedule button if appointment is rescheduled or within 2 days
+    const isRescheduleDisabled = () => {
+        const today = new Date();
+        const aptDate = new Date(aptData.aptdate);
+        const diffInDays = (aptDate - today) / (1000 * 60 * 60 * 24);
+        return aptData.rescheduled || diffInDays <= 2;
     };
 
     return (
@@ -88,129 +93,68 @@ function DetailsInfo({ aptData, appointments, userRole }) {
             {/* Personal Information Section */}
             <div className="bg-white flow-root rounded-lg border border-gray-100 shadow-sm mb-4">
                 <dl className="divide-y divide-gray-100 text-sm w-full lg:w-[800px]">
-                    {/* Personal Information Header */}
                     <div className="grid grid-cols-1 p-2 bg-[#194F90] text-white rounded-t-md">
                         <dt className="font-bold text-white text-[16px] text-center md:text-left">
                             PERSONAL INFORMATION
                         </dt>
                     </div>
-
-                    {/* Personal Information Rows */}
-                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
-                            Student or ID Number / Type
-                        </dt>
-                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
-                            {aptData.aptstudnum ? aptData.aptstudnum : "N/A"}
-                        </dd>
-                    </div>
-
-                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
-                            Full Name
-                        </dt>
-                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
-                            {aptData.aptname ? aptData.aptname : "N/A"}
-                        </dd>
-                    </div>
-
-                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
-                            Contact Number
-                        </dt>
-                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
-                            {aptData.aptpnumber ? aptData.aptpnumber : "N/A"}
-                        </dd>
-                    </div>
-                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
-                            Email Address
-                        </dt>
-                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
-                            {aptData.aptemail ? aptData.aptemail : "N/A"}
-                        </dd>
-                    </div>
+                    {[
+                        {
+                            label: "Student or ID Number / Type",
+                            value: aptData.aptstudnum,
+                        },
+                        { label: "Full Name", value: aptData.aptname },
+                        { label: "Contact Number", value: aptData.aptpnumber },
+                        { label: "Email Address", value: aptData.aptemail },
+                    ].map((item, index) => (
+                        <div
+                            key={index}
+                            className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4"
+                        >
+                            <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
+                                {item.label}
+                            </dt>
+                            <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
+                                {item.value || "N/A"}
+                            </dd>
+                        </div>
+                    ))}
                 </dl>
             </div>
 
             {/* Appointment Information Section */}
             <div className="flow-root rounded-lg border border-gray-100 shadow-sm mb-4">
                 <dl className="divide-y divide-gray-100 text-sm w-full lg:w-[800px]">
-                    {/* Appointment Information Header */}
                     <div className="grid grid-cols-1 p-2 bg-[#194F90] text-white rounded-t-md">
                         <dt className="font-bold text-white text-[16px] text-center md:text-left">
                             APPOINTMENT INFORMATION
                         </dt>
                     </div>
-
-                    {/* Appointment Information Rows */}
-                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
-                            Account Type
-                        </dt>
-                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
-                            {aptData.apttype ? aptData.apttype : "N/A"}
-                        </dd>
-                    </div>
-
-                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
-                            RTU Branch
-                        </dt>
-                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
-                            {aptData.aptbranch ? aptData.aptbranch : "N/A"}
-                        </dd>
-                    </div>
-
-                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
-                            Office Name
-                        </dt>
-                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
-                            {aptData.aptoffice ? aptData.aptoffice : "N/A"}
-                        </dd>
-                    </div>
-
-                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
-                            Purpose
-                        </dt>
-                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
-                            {aptData.aptpurpose ? aptData.aptpurpose : "N/A"}
-                        </dd>
-                    </div>
-                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
-                            Date
-                        </dt>
-                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
-                            {aptData.aptdate ? aptData.aptdate : "N/A"}
-                        </dd>
-                    </div>
-                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
-                            Time
-                        </dt>
-                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
-                            {aptData.apttime ? aptData.apttime : "N/A"}
-                        </dd>
-                    </div>
-                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
-                            Appointment Number
-                        </dt>
-                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
-                            {aptData.aptid ? aptData.aptid : "N/A"}
-                        </dd>
-                    </div>
-                    <div className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4">
-                        <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
-                            Appointment Status
-                        </dt>
-                        <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
-                            {aptData.aptstatus ? aptData.aptstatus : "N/A"}
-                        </dd>
-                    </div>
+                    {[
+                        { label: "Account Type", value: aptData.apttype },
+                        { label: "RTU Branch", value: aptData.aptbranch },
+                        { label: "Office Name", value: aptData.aptoffice },
+                        { label: "Purpose", value: aptData.aptpurpose },
+                        { label: "Date", value: aptData.aptdate },
+                        { label: "Time", value: aptData.apttime },
+                        { label: "Appointment Number", value: aptData.aptid },
+                        {
+                            label: "Appointment Status",
+                            value: aptData.aptstatus,
+                        },
+                    ].map((item, index) => (
+                        <div
+                            key={index}
+                            className="grid grid-cols-1 p-2 sm:grid-cols-3 sm:gap-4"
+                        >
+                            <dt className="font-semibold text-[#3B3838] md:ml-10 text-center md:text-left">
+                                {item.label}
+                            </dt>
+                            <dd className="text-gray-700 sm:col-span-2 text-center sm:text-left">
+                                {item.value || "N/A"}
+                            </dd>
+                        </div>
+                    ))}
                 </dl>
             </div>
 
@@ -224,7 +168,7 @@ function DetailsInfo({ aptData, appointments, userRole }) {
                             ? "bg-gray-400 cursor-not-allowed"
                             : "bg-red-500 hover:bg-red-700 text-white"
                     }`}
-                    onClick={() => openModal2(aptData)}
+                    onClick={openModal2}
                     disabled={["confirmed"].includes(
                         aptData.aptstatus?.toLowerCase()
                     )}
@@ -238,37 +182,25 @@ function DetailsInfo({ aptData, appointments, userRole }) {
                 >
                     {({ loading }) =>
                         loading ? (
-                            <button className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-full ml-2 ">
+                            <button className="flex justify-center items-center bg-blue-500 text-white py-2 px-4 rounded-md w-full ml-2">
                                 Loading Download...
                             </button>
                         ) : (
-                            <button
-                                type="button"
-                                className="flex justify-center items-center bg-blue-500 hover:bg-blue-800 text-white py-2 px-8 rounded-md w-full"
-                            >
+                            <button className="flex justify-center items-center bg-blue-500 hover:bg-blue-800 text-white py-2 px-8 rounded-md w-full">
                                 Print
                             </button>
                         )
                     }
                 </PDFDownloadLink>
+
                 <button
-                    className={`flex justify-center items-center py-2 px-4 rounded-md w-1/3 ml-2 ${(() => {
-                        const today = new Date();
-                        const aptDate = new Date(aptData.aptdate);
-                        const diffInDays =
-                            (aptDate - today) / (1000 * 60 * 60 * 24);
-                        return aptData.rescheduled || diffInDays <= 2
+                    className={`flex justify-center items-center py-2 px-4 rounded-md w-1/3 ml-2 ${
+                        isRescheduleDisabled()
                             ? "bg-gray-400 cursor-not-allowed"
-                            : "bg-blue-500 hover:bg-blue-800 text-white";
-                    })()}`}
-                    onClick={() => openModal1(formData)}
-                    disabled={(() => {
-                        const today = new Date();
-                        const aptDate = new Date(aptData.aptdate);
-                        const diffInDays =
-                            (aptDate - today) / (1000 * 60 * 60 * 24);
-                        return aptData.rescheduled || diffInDays <= 2;
-                    })()}
+                            : "bg-blue-500 hover:bg-blue-800 text-white"
+                    }`}
+                    onClick={openModal1}
+                    disabled={isRescheduleDisabled()}
                 >
                     Reschedule
                 </button>
@@ -280,14 +212,13 @@ function DetailsInfo({ aptData, appointments, userRole }) {
                     <h1 className="font-bold text-3xl text-black mb-6">
                         Reschedule Appointment
                     </h1>
-
                     <div className="w-full flex flex-col sm:flex-row justify-center items-center">
                         <Calendar
                             formData={formData}
                             setFormData={setFormData}
                             limit={limit}
                             appointments={appointments}
-                            userRole={userRole} // Pass userRole to Calendar
+                            userRole={userRole}
                             setIsTimeSelected={setIsTimeSelected}
                         />
                         <TimePicker
@@ -295,11 +226,10 @@ function DetailsInfo({ aptData, appointments, userRole }) {
                             setFormData={setFormData}
                             limit={limit}
                             appointments={appointments}
-                            setTimeSelected={handleTimeSelect}
-                            userRole={userRole} // Pass userRole to TimePicker
+                            setTimeSelected={() => setIsTimeSelected(true)}
+                            userRole={userRole}
                         />
                     </div>
-
                     <div className="modal-action flex justify-center gap-4">
                         <button
                             className={`px-6 py-2 text-sm font-semibold border-none rounded-md ${
@@ -313,13 +243,10 @@ function DetailsInfo({ aptData, appointments, userRole }) {
                         >
                             Confirm
                         </button>
-
                         <button
                             type="button"
                             className="px-6 py-2 text-sm font-semibold border-none rounded-md bg-[#194F90] hover:bg-[#123A69]"
-                            onClick={() => {
-                                modalRef1.current.close();
-                            }}
+                            onClick={() => modalRef1.current.close()}
                         >
                             Close
                         </button>
@@ -348,9 +275,7 @@ function DetailsInfo({ aptData, appointments, userRole }) {
                             <button
                                 type="button"
                                 className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
-                                onClick={() => {
-                                    modalRef2.current.close();
-                                }}
+                                onClick={() => modalRef2.current.close()}
                             >
                                 Close
                             </button>
