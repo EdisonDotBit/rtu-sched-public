@@ -441,9 +441,8 @@ function SetAppointment() {
                                     </h2>
 
                                     <h4 className="text-center text-sm min-w-full  text-gray-500 mb-4">
-                                        Review the following information.
-                                        Appointment number is important. Kindly
-                                        note it.
+                                        Review the following information before
+                                        confirming
                                     </h4>
 
                                     <div className="w-full lg:w-[800px]">
@@ -514,21 +513,21 @@ function SetAppointment() {
 
                     <dialog
                         ref={modals}
-                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 backdrop:bg-black/50"
+                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] sm:w-[80%] md:w-[500px] bg-[#194F90] rounded-lg shadow-lg p-2 sm:p-4 backdrop:bg-black/50 z-50"
                         onKeyDown={(event) => {
                             if (event.key === "Escape") {
                                 event.preventDefault();
                             }
                         }}
                     >
-                        <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] p-6 w-full">
+                        <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] p-4 sm:p-6 w-full">
                             <button
                                 className="cursor-pointer absolute top-1 right-1 text-white hover:text-gray-300 transition duration-300 focus:outline-none"
                                 onClick={() => modals.current.close()}
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    className="h-6 w-6 text-white"
+                                    className="h-5 w-5 sm:h-6 sm:w-6 text-white"
                                     fill="none"
                                     viewBox="0 0 24 24"
                                     stroke="currentColor"
@@ -541,11 +540,13 @@ function SetAppointment() {
                                     />
                                 </svg>
                             </button>
-                            <h2>Appointment has been Set Successfully</h2>
+                            <h2 className="text-lg sm:text-xl text-center">
+                                Appointment has been Set Successfully
+                            </h2>
 
-                            <div className="item-center modal-action text-sm text-center">
+                            <div className="item-center modal-action text-sm text-center mt-2 sm:mt-4">
                                 <label style={{ verticalAlign: "middle" }}>
-                                    <b>
+                                    <b className="text-sm sm:text-base">
                                         <br />
                                         Kindly wait for the office to confirm
                                         your appointment.
@@ -554,7 +555,7 @@ function SetAppointment() {
                                     </b>
                                 </label>
                             </div>
-                            <h4 className="text-xs mt-6">
+                            <h4 className="text-xs mt-4 sm:mt-6">
                                 Note: Click the "X" to go back home.
                             </h4>
                         </div>
@@ -562,22 +563,21 @@ function SetAppointment() {
 
                     <dialog
                         ref={modals1}
-                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 backdrop:bg-black/50"
+                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] sm:w-[80%] md:w-[500px] bg-[#194F90] rounded-lg shadow-lg p-2 sm:p-4 backdrop:bg-black/50 z-50"
                         onKeyDown={(event) => {
                             if (event.key === "Escape") {
                                 event.preventDefault();
                             }
                         }}
                     >
-                        <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] p-6 w-full">
-                            {/* Close button with SVG */}
+                        <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] p-4 sm:p-6 w-full">
                             <button
                                 className="absolute top-1 right-1 text-white hover:text-gray-300 transition duration-300 focus:outline-none"
                                 onClick={() => modals1.current.close()}
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    className="h-6 w-6 text-white"
+                                    className="h-5 w-5 sm:h-6 sm:w-6 text-white"
                                     fill="none"
                                     viewBox="0 0 24 24"
                                     stroke="currentColor"
@@ -592,18 +592,18 @@ function SetAppointment() {
                             </button>
 
                             <div className="text-center">
-                                <h1 className="text-red-400">
+                                <h1 className="text-red-400 text-lg sm:text-xl">
                                     Appointment Failed
                                 </h1>
-                                <h3 className="text-md">
+                                <h3 className="text-sm sm:text-base mt-2">
                                     You already have an ongoing appointment in
                                     this office.
                                 </h3>
-                                <h4 className="text-gray-200 text-xs mt-2">
+                                <h4 className="text-gray-200 text-xs mt-2 sm:mt-3">
                                     Note: Accomplish the transaction before
                                     scheduling another appointment.
                                 </h4>
-                                <h4 className="text-gray-200 text-xs mt-2">
+                                <h4 className="text-gray-200 text-xs mt-2 sm:mt-3">
                                     Closing this modal reloads the page.
                                 </h4>
                             </div>
