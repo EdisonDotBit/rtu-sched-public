@@ -82,7 +82,11 @@ function ViewAppointments() {
                                     <Loading />
                                 </div>
                             )}
-                            {error && <p>{error}</p>}
+                            {error && (
+                                <p className="text-red-500 text-center">
+                                    {error}
+                                </p>
+                            )}
                             {aptData && Object.keys(aptData).length > 0 && (
                                 <DetailsInfo
                                     aptData={aptData}
