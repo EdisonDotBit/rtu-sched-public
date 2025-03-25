@@ -123,7 +123,7 @@ function DetailsInfo({ aptData, appointments, userRole }) {
             </div>
 
             {/* Appointment Information Section */}
-            <div className="flow-root rounded-lg border border-gray-100 shadow-sm mb-4">
+            <div className="bg-white flow-root rounded-lg border border-gray-100 shadow-sm mb-4">
                 <dl className="divide-y divide-gray-100 text-sm w-full lg:w-[800px]">
                     <div className="grid grid-cols-1 p-2 bg-[#194F90] text-white rounded-t-md">
                         <dt className="font-bold text-white text-[16px] text-center md:text-left">
