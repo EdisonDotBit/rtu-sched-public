@@ -2,7 +2,7 @@ import React from "react";
 
 function Confirmation({ formData, setFormData }) {
     return (
-        <div className="flex flex-col w-full max-w-4xl mx-auto p-4">
+        <div className="flex flex-col w-full max-w-4xl mx-auto">
             <div className="w-full">
                 <h4 className="text-lg md:text-xl font-bold text-[#3B3838] mt-2 md:mt-4">
                     Appointment Summary:
