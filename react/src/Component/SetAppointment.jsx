@@ -266,7 +266,7 @@ function SetAppointment() {
                                             }
                                         />
                                     </div>
-                                    <div className="flex w-full justify-evenly">
+                                    <div className="flex w-full justify-evenly mt-6">
                                         <button
                                             className={`py-2 px-8 rounded-md text-white hover:text-white ${
                                                 isBranchSelected
@@ -303,7 +303,7 @@ function SetAppointment() {
                                             }
                                         />
                                     </div>
-                                    <div className="flex w-full justify-evenly mt-12">
+                                    <div className="flex w-full justify-evenly mt-6">
                                         <button
                                             className=" bg-red-700 hover:bg-red-900 text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
                                             onClick={prevStep}
@@ -404,7 +404,7 @@ function SetAppointment() {
                                         Click the dropdown to select purpose and
                                         fill up the following information
                                     </h4>
-                                    <div className="w-full mb-10">
+                                    <div className="w-full mb-6">
                                         <InputDetails
                                             formData={formData}
                                             setFormData={setFormData}
@@ -440,9 +440,10 @@ function SetAppointment() {
                                         Step 5: Confirm Details
                                     </h2>
 
-                                    <h4 className="text-center text-sm min-w-full  text-gray-500 mb-4">
-                                        Review the following information before
-                                        confirming
+                                    <h4 className="text-center text-sm min-w-full text-gray-500 mb-4">
+                                        Review the following information.
+                                        Appointment number is important. Kindly
+                                        note it.
                                     </h4>
 
                                     <div className="w-full lg:w-[800px]">
@@ -511,101 +512,139 @@ function SetAppointment() {
                         </div>
                     </div>
 
+                    {/* Success Modal */}
                     <dialog
                         ref={modals}
-                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] sm:w-[80%] md:w-[500px] bg-[#194F90] rounded-lg shadow-lg p-2 sm:p-4 backdrop:bg-black/50 z-50"
-                        onKeyDown={(event) => {
-                            if (event.key === "Escape") {
-                                event.preventDefault();
-                            }
-                        }}
+                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-md bg-white rounded-xl shadow-lg p-4 sm:p-6 backdrop:bg-gray-900/50 z-50 border-none"
+                        onKeyDown={(e) =>
+                            e.key === "Escape" && e.preventDefault()
+                        }
                     >
-                        <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] p-4 sm:p-6 w-full">
+                        <div className="relative">
                             <button
-                                className="cursor-pointer absolute top-1 right-1 text-white hover:text-gray-300 transition duration-300 focus:outline-none"
-                                onClick={() => modals.current.close()}
+                                onClick={() => modals.current?.close()}
+                                className="absolute top-2 right-2 p-1 text-gray-400 hover:text-gray-600 transition-colors rounded-full hover:bg-gray-100"
+                                aria-label="Close dialog"
                             >
                                 <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-5 w-5 sm:h-6 sm:w-6 text-white"
+                                    className="w-6 h-6"
                                     fill="none"
                                     viewBox="0 0 24 24"
                                     stroke="currentColor"
-                                    strokeWidth={2}
                                 >
                                     <path
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
-                            <h2 className="text-lg sm:text-xl text-center">
-                                Appointment has been Set Successfully
-                            </h2>
-
-                            <div className="item-center modal-action text-sm text-center mt-2 sm:mt-4">
-                                <label style={{ verticalAlign: "middle" }}>
-                                    <b className="text-sm sm:text-base">
-                                        <br />
-                                        Kindly wait for the office to confirm
-                                        your appointment.
-                                        <br />
-                                        Confirmation will be sent via email.
-                                    </b>
-                                </label>
-                            </div>
-                            <h4 className="text-xs mt-4 sm:mt-6">
-                                Note: Click the "X" to go back home.
-                            </h4>
-                        </div>
-                    </dialog>
-
-                    <dialog
-                        ref={modals1}
-                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] sm:w-[80%] md:w-[500px] bg-[#194F90] rounded-lg shadow-lg p-2 sm:p-4 backdrop:bg-black/50 z-50"
-                        onKeyDown={(event) => {
-                            if (event.key === "Escape") {
-                                event.preventDefault();
-                            }
-                        }}
-                    >
-                        <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] p-4 sm:p-6 w-full">
-                            <button
-                                className="absolute top-1 right-1 text-white hover:text-gray-300 transition duration-300 focus:outline-none"
-                                onClick={() => modals1.current.close()}
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-5 w-5 sm:h-6 sm:w-6 text-white"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    strokeWidth={2}
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
+                                        strokeWidth="2"
                                         d="M6 18L18 6M6 6l12 12"
                                     />
                                 </svg>
                             </button>
 
                             <div className="text-center">
-                                <h1 className="text-red-400 text-lg sm:text-xl">
-                                    Appointment Failed
-                                </h1>
-                                <h3 className="text-sm sm:text-base mt-2">
+                                <div className="mx-auto bg-green-100 p-3 rounded-full w-max mb-4">
+                                    <svg
+                                        className="w-8 h-8 text-green-600"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M5 13l4 4L19 7"
+                                        />
+                                    </svg>
+                                </div>
+
+                                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                                    Appointment Scheduled
+                                </h3>
+                                <p className="text-gray-700 mb-4">
+                                    Your appointment has been scheduled
+                                    successfully!
+                                </p>
+                                <p className="text-sm text-gray-500 mb-6">
+                                    Kindly wait for the office to confirm your
+                                    appointment. Confirmation will be sent via
+                                    email.
+                                </p>
+
+                                <button
+                                    onClick={() => modals.current?.close()}
+                                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </dialog>
+
+                    {/* Conflict Modal */}
+                    <dialog
+                        ref={modals1}
+                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[500px] bg-white rounded-xl shadow-lg p-4 sm:p-6 backdrop:bg-black/50 z-50 border-none"
+                        onKeyDown={(e) =>
+                            e.key === "Escape" && e.preventDefault()
+                        }
+                    >
+                        <div className="relative">
+                            <button
+                                onClick={() => modals1.current.close()}
+                                className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 transition"
+                                aria-label="Close dialog"
+                            >
+                                <svg
+                                    className="w-6 h-6"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                </svg>
+                            </button>
+
+                            <div className="text-center">
+                                <div className="mx-auto bg-red-100 p-3 rounded-full w-max mb-4">
+                                    <svg
+                                        className="w-8 h-8 text-red-600"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                                        />
+                                    </svg>
+                                </div>
+
+                                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                                    Appointment Conflict
+                                </h3>
+                                <p className="text-gray-700 mb-4">
                                     You already have an ongoing appointment in
                                     this office.
-                                </h3>
-                                <h4 className="text-gray-200 text-xs mt-2 sm:mt-3">
-                                    Note: Accomplish the transaction before
-                                    scheduling another appointment.
-                                </h4>
-                                <h4 className="text-gray-200 text-xs mt-2 sm:mt-3">
-                                    Closing this modal reloads the page.
-                                </h4>
+                                </p>
+                                <p className="text-sm text-gray-500 mb-6">
+                                    Please complete your current transaction
+                                    first.
+                                </p>
+
+                                <button
+                                    onClick={() => modals1.current.close()}
+                                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                                >
+                                    Close
+                                </button>
                             </div>
                         </div>
                     </dialog>
