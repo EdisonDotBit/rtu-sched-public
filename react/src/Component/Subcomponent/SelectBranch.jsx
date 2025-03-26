@@ -25,7 +25,7 @@ function SelectBranch({ formData, setFormData, setBranchSelected }) {
     };
 
     return (
-        <div className="flex flex-wrap items-center justify-center h-{100} mb-5 gap-4">
+        <div className="flex flex-wrap items-center justify-center h-{100} gap-4">
             {branches.map((branchItem, index) => (
                 <div
                     key={index}
