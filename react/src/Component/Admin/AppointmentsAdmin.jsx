@@ -1,15 +1,19 @@
 import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../../Hooks/useAuth";
-import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FaSync } from "react-icons/fa";
+import { FaSync, FaSearch, FaFilter, FaCalendarAlt } from "react-icons/fa";
+import useAppointments from "../../Hooks/useAppointments";
+import SummaryCards from "./Component/AppointsmentsAdmin/SummaryCards";
+import TableHeader from "./Component/AppointsmentsAdmin/TableHeader";
+import TableRow from "./Component/AppointsmentsAdmin/TableRow";
+import ConfirmationModal from "./Component/AppointsmentsAdmin/ConfirmationModal";
+import AttachmentModal from "./Component/AppointsmentsAdmin/AttachmentModal";
+import OtherPurposeModal from "./Component/AppointsmentsAdmin/OtherPurposeModal";
 
 function AppointmentsAdmin() {
     const [aptemail, setAptEmail] = useState("");
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-    const [aptData, setAptData] = useState([]);
-    const [searchResults, setSearchResults] = useState([]);
     const [filterStatus, setFilterStatus] = useState("");
     const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
     const { role, branch } = useAuth();
@@ -22,40 +26,101 @@ function AppointmentsAdmin() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isOtherPurposeModalOpen, setOtherPurposeModalOpen] = useState(false);
     const [selectedOtherPurpose, setSelectedOtherPurpose] = useState("");
-    const [isProcessing, setIsProcessing] = useState(false);
+    const [timeRange, setTimeRange] = useState("all");
+    const [showDateDropdown, setShowDateDropdown] = useState(false);
 
-    // Fetch appointment data
-    const getData = async () => {
-        try {
-            let endpoint;
+    const {
+        aptData,
+        searchResults,
+        setSearchResults,
+        isProcessing,
+        setIsProcessing,
+        getData,
+        confirmAppointment,
+        markAppointmentDone,
+        cancelAppointment,
+        deleteAppointment,
+    } = useAppointments(role, branch, apiBaseUrl);
 
-            if (role === "superadmin") {
-                endpoint = `${apiBaseUrl}/api/branchapt/${branch}`;
-            } else {
-                endpoint = `${apiBaseUrl}/api/filteredapt/${role}/${branch}`;
-            }
+    // Filter and sort data
+    useEffect(() => {
+        let filteredResults = [...aptData];
 
-            const getRes = await fetch(endpoint);
-            const getDataResult = await getRes.json();
-            setAptData(getDataResult);
-            setSearchResults(getDataResult);
-        } catch (error) {
-            toast.error(
-                "Failed to fetch appointment data. Please try again later."
+        // Apply email filter
+        if (aptemail) {
+            filteredResults = filteredResults.filter((apt) =>
+                apt.aptemail.toLowerCase().includes(aptemail.toLowerCase())
             );
         }
-    };
 
-    // Polling for data updates
-    useEffect(() => {
-        const interval = setInterval(() => {
-            getData(); // Fetch data every 60 seconds
-        }, 60000); // 60 seconds interval
+        // Apply status filter
+        if (filterStatus) {
+            filteredResults = filteredResults.filter((apt) =>
+                apt.aptstatus.toLowerCase().includes(filterStatus.toLowerCase())
+            );
+        }
 
-        getData(); // Fetch data immediately on component mount
+        // Apply time range filter based on appointment date (aptdate)
+        if (timeRange !== "all") {
+            const now = new Date();
+            const today = new Date(now);
+            today.setHours(0, 0, 0, 0); // Start of today
 
-        return () => clearInterval(interval); // Cleanup interval on unmount
-    }, [role, branch, apiBaseUrl]);
+            filteredResults = filteredResults.filter((apt) => {
+                try {
+                    const aptDate = new Date(apt.aptdate);
+                    aptDate.setHours(0, 0, 0, 0); // Normalize to start of day
+
+                    switch (timeRange) {
+                        case "today":
+                            return aptDate.getTime() === today.getTime();
+                        case "week":
+                            // Get start of current week (Sunday)
+                            const startOfWeek = new Date(today);
+                            startOfWeek.setDate(
+                                today.getDate() - today.getDay()
+                            );
+                            // Get end of current week (Saturday)
+                            const endOfWeek = new Date(startOfWeek);
+                            endOfWeek.setDate(startOfWeek.getDate() + 6);
+                            return (
+                                aptDate >= startOfWeek && aptDate <= endOfWeek
+                            );
+                        case "month":
+                            // Get start of current month
+                            const startOfMonth = new Date(
+                                today.getFullYear(),
+                                today.getMonth(),
+                                1
+                            );
+                            // Get end of current month
+                            const endOfMonth = new Date(
+                                today.getFullYear(),
+                                today.getMonth() + 1,
+                                0
+                            );
+                            return (
+                                aptDate >= startOfMonth && aptDate <= endOfMonth
+                            );
+                        default:
+                            return true;
+                    }
+                } catch (error) {
+                    console.error("Error parsing date:", apt.aptdate, error);
+                    return false;
+                }
+            });
+        }
+
+        // Sort by appointment date (aptdate) - soonest first
+        filteredResults.sort((a, b) => {
+            const dateA = new Date(a.aptdate);
+            const dateB = new Date(b.aptdate);
+            return dateA - dateB; // For chronological order (soonest first)
+        });
+
+        setSearchResults(filteredResults);
+    }, [aptemail, aptData, filterStatus, timeRange]);
 
     // Handle manual refresh
     const handleReload = async () => {
@@ -64,120 +129,13 @@ function AppointmentsAdmin() {
         toast.success("Appointment data refreshed.");
     };
 
-    // Filter and sort data
-    useEffect(() => {
-        let filteredResults = aptData.filter((apt) => {
-            return apt.aptemail.toLowerCase().includes(aptemail.toLowerCase());
-        });
-
-        if (filterStatus) {
-            filteredResults = filteredResults.filter((apt) =>
-                apt.aptstatus.toLowerCase().includes(filterStatus.toLowerCase())
-            );
-        }
-
-        setSearchResults(filteredResults);
-    }, [aptemail, aptData, filterStatus]);
-
     // Handle appointment actions
-    const handleConfirm = async (id) => {
-        setModalTitle("Confirm Appointment");
-        setConfirmationMessage(
-            "Are you sure you want to confirm this appointment?"
-        );
+    const handleAction = (id, title, message, actionFn) => {
+        setModalTitle(title);
+        setConfirmationMessage(message);
         setSelectedAppointmentNum(id);
-        setAction(() => () => confirmAppointment(id));
+        setAction(() => () => actionFn(id));
         modalRef.current.showModal();
-    };
-
-    const handleDone = async (id) => {
-        setModalTitle("Mark Appointment as Done");
-        setConfirmationMessage(
-            "Are you sure you want to mark this appointment as done?"
-        );
-        setSelectedAppointmentNum(id);
-        setAction(() => () => markAppointmentDone(id));
-        modalRef.current.showModal();
-    };
-
-    const handleCancel = async (id) => {
-        setModalTitle("Cancel Appointment");
-        setConfirmationMessage(
-            "Are you sure you want to cancel this appointment?"
-        );
-        setSelectedAppointmentNum(id);
-        setAction(() => () => cancelAppointment(id));
-        modalRef.current.showModal();
-    };
-
-    const handleDelete = async (id) => {
-        setModalTitle("Delete Appointment");
-        setConfirmationMessage(
-            "Are you sure you want to delete this appointment?"
-        );
-        setSelectedAppointmentNum(id);
-        setAction(() => () => deleteAppointment(id));
-        modalRef.current.showModal();
-    };
-
-    // Appointment action functions
-    const confirmAppointment = async (id) => {
-        try {
-            const response = await axios.post(
-                `${apiBaseUrl}/api/appointments/confirm/${id}`,
-                {}
-            );
-            if (response.status === 200) {
-                toast.success("Appointment confirmed.");
-                getData();
-            }
-        } catch (error) {
-            toast.error("Error confirming appointment.");
-        }
-    };
-
-    const markAppointmentDone = async (id) => {
-        try {
-            const response = await axios.post(
-                `${apiBaseUrl}/api/appointments/done/${id}`,
-                {}
-            );
-            if (response.status === 200) {
-                toast.success("Appointment marked as done.");
-                getData();
-            }
-        } catch (error) {
-            toast.error("Error marking appointment as done.");
-        }
-    };
-
-    const cancelAppointment = async (id) => {
-        try {
-            const response = await axios.post(
-                `${apiBaseUrl}/api/appointments/cancel/${id}`,
-                {}
-            );
-            if (response.status === 200) {
-                toast.success("Appointment cancelled.");
-                getData();
-            }
-        } catch (error) {
-            toast.error("Error cancelling appointment.");
-        }
-    };
-
-    const deleteAppointment = async (id) => {
-        try {
-            const response = await axios.delete(
-                `${apiBaseUrl}/api/appointments/${id}`
-            );
-            if (response.status === 200) {
-                toast.success("Appointment deleted.");
-                getData();
-            }
-        } catch (error) {
-            toast.error("Error deleting appointment.");
-        }
     };
 
     // Sort data
@@ -189,41 +147,18 @@ function AppointmentsAdmin() {
         setSortConfig({ key, direction });
 
         const sortedData = [...searchResults].sort((a, b) => {
+            // Special handling for date sorting
+            if (key === "aptdate") {
+                const dateA = new Date(a[key]);
+                const dateB = new Date(b[key]);
+                return direction === "asc" ? dateA - dateB : dateB - dateA;
+            }
+
             if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
             if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
             return 0;
         });
         setSearchResults(sortedData);
-    };
-
-    // Sort arrow component
-    const SortArrow = ({ direction }) => {
-        if (direction === "asc") {
-            return (
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    viewBox="0 0 16 16"
-                    className="mb-1"
-                >
-                    <path d="M3 9l4 4 4-4H3z" />
-                </svg>
-            );
-        }
-        return (
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                viewBox="0 0 16 16"
-                className="mt-2"
-            >
-                <path d="M3 5l4-4 4 4H3z" />
-            </svg>
-        );
     };
 
     // Open attachment modal
@@ -251,577 +186,195 @@ function AppointmentsAdmin() {
     };
 
     return (
-        <div className="flex justify-center h-full">
-            <div className="flex flex-col items-center gap-[20px] flex-1 w-full">
-                {/* Search Input */}
-                <input
-                    className="text-gray-800 bg-white mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] w-[300px] xsm:w-[200px] sm:w-[300px] text-md"
-                    type="text"
-                    placeholder="Search Appointment by Email"
-                    value={aptemail}
-                    onChange={(e) => setAptEmail(e.target.value)}
-                />
+        <div className="min-h-screen bg-gray-50 p-4 md:p-6">
+            <div className="max-w-7xl mx-auto">
+                {/* Header and Controls */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                    <h1 className="text-2xl font-bold text-gray-800">
+                        Appointment Management
+                    </h1>
 
-                {/* Filter and Refresh Section */}
-                <div className="self-baseline flex items-center gap-2 mb-4">
-                    <button
-                        onClick={handleReload}
-                        className="text-blue-500 hover:text-blue-700 mr-6"
-                    >
-                        <FaSync className="inline-block" />
-                    </button>
+                    <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+                        {/* Search Input */}
+                        <div className="relative flex-1">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <FaSearch className="text-gray-400" />
+                            </div>
+                            <input
+                                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                type="text"
+                                placeholder="Search by email..."
+                                value={aptemail}
+                                onChange={(e) => setAptEmail(e.target.value)}
+                            />
+                        </div>
 
-                    <p className="text-sm">Sort Status by:</p>
-                    <select
-                        value={filterStatus}
-                        onChange={(e) => setFilterStatus(e.target.value)}
-                        className="text-gray-800 bg-white py-1 px-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
-                    >
-                        <option value="">All</option>
-                        <option value="ongoing">Ongoing</option>
-                        <option value="confirmed">Confirmed</option>
-                        <option value="done">Done</option>
-                        <option value="cancelled">Cancelled</option>
-                    </select>
+                        {/* Filter and Refresh */}
+                        <div className="flex items-center gap-3">
+                            <button
+                                onClick={handleReload}
+                                className="p-2 bg-white rounded-lg border border-gray-300 shadow-sm hover:bg-gray-50 transition-colors"
+                                title="Refresh data"
+                            >
+                                <FaSync className="text-blue-600" />
+                            </button>
+
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <FaFilter className="text-gray-400" />
+                                </div>
+                                <select
+                                    value={filterStatus}
+                                    onChange={(e) =>
+                                        setFilterStatus(e.target.value)
+                                    }
+                                    className="pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
+                                >
+                                    <option value="">All Statuses</option>
+                                    <option value="ongoing">Ongoing</option>
+                                    <option value="confirmed">Confirmed</option>
+                                    <option value="done">Done</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+                            </div>
+
+                            {/* Date Filter Dropdown */}
+                            <div className="relative">
+                                <button
+                                    onClick={() =>
+                                        setShowDateDropdown(!showDateDropdown)
+                                    }
+                                    className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50"
+                                >
+                                    <FaCalendarAlt className="text-gray-600" />
+                                    <span className="text-sm">
+                                        {timeRange === "all"
+                                            ? "All Dates"
+                                            : timeRange
+                                                  .charAt(0)
+                                                  .toUpperCase() +
+                                              timeRange.slice(1)}
+                                    </span>
+                                </button>
+
+                                {showDateDropdown && (
+                                    <div className="absolute right-0 mt-1 z-10 bg-white p-2 rounded-lg shadow-lg border border-gray-200 w-40">
+                                        <button
+                                            onClick={() => {
+                                                setTimeRange("today");
+                                                setShowDateDropdown(false);
+                                            }}
+                                            className="block w-full text-left px-3 py-2 text-sm hover:bg-gray-100 rounded"
+                                        >
+                                            Today
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setTimeRange("week");
+                                                setShowDateDropdown(false);
+                                            }}
+                                            className="block w-full text-left px-3 py-2 text-sm hover:bg-gray-100 rounded"
+                                        >
+                                            This Week
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setTimeRange("month");
+                                                setShowDateDropdown(false);
+                                            }}
+                                            className="block w-full text-left px-3 py-2 text-sm hover:bg-gray-100 rounded"
+                                        >
+                                            This Month
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setTimeRange("all");
+                                                setShowDateDropdown(false);
+                                            }}
+                                            className="block w-full text-left px-3 py-2 text-sm hover:bg-gray-100 rounded"
+                                        >
+                                            All Time
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                {/* Summary Cards */}
+                <SummaryCards searchResults={searchResults} />
 
                 {/* Appointment Table */}
-                {searchResults.length !== 0 && (
-                    <div className="overflow-x-auto overflow-y-auto mb-4">
-                        <table className="table-auto shadow-md rounded border border-gray-200 w-full divide-y-2 divide-gray-200 bg-white text-[10px]">
-                            <thead className="ltr:text-center rtl:text-center">
-                                <tr>
-                                    <th
-                                        className="whitespace-nowrap p-2 font-semibold text-gray-900 cursor-pointer"
-                                        onClick={() => sortData("aptid")}
-                                    >
-                                        <div className="flex items-center justify-center">
-                                            Appointment <br />
-                                            Number
-                                            <span className="text-gray-500">
-                                                <SortArrow
-                                                    direction={
-                                                        sortConfig.key ===
-                                                        "aptid"
-                                                            ? sortConfig.direction
-                                                            : null
-                                                    }
-                                                />
-                                            </span>
-                                        </div>
-                                    </th>
-                                    <th
-                                        className="whitespace-nowrap p-2  font-semibold text-gray-900 cursor-pointer"
-                                        onClick={() => sortData("apttype")}
-                                    >
-                                        <div className="flex items-center justify-center">
-                                            Type
-                                            <span className="text-gray-500">
-                                                <SortArrow
-                                                    direction={
-                                                        sortConfig.key ===
-                                                        "apttype"
-                                                            ? sortConfig.direction
-                                                            : null
-                                                    }
-                                                />
-                                            </span>
-                                        </div>
-                                    </th>
-                                    <th
-                                        className="whitespace-nowrap p-2  font-semibold text-gray-900 cursor-pointer"
-                                        onClick={() => sortData("aptname")}
-                                    >
-                                        <div className="flex items-center justify-center">
-                                            Full Name
-                                            <span className="text-gray-500">
-                                                <SortArrow
-                                                    direction={
-                                                        sortConfig.key ===
-                                                        "aptname"
-                                                            ? sortConfig.direction
-                                                            : null
-                                                    }
-                                                />
-                                            </span>
-                                        </div>
-                                    </th>
-                                    <th
-                                        className="whitespace-nowrap p-2  font-semibold text-gray-900 cursor-pointer"
-                                        onClick={() => sortData("aptbranch")}
-                                    >
-                                        <div className="flex items-center justify-center">
-                                            Branch
-                                            <span className="text-gray-500">
-                                                <SortArrow
-                                                    direction={
-                                                        sortConfig.key ===
-                                                        "aptbranch"
-                                                            ? sortConfig.direction
-                                                            : null
-                                                    }
-                                                />
-                                            </span>
-                                        </div>
-                                    </th>
-                                    <th
-                                        className="whitespace-nowrap p-2  font-semibold text-gray-900"
-                                        onClick={() => sortData("aptoffice")}
-                                    >
-                                        <div className="flex items-center justify-center">
-                                            Office
-                                            <span className="text-gray-500">
-                                                <SortArrow
-                                                    direction={
-                                                        sortConfig.key ===
-                                                        "aptoffice"
-                                                            ? sortConfig.direction
-                                                            : null
-                                                    }
-                                                />
-                                            </span>
-                                        </div>
-                                    </th>
-                                    <th
-                                        className="whitespace-nowrap p-2  font-semibold text-gray-900"
-                                        onClick={() => sortData("aptdate")}
-                                    >
-                                        <div className="flex items-center justify-center">
-                                            Date
-                                            <span className="text-gray-500">
-                                                <SortArrow
-                                                    direction={
-                                                        sortConfig.key ===
-                                                        "aptdate"
-                                                            ? sortConfig.direction
-                                                            : null
-                                                    }
-                                                />
-                                            </span>
-                                        </div>
-                                    </th>
-                                    <th
-                                        className="whitespace-nowrap p-2 font-semibold text-gray-900"
-                                        onClick={() => sortData("apttime")}
-                                    >
-                                        <div className="flex items-center justify-center">
-                                            Time
-                                            <span className="text-gray-500">
-                                                <SortArrow
-                                                    direction={
-                                                        sortConfig.key ===
-                                                        "apttime"
-                                                            ? sortConfig.direction
-                                                            : null
-                                                    }
-                                                />
-                                            </span>
-                                        </div>
-                                    </th>
-                                    <th
-                                        className="whitespace-nowrap p-2 font-semibold text-gray-900"
-                                        onClick={() => sortData("aptpurpose")}
-                                    >
-                                        <div className="flex items-center justify-center">
-                                            Purpose
-                                            <span className="text-gray-500">
-                                                <SortArrow
-                                                    direction={
-                                                        sortConfig.key ===
-                                                        "aptpurpose"
-                                                            ? sortConfig.direction
-                                                            : null
-                                                    }
-                                                />
-                                            </span>
-                                        </div>
-                                    </th>
-
-                                    <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
-                                        Specified <br />
-                                        Others
-                                    </th>
-
-                                    <th
-                                        className="whitespace-nowrap p-2  font-semibold text-gray-900"
-                                        onClick={() => sortData("aptstudnum")}
-                                    >
-                                        <div className="flex items-center justify-center">
-                                            Student / ID <br />
-                                            Number
-                                            <span className="text-gray-500">
-                                                <SortArrow
-                                                    direction={
-                                                        sortConfig.key ===
-                                                        "aptstudnum"
-                                                            ? sortConfig.direction
-                                                            : null
-                                                    }
-                                                />
-                                            </span>
-                                        </div>
-                                    </th>
-                                    <th
-                                        className="whitespace-nowrap p-2  font-semibold text-gray-900"
-                                        onClick={() => sortData("aptstatus")}
-                                    >
-                                        <div className="flex items-center justify-center">
-                                            Status
-                                            <span className="text-gray-500">
-                                                <SortArrow
-                                                    direction={
-                                                        sortConfig.key ===
-                                                        "aptstatus"
-                                                            ? sortConfig.direction
-                                                            : null
-                                                    }
-                                                />
-                                            </span>
-                                        </div>
-                                    </th>
-                                    <th
-                                        className="whitespace-nowrap p-2  font-semibold text-gray-900"
-                                        onClick={() => sortData("aptemail")}
-                                    >
-                                        <div className="flex items-center justify-center">
-                                            Email
-                                            <span className="text-gray-500">
-                                                <SortArrow
-                                                    direction={
-                                                        sortConfig.key ===
-                                                        "aptemail"
-                                                            ? sortConfig.direction
-                                                            : null
-                                                    }
-                                                />
-                                            </span>
-                                        </div>
-                                    </th>
-
-                                    <th className="whitespace-nowrap p-2 font-semibold text-gray-900">
-                                        Attachments
-                                    </th>
-
-                                    {role !== "superadmin" && (
-                                        <th className="whitespace-nowrap p-2  font-semibold text-gray-900">
-                                            Tools
-                                        </th>
-                                    )}
-                                </tr>
-                            </thead>
-
-                            <tbody className="divide-y divide-gray-200 text-center">
-                                {searchResults
-                                    .slice(0, 20)
-                                    .map((apt, index) => (
-                                        <tr key={index}>
-                                            <td className="whitespace-nowrap p-2 text-gray-900">
-                                                {apt.aptid}
-                                            </td>
-                                            <td className="whitespace-nowrap p-2 text-gray-900">
-                                                {apt.apttype}
-                                            </td>
-                                            <td className="whitespace-nowrap p-2 text-gray-700">
-                                                {apt.aptname}
-                                            </td>
-                                            <td className="whitespace-nowrap p-2 text-gray-700">
-                                                {apt.aptbranch}
-                                            </td>
-                                            <td className="whitespace-nowrap p-2 text-gray-700">
-                                                {apt.aptoffice}
-                                            </td>
-                                            <td className="whitespace-nowrap p-2 text-gray-700">
-                                                {apt.aptdate}
-                                            </td>
-                                            <td className="whitespace-nowrap p-2 text-gray-700">
-                                                {apt.apttime}
-                                            </td>
-                                            <td className="whitespace-nowrap p-2 text-gray-700">
-                                                {apt.aptpurpose}
-                                            </td>
-                                            <td className="whitespace-nowrap p-2 text-gray-700 text-center">
-                                                {apt.aptother ? (
-                                                    <button
-                                                        onClick={() =>
-                                                            openOtherPurposeModal(
-                                                                apt.aptother
-                                                            )
-                                                        }
-                                                        className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-                                                    >
-                                                        View
-                                                    </button>
-                                                ) : (
-                                                    <span className="text-gray-400">
-                                                        N/A
-                                                    </span>
-                                                )}
-                                            </td>
-
-                                            <td className="whitespace-nowrap p-2 text-gray-700">
-                                                {apt.aptstudnum}
-                                            </td>
-                                            <td className="whitespace-nowrap p-2 text-gray-700">
-                                                {apt.aptstatus}
-                                            </td>
-                                            <td className="whitespace-nowrap p-2 text-gray-700">
-                                                {apt.aptemail}
-                                            </td>
-
-                                            <td className="whitespace-nowrap p-2 text-gray-700">
-                                                {apt.aptattach ? (
-                                                    <button
-                                                        onClick={() =>
-                                                            openAttachmentModal(
-                                                                apt.aptattach
-                                                            )
-                                                        }
-                                                        className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-                                                    >
-                                                        View
-                                                    </button>
-                                                ) : (
-                                                    <span className="text-gray-400">
-                                                        N/A
-                                                    </span>
-                                                )}
-                                            </td>
-
-                                            {role !== "superadmin" && (
-                                                <td className="whitespace-nowrap p-2 text-gray-700">
-                                                    <button
-                                                        className=" group relative inline-block overflow-hidden border border-green-600 px-2 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
-                                                        onClick={() =>
-                                                            handleConfirm(
-                                                                apt.aptid
-                                                            )
-                                                        }
-                                                        disabled={
-                                                            apt.aptstatus !==
-                                                            "ongoing"
-                                                        }
-                                                    >
-                                                        <span className="absolute inset-x-0 bottom-0 h-[2px] bg-green-600 transition-all group-hover:h-full group-active:bg-green-500"></span>
-                                                        <span className="relative font-medium text-green-600 transition-colors group-hover:text-white">
-                                                            Confirm
-                                                        </span>
-                                                    </button>
-                                                    <button
-                                                        className="ml-2  group relative inline-block overflow-hidden border border-yellow-600 px-2 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
-                                                        onClick={() =>
-                                                            handleDone(
-                                                                apt.aptid
-                                                            )
-                                                        }
-                                                        disabled={
-                                                            apt.aptstatus !==
-                                                            "confirmed"
-                                                        }
-                                                    >
-                                                        <span className="absolute inset-x-0 bottom-0 h-[2px] bg-yellow-600 transition-all group-hover:h-full group-active:bg-yellow-500"></span>
-                                                        <span className="relative font-medium text-yellow-600 transition-colors group-hover:text-white">
-                                                            Done
-                                                        </span>
-                                                    </button>
-                                                    <button
-                                                        className="ml-2 group relative inline-block overflow-hidden border border-blue-600 px-2 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
-                                                        onClick={() =>
-                                                            handleCancel(
-                                                                apt.aptid
-                                                            )
-                                                        }
-                                                        disabled={
-                                                            apt.aptstatus ===
-                                                                "done" ||
-                                                            apt.aptstatus ===
-                                                                "cancelled"
-                                                        }
-                                                    >
-                                                        <span className="absolute inset-x-0 bottom-0 h-[2px] bg-blue-600 transition-all group-hover:h-full group-active:bg-blue-500"></span>
-                                                        <span className="relative font-medium text-blue-600 transition-colors group-hover:text-white">
-                                                            Cancel
-                                                        </span>
-                                                    </button>
-                                                    <button
-                                                        className="ml-2 group relative inline-block overflow-hidden border border-red-600 px-2 py-1 focus:outline-none focus:ring disabled:opacity-50 disabled:cursor-not-allowed"
-                                                        onClick={() =>
-                                                            handleDelete(
-                                                                apt.aptid
-                                                            )
-                                                        }
-                                                        disabled={
-                                                            apt.aptstatus !==
-                                                                "done" &&
-                                                            apt.aptstatus !==
-                                                                "cancelled"
-                                                        }
-                                                    >
-                                                        <span className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600 transition-all group-hover:h-full group-active:bg-red-500"></span>
-                                                        <span className="relative font-medium text-red-600 transition-colors group-hover:text-white">
-                                                            Delete
-                                                        </span>
-                                                    </button>
-                                                </td>
-                                            )}
-                                        </tr>
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    {searchResults.length > 0 ? (
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <TableHeader
+                                    sortConfig={sortConfig}
+                                    sortData={sortData}
+                                    role={role}
+                                />
+                                <tbody className="bg-white divide-y divide-gray-200">
+                                    {searchResults.map((apt) => (
+                                        <TableRow
+                                            key={apt.aptid}
+                                            apt={apt}
+                                            role={role}
+                                            openOtherPurposeModal={
+                                                openOtherPurposeModal
+                                            }
+                                            openAttachmentModal={
+                                                openAttachmentModal
+                                            }
+                                            handleAction={handleAction}
+                                            confirmAppointment={
+                                                confirmAppointment
+                                            }
+                                            markAppointmentDone={
+                                                markAppointmentDone
+                                            }
+                                            cancelAppointment={
+                                                cancelAppointment
+                                            }
+                                            deleteAppointment={
+                                                deleteAppointment
+                                            }
+                                        />
                                     ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-
-                {searchResults.length === 0 && (
-                    <p>No appointments found for the selected criteria.</p>
-                )}
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : (
+                        <div className="p-8 text-center text-gray-500">
+                            No appointments found matching your criteria
+                        </div>
+                    )}
+                </div>
             </div>
 
-            {/* Confirmation Modal */}
-            <dialog
-                ref={modalRef}
-                className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4"
-            >
-                <div className="modal-box text-white bg-[#194F90]">
-                    <h3 className="font-bold text-lg">{modalTitle}</h3>
-                    <p className="py-4">{confirmationMessage}</p>
-                    <p className="py-4">
-                        Appointment Number: {selectedAppointmentNum}
-                    </p>
-                    <div className="modal-action flex justify-center gap-4">
-                        <button
-                            className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90] disabled:opacity-50 disabled:cursor-not-allowed"
-                            type="button"
-                            disabled={isProcessing} // Disable button when processing
-                            onClick={async () => {
-                                setIsProcessing(true); // Start processing
-                                try {
-                                    // Show a loading toast
-                                    await toast.promise(
-                                        action(), // Execute the action
-                                        {
-                                            pending: "Processing...", // Loading message
-                                            error: "An error occurred while performing the action.", // Error message
-                                        }
-                                    );
-                                    modalRef.current.close(); // Close the modal after the action is completed
-                                } catch (error) {
-                                    // Handle any errors
-                                    toast.error(
-                                        "An error occurred while performing the action."
-                                    );
-                                } finally {
-                                    setIsProcessing(false); // Reset processing state
-                                }
-                            }}
-                        >
-                            {isProcessing ? "Processing..." : "Confirm"}{" "}
-                            {/* Update button text */}
-                        </button>
-                        <button
-                            className="mt-6 ml-4 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90] disabled:opacity-50 disabled:cursor-not-allowed"
-                            type="button"
-                            disabled={isProcessing} // Disable button when processing
-                            onClick={() => {
-                                modalRef.current.close();
-                            }}
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                </div>
-            </dialog>
+            {/* Modals */}
+            <ConfirmationModal
+                modalRef={modalRef}
+                modalTitle={modalTitle}
+                confirmationMessage={confirmationMessage}
+                selectedAppointmentNum={selectedAppointmentNum}
+                isProcessing={isProcessing}
+                action={action}
+                setIsProcessing={setIsProcessing}
+            />
 
-            {/* Attachment Modal */}
-            {isModalOpen && (
-                <dialog
-                    open
-                    className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] bg-[#194F90] rounded-lg shadow-lg p-6"
-                    onKeyDown={(event) => {
-                        if (event.key === "Escape") {
-                            event.preventDefault();
-                        }
-                    }}
-                >
-                    <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] px-4 w-full">
-                        <h2 className="text-xl font-semibold mb-4">
-                            View Attachments
-                        </h2>
-                        <div className="flex flex-col gap-4 w-full max-h-[500px] overflow-y-auto p-4 bg-white ">
-                            {selectedAttachments.map((file, index) => (
-                                <div
-                                    key={index}
-                                    className="flex flex-col items-center p-4 border-b"
-                                >
-                                    {file.endsWith(".png") ||
-                                    file.endsWith(".jpg") ||
-                                    file.endsWith(".jpeg") ? (
-                                        <img
-                                            src={`${
-                                                import.meta.env
-                                                    .VITE_API_BASE_URL
-                                            }/storage/${file}`}
-                                            alt="Attachment"
-                                            className="w-full h-[400px] object-contain bg-white p-2 rounded-lg"
-                                        />
-                                    ) : file.endsWith(".pdf") ? (
-                                        <iframe
-                                            src={`${
-                                                import.meta.env
-                                                    .VITE_API_BASE_URL
-                                            }/storage/${file}`}
-                                            className="w-full h-[400px] bg-white p-2 rounded-lg"
-                                        ></iframe>
-                                    ) : (
-                                        <a
-                                            href={`${
-                                                import.meta.env
-                                                    .VITE_API_BASE_URL
-                                            }/storage/${file}`}
-                                            download
-                                            className="text-blue-600 underline"
-                                        >
-                                            Download File
-                                        </a>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                        <button
-                            onClick={closeAttachmentModal}
-                            className="mt-4 px-6 py-2 bg-[#FFDB75] text-[#194F90] font-semibold rounded-md hover:bg-[#f3cd64] transition"
-                        >
-                            Close
-                        </button>
-                    </div>
-                </dialog>
-            )}
+            <AttachmentModal
+                isModalOpen={isModalOpen}
+                selectedAttachments={selectedAttachments}
+                closeAttachmentModal={closeAttachmentModal}
+            />
 
-            {/* Other Purpose Modal */}
-            {isOtherPurposeModalOpen && (
-                <dialog
-                    open
-                    className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50%] bg-[#194F90] rounded-lg shadow-lg p-6"
-                    onKeyDown={(event) => {
-                        if (event.key === "Escape") {
-                            event.preventDefault();
-                        }
-                    }}
-                >
-                    <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] px-4 w-full">
-                        <h2 className="text-xl font-semibold mb-4">
-                            View Other Purpose
-                        </h2>
-                        <div className="w-full max-h-[300px] overflow-y-auto p-4 bg-white text-gray-800 rounded-lg">
-                            <p className="text-md">{selectedOtherPurpose}</p>
-                        </div>
-                        <button
-                            onClick={closeOtherPurposeModal}
-                            className="mt-4 px-6 py-2 bg-[#FFDB75] text-[#194F90] font-semibold rounded-md hover:bg-[#f3cd64] transition"
-                        >
-                            Close
-                        </button>
-                    </div>
-                </dialog>
-            )}
+            <OtherPurposeModal
+                isOtherPurposeModalOpen={isOtherPurposeModalOpen}
+                selectedOtherPurpose={selectedOtherPurpose}
+                closeOtherPurposeModal={closeOtherPurposeModal}
+            />
         </div>
     );
 }
