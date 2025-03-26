@@ -1,11 +1,11 @@
-import { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import { useState, useRef, useCallback, useMemo, useEffect } from "react";
 import EditOffice from "./Component/EditOffice";
 import { useAuth } from "../../Hooks/useAuth";
 import { useDebouncedEffect } from "../../Hooks/useDebouncedEffect";
 import Calendar from "../Subcomponent/Calendar";
 import TimePicker from "../Subcomponent/TimePicker";
-import { toast } from "react-toastify"; // Import toast
-import "react-toastify/dist/ReactToastify.css"; // Import the CSS
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function OfficeAdminManage() {
     const [offabbr, setoffabbr] = useState("");
@@ -27,28 +27,70 @@ function OfficeAdminManage() {
         aptdate: "",
         apttime: "",
     });
-    const [isTimeSelected, setIsTimeSelected] = useState(false);
-    const [isLoading, setIsLoading] = useState(false); // Loading state
+    const [isLoading, setIsLoading] = useState(false);
+    const [purposes, setPurposes] = useState([]);
+    const [instruction, setInstruction] = useState("");
+    const [selectedPurpose, setSelectedPurpose] = useState(null);
+    const [purposeToDelete, setPurposeToDelete] = useState(null);
 
     const purposeModal = useRef(null);
     const dateTimeModal = useRef(null);
+    const instructionModal = useRef(null);
+    const deleteModal = useRef(null);
 
     const isDateDisabled = disabledDates.includes(formData.aptdate);
     const isTimeDisabled = disabledTimes.includes(formData.apttime);
 
     // Fetch office data
     const fetchOfficeData = useCallback(async () => {
+        setIsLoading(true);
         try {
             const getRes = await fetch(
                 `${apiBaseUrl}/api/office/bybranchrole/${branch}/${role}`
             );
             const getDataResult = await getRes.json();
             setoffData(getDataResult);
+            // Set the first office as selected by default
+            if (getDataResult.length > 0 && !selectedOffice) {
+                setSelectedOffice(getDataResult[0]);
+            }
         } catch (error) {
             console.error("Error fetching office data:", error);
             toast.error("Failed to fetch office data. Please try again later.");
+        } finally {
+            setIsLoading(false);
         }
-    }, [apiBaseUrl, branch, role]);
+    }, [apiBaseUrl, branch, role, selectedOffice]);
+
+    const fetchPurposes = useCallback(async () => {
+        if (!selectedOffice || !selectedOffice.offabbr) {
+            console.error(
+                "Selected office is missing or invalid:",
+                selectedOffice
+            );
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            const res = await fetch(
+                `${apiBaseUrl}/api/office/purposes/${selectedOffice.offabbr}/${branch}`
+            );
+
+            if (!res.ok) {
+                throw new Error(`Error fetching purposes: ${res.status}`);
+            }
+
+            const data = await res.json();
+            console.log("Fetched purposes:", data);
+            setPurposes(data);
+        } catch (error) {
+            console.error("Error fetching purposes:", error);
+            toast.error("Failed to fetch purposes. Please try again later.");
+        } finally {
+            setIsLoading(false);
+        }
+    }, [apiBaseUrl, branch, selectedOffice]);
 
     useDebouncedEffect(
         () => {
@@ -58,19 +100,25 @@ function OfficeAdminManage() {
         500
     );
 
-    // Callback function to refetch data after adding or editing an office
-    const handleSuccess = useCallback(() => {
-        fetchOfficeData(); // Refetch the office data
-    }, [fetchOfficeData]);
+    useEffect(() => {
+        if (selectedOffice) {
+            fetchPurposes();
+        }
+    }, [selectedOffice, fetchPurposes]);
 
-    // Memoized search results
+    const handleSuccess = useCallback(() => {
+        fetchOfficeData();
+        if (selectedOffice) {
+            fetchPurposes();
+        }
+    }, [fetchOfficeData, fetchPurposes, selectedOffice]);
+
     const searchResults = useMemo(() => {
         return offData.filter((office) =>
             office.offabbr.toLowerCase().includes(offabbr.toLowerCase())
         );
     }, [offabbr, offData]);
 
-    // Open edit modal
     const toEdit = useCallback((e, officeNum) => {
         setShowEdit(true);
         setSelectedOffid(officeNum);
@@ -78,18 +126,22 @@ function OfficeAdminManage() {
         e.preventDefault();
     }, []);
 
-    // Open purpose modal
     const openPurposeModal = useCallback((office, officeName) => {
         setSelectedOffice(office);
         setSelectedOffname(officeName);
         purposeModal.current.showModal();
     }, []);
 
-    // Handle purpose insertion
+    const openInstructionModal = useCallback((purposeItem) => {
+        setSelectedPurpose(purposeItem);
+        setInstruction(purposeItem.instruction || "");
+        instructionModal.current.showModal();
+    }, []);
+
     const handlePurposeInsert = useCallback(
         async (e) => {
             e.preventDefault();
-            setIsLoading(true); // Set loading state
+            setIsLoading(true);
             try {
                 const response = await fetch(
                     `${apiBaseUrl}/api/office/addPurpose`,
@@ -104,9 +156,9 @@ function OfficeAdminManage() {
                 );
                 if (response.ok) {
                     toast.success("Purpose inserted successfully.");
-                    setPurpose(""); // Clear input
+                    setPurpose("");
                     purposeModal.current.close();
-                    handleSuccess(); // Refetch data
+                    handleSuccess();
                 } else {
                     toast.error("Failed to insert purpose.");
                 }
@@ -114,13 +166,77 @@ function OfficeAdminManage() {
                 console.error("Error:", error);
                 toast.error("An unexpected error occurred. Please try again.");
             } finally {
-                setIsLoading(false); // Reset loading state
+                setIsLoading(false);
             }
         },
         [apiBaseUrl, purpose, selectedOffice, handleSuccess]
     );
 
-    // Open date/time modal
+    const handleInstructionSave = useCallback(
+        async (e) => {
+            e.preventDefault();
+            setIsLoading(true);
+            try {
+                const response = await fetch(
+                    `${apiBaseUrl}/api/office/updateInstruction`,
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            purposeId: selectedPurpose.id,
+                            instruction,
+                        }),
+                    }
+                );
+                if (response.ok) {
+                    toast.success("Instruction saved successfully.");
+                    instructionModal.current.close();
+                    handleSuccess();
+                } else {
+                    toast.error("Failed to save instruction.");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                toast.error("An unexpected error occurred. Please try again.");
+            } finally {
+                setIsLoading(false);
+            }
+        },
+        [apiBaseUrl, instruction, selectedPurpose, handleSuccess]
+    );
+
+    const deletePurpose = useCallback(
+        async (purposeId) => {
+            setIsLoading(true);
+            try {
+                const response = await fetch(
+                    `${apiBaseUrl}/api/office/deletePurpose/${purposeId}`,
+                    {
+                        method: "DELETE",
+                    }
+                );
+                if (response.ok) {
+                    toast.success("Purpose deleted successfully.");
+                    handleSuccess();
+                } else {
+                    toast.error("Failed to delete purpose.");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                toast.error("An unexpected error occurred. Please try again.");
+            } finally {
+                setIsLoading(false);
+                setPurposeToDelete(null); // Reset after deletion
+            }
+        },
+        [apiBaseUrl, handleSuccess]
+    );
+
+    const confirmDelete = (purposeItem) => {
+        setPurposeToDelete(purposeItem);
+        deleteModal.current.showModal();
+    };
+
     const openDateTimeModal = useCallback((office) => {
         setSelectedOffice(office);
         setFormData((prev) => ({
@@ -131,7 +247,6 @@ function OfficeAdminManage() {
         dateTimeModal.current.showModal();
     }, []);
 
-    // Fetch disabled dates and slots
     const fetchDisabledData = useCallback(async () => {
         if (!selectedOffice) return;
 
@@ -174,10 +289,9 @@ function OfficeAdminManage() {
         500
     );
 
-    // Reusable toggle function
     const toggleDateTime = useCallback(
         async (endpoint, payload) => {
-            setIsLoading(true); // Set loading state
+            setIsLoading(true);
             try {
                 const res = await fetch(`${apiBaseUrl}${endpoint}`, {
                     method: "POST",
@@ -189,9 +303,9 @@ function OfficeAdminManage() {
                     toast.success(result.message);
                     fetchDisabledData();
                     if (endpoint.includes("toggle-date")) {
-                        setCalendarKey((prevKey) => prevKey + 1); // Force Calendar re-render
+                        setCalendarKey((prevKey) => prevKey + 1);
                     } else {
-                        setTimePickerKey((prevKey) => prevKey + 1); // Force TimePicker re-render
+                        setTimePickerKey((prevKey) => prevKey + 1);
                     }
                 } else {
                     const errText = await res.text();
@@ -202,13 +316,12 @@ function OfficeAdminManage() {
                 console.error("Error:", error);
                 toast.error("An unexpected error occurred.");
             } finally {
-                setIsLoading(false); // Reset loading state
+                setIsLoading(false);
             }
         },
         [apiBaseUrl, fetchDisabledData]
     );
 
-    // Handle date toggle
     const handleDateToggle = useCallback(
         async (date) => {
             const payload = {
@@ -222,7 +335,6 @@ function OfficeAdminManage() {
         [branch, selectedOffice, toggleDateTime]
     );
 
-    // Handle time toggle
     const handleTimeToggle = useCallback(
         async (date, time) => {
             const payload = {
@@ -237,263 +349,667 @@ function OfficeAdminManage() {
     );
 
     return (
-        <div className="relative w-full h-full overflow-hidden">
+        <div className="relative w-full h-full overflow-hidden bg-gray-50">
             {/* Main Content */}
             <div
                 className={`absolute w-full h-full transition-transform duration-500 ${
                     showEdit ? "-translate-x-full" : "translate-x-0"
                 }`}
             >
-                <div className="flex justify-center h-full w-full">
-                    <div className="flex flex-col items-center gap-[20px]">
-                        <input
-                            className="text-gray-800 bg-white mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] w-[300px] xsm:w-[200px] sm:w-[300px] text-md"
-                            type="text"
-                            placeholder="Enter Office Abbreviation"
-                            value={offabbr}
-                            onChange={(e) => setoffabbr(e.target.value)}
-                        />
+                <div className="p-6 max-w-7xl mx-auto h-full flex flex-col overflow-y-auto">
+                    <div className="mb-8">
+                        <h1 className="text-2xl font-bold text-gray-800">
+                            Office Management
+                        </h1>
+                        <p className="text-gray-600">
+                            Manage offices for {branch} branch
+                        </p>
+                    </div>
 
-                        {searchResults.length !== 0 && (
-                            <div className="border border-gray-200">
-                                <table className="table-auto shadow-md rounded min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
-                                    <thead className="ltr:text-center rtl:text-center">
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6 flex flex-col">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                            <div className="relative flex-grow max-w-md">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg
+                                        className="h-5 w-5 text-gray-400"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                        />
+                                    </svg>
+                                </div>
+                                <input
+                                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-800 placeholder-gray-400"
+                                    type="text"
+                                    placeholder="Search by office abbreviation..."
+                                    value={offabbr}
+                                    onChange={(e) => setoffabbr(e.target.value)}
+                                    aria-label="Search Office Abbreviation"
+                                />
+                            </div>
+                        </div>
+
+                        {isLoading ? (
+                            <div className="flex justify-center items-center py-12 flex-grow">
+                                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                            </div>
+                        ) : searchResults.length === 0 ? (
+                            <div className="text-center py-12 bg-gray-50 rounded-lg flex-grow flex flex-col justify-center">
+                                <svg
+                                    className="mx-auto h-12 w-12 text-gray-400"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    />
+                                </svg>
+                                <h3 className="mt-2 text-lg font-medium text-gray-900">
+                                    No offices found
+                                </h3>
+                                <p className="mt-1 text-gray-500">
+                                    Try adjusting your search
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="overflow-x-auto flex-grow">
+                                <table className="min-w-full divide-y divide-gray-200">
+                                    <thead className="bg-gray-50">
                                         <tr>
-                                            <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                            >
                                                 Office Name
                                             </th>
-                                            <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
-                                                Office Abbreviation
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                            >
+                                                Abbreviation
                                             </th>
-                                            <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
-                                                Office Limit
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                            >
+                                                Limit
                                             </th>
-                                            <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                            >
                                                 Branch
                                             </th>
-                                            <th className="whitespace-nowrap px-4 py-2 font-semibold text-gray-900">
-                                                Tools
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                            >
+                                                Actions
                                             </th>
                                         </tr>
                                     </thead>
-
-                                    <tbody className="divide-y divide-gray-200 text-center">
-                                        {searchResults
-                                            .slice(0, 9)
-                                            .map((office, index) => (
-                                                <tr key={index}>
-                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                        {office.offname}
-                                                    </td>
-                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                        {office.offabbr}
-                                                    </td>
-                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                        {office.offlimit}
-                                                    </td>
-                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                                                        {office.offbranch}
-                                                    </td>
-                                                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                                    <tbody className="bg-white divide-y divide-gray-200">
+                                        {searchResults.map((office, index) => (
+                                            <tr
+                                                key={index}
+                                                className="hover:bg-gray-50"
+                                            >
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                    {office.offname}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {office.offabbr}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {office.offlimit}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {office.offbranch}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-medium">
+                                                    <div className="flex justify-end space-x-2">
                                                         <button
-                                                            className="group relative inline-block overflow-hidden border border-indigo-600 px-8 py-3 focus:outline-none focus:ring"
                                                             onClick={(e) =>
                                                                 toEdit(
                                                                     e,
                                                                     office.offid
                                                                 )
                                                             }
+                                                            className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-md text-sm font-medium transition-colors duration-200"
+                                                            aria-label={`Edit ${office.offname}`}
                                                         >
-                                                            <span className="absolute inset-x-0 bottom-0 h-[2px] bg-indigo-600 transition-all group-hover:h-full group-active:bg-indigo-500"></span>
-                                                            <span className="relative text-sm font-medium text-indigo-600 transition-colors group-hover:text-white">
-                                                                Edit
-                                                            </span>
+                                                            Edit
                                                         </button>
-
                                                         <button
-                                                            className="ml-4 group relative inline-block overflow-hidden border border-green-600 px-8 py-3 focus:outline-none focus:ring"
-                                                            onClick={() =>
-                                                                openPurposeModal(
-                                                                    office,
-                                                                    office.offname
-                                                                )
-                                                            }
-                                                        >
-                                                            <span className="absolute inset-x-0 bottom-0 h-[2px] bg-green-600 transition-all group-hover:h-full group-active:bg-red-500"></span>
-                                                            <span className="relative text-sm font-medium text-green-600 transition-colors group-hover:text-white">
-                                                                Purpose
-                                                            </span>
-                                                        </button>
-
-                                                        <button
-                                                            className="ml-4 group relative inline-block overflow-hidden border border-blue-600 px-8 py-3 focus:outline-none focus:ring"
                                                             onClick={() =>
                                                                 openDateTimeModal(
                                                                     office
                                                                 )
                                                             }
+                                                            className="text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-md text-sm font-medium transition-colors duration-200"
+                                                            aria-label={`Manage date/time for ${office.offname}`}
                                                         >
-                                                            <span className="absolute inset-x-0 bottom-0 h-[2px] bg-blue-600 transition-all group-hover:h-full group-active:bg-blue-500"></span>
-                                                            <span className="relative text-sm font-medium text-blue-600 transition-colors group-hover:text-white">
-                                                                Date & Time
-                                                            </span>
+                                                            Date & Time
                                                         </button>
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                             </div>
                         )}
                     </div>
 
-                    <dialog
-                        ref={purposeModal}
-                        className="modal"
-                        aria-labelledby="purpose-modal-title"
-                    >
-                        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 backdrop:bg-black/50">
-                            <div className="modal-box text-white bg-[#194F90]">
-                                <h3
-                                    id="purpose-modal-title"
-                                    className="font-bold text-lg"
+                    {/* Purposes Table - Always visible */}
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                            <div className="w-full md:w-auto">
+                                <label
+                                    htmlFor="office-select"
+                                    className="block text-sm font-medium text-gray-700 mb-1"
                                 >
-                                    Insert Purpose
-                                </h3>
-                                <p className="py-4">
-                                    Office Name: {selectedOffname}
+                                    Office Name
+                                </label>
+                                <select
+                                    id="office-select"
+                                    className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                                    value={selectedOffice?.offid || ""}
+                                    onChange={(e) => {
+                                        const officeId = e.target.value;
+                                        const office = offData.find(
+                                            (o) => o.offid === officeId
+                                        );
+                                        setSelectedOffice(office);
+                                    }}
+                                >
+                                    {offData.map((office) => (
+                                        <option
+                                            key={office.offid}
+                                            value={office.offid}
+                                        >
+                                            {office.offname} ({office.offabbr})
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            {selectedOffice && (
+                                <button
+                                    onClick={() =>
+                                        openPurposeModal(
+                                            selectedOffice,
+                                            selectedOffice.offname
+                                        )
+                                    }
+                                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors self-end md:self-auto"
+                                >
+                                    Add Purpose
+                                </button>
+                            )}
+                        </div>
+
+                        {!selectedOffice ? (
+                            <div className="text-center py-8 bg-gray-50 rounded-lg">
+                                <p className="text-gray-600">
+                                    Please select an office to view purposes
                                 </p>
-
-                                <form onSubmit={handlePurposeInsert}>
-                                    <input
-                                        type="text"
-                                        value={purpose}
-                                        onChange={(e) =>
-                                            setPurpose(e.target.value)
-                                        }
-                                        placeholder="Enter purpose"
-                                        className="text-gray-800 bg-white w-full mt-1 py-2 px-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] mb-4"
-                                    />
-                                    <div className="modal-action flex justify-center gap-4">
-                                        <button
-                                            type="submit"
-                                            className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
-                                        >
-                                            Insert
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                purposeModal.current.close()
-                                            }
-                                            className="mt-6 px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90]"
-                                        >
-                                            Close
-                                        </button>
-                                    </div>
-                                </form>
                             </div>
-                        </div>
-                    </dialog>
-
-                    <dialog
-                        ref={dateTimeModal}
-                        className="modal"
-                        aria-labelledby="datetime-modal-title"
-                    >
-                        <div className="p-6 fixed rounded-lg top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl min-h-[60vh] lg:min-h-[70vh] overflow-y-auto flex flex-col justify-start items-center text-black bg-gray-50 shadow-lg">
-                            <h3
-                                id="datetime-modal-title"
-                                className="font-bold text-lg"
-                            >
-                                Manage Date & Time
-                            </h3>
-                            <p className="py-2 text-gray-700">
-                                Office:{" "}
-                                {selectedOffice?.offname ||
-                                    "No Office Selected"}
-                            </p>
-
-                            <div className="modal-action flex justify-center items-center gap-10">
-                                <div className="flex flex-col items-center justify-center">
-                                    <Calendar
-                                        key={calendarKey} // Force re-render on date toggle
-                                        formData={formData}
-                                        setFormData={setFormData}
-                                        limit={selectedOffice?.offlimit || 10}
-                                        appointments={offData}
-                                        userRole={role}
-                                        disabledDates={disabledDates}
-                                        setIsTimeSelected={setIsTimeSelected}
+                        ) : purposes.length === 0 ? (
+                            <div className="text-center py-8 bg-gray-50 rounded-lg">
+                                <svg
+                                    className="mx-auto h-12 w-12 text-gray-400"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                                     />
-                                    <button
-                                        className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg w-full"
-                                        onClick={async () => {
-                                            if (formData.aptdate) {
-                                                await handleDateToggle(
-                                                    formData.aptdate
-                                                );
-                                            } else {
-                                                toast.error(
-                                                    "Please select a date to toggle."
-                                                );
-                                            }
-                                        }}
-                                    >
-                                        {isDateDisabled
-                                            ? "Enable Date"
-                                            : "Disable Date"}
-                                    </button>
-                                </div>
-
-                                <div className="flex flex-col items-center justify-center">
-                                    <TimePicker
-                                        key={timePickerKey} // Force re-render on time toggle
-                                        formData={formData}
-                                        setFormData={setFormData}
-                                        limit={selectedOffice?.offlimit || 10}
-                                        appointments={offData}
-                                        setTimeSelected={() => {}}
-                                        userRole={role}
-                                        disabledTimes={disabledTimes}
-                                    />
-                                    <button
-                                        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg w-full"
-                                        onClick={async () => {
-                                            if (
-                                                formData.aptdate &&
-                                                formData.apttime
-                                            ) {
-                                                await handleTimeToggle(
-                                                    formData.aptdate,
-                                                    formData.apttime
-                                                );
-                                            } else {
-                                                toast.error(
-                                                    "Please select a date and time to toggle."
-                                                );
-                                            }
-                                        }}
-                                    >
-                                        {isTimeDisabled
-                                            ? "Enable Time"
-                                            : "Disable Time"}
-                                    </button>
-                                </div>
+                                </svg>
+                                <p className="mt-2 text-gray-600">
+                                    No purposes added yet
+                                </p>
                             </div>
-
-                            <button
-                                className="mt-6 px-4 py-2 bg-red-600 text-white rounded-lg"
-                                onClick={() => dateTimeModal.current.close()}
-                            >
-                                Close
-                            </button>
-                        </div>
-                    </dialog>
+                        ) : (
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full divide-y divide-gray-200">
+                                    <thead className="bg-gray-50">
+                                        <tr>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Purpose
+                                            </th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Instruction
+                                            </th>
+                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Actions
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="bg-white divide-y divide-gray-200">
+                                        {purposes.map((purposeItem, index) => (
+                                            <tr
+                                                key={index}
+                                                className="hover:bg-gray-50"
+                                            >
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                    {purposeItem.purpose}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {purposeItem.instruction ? (
+                                                        <button
+                                                            onClick={() =>
+                                                                openInstructionModal(
+                                                                    purposeItem
+                                                                )
+                                                            }
+                                                            className="text-blue-600 hover:text-blue-800 flex items-center"
+                                                        >
+                                                            <svg
+                                                                className="h-5 w-5 mr-1"
+                                                                fill="none"
+                                                                viewBox="0 0 24 24"
+                                                                stroke="currentColor"
+                                                            >
+                                                                <path
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                    strokeWidth={
+                                                                        2
+                                                                    }
+                                                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                                />
+                                                            </svg>
+                                                            View Instruction
+                                                        </button>
+                                                    ) : (
+                                                        <button
+                                                            onClick={() =>
+                                                                openInstructionModal(
+                                                                    purposeItem
+                                                                )
+                                                            }
+                                                            className="text-gray-500 hover:text-gray-700 flex items-center"
+                                                        >
+                                                            <svg
+                                                                className="h-5 w-5 mr-1"
+                                                                fill="none"
+                                                                viewBox="0 0 24 24"
+                                                                stroke="currentColor"
+                                                            >
+                                                                <path
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                    strokeWidth={
+                                                                        2
+                                                                    }
+                                                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                                                                />
+                                                            </svg>
+                                                            Add Instruction
+                                                        </button>
+                                                    )}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                    <button
+                                                        onClick={() =>
+                                                            confirmDelete(
+                                                                purposeItem
+                                                            )
+                                                        }
+                                                        className="text-red-600 hover:text-red-900"
+                                                        disabled={isLoading}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 
-            {/* Edit Office Modal */}
+            {/* Purpose Modal */}
+            <dialog
+                ref={purposeModal}
+                className="modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 backdrop:bg-gray-900/50 backdrop:backdrop-blur-sm"
+                aria-labelledby="purpose-modal-title"
+            >
+                <div className="modal-box max-w-md bg-white rounded-xl shadow-xl p-6">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3
+                            id="purpose-modal-title"
+                            className="text-lg font-bold text-gray-900"
+                        >
+                            Insert Purpose
+                        </h3>
+                        <button
+                            onClick={() => purposeModal.current.close()}
+                            className="text-gray-400 hover:text-gray-500"
+                            aria-label="Close modal"
+                        >
+                            <svg
+                                className="h-6 w-6"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M6 18L18 6M6 6l12 12"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                    <div className="mb-6">
+                        <p className="text-gray-600 mb-2">
+                            Office: {selectedOffname}
+                        </p>
+                        <form onSubmit={handlePurposeInsert}>
+                            <input
+                                type="text"
+                                value={purpose}
+                                onChange={(e) => setPurpose(e.target.value)}
+                                placeholder="Enter purpose"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-800"
+                                required
+                            />
+                        </form>
+                    </div>
+                    <div className="flex justify-end space-x-3">
+                        <button
+                            type="button"
+                            className="px-4 py-2 border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                            onClick={() => purposeModal.current.close()}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            className="px-4 py-2 border border-transparent text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            onClick={handlePurposeInsert}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? "Inserting..." : "Insert"}
+                        </button>
+                    </div>
+                </div>
+            </dialog>
+
+            {/* Delete Confirmation Modal */}
+            <dialog
+                ref={deleteModal}
+                className="modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 backdrop:bg-gray-900/50 backdrop:backdrop-blur-sm"
+                aria-labelledby="delete-modal-title"
+            >
+                <div className="modal-box max-w-md bg-white rounded-xl shadow-xl p-6">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3
+                            id="delete-modal-title"
+                            className="text-lg font-bold text-gray-900"
+                        >
+                            Confirm Deletion
+                        </h3>
+                        <button
+                            onClick={() => deleteModal.current.close()}
+                            className="text-gray-400 hover:text-gray-500"
+                            aria-label="Close modal"
+                        >
+                            <svg
+                                className="h-6 w-6"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M6 18L18 6M6 6l12 12"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                    <div className="mb-6">
+                        <p className="text-gray-600 mb-2">
+                            Are you sure you want to delete the purpose:{" "}
+                            <strong>{purposeToDelete?.purpose}</strong>?
+                        </p>
+                        <p className="text-gray-500 text-sm">
+                            This action cannot be undone.
+                        </p>
+                    </div>
+                    <div className="flex justify-end space-x-3">
+                        <button
+                            type="button"
+                            className="px-4 py-2 border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                            onClick={() => {
+                                deleteModal.current.close();
+                                setPurposeToDelete(null);
+                            }}
+                            disabled={isLoading}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            className="px-4 py-2 border border-transparent text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                            onClick={() => {
+                                deletePurpose(purposeToDelete.id);
+                                deleteModal.current.close();
+                            }}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? "Deleting..." : "Delete"}
+                        </button>
+                    </div>
+                </div>
+            </dialog>
+
+            {/* Instruction Modal */}
+            <dialog
+                ref={instructionModal}
+                className="modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 backdrop:bg-gray-900/50 backdrop:backdrop-blur-sm"
+                aria-labelledby="instruction-modal-title"
+            >
+                <div className="modal-box max-w-2xl bg-white rounded-xl shadow-xl p-6">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3
+                            id="instruction-modal-title"
+                            className="text-lg font-bold text-gray-900"
+                        >
+                            {selectedPurpose?.instruction
+                                ? "Edit Instruction"
+                                : "Add Instruction"}
+                        </h3>
+                        <button
+                            onClick={() => instructionModal.current.close()}
+                            className="text-gray-400 hover:text-gray-500"
+                            aria-label="Close modal"
+                        >
+                            <svg
+                                className="h-6 w-6"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M6 18L18 6M6 6l12 12"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                    <div className="mb-6">
+                        <p className="text-gray-600 mb-2">
+                            Purpose: {selectedPurpose?.purpose}
+                        </p>
+                        <form onSubmit={handleInstructionSave}>
+                            <textarea
+                                value={instruction}
+                                onChange={(e) => setInstruction(e.target.value)}
+                                placeholder="Enter detailed instructions for this purpose..."
+                                className="w-full h-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-800"
+                                required
+                            />
+                        </form>
+                    </div>
+                    <div className="flex justify-end space-x-3">
+                        <button
+                            type="button"
+                            className="px-4 py-2 border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                            onClick={() => instructionModal.current.close()}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            className="px-4 py-2 border border-transparent text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            onClick={handleInstructionSave}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? "Saving..." : "Save"}
+                        </button>
+                    </div>
+                </div>
+            </dialog>
+
+            {/* Date/Time Modal */}
+            <dialog
+                ref={dateTimeModal}
+                className="modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 backdrop:bg-gray-900/50 backdrop:backdrop-blur-sm"
+                aria-labelledby="datetime-modal-title"
+            >
+                <div className="modal-box max-w-4xl bg-white rounded-xl shadow-xl p-6">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3
+                            id="datetime-modal-title"
+                            className="text-lg font-bold text-gray-900"
+                        >
+                            Manage Date & Time
+                        </h3>
+                        <button
+                            onClick={() => dateTimeModal.current.close()}
+                            className="text-gray-400 hover:text-gray-500"
+                            aria-label="Close modal"
+                        >
+                            <svg
+                                className="h-6 w-6"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M6 18L18 6M6 6l12 12"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                    <p className="text-gray-600 mb-6">
+                        Office:{" "}
+                        {selectedOffice?.offname || "No Office Selected"}
+                    </p>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div className="flex flex-col items-center">
+                            <Calendar
+                                key={calendarKey}
+                                formData={formData}
+                                setFormData={setFormData}
+                                limit={selectedOffice?.offlimit || 10}
+                                appointments={offData}
+                                userRole={role}
+                                disabledDates={disabledDates}
+                            />
+                            <button
+                                className="mt-4 px-4 py-2 w-full bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 disabled:opacity-50"
+                                onClick={async () => {
+                                    if (formData.aptdate) {
+                                        await handleDateToggle(
+                                            formData.aptdate
+                                        );
+                                    } else {
+                                        toast.error(
+                                            "Please select a date to toggle."
+                                        );
+                                    }
+                                }}
+                                disabled={isLoading || !formData.aptdate}
+                            >
+                                {isLoading
+                                    ? "Processing..."
+                                    : isDateDisabled
+                                    ? "Enable Date"
+                                    : "Disable Date"}
+                            </button>
+                        </div>
+
+                        <div className="flex flex-col items-center">
+                            <TimePicker
+                                key={timePickerKey}
+                                formData={formData}
+                                setFormData={setFormData}
+                                limit={selectedOffice?.offlimit || 10}
+                                appointments={offData}
+                                userRole={role}
+                                disabledTimes={disabledTimes}
+                            />
+                            <button
+                                className="mt-4 px-4 py-2 w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 disabled:opacity-50"
+                                onClick={async () => {
+                                    if (formData.aptdate && formData.apttime) {
+                                        await handleTimeToggle(
+                                            formData.aptdate,
+                                            formData.apttime
+                                        );
+                                    } else {
+                                        toast.error(
+                                            "Please select a date and time to toggle."
+                                        );
+                                    }
+                                }}
+                                disabled={
+                                    isLoading ||
+                                    !formData.aptdate ||
+                                    !formData.apttime
+                                }
+                            >
+                                {isLoading
+                                    ? "Processing..."
+                                    : isTimeDisabled
+                                    ? "Enable Time"
+                                    : "Disable Time"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </dialog>
+
+            {/* Edit Office Panel */}
             <div
                 className={`absolute w-full h-full transition-transform duration-500 ${
                     showEdit ? "translate-x-0" : "translate-x-full"
@@ -503,7 +1019,7 @@ function OfficeAdminManage() {
                     <EditOffice
                         selectedOffid={selectedOffid}
                         setShowEdit={setShowEdit}
-                        onSuccess={handleSuccess} // Pass onSuccess callback
+                        onSuccess={handleSuccess}
                     />
                 )}
             </div>
