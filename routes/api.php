@@ -52,6 +52,8 @@ Route::controller(Offices::class)->group(function () {
     Route::get('office/find/{offabbr}', 'findAbbr');
     Route::post('office/addPurpose', 'addPurpose');
     Route::get('office/purposes/{offabbr}/{offBranch}', 'getPurposes');
+    Route::post('/office/updateInstruction', [Offices::class, 'updateInstruction']);
+    Route::delete('/office/deletePurpose/{purposeId}', [Offices::class, 'deletePurpose']);
     Route::post('office/toggle-date', 'toggleDisabledDate');
     Route::get('office/disabled-dates/{offabbr}/{branch}', 'getDisabledDates');
     Route::post('office/toggle-slot', 'toggleDisabledSlot');
