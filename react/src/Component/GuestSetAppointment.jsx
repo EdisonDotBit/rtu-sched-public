@@ -278,7 +278,7 @@ function GuestSetAppointment() {
                                             }
                                         />
                                     </div>
-                                    <div className="flex w-full justify-evenly">
+                                    <div className="flex w-full justify-evenly mt-6">
                                         <button
                                             className={`py-2 px-8 rounded-md text-white hover:text-white ${
                                                 isBranchSelected
@@ -315,7 +315,7 @@ function GuestSetAppointment() {
                                             }
                                         />
                                     </div>
-                                    <div className="flex w-full justify-evenly mt-28">
+                                    <div className="flex w-full justify-evenly mt-6">
                                         <button
                                             className=" bg-red-700 hover:bg-red-900 text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
                                             onClick={prevStep}
@@ -412,14 +412,14 @@ function GuestSetAppointment() {
                                         Click the dropdown to select purpose and
                                         fill up the following information
                                     </h4>
-                                    <div className="w-full mb-10">
+                                    <div className="w-full">
                                         <GuestDetails
                                             formData={formData}
                                             setFormData={setFormData}
                                             errors={errors}
                                         />
                                     </div>
-                                    <div className="flex w-full justify-evenly">
+                                    <div className="flex w-full justify-evenly mt-6">
                                         <button
                                             className="bg-red-700 hover:bg-red-900 text-white rounded-md inline-block px-8 py-2 text-md font-medium focus:relative"
                                             onClick={prevStep}
@@ -519,102 +519,139 @@ function GuestSetAppointment() {
                         </div>
                     </div>
 
+                    {/* Success Modal */}
                     <dialog
                         ref={modals}
-                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 sm:p-6 backdrop:bg-black/50 z-50 border-none"
-                        onKeyDown={(event) => {
-                            if (event.key === "Escape") {
-                                event.preventDefault();
-                            }
-                        }}
+                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-md bg-white rounded-xl shadow-lg p-4 sm:p-6 backdrop:bg-gray-900/50 z-50 border-none"
+                        onKeyDown={(e) =>
+                            e.key === "Escape" && e.preventDefault()
+                        }
                     >
-                        <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] p-4 sm:p-6 w-full">
+                        <div className="relative">
                             <button
-                                className="cursor-pointer absolute top-2 right-2 sm:top-3 sm:right-3 text-white hover:text-gray-300 transition duration-300 focus:outline-none"
-                                onClick={() => modals.current.close()}
+                                onClick={() => modals.current?.close()}
+                                className="absolute top-2 right-2 p-1 text-gray-400 hover:text-gray-600 transition-colors rounded-full hover:bg-gray-100"
                                 aria-label="Close dialog"
                             >
                                 <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-5 w-5 sm:h-6 sm:w-6"
+                                    className="w-6 h-6"
                                     fill="none"
                                     viewBox="0 0 24 24"
                                     stroke="currentColor"
-                                    strokeWidth={2}
                                 >
                                     <path
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
+                                        strokeWidth="2"
                                         d="M6 18L18 6M6 6l12 12"
                                     />
                                 </svg>
                             </button>
 
-                            <h2 className="text-lg sm:text-xl font-medium text-center mb-3 sm:mb-4">
-                                Appointment has been Set Successfully
-                            </h2>
+                            <div className="text-center">
+                                <div className="mx-auto bg-green-100 p-3 rounded-full w-max mb-4">
+                                    <svg
+                                        className="w-8 h-8 text-green-600"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M5 13l4 4L19 7"
+                                        />
+                                    </svg>
+                                </div>
 
-                            <div className="text-center text-sm sm:text-base leading-relaxed mb-4 sm:mb-6">
-                                <p className="font-semibold">
-                                    Kindly wait for the office to confirm your
-                                    appointment.
-                                    <br />
-                                    Confirmation will be sent via email.
+                                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                                    Appointment Scheduled
+                                </h3>
+                                <p className="text-gray-700 mb-4">
+                                    Your appointment has been scheduled
+                                    successfully!
                                 </p>
-                            </div>
+                                <p className="text-sm text-gray-500 mb-6">
+                                    Kindly wait for the office to confirm your
+                                    appointment. Confirmation will be sent via
+                                    email.
+                                </p>
 
-                            <p className="text-xs sm:text-sm text-gray-300 mt-auto">
-                                Note: Click the "X" to go back home.
-                            </p>
+                                <button
+                                    onClick={() => modals.current?.close()}
+                                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                                >
+                                    Close
+                                </button>
+                            </div>
                         </div>
                     </dialog>
 
+                    {/* Conflict Modal */}
                     <dialog
                         ref={modals1}
-                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[500px] bg-[#194F90] rounded-lg shadow-lg p-4 sm:p-6 backdrop:bg-black/50 z-50 border-none"
-                        onKeyDown={(event) => {
-                            if (event.key === "Escape") {
-                                event.preventDefault();
-                            }
-                        }}
+                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[500px] bg-white rounded-xl shadow-lg p-4 sm:p-6 backdrop:bg-black/50 z-50 border-none"
+                        onKeyDown={(e) =>
+                            e.key === "Escape" && e.preventDefault()
+                        }
                     >
-                        <div className="relative flex flex-col justify-center items-center text-white bg-[#194F90] p-4 sm:p-6 w-full">
+                        <div className="relative">
                             <button
-                                className="absolute top-2 right-2 sm:top-3 sm:right-3 text-white hover:text-gray-300 transition duration-300 focus:outline-none"
                                 onClick={() => modals1.current.close()}
+                                className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 transition"
                                 aria-label="Close dialog"
                             >
                                 <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-5 w-5 sm:h-6 sm:w-6"
+                                    className="w-6 h-6"
                                     fill="none"
                                     viewBox="0 0 24 24"
                                     stroke="currentColor"
-                                    strokeWidth={2}
                                 >
                                     <path
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
+                                        strokeWidth={2}
                                         d="M6 18L18 6M6 6l12 12"
                                     />
                                 </svg>
                             </button>
 
-                            <div className="text-center w-full">
-                                <h1 className="text-red-400 text-lg sm:text-xl font-medium mb-2 sm:mb-3">
-                                    Appointment Failed
-                                </h1>
-                                <h3 className="text-sm sm:text-base mb-3 sm:mb-4">
+                            <div className="text-center">
+                                <div className="mx-auto bg-red-100 p-3 rounded-full w-max mb-4">
+                                    <svg
+                                        className="w-8 h-8 text-red-600"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                                        />
+                                    </svg>
+                                </div>
+
+                                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                                    Appointment Conflict
+                                </h3>
+                                <p className="text-gray-700 mb-4">
                                     You already have an ongoing appointment in
                                     this office.
-                                </h3>
-                                <div className="text-xs sm:text-sm text-gray-300 space-y-1 sm:space-y-2">
-                                    <p>
-                                        Note: Accomplish the transaction before
-                                        scheduling another appointment.
-                                    </p>
-                                    <p>Closing this modal reloads the page.</p>
-                                </div>
+                                </p>
+                                <p className="text-sm text-gray-500 mb-6">
+                                    Please complete your current transaction
+                                    first.
+                                </p>
+
+                                <button
+                                    onClick={() => modals1.current.close()}
+                                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                                >
+                                    Close
+                                </button>
                             </div>
                         </div>
                     </dialog>
