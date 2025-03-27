@@ -8,7 +8,6 @@ function Feedbacks() {
     const modals = useRef(null);
     const [selectedFeedback, setSelectedFeedback] = useState({ name: "" });
 
-    // Fetch feedback data (keep existing implementation)
     const getData = useCallback(async () => {
         try {
             const getRes = await fetch(`${apiBaseUrl}/api/feedbacks`);
@@ -51,7 +50,7 @@ function Feedbacks() {
             feedbacks.map((feedItem, index) => (
                 <div
                     key={index}
-                    className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer border border-gray-100 hover:border-blue-100 w-full sm:w-80"
+                    className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer border border-gray-100 hover:border-blue-100 flex flex-col h-full"
                     onClick={() => openModal(feedItem)}
                 >
                     <div className="flex items-center justify-between mb-4">
@@ -82,11 +81,19 @@ function Feedbacks() {
                             </svg>
                         </div>
                     </div>
-                    <p className="text-gray-600 text-sm line-clamp-3">
-                        {feedItem.message}
-                    </p>
-                    <div className="mt-4 flex justify-end">
-                        <button className="text-blue-600 text-sm font-medium hover:text-blue-800 transition-colors">
+                    <div className="flex-grow">
+                        <p className="text-gray-600 text-sm line-clamp-3 mb-4">
+                            {feedItem.message}
+                        </p>
+                    </div>
+                    <div className="mt-auto">
+                        <button
+                            className="text-blue-600 text-sm font-medium hover:text-blue-800 transition-colors"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                openModal(feedItem);
+                            }}
+                        >
                             View details →
                         </button>
                     </div>
