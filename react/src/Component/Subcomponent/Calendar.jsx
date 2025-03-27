@@ -153,15 +153,25 @@ const Calendar = ({
                 59
             );
 
-            // Disable past dates
+            // Disable past dates for everyone
             if (selectedDate < new Date()) return true;
 
-            // Disable weekends
+            // For Students/Guests only: Disable today + 2 days
+            if (userRole === "Student" || userRole === "Guest") {
+                const today = new Date();
+                const twoDaysLater = new Date();
+                twoDaysLater.setDate(today.getDate() + 2);
+                twoDaysLater.setHours(23, 59, 59, 0);
+
+                if (selectedDate <= twoDaysLater) return true;
+            }
+
+            // Disable weekends for everyone (optional for Admins)
             if (selectedDate.getDay() === 0 || selectedDate.getDay() === 6)
                 return true;
 
-            // Disable holidays and appointment-limited dates for all users
-            const formatted = `${selectedDate.getFullYear()}-${(
+            // Disable holidays for everyone (optional for Admins)
+            const formattedDate = `${selectedDate.getFullYear()}-${(
                 selectedDate.getMonth() + 1
             )
                 .toString()
@@ -170,12 +180,12 @@ const Calendar = ({
                 .toString()
                 .padStart(2, "0")}`;
 
-            if (disabledDates.includes(formatted)) return true;
+            if (disabledDates.includes(formattedDate)) return true;
 
-            // Disable manually disabled dates for non-admin users only
+            // For Students/Guests only: Disable manually blocked dates
             if (
                 (userRole === "Student" || userRole === "Guest") &&
-                manuallyDisabledDates.includes(formatted)
+                manuallyDisabledDates.includes(formattedDate)
             ) {
                 return true;
             }
