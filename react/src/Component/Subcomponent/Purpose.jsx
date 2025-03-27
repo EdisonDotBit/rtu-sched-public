@@ -238,8 +238,8 @@ const Purpose = ({ formData, setFormData, errors }) => {
             )}
 
             {showInstructionModal && (
-                <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50 p-4 ">
-                    <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-2 sm:mx-4 md:mx-6 lg:mx-8">
+                <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-2 sm:mx-4">
                         {/* Modal Header */}
                         <div className="flex justify-between items-center p-4 border-b border-gray-200">
                             <h3 className="text-lg font-semibold text-gray-800">
@@ -267,24 +267,36 @@ const Purpose = ({ formData, setFormData, errors }) => {
                             </button>
                         </div>
 
-                        {/* Modal Content */}
-                        <div className="p-4 max-h-[60vh] overflow-y-auto">
-                            <div className="prose prose-sm sm:prose max-w-none">
-                                {currentInstruction ? (
-                                    <div className="whitespace-pre-wrap">
-                                        {currentInstruction}
-                                    </div>
-                                ) : (
+                        {/* Modal Content - Textarea Version */}
+                        <div className="p-4">
+                            {currentInstruction ? (
+                                <textarea
+                                    className="w-full h-64 p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                                    value={currentInstruction}
+                                    readOnly={true} // Set to false if you want editable textarea
+                                    onChange={(e) =>
+                                        setCurrentInstruction(e.target.value)
+                                    } // Only include if editable
+                                />
+                            ) : (
+                                <div className="h-64 flex items-center justify-center">
                                     <p className="text-gray-500 italic">
                                         No specific requirements for this
                                         purpose.
                                     </p>
-                                )}
-                            </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Modal Footer */}
-                        <div className="p-4 border-t border-gray-200 flex justify-end">
+                        <div className="p-4 border-t border-gray-200 flex justify-end space-x-3">
+                            {/* Add a save button if you make it editable */}
+                            {/* <button
+          onClick={handleSaveInstructions}
+          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
+        >
+          Save Changes
+        </button> */}
                             <button
                                 onClick={() => setShowInstructionModal(false)}
                                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
