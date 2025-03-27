@@ -13,7 +13,7 @@
         "-": "^0.0.1",
         "@react-oauth/google": "^0.12.1",
         "@react-pdf/renderer": "^4.3.0",
-        "@tailwindcss/vite": "^4.0.16",
+        "@tailwindcss/vite": "^4.0.17",
         "autoprefixer": "^10.4.21",
         "ave": "^0.0.1-0",
         "axios": "^1.8.4",
@@ -34,7 +34,7 @@
         "react-toastify": "^11.0.5"
     },
     "devDependencies": {
-        "@tailwindcss/postcss": "^4.0.16",
+        "@tailwindcss/postcss": "^4.0.17",
         "@types/react": "^19.0.12",
         "@types/react-dom": "^19.0.4",
         "@vitejs/plugin-react": "^4.3.4",
@@ -44,7 +44,7 @@
         "eslint-plugin-react-hooks": "^5.2.0",
         "eslint-plugin-react-refresh": "^0.4.19",
         "postcss": "^8.5.3",
-        "tailwindcss": "^4.0.16",
+        "tailwindcss": "^4.0.17",
         "vite": "^6.2.3"
     }
 }
