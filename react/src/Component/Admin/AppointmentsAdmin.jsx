@@ -4,12 +4,12 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaSync, FaSearch, FaFilter, FaCalendarAlt } from "react-icons/fa";
 import useAppointments from "../../Hooks/useAppointments";
-import SummaryCards from "./Component/AppointsmentsAdmin/SummaryCards";
-import TableHeader from "./Component/AppointsmentsAdmin/TableHeader";
-import TableRow from "./Component/AppointsmentsAdmin/TableRow";
-import ConfirmationModal from "./Component/AppointsmentsAdmin/ConfirmationModal";
-import AttachmentModal from "./Component/AppointsmentsAdmin/AttachmentModal";
-import OtherPurposeModal from "./Component/AppointsmentsAdmin/OtherPurposeModal";
+import SummaryCards from "./Component/AppointmentsAdmin/SummaryCards";
+import TableHeader from "./Component/AppointmentsAdmin/TableHeader";
+import TableRow from "./Component/AppointmentsAdmin/TableRow";
+import ConfirmationModal from "./Component/AppointmentsAdmin/ConfirmationModal";
+import AttachmentModal from "./Component/AppointmentsAdmin/AttachmentModal";
+import OtherPurposeModal from "./Component/AppointmentsAdmin/OtherPurposeModal";
 
 function AppointmentsAdmin() {
     const [aptemail, setAptEmail] = useState("");
