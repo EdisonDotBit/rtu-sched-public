@@ -31,14 +31,12 @@ function ForgotPassword() {
             );
 
             if (response.data.success) {
-                toast.success(response.data.message); // Show success toast
-
-                // Add a small delay before navigation
+                toast.success(response.data.message);
                 setTimeout(() => {
                     navigate("/student/forgot-password-authenticate", {
                         state: { email },
                     });
-                }, 2000); // 2-second delay
+                }, 2000);
             } else {
                 throw new Error("Failed to send verification email.");
             }
@@ -47,14 +45,14 @@ function ForgotPassword() {
             toast.error(
                 error.response?.data?.message ||
                     "Failed to send verification email."
-            ); // Show error toast
+            );
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100 py-8 font-roboto">
+        <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100 py-4 sm:py-8 px-4 font-roboto">
             {/* Toast Container */}
             <ToastContainer
                 position="top-center"
@@ -66,41 +64,48 @@ function ForgotPassword() {
                 pauseOnFocusLoss
                 draggable
                 pauseOnHover
+                className="mt-12 sm:mt-0" // Adjust position for mobile
             />
 
             {/* Logo */}
-            <div className="mb-4">
+            <div className="mb-4 w-full flex justify-center">
                 <img
                     src={Logo}
                     alt="RTU Online Appointment Logo"
-                    className="w-[300px] lg:w-[400px]"
+                    className="w-[250px] sm:w-[300px] lg:w-[350px]"
                 />
             </div>
 
             {/* Forgot Password Form */}
-            <div className="w-full max-w-md bg-[#194F90] rounded-lg shadow-md p-6 md:px-8 lg:px-10">
-                <form onSubmit={handleRequestPin} className="space-y-6">
-                    <h2 className="text-white text-2xl font-semibold text-center">
+            <div className="w-full max-w-md bg-[#194F90] rounded-lg shadow-md p-4 sm:p-6 md:px-8 lg:px-10">
+                <form
+                    onSubmit={handleRequestPin}
+                    className="space-y-4 sm:space-y-6"
+                >
+                    <h2 className="text-white text-xl sm:text-2xl font-semibold text-center">
                         Forgot Password
                     </h2>
 
                     {/* Email Input */}
                     <div>
-                        <label className="block text-white">Email:</label>
-                        <input
-                            className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] transition"
-                            type="email"
-                            placeholder="Enter Your Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
+                        <label className="block text-white text-sm sm:text-base">
+                            Institutional Email:
+                            <input
+                                className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] transition text-sm sm:text-base"
+                                type="email"
+                                placeholder="Enter Your Email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                disabled={loading}
+                            />
+                        </label>
                     </div>
 
                     {/* Submit Button */}
                     <button
                         type="submit"
-                        className="w-full py-2 px-4 bg-[#FFDB75] text-[#194F90] font-semibold rounded-lg hover:bg-[#f3cd64] transition duration-200"
+                        className="w-full py-2 px-4 bg-[#FFDB75] text-[#194F90] font-semibold rounded-lg hover:bg-[#f3cd64] transition duration-200 text-sm sm:text-base disabled:opacity-50"
                         disabled={loading}
                     >
                         {loading ? "Processing..." : "Send Verification PIN"}

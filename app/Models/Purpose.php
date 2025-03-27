@@ -8,7 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Purpose extends Model
 {
     use HasFactory;
-    protected $fillable = ['purpose', 'office_id'];
+
+    protected $fillable = [
+        'office_id',
+        'purpose',
+        'instruction'
+    ];
+
     public function office()
     {
         return $this->belongsTo(Office::class, 'office_id', 'offid');

@@ -153,15 +153,25 @@ const Calendar = ({
                 59
             );
 
-            // Disable past dates
+            // Disable past dates for everyone
             if (selectedDate < new Date()) return true;
 
-            // Disable weekends
+            // For Students/Guests only: Disable today + 2 days
+            if (userRole === "Student" || userRole === "Guest") {
+                const today = new Date();
+                const twoDaysLater = new Date();
+                twoDaysLater.setDate(today.getDate() + 2);
+                twoDaysLater.setHours(23, 59, 59, 0);
+
+                if (selectedDate <= twoDaysLater) return true;
+            }
+
+            // Disable weekends for everyone (optional for Admins)
             if (selectedDate.getDay() === 0 || selectedDate.getDay() === 6)
                 return true;
 
-            // Disable holidays and appointment-limited dates for all users
-            const formatted = `${selectedDate.getFullYear()}-${(
+            // Disable holidays for everyone (optional for Admins)
+            const formattedDate = `${selectedDate.getFullYear()}-${(
                 selectedDate.getMonth() + 1
             )
                 .toString()
@@ -170,12 +180,12 @@ const Calendar = ({
                 .toString()
                 .padStart(2, "0")}`;
 
-            if (disabledDates.includes(formatted)) return true;
+            if (disabledDates.includes(formattedDate)) return true;
 
-            // Disable manually disabled dates for non-admin users only
+            // For Students/Guests only: Disable manually blocked dates
             if (
                 (userRole === "Student" || userRole === "Guest") &&
-                manuallyDisabledDates.includes(formatted)
+                manuallyDisabledDates.includes(formattedDate)
             ) {
                 return true;
             }
@@ -308,51 +318,54 @@ const Calendar = ({
     ]);
 
     return (
-        <div className="mx-auto max-w-xl p-4 text-black xsm:w-full sm:w-full">
+        <div className="mx-auto w-full max-w-xl p-2 sm:p-3 md:p-4 text-black">
             {isLoading ? (
                 <Loading />
             ) : (
                 <>
                     {/* Year Navigation */}
-                    <div className="flex justify-between items-center mb-4 gap-2 sm:gap-4">
+                    <div className="flex justify-between items-center mb-2 sm:mb-3 md:mb-4 gap-1 sm:gap-3 md:gap-4">
                         <button
                             type="button"
                             onClick={handlePrevYear}
-                            className="bg-[#194F90] hover:bg-[#123A69] text-white px-4 py-2 rounded-lg transition-colors duration-200"
+                            className="bg-[#194F90] hover:bg-[#123A69] text-white px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-lg transition-colors duration-200 text-xs sm:text-sm md:text-base"
                         >
-                            Previous
+                            <span className="hidden sm:inline">Previous</span>
+                            <span className="sm:hidden">Prev</span>
                         </button>
                         <div className="text-center">
-                            <div className="mb-1 sm:mb-2 font-semibold text-sm sm:text-lg">
+                            <div className="mb-0 sm:mb-1 md:mb-2 font-semibold text-xs sm:text-sm md:text-lg">
                                 Year
                             </div>
-                            <div className="text-xl sm:text-2xl font-bold">
+                            <div className="text-sm sm:text-xl md:text-2xl font-bold">
                                 {currentYear}
                             </div>
                         </div>
                         <button
                             type="button"
                             onClick={handleNextYear}
-                            className="bg-[#194F90] hover:bg-[#123A69] text-white px-4 py-2 rounded-lg transition-colors duration-200"
+                            className="bg-[#194F90] hover:bg-[#123A69] text-white px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-lg transition-colors duration-200 text-xs sm:text-sm md:text-base"
                         >
-                            Next
+                            <span className="hidden sm:inline">Next</span>
+                            <span className="sm:hidden">Next</span>
                         </button>
                     </div>
 
                     {/* Month Navigation */}
-                    <div className="flex justify-between items-center mb-4 gap-2 sm:gap-4">
+                    <div className="flex justify-between items-center mb-2 sm:mb-3 md:mb-4 gap-1 sm:gap-3 md:gap-4">
                         <button
                             type="button"
                             onClick={handlePrevMonth}
-                            className="bg-[#194F90] hover:bg-[#123A69] text-white px-4 py-2 rounded-lg transition-colors duration-200"
+                            className="bg-[#194F90] hover:bg-[#123A69] text-white px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-lg transition-colors duration-200 text-xs sm:text-sm md:text-base"
                         >
-                            Previous
+                            <span className="hidden sm:inline">Previous</span>
+                            <span className="sm:hidden">Prev</span>
                         </button>
                         <div className="text-center">
-                            <div className="mb-1 sm:mb-2 font-semibold text-sm sm:text-lg">
+                            <div className="mb-0 sm:mb-1 md:mb-2 font-semibold text-xs sm:text-sm md:text-lg">
                                 Month
                             </div>
-                            <div className="text-xl sm:text-2xl font-bold">
+                            <div className="text-sm sm:text-xl md:text-2xl font-bold">
                                 {currentDate.toLocaleString("default", {
                                     month: "long",
                                 })}
@@ -361,39 +374,41 @@ const Calendar = ({
                         <button
                             type="button"
                             onClick={handleNextMonth}
-                            className="bg-[#194F90] hover:bg-[#123A69] text-white px-4 py-2 rounded-lg transition-colors duration-200"
+                            className="bg-[#194F90] hover:bg-[#123A69] text-white px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-lg transition-colors duration-200 text-xs sm:text-sm md:text-base"
                         >
-                            Next
+                            <span className="hidden sm:inline">Next</span>
+                            <span className="sm:hidden">Next</span>
                         </button>
                     </div>
 
                     {/* Calendar Table */}
-                    <table className="w-full text-sm">
-                        <thead>
-                            <tr className="bg-[#194F90] text-white">
-                                <th className="p-2 border-r-2 border-r-white">
-                                    Sun
-                                </th>
-                                <th className="p-2 border-r-2 border-r-white">
-                                    Mon
-                                </th>
-                                <th className="p-2 border-r-2 border-r-white">
-                                    Tue
-                                </th>
-                                <th className="p-2 border-r-2 border-r-white">
-                                    Wed
-                                </th>
-                                <th className="p-2 border-r-2 border-r-white">
-                                    Thu
-                                </th>
-                                <th className="p-2 border-r-2 border-r-white">
-                                    Fri
-                                </th>
-                                <th className="p-2">Sat</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white">{renderCalendarDays}</tbody>
-                    </table>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-xs sm:text-sm md:text-base">
+                            <thead>
+                                <tr className="bg-[#194F90] text-white">
+                                    {[
+                                        "Sun",
+                                        "Mon",
+                                        "Tue",
+                                        "Wed",
+                                        "Thu",
+                                        "Fri",
+                                        "Sat",
+                                    ].map((day) => (
+                                        <th
+                                            key={day}
+                                            className="p-1 sm:p-2 border-r-2 border-r-white text-xs sm:text-sm"
+                                        >
+                                            {day.substring(0, 3)}
+                                        </th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white">
+                                {renderCalendarDays}
+                            </tbody>
+                        </table>
+                    </div>
                 </>
             )}
         </div>

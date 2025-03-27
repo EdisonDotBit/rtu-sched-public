@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Office;
+use App\Models\Purpose;
 use App\Models\DisabledDate;
 use App\Models\DisabledSlot;
 
@@ -164,15 +165,47 @@ class Offices extends Controller
     public function getPurposes($officeAbbr, $offBranch)
     {
         $office = Office::where('offabbr', $officeAbbr)
-            ->where('offbranch', $offBranch) // Ensure branch matches
+            ->where('offbranch', $offBranch)
             ->first();
 
         if ($office) {
-            $purposes = $office->purposes()->pluck('purpose');
+            $purposes = $office->purposes()->get(['id', 'purpose', 'instruction']);
             return response()->json($purposes, 200);
         }
 
         return response()->json(['message' => 'Office not found in this branch'], 404);
+    }
+
+    public function updateInstruction(Request $request)
+    {
+        $validatedData = $request->validate([
+            'purposeId' => 'required|exists:purposes,id',
+            'instruction' => 'required|string',
+        ]);
+
+        $purpose = Purpose::find($validatedData['purposeId']);
+
+        if (!$purpose) {
+            return response()->json(['message' => 'Purpose not found'], 404);
+        }
+
+        $purpose->instruction = $validatedData['instruction'];
+        $purpose->save();
+
+        return response()->json(['status' => 200, 'message' => 'Instruction updated successfully']);
+    }
+
+    public function deletePurpose($purposeId)
+    {
+        $purpose = Purpose::find($purposeId);
+
+        if (!$purpose) {
+            return response()->json(['message' => 'Purpose not found'], 404);
+        }
+
+        $purpose->delete();
+
+        return response()->json(['status' => 200, 'message' => 'Purpose deleted successfully']);
     }
 
 

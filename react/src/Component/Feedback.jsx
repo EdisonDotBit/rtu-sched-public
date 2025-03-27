@@ -6,17 +6,18 @@ const StarRating = ({ rating, onRatingChange }) => {
     const stars = [1, 2, 3, 4, 5];
 
     return (
-        <div className="flex items-center justify-center w-auto gap-8">
+        <div className="flex justify-center gap-2 sm:gap-3">
             {stars.map((star) => (
                 <button
                     type="button"
                     key={star}
-                    className={`text-2xl sm:text-4xl md:text-5xl ${
-                        star <= rating ? "text-yellow-500" : "text-gray-400"
+                    className={`transition-transform duration-200 hover:scale-110 text-2xl sm:text-3xl ${
+                        star <= rating ? "text-yellow-400" : "text-gray-300"
                     }`}
                     onClick={() => onRatingChange(star)}
+                    aria-label={`Rate ${star} star`}
                 >
-                    ★
+                    {star <= rating ? "★" : "☆"}
                 </button>
             ))}
         </div>
@@ -35,7 +36,7 @@ const Feedback = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const maxLength = 200; // Set your desired character limit
+    const maxLength = 200;
 
     const handleRatingChange = (rating) => {
         setFormData({ ...formData, rating });
@@ -43,10 +44,7 @@ const Feedback = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Check if the rating is 0
         if (formData.rating === 0) {
-            // Display an error message or take any other action
             alert("Please select a rating");
             return;
         } else {
@@ -55,7 +53,6 @@ const Feedback = () => {
                     `${apiBaseUrl}/api/feedback`,
                     formData
                 );
-
                 if (res.status === 200) {
                     alert("Thank you for your feedback");
                     setFormData({
@@ -68,51 +65,55 @@ const Feedback = () => {
                 alert("Feedback failed. Please check your details");
             }
         }
-
-        console.log(formData);
     };
 
     return (
-        <div
-            className="relative h-full w-full flex justify-center items-center object-cover bg-opacity-50 bg-cover backdrop-blur-lg"
-            style={{
-                backgroundImage: `url(${rtu})`,
-                backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent overlay
-            }}
-        >
-            <div className="flex flex-col md:flex-row w-full max-w-5xl z-10 py-5 shadow-lg bg-opacity-50 backdrop-blur-sm rounded-2xl">
-                {/* Left Section */}
-                <div className="flex flex-col w-3/4 p-6 lg:p-8 space-y-4 justify-between">
-                    <div className="flex flex-col gap-10">
-                        <h1 className="text-3xl lg:text-4xl font-bold text-white leading-snug">
-                            Leave us your feedback!
-                        </h1>
-                        <p className="text-justify text-sm md:text-lg text-white leading-relaxed">
-                            We value your input as it helps us improve and
-                            provide a better experience. Please take a moment to
-                            share your thoughts, suggestions, or concerns. Your
-                            feedback is greatly appreciated and will help us
-                            enhance our services.
+        <div className="relative min-h-screen flex items-center justify-center p-2 sm:p-4 bg-gray-900">
+            {/* Background Image with Overlay */}
+            <div
+                className="fixed inset-0 bg-cover bg-center z-0"
+                style={{ backgroundImage: `url(${rtu})` }}
+            >
+                <div className="absolute inset-0 backdrop-blur-sm"></div>
+            </div>
+
+            {/* Content Container */}
+            <div className="relative z-10 w-full max-w-md md:max-w-2xl lg:max-w-4xl bg-white bg-opacity-90 backdrop-blur-md rounded-xl shadow-lg mx-2 my-4">
+                <div className="flex flex-col lg:flex-row">
+                    {/* Left Section - Branding (Hidden on small screens) */}
+                    <div className="hidden sm:block sm:w-full lg:w-2/5 bg-gradient-to-br from-blue-800 to-blue-600 p-4 sm:p-6 text-white">
+                        <div className="mb-4">
+                            <h1 className="text-xl sm:text-2xl font-bold mb-2 leading-tight">
+                                Share Your Experience
+                            </h1>
+                            <p className="text-blue-100 text-xs sm:text-sm">
+                                We value your input as it helps us improve and
+                                provide a better experience.
+                            </p>
+                        </div>
+                        <p className="text-blue-200 italic text-xs sm:text-sm mt-4">
+                            "Forever true to the gold and blue"
                         </p>
                     </div>
-                    <p className="text-sm md:text-lg italic text-[#FFDB75] opacity-90">
-                        "~Forever true to the gold and blue~"
-                    </p>
-                </div>
 
-                {/* Right Section */}
-                <div className="flex flex-col w-full p-6 lg:p-8">
-                    <div className="bg-white shadow-lg rounded-lg p-10 w-full">
-                        <h4 className="text-2xl font-semibold text-gray-900 mb-4">
-                            Have a Suggestion?
-                        </h4>
+                    {/* Right Section - Form */}
+                    <div className="w-full lg:w-3/5 p-4 sm:p-6">
+                        <div className="mb-4">
+                            <h2 className="text-lg sm:text-xl font-bold text-gray-800">
+                                Feedback Form
+                            </h2>
+                            <p className="text-gray-600 text-xs sm:text-sm">
+                                Help us serve you better
+                            </p>
+                        </div>
+
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
                                 <label
                                     htmlFor="name"
-                                    className="block text-gray-700 font-medium mb-1 mt-4"
+                                    className="block text-xs sm:text-sm font-medium text-gray-700 mb-1"
                                 >
-                                    Name:
+                                    Your Name
                                 </label>
                                 <input
                                     type="text"
@@ -120,8 +121,8 @@ const Feedback = () => {
                                     name="name"
                                     value={formData.name}
                                     onChange={handleChange}
-                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
-                                    placeholder="Enter Name"
+                                    className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    placeholder="John Doe"
                                     required
                                 />
                             </div>
@@ -129,29 +130,29 @@ const Feedback = () => {
                             <div>
                                 <label
                                     htmlFor="message"
-                                    className="block text-gray-700 font-medium mb-1 mt-4"
+                                    className="block text-xs sm:text-sm font-medium text-gray-700 mb-1"
                                 >
-                                    Comment
+                                    Your Feedback
                                 </label>
                                 <textarea
                                     id="message"
                                     name="message"
                                     value={formData.message}
                                     onChange={handleChange}
-                                    rows="4"
+                                    rows="3"
                                     maxLength={maxLength}
-                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
-                                    placeholder="Your Feedback"
+                                    className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[100px]"
+                                    placeholder="Share your thoughts..."
                                     required
                                 ></textarea>
-                                <div className="text-right text-sm text-gray-500 mt-2">
-                                    {formData.message.length} / {maxLength}{" "}
+                                <div className="text-xs text-gray-500 text-right mt-1">
+                                    {formData.message.length}/{maxLength}{" "}
                                     characters
                                 </div>
                             </div>
 
                             <div>
-                                <label className="block text-gray-700 font-medium mb-1 mt-4">
+                                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                     Rating
                                 </label>
                                 <StarRating
@@ -162,9 +163,9 @@ const Feedback = () => {
 
                             <button
                                 type="submit"
-                                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300"
+                                className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm sm:text-base font-medium py-2 px-4 rounded-lg transition-colors duration-200"
                             >
-                                Submit
+                                Submit Feedback
                             </button>
                         </form>
                     </div>

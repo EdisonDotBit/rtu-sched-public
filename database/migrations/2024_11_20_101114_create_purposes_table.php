@@ -17,6 +17,7 @@ class CreatePurposesTable extends Migration
             $table->id();
             $table->unsignedInteger('office_id');
             $table->string('purpose');
+            $table->text('instruction')->nullable();
             $table->timestamps();
             $table->foreign('office_id')->references('offid')->on('offices')->onDelete('cascade');
         });

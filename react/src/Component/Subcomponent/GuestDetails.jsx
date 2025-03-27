@@ -11,9 +11,8 @@ function GuestDetails({ formData, setFormData, errors }) {
         aptemail: false,
     });
 
-    const fileInputRef = useRef(null); // Ref for file input
+    const fileInputRef = useRef(null);
 
-    // Handle input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -22,7 +21,6 @@ function GuestDetails({ formData, setFormData, errors }) {
         }));
     };
 
-    // Handle input blur (for validation)
     const handleBlur = (e) => {
         const { name } = e.target;
         setTouched((prev) => ({
@@ -31,27 +29,24 @@ function GuestDetails({ formData, setFormData, errors }) {
         }));
     };
 
-    // Handle file selection
     const handleFileChange = (e) => {
-        const files = Array.from(e.target.files); // Convert FileList to Array
+        const files = Array.from(e.target.files);
         setFormData((prev) => ({
             ...prev,
-            aptattach: [...prev.aptattach, ...files], // Append selected files
+            aptattach: [...prev.aptattach, ...files],
         }));
-        fileInputRef.current.value = ""; // Clear the file input
+        fileInputRef.current.value = "";
         toast.success(`${files.length} file(s) added.`);
     };
 
-    // Handle file removal
     const removeFile = (index) => {
         setFormData((prev) => ({
             ...prev,
-            aptattach: prev.aptattach.filter((_, i) => i !== index), // Remove file by index
+            aptattach: prev.aptattach.filter((_, i) => i !== index),
         }));
         toast.info("File removed.");
     };
 
-    // Input validation and formatting
     const formatInput = (e, type) => {
         switch (type) {
             case "id":
@@ -77,140 +72,255 @@ function GuestDetails({ formData, setFormData, errors }) {
     };
 
     return (
-        <div className="w-full h-auto flex justify-center">
-            {/* Main container */}
-            <div className="w-full md:w-3/4 lg:w-[55%] border border-gray-300 bg-[#194F90] rounded-md shadow-md p-8">
-                {/* Purpose Selection */}
-                <div className="mb-6">
-                    <Purpose
-                        formData={formData}
-                        setFormData={setFormData}
-                        errors={errors}
-                    />
-
-                    {/* File Upload Section */}
-                    <label className="block text-white mt-4">
-                        Attach Files (PDF & Image):
-                        <div className="mt-4">
-                            <button
-                                type="button"
-                                onClick={() => fileInputRef.current.click()}
-                                className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
-                                aria-label="Choose files"
-                            >
-                                Choose Files
-                            </button>
-                            <input
-                                type="file"
-                                ref={fileInputRef}
-                                multiple
-                                accept="image/*, application/pdf"
-                                className="hidden"
-                                onChange={handleFileChange}
-                                aria-label="File input"
-                            />
-                        </div>
-                    </label>
-
-                    {/* Display selected files */}
-                    <div className="mt-4 bg-white p-4 rounded-lg shadow-inner">
-                        <h3 className="text-gray-800 font-medium mb-2">
-                            Selected Files:
-                        </h3>
-                        {formData.aptattach.length > 0 ? (
-                            <ul className="space-y-2">
-                                {formData.aptattach.map((file, index) => (
-                                    <li
-                                        key={index}
-                                        className="flex items-center justify-between bg-gray-100 p-2 rounded-lg shadow-sm overflow-hidden"
-                                    >
-                                        <span
-                                            className="text-gray-800 truncate w-44"
-                                            title={file.name}
-                                        >
-                                            {file.name}
-                                        </span>
-                                        <button
-                                            type="button"
-                                            onClick={() => removeFile(index)}
-                                            className="text-red-600 hover:text-red-800 transition"
-                                            aria-label="Remove file"
-                                        >
-                                            ✕
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p className="text-gray-500 text-sm">
-                                No files selected yet.
-                            </p>
-                        )}
-                    </div>
+        <div className="flex justify-center px-4">
+            <div className="w-full max-w-2xl bg-white rounded-xl shadow-lg overflow-hidden">
+                {/* Header */}
+                <div className="bg-[#194F90] p-6">
+                    <h2 className="text-2xl font-bold text-white">
+                        Appointment Details
+                    </h2>
+                    <p className="text-blue-100">
+                        Please provide your information
+                    </p>
                 </div>
 
-                {/* Personal Details Section */}
-                <div className="flex flex-col space-y-4">
-                    <h2 className="text-white text-xl font-semibold text-center mt-4">
-                        Personal Details
-                    </h2>
+                {/* Content */}
+                <div className="p-6 space-y-6">
+                    {/* Purpose Section */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-gray-800">
+                            Purpose
+                        </h3>
+                        <Purpose
+                            formData={formData}
+                            setFormData={setFormData}
+                            errors={errors}
+                        />
+                    </div>
 
-                    {/* Input Fields */}
-                    {[
-                        {
-                            label: "ID Number / Type",
-                            name: "aptstudnum",
-                            type: "text",
-                            placeholder: "e.g. 12345 / Phil. ID",
-                            format: "id",
-                        },
-                        {
-                            label: "Full Name",
-                            name: "aptname",
-                            type: "text",
-                            placeholder: "e.g. Juan A. Dela Cruz",
-                            format: "name",
-                        },
-                        {
-                            label: "Contact Number",
-                            name: "aptpnumber",
-                            type: "tel",
-                            placeholder: "09#########",
-                            format: "phone",
-                        },
-                        {
-                            label: "Email Address",
-                            name: "aptemail",
-                            type: "email",
-                            placeholder: "e.g. email@gmail.com",
-                            format: null,
-                        },
-                    ].map((field) => (
-                        <div key={field.name}>
-                            <label className="block text-white mb-2">
-                                {field.label}:
+                    {/* File Upload Section */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-gray-800">
+                            Attachments
+                        </h3>
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => fileInputRef.current.click()}
+                                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-5 w-5"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                                            clipRule="evenodd"
+                                        />
+                                    </svg>
+                                    Choose
+                                </button>
+                                <span className="text-sm text-gray-500">
+                                    PDF, JPG, PNG (max 5MB each)
+                                </span>
                                 <input
-                                    className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
-                                    name={field.name}
-                                    value={formData[field.name]}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    type={field.type}
-                                    placeholder={field.placeholder}
-                                    onInput={(e) =>
-                                        formatInput(e, field.format)
-                                    }
-                                    required={field.name === "aptstudnum"}
-                                    aria-label={field.label}
+                                    type="file"
+                                    ref={fileInputRef}
+                                    multiple
+                                    accept="image/*, application/pdf"
+                                    className="hidden"
+                                    onChange={handleFileChange}
                                 />
-                            </label>
-                            {touched[field.name] && errors[field.name] && (
-                                <p className="text-[#FFDB75] text-sm">
-                                    {errors[field.name]}
-                                </p>
+                            </div>
+
+                            {/* File List */}
+                            {formData.aptattach.length > 0 ? (
+                                <div className="border border-gray-200 rounded-lg divide-y divide-gray-200">
+                                    {formData.aptattach.map((file, index) => (
+                                        <div
+                                            key={index}
+                                            className="p-3 flex items-center justify-between hover:bg-gray-50"
+                                        >
+                                            <div className="flex items-center gap-3 min-w-0">
+                                                <div className="p-2 rounded-lg bg-blue-50 text-blue-600">
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        className="h-5 w-5"
+                                                        viewBox="0 0 20 20"
+                                                        fill="currentColor"
+                                                    >
+                                                        <path
+                                                            fillRule="evenodd"
+                                                            d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
+                                                            clipRule="evenodd"
+                                                        />
+                                                    </svg>
+                                                </div>
+                                                <span className="truncate text-sm font-medium text-gray-700">
+                                                    {file.name}
+                                                </span>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    removeFile(index)
+                                                }
+                                                className="p-1 text-gray-400 hover:text-red-500 rounded-full transition-colors"
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    className="h-5 w-5"
+                                                    viewBox="0 0 20 20"
+                                                    fill="currentColor"
+                                                >
+                                                    <path
+                                                        fillRule="evenodd"
+                                                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                        clipRule="evenodd"
+                                                    />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="p-4 text-center border-2 border-dashed border-gray-300 rounded-lg bg-gray-50">
+                                    <p className="text-gray-500">
+                                        No files selected
+                                    </p>
+                                </div>
                             )}
                         </div>
-                    ))}
+                    </div>
+
+                    {/* Personal Information Section */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-gray-800">
+                            Personal Information
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {[
+                                {
+                                    label: "ID Number / Type",
+                                    name: "aptstudnum",
+                                    type: "text",
+                                    placeholder: "e.g. 12345 / Phil. ID",
+                                    format: "id",
+                                    icon: (
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-5 w-5 text-gray-400"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                        >
+                                            <path
+                                                fillRule="evenodd"
+                                                d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.715-5.349L11 6.477V16h2a1 1 0 110 2H7a1 1 0 110-2h2V6.477L6.237 7.582l1.715 5.349a1 1 0 01-.285 1.05A3.989 3.989 0 015 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.738-5.42-1.233-.617a1 1 0 01.894-1.788l1.599.799L9 4.323V3a1 1 0 011-1z"
+                                                clipRule="evenodd"
+                                            />
+                                        </svg>
+                                    ),
+                                },
+                                {
+                                    label: "Full Name",
+                                    name: "aptname",
+                                    type: "text",
+                                    placeholder: "e.g. Juan A. Dela Cruz",
+                                    format: "name",
+                                    icon: (
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-5 w-5 text-gray-400"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                        >
+                                            <path
+                                                fillRule="evenodd"
+                                                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                                                clipRule="evenodd"
+                                            />
+                                        </svg>
+                                    ),
+                                },
+                                {
+                                    label: "Contact Number",
+                                    name: "aptpnumber",
+                                    type: "tel",
+                                    placeholder: "09#########",
+                                    format: "phone",
+                                    icon: (
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-5 w-5 text-gray-400"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                        >
+                                            <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                                        </svg>
+                                    ),
+                                },
+                                {
+                                    label: "Email Address",
+                                    name: "aptemail",
+                                    type: "email",
+                                    placeholder: "e.g. email@gmail.com",
+                                    format: null,
+                                    icon: (
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-5 w-5 text-gray-400"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                        >
+                                            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                                            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                                        </svg>
+                                    ),
+                                },
+                            ].map((field) => (
+                                <div key={field.name} className="space-y-1">
+                                    <label className="text-sm font-medium text-gray-700">
+                                        {field.label}
+                                    </label>
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            {field.icon}
+                                        </div>
+                                        <input
+                                            className={`w-full pl-10 pr-3 py-2 border ${
+                                                errors[field.name] &&
+                                                touched[field.name]
+                                                    ? "border-red-300"
+                                                    : "border-gray-300"
+                                            } rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                                            name={field.name}
+                                            value={formData[field.name]}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            type={field.type}
+                                            placeholder={field.placeholder}
+                                            onInput={(e) =>
+                                                formatInput(e, field.format)
+                                            }
+                                            required={
+                                                field.name === "aptstudnum"
+                                            }
+                                        />
+                                    </div>
+                                    {touched[field.name] &&
+                                        errors[field.name] && (
+                                            <p className="text-red-500 text-xs mt-1">
+                                                {errors[field.name]}
+                                            </p>
+                                        )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
