@@ -2,10 +2,14 @@ import { useState, useRef, useCallback, useMemo, useEffect } from "react";
 import EditOffice from "./Component/EditOffice";
 import { useAuth } from "../../Hooks/useAuth";
 import { useDebouncedEffect } from "../../Hooks/useDebouncedEffect";
-import Calendar from "../Subcomponent/Calendar";
-import TimePicker from "../Subcomponent/TimePicker";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import OfficeList from "./Component/OfficeAdmin/OfficeList";
+import PurposeList from "./Component/OfficeAdmin/PurposeList";
+import PurposeModal from "./Component/OfficeAdmin/PurposeModal";
+import InstructionModal from "./Component/OfficeAdmin/InstructionModal";
+import DeleteModal from "./Component/OfficeAdmin/DeleteModal";
+import DateTimeModal from "./Component/OfficeAdmin/DateTimeModal";
 
 function OfficeAdminManage() {
     const [offabbr, setoffabbr] = useState("");
@@ -40,6 +44,7 @@ function OfficeAdminManage() {
 
     const isDateDisabled = disabledDates.includes(formData.aptdate);
     const isTimeDisabled = disabledTimes.includes(formData.apttime);
+    const [isTimeSelected, setIsTimeSelected] = useState(false);
 
     // Fetch office data
     const fetchOfficeData = useCallback(async () => {
@@ -226,7 +231,7 @@ function OfficeAdminManage() {
                 toast.error("An unexpected error occurred. Please try again.");
             } finally {
                 setIsLoading(false);
-                setPurposeToDelete(null); // Reset after deletion
+                setPurposeToDelete(null);
             }
         },
         [apiBaseUrl, handleSuccess]
@@ -366,648 +371,72 @@ function OfficeAdminManage() {
                         </p>
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6 flex flex-col">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                            <div className="relative flex-grow max-w-md">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg
-                                        className="h-5 w-5 text-gray-400"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                                        />
-                                    </svg>
-                                </div>
-                                <input
-                                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-800 placeholder-gray-400"
-                                    type="text"
-                                    placeholder="Search by office abbreviation..."
-                                    value={offabbr}
-                                    onChange={(e) => setoffabbr(e.target.value)}
-                                    aria-label="Search Office Abbreviation"
-                                />
-                            </div>
-                        </div>
+                    <OfficeList
+                        offabbr={offabbr}
+                        setoffabbr={setoffabbr}
+                        searchResults={searchResults}
+                        isLoading={isLoading}
+                        toEdit={toEdit}
+                        openDateTimeModal={openDateTimeModal}
+                    />
 
-                        {isLoading ? (
-                            <div className="flex justify-center items-center py-12 flex-grow">
-                                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-                            </div>
-                        ) : searchResults.length === 0 ? (
-                            <div className="text-center py-12 bg-gray-50 rounded-lg flex-grow flex flex-col justify-center">
-                                <svg
-                                    className="mx-auto h-12 w-12 text-gray-400"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                    />
-                                </svg>
-                                <h3 className="mt-2 text-lg font-medium text-gray-900">
-                                    No offices found
-                                </h3>
-                                <p className="mt-1 text-gray-500">
-                                    Try adjusting your search
-                                </p>
-                            </div>
-                        ) : (
-                            <div className="overflow-x-auto flex-grow">
-                                <table className="min-w-full divide-y divide-gray-200">
-                                    <thead className="bg-gray-50">
-                                        <tr>
-                                            <th
-                                                scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                            >
-                                                Office Name
-                                            </th>
-                                            <th
-                                                scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                            >
-                                                Abbreviation
-                                            </th>
-                                            <th
-                                                scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                            >
-                                                Limit
-                                            </th>
-                                            <th
-                                                scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                            >
-                                                Branch
-                                            </th>
-                                            <th
-                                                scope="col"
-                                                className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                            >
-                                                Actions
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="bg-white divide-y divide-gray-200">
-                                        {searchResults.map((office, index) => (
-                                            <tr
-                                                key={index}
-                                                className="hover:bg-gray-50"
-                                            >
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                    {office.offname}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                    {office.offabbr}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                    {office.offlimit}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                    {office.offbranch}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-medium">
-                                                    <div className="flex justify-end space-x-2">
-                                                        <button
-                                                            onClick={(e) =>
-                                                                toEdit(
-                                                                    e,
-                                                                    office.offid
-                                                                )
-                                                            }
-                                                            className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-md text-sm font-medium transition-colors duration-200"
-                                                            aria-label={`Edit ${office.offname}`}
-                                                        >
-                                                            Edit
-                                                        </button>
-                                                        <button
-                                                            onClick={() =>
-                                                                openDateTimeModal(
-                                                                    office
-                                                                )
-                                                            }
-                                                            className="text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-md text-sm font-medium transition-colors duration-200"
-                                                            aria-label={`Manage date/time for ${office.offname}`}
-                                                        >
-                                                            Date & Time
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Purposes Table - Always visible */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                            <div className="w-full md:w-auto">
-                                <label
-                                    htmlFor="office-select"
-                                    className="block text-sm font-medium text-gray-700 mb-1"
-                                >
-                                    Office Name
-                                </label>
-                                <select
-                                    id="office-select"
-                                    className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                                    value={selectedOffice?.offid || ""}
-                                    onChange={(e) => {
-                                        const officeId = e.target.value;
-                                        const office = offData.find(
-                                            (o) => o.offid === officeId
-                                        );
-                                        setSelectedOffice(office);
-                                    }}
-                                >
-                                    {offData.map((office) => (
-                                        <option
-                                            key={office.offid}
-                                            value={office.offid}
-                                        >
-                                            {office.offname} ({office.offabbr})
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            {selectedOffice && (
-                                <button
-                                    onClick={() =>
-                                        openPurposeModal(
-                                            selectedOffice,
-                                            selectedOffice.offname
-                                        )
-                                    }
-                                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors self-end md:self-auto"
-                                >
-                                    Add Purpose
-                                </button>
-                            )}
-                        </div>
-
-                        {!selectedOffice ? (
-                            <div className="text-center py-8 bg-gray-50 rounded-lg">
-                                <p className="text-gray-600">
-                                    Please select an office to view purposes
-                                </p>
-                            </div>
-                        ) : purposes.length === 0 ? (
-                            <div className="text-center py-8 bg-gray-50 rounded-lg">
-                                <svg
-                                    className="mx-auto h-12 w-12 text-gray-400"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                    />
-                                </svg>
-                                <p className="mt-2 text-gray-600">
-                                    No purposes added yet
-                                </p>
-                            </div>
-                        ) : (
-                            <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-gray-200">
-                                    <thead className="bg-gray-50">
-                                        <tr>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Purpose
-                                            </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Instruction
-                                            </th>
-                                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Actions
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="bg-white divide-y divide-gray-200">
-                                        {purposes.map((purposeItem, index) => (
-                                            <tr
-                                                key={index}
-                                                className="hover:bg-gray-50"
-                                            >
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                    {purposeItem.purpose}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                    {purposeItem.instruction ? (
-                                                        <button
-                                                            onClick={() =>
-                                                                openInstructionModal(
-                                                                    purposeItem
-                                                                )
-                                                            }
-                                                            className="text-blue-600 hover:text-blue-800 flex items-center"
-                                                        >
-                                                            <svg
-                                                                className="h-5 w-5 mr-1"
-                                                                fill="none"
-                                                                viewBox="0 0 24 24"
-                                                                stroke="currentColor"
-                                                            >
-                                                                <path
-                                                                    strokeLinecap="round"
-                                                                    strokeLinejoin="round"
-                                                                    strokeWidth={
-                                                                        2
-                                                                    }
-                                                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                                                />
-                                                            </svg>
-                                                            View Instruction
-                                                        </button>
-                                                    ) : (
-                                                        <button
-                                                            onClick={() =>
-                                                                openInstructionModal(
-                                                                    purposeItem
-                                                                )
-                                                            }
-                                                            className="text-gray-500 hover:text-gray-700 flex items-center"
-                                                        >
-                                                            <svg
-                                                                className="h-5 w-5 mr-1"
-                                                                fill="none"
-                                                                viewBox="0 0 24 24"
-                                                                stroke="currentColor"
-                                                            >
-                                                                <path
-                                                                    strokeLinecap="round"
-                                                                    strokeLinejoin="round"
-                                                                    strokeWidth={
-                                                                        2
-                                                                    }
-                                                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                                                                />
-                                                            </svg>
-                                                            Add Instruction
-                                                        </button>
-                                                    )}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                    <button
-                                                        onClick={() =>
-                                                            confirmDelete(
-                                                                purposeItem
-                                                            )
-                                                        }
-                                                        className="text-red-600 hover:text-red-900"
-                                                        disabled={isLoading}
-                                                    >
-                                                        Delete
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
-                    </div>
+                    <PurposeList
+                        offData={offData}
+                        selectedOffice={selectedOffice}
+                        setSelectedOffice={setSelectedOffice}
+                        purposes={purposes}
+                        openPurposeModal={openPurposeModal}
+                        openInstructionModal={openInstructionModal}
+                        confirmDelete={confirmDelete}
+                        isLoading={isLoading}
+                    />
                 </div>
             </div>
 
-            {/* Purpose Modal */}
-            <dialog
-                ref={purposeModal}
-                className="modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 backdrop:bg-gray-900/50 backdrop:backdrop-blur-sm"
-                aria-labelledby="purpose-modal-title"
-            >
-                <div className="modal-box max-w-md bg-white rounded-xl shadow-xl p-6">
-                    <div className="flex items-center justify-between mb-4">
-                        <h3
-                            id="purpose-modal-title"
-                            className="text-lg font-bold text-gray-900"
-                        >
-                            Insert Purpose
-                        </h3>
-                        <button
-                            onClick={() => purposeModal.current.close()}
-                            className="text-gray-400 hover:text-gray-500"
-                            aria-label="Close modal"
-                        >
-                            <svg
-                                className="h-6 w-6"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M6 18L18 6M6 6l12 12"
-                                />
-                            </svg>
-                        </button>
-                    </div>
-                    <div className="mb-6">
-                        <p className="text-gray-600 mb-2">
-                            Office: {selectedOffname}
-                        </p>
-                        <form onSubmit={handlePurposeInsert}>
-                            <input
-                                type="text"
-                                value={purpose}
-                                onChange={(e) => setPurpose(e.target.value)}
-                                placeholder="Enter purpose"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-800"
-                                required
-                            />
-                        </form>
-                    </div>
-                    <div className="flex justify-end space-x-3">
-                        <button
-                            type="button"
-                            className="px-4 py-2 border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                            onClick={() => purposeModal.current.close()}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            className="px-4 py-2 border border-transparent text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                            onClick={handlePurposeInsert}
-                            disabled={isLoading}
-                        >
-                            {isLoading ? "Inserting..." : "Insert"}
-                        </button>
-                    </div>
-                </div>
-            </dialog>
+            {/* Modals */}
+            <PurposeModal
+                purposeModal={purposeModal}
+                selectedOffname={selectedOffname}
+                purpose={purpose}
+                setPurpose={setPurpose}
+                handlePurposeInsert={handlePurposeInsert}
+                isLoading={isLoading}
+            />
 
-            {/* Delete Confirmation Modal */}
-            <dialog
-                ref={deleteModal}
-                className="modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 backdrop:bg-gray-900/50 backdrop:backdrop-blur-sm"
-                aria-labelledby="delete-modal-title"
-            >
-                <div className="modal-box max-w-md bg-white rounded-xl shadow-xl p-6">
-                    <div className="flex items-center justify-between mb-4">
-                        <h3
-                            id="delete-modal-title"
-                            className="text-lg font-bold text-gray-900"
-                        >
-                            Confirm Deletion
-                        </h3>
-                        <button
-                            onClick={() => deleteModal.current.close()}
-                            className="text-gray-400 hover:text-gray-500"
-                            aria-label="Close modal"
-                        >
-                            <svg
-                                className="h-6 w-6"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M6 18L18 6M6 6l12 12"
-                                />
-                            </svg>
-                        </button>
-                    </div>
-                    <div className="mb-6">
-                        <p className="text-gray-600 mb-2">
-                            Are you sure you want to delete the purpose:{" "}
-                            <strong>{purposeToDelete?.purpose}</strong>?
-                        </p>
-                        <p className="text-gray-500 text-sm">
-                            This action cannot be undone.
-                        </p>
-                    </div>
-                    <div className="flex justify-end space-x-3">
-                        <button
-                            type="button"
-                            className="px-4 py-2 border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                            onClick={() => {
-                                deleteModal.current.close();
-                                setPurposeToDelete(null);
-                            }}
-                            disabled={isLoading}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="button"
-                            className="px-4 py-2 border border-transparent text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                            onClick={() => {
-                                deletePurpose(purposeToDelete.id);
-                                deleteModal.current.close();
-                            }}
-                            disabled={isLoading}
-                        >
-                            {isLoading ? "Deleting..." : "Delete"}
-                        </button>
-                    </div>
-                </div>
-            </dialog>
+            <DeleteModal
+                deleteModal={deleteModal}
+                purposeToDelete={purposeToDelete}
+                deletePurpose={deletePurpose}
+                isLoading={isLoading}
+            />
 
-            {/* Instruction Modal */}
-            <dialog
-                ref={instructionModal}
-                className="modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 backdrop:bg-gray-900/50 backdrop:backdrop-blur-sm"
-                aria-labelledby="instruction-modal-title"
-            >
-                <div className="modal-box max-w-2xl bg-white rounded-xl shadow-xl p-6">
-                    <div className="flex items-center justify-between mb-4">
-                        <h3
-                            id="instruction-modal-title"
-                            className="text-lg font-bold text-gray-900"
-                        >
-                            {selectedPurpose?.instruction
-                                ? "Edit Instruction"
-                                : "Add Instruction"}
-                        </h3>
-                        <button
-                            onClick={() => instructionModal.current.close()}
-                            className="text-gray-400 hover:text-gray-500"
-                            aria-label="Close modal"
-                        >
-                            <svg
-                                className="h-6 w-6"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M6 18L18 6M6 6l12 12"
-                                />
-                            </svg>
-                        </button>
-                    </div>
-                    <div className="mb-6">
-                        <p className="text-gray-600 mb-2">
-                            Purpose: {selectedPurpose?.purpose}
-                        </p>
-                        <form onSubmit={handleInstructionSave}>
-                            <textarea
-                                value={instruction}
-                                onChange={(e) => setInstruction(e.target.value)}
-                                placeholder="Enter detailed instructions for this purpose..."
-                                className="w-full h-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-800"
-                                required
-                            />
-                        </form>
-                    </div>
-                    <div className="flex justify-end space-x-3">
-                        <button
-                            type="button"
-                            className="px-4 py-2 border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                            onClick={() => instructionModal.current.close()}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            className="px-4 py-2 border border-transparent text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                            onClick={handleInstructionSave}
-                            disabled={isLoading}
-                        >
-                            {isLoading ? "Saving..." : "Save"}
-                        </button>
-                    </div>
-                </div>
-            </dialog>
+            <InstructionModal
+                instructionModal={instructionModal}
+                selectedPurpose={selectedPurpose}
+                instruction={instruction}
+                setInstruction={setInstruction}
+                handleInstructionSave={handleInstructionSave}
+                isLoading={isLoading}
+            />
 
-            {/* Date/Time Modal */}
-            <dialog
-                ref={dateTimeModal}
-                className="modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 backdrop:bg-gray-900/50 backdrop:backdrop-blur-sm"
-                aria-labelledby="datetime-modal-title"
-            >
-                <div className="modal-box max-w-4xl bg-white rounded-xl shadow-xl p-6">
-                    <div className="flex items-center justify-between mb-4">
-                        <h3
-                            id="datetime-modal-title"
-                            className="text-lg font-bold text-gray-900"
-                        >
-                            Manage Date & Time
-                        </h3>
-                        <button
-                            onClick={() => dateTimeModal.current.close()}
-                            className="text-gray-400 hover:text-gray-500"
-                            aria-label="Close modal"
-                        >
-                            <svg
-                                className="h-6 w-6"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M6 18L18 6M6 6l12 12"
-                                />
-                            </svg>
-                        </button>
-                    </div>
-                    <p className="text-gray-600 mb-6">
-                        Office:{" "}
-                        {selectedOffice?.offname || "No Office Selected"}
-                    </p>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div className="flex flex-col items-center">
-                            <Calendar
-                                key={calendarKey}
-                                formData={formData}
-                                setFormData={setFormData}
-                                limit={selectedOffice?.offlimit || 10}
-                                appointments={offData}
-                                userRole={role}
-                                disabledDates={disabledDates}
-                            />
-                            <button
-                                className="mt-4 px-4 py-2 w-full bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 disabled:opacity-50"
-                                onClick={async () => {
-                                    if (formData.aptdate) {
-                                        await handleDateToggle(
-                                            formData.aptdate
-                                        );
-                                    } else {
-                                        toast.error(
-                                            "Please select a date to toggle."
-                                        );
-                                    }
-                                }}
-                                disabled={isLoading || !formData.aptdate}
-                            >
-                                {isLoading
-                                    ? "Processing..."
-                                    : isDateDisabled
-                                    ? "Enable Date"
-                                    : "Disable Date"}
-                            </button>
-                        </div>
-
-                        <div className="flex flex-col items-center">
-                            <TimePicker
-                                key={timePickerKey}
-                                formData={formData}
-                                setFormData={setFormData}
-                                limit={selectedOffice?.offlimit || 10}
-                                appointments={offData}
-                                userRole={role}
-                                disabledTimes={disabledTimes}
-                            />
-                            <button
-                                className="mt-4 px-4 py-2 w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 disabled:opacity-50"
-                                onClick={async () => {
-                                    if (formData.aptdate && formData.apttime) {
-                                        await handleTimeToggle(
-                                            formData.aptdate,
-                                            formData.apttime
-                                        );
-                                    } else {
-                                        toast.error(
-                                            "Please select a date and time to toggle."
-                                        );
-                                    }
-                                }}
-                                disabled={
-                                    isLoading ||
-                                    !formData.aptdate ||
-                                    !formData.apttime
-                                }
-                            >
-                                {isLoading
-                                    ? "Processing..."
-                                    : isTimeDisabled
-                                    ? "Enable Time"
-                                    : "Disable Time"}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </dialog>
+            <DateTimeModal
+                dateTimeModal={dateTimeModal}
+                selectedOffice={selectedOffice}
+                formData={formData}
+                setFormData={setFormData}
+                disabledDates={disabledDates}
+                disabledTimes={disabledTimes}
+                calendarKey={calendarKey}
+                timePickerKey={timePickerKey}
+                role={role}
+                offData={offData}
+                isDateDisabled={isDateDisabled}
+                isTimeDisabled={isTimeDisabled}
+                handleDateToggle={handleDateToggle}
+                handleTimeToggle={handleTimeToggle}
+                setIsTimeSelected={setIsTimeSelected}
+                isLoading={isLoading}
+            />
 
             {/* Edit Office Panel */}
             <div
