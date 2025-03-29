@@ -5,33 +5,28 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Storage;
 
 class ConfirmAppointment extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $appointment;  // Store the appointment data
-    public $pdfUrl;       // Store the public PDF URL
+    public $appointment;
+    public $pdfPath;
 
-    /**
-     * Create a new message instance.
-     */
-    public function __construct($appointment, $pdfUrl)
+    public function __construct($appointment, $pdfPath)
     {
         $this->appointment = $appointment;
-        $this->pdfUrl = $pdfUrl;
+        $this->pdfPath = $pdfPath;
     }
 
-    /**
-     * Build the message.
-     */
     public function build()
     {
-        return $this->subject('Appointment Confirmation')
-            ->view('emails.confirm-appointment') // Blade email template
-            ->with([
-                'appointment' => $this->appointment,
-                'pdfUrl' => $this->pdfUrl, // Pass public URL instead of file attachment
+        return $this->subject('Appointment Confirmation - ' . $this->appointment->aptid)
+            ->view('emails.confirm-appointment')
+            ->attach($this->pdfPath, [
+                'as' => 'Appointment_Receipt.pdf',
+                'mime' => 'application/pdf',
             ]);
     }
 }
