@@ -561,6 +561,20 @@ function SetAppointment() {
                                 <h3 className="text-xl font-bold text-gray-900 mb-2">
                                     Appointment Scheduled
                                 </h3>
+                                {/* Display the appointment number here */}
+                                {succData && (
+                                    <div className="mb-4">
+                                        <p className="text-lg font-semibold text-gray-800">
+                                            Your Appointment Number:
+                                        </p>
+                                        <p className="text-2xl font-bold text-blue-600">
+                                            {succData.aptid}
+                                        </p>
+                                    </div>
+                                )}
+                                <p className="text-sm text-gray-500 mb-6">
+                                    Please take note of the appointment number.
+                                </p>
                                 <p className="text-gray-700 mb-4">
                                     Your appointment has been scheduled
                                     successfully!
