@@ -12,31 +12,55 @@ function InputDetails({ formData, setFormData, errors }) {
     });
 
     const fileInputRef = useRef(null);
+    const MAX_TOTAL_SIZE = 5 * 1024 * 1024; // Changed to 5MB in bytes
+
+    // Helper to format file sizes
+    const formatFileSize = (bytes) => {
+        if (bytes < 1024) return `${bytes} bytes`;
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+        return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleBlur = (e) => {
         const { name } = e.target;
-        setTouched((prev) => ({
-            ...prev,
-            [name]: true,
-        }));
+        setTouched((prev) => ({ ...prev, [name]: true }));
     };
 
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
+        if (files.length === 0) return;
+
+        // Calculate total size
+        const currentTotal = formData.aptattach.reduce(
+            (sum, file) => sum + file.size,
+            0
+        );
+        const newFilesSize = files.reduce((sum, file) => sum + file.size, 0);
+        const totalSize = currentTotal + newFilesSize;
+
+        // Validate total size
+        if (totalSize > MAX_TOTAL_SIZE) {
+            toast.error(
+                `Total size exceeds 5MB limit (${formatFileSize(totalSize)})`
+            );
+            return;
+        }
+
+        // Update state
         setFormData((prev) => ({
             ...prev,
             aptattach: [...prev.aptattach, ...files],
         }));
+
         fileInputRef.current.value = "";
-        toast.success(`${files.length} file(s) added.`);
+        toast.success(
+            `Added ${files.length} file(s). Total: ${formatFileSize(totalSize)}`
+        );
     };
 
     const removeFile = (index) => {
@@ -46,6 +70,12 @@ function InputDetails({ formData, setFormData, errors }) {
         }));
         toast.info("File removed.");
     };
+
+    // Calculate current total size for display
+    const currentTotalSize = formData.aptattach.reduce(
+        (sum, file) => sum + file.size,
+        0
+    );
 
     return (
         <div className="flex justify-center">
@@ -101,7 +131,7 @@ function InputDetails({ formData, setFormData, errors }) {
                                     Insert
                                 </button>
                                 <span className="text-sm text-gray-500">
-                                    PDF, JPG, PNG (max 5MB each)
+                                    PDF, JPG, PNG (max 5MB total)
                                 </span>
                                 <input
                                     type="file"
@@ -111,6 +141,14 @@ function InputDetails({ formData, setFormData, errors }) {
                                     className="hidden"
                                     onChange={handleFileChange}
                                 />
+                            </div>
+
+                            {/* Size indicator with fixed width */}
+                            <div className="w-full md:w-64">
+                                <p className="text-xs text-gray-600">
+                                    Current total:{" "}
+                                    {formatFileSize(currentTotalSize)} / 5MB
+                                </p>
                             </div>
 
                             {/* File List */}
@@ -136,9 +174,16 @@ function InputDetails({ formData, setFormData, errors }) {
                                                         />
                                                     </svg>
                                                 </div>
-                                                <span className="truncate text-sm font-medium text-gray-700">
-                                                    {file.name}
-                                                </span>
+                                                <div className="min-w-0">
+                                                    <p className="truncate text-sm font-medium text-gray-700">
+                                                        {file.name}
+                                                    </p>
+                                                    <p className="text-xs text-gray-500">
+                                                        {formatFileSize(
+                                                            file.size
+                                                        )}
+                                                    </p>
+                                                </div>
                                             </div>
                                             <button
                                                 type="button"

@@ -12,6 +12,15 @@ function GuestDetails({ formData, setFormData, errors }) {
     });
 
     const fileInputRef = useRef(null);
+    const MAX_TOTAL_SIZE = 5 * 1024 * 1024; // 5MB in bytes
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB per file
+
+    // Helper to format file sizes
+    const formatFileSize = (bytes) => {
+        if (bytes < 1024) return `${bytes} bytes`;
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+        return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -31,12 +40,47 @@ function GuestDetails({ formData, setFormData, errors }) {
 
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
+        if (files.length === 0) return;
+
+        // Check individual file sizes
+        const oversizedFiles = files.filter(
+            (file) => file.size > MAX_FILE_SIZE
+        );
+        if (oversizedFiles.length > 0) {
+            toast.error(
+                `${
+                    oversizedFiles.length
+                } file(s) exceed 5MB limit (${formatFileSize(MAX_FILE_SIZE)})`
+            );
+            return;
+        }
+
+        // Calculate total size
+        const currentTotal = formData.aptattach.reduce(
+            (sum, file) => sum + file.size,
+            0
+        );
+        const newFilesSize = files.reduce((sum, file) => sum + file.size, 0);
+        const totalSize = currentTotal + newFilesSize;
+
+        // Validate total size
+        if (totalSize > MAX_TOTAL_SIZE) {
+            toast.error(
+                `Total size exceeds 5MB limit (${formatFileSize(totalSize)})`
+            );
+            return;
+        }
+
+        // Update state
         setFormData((prev) => ({
             ...prev,
             aptattach: [...prev.aptattach, ...files],
         }));
+
         fileInputRef.current.value = "";
-        toast.success(`${files.length} file(s) added.`);
+        toast.success(
+            `Added ${files.length} file(s). Total: ${formatFileSize(totalSize)}`
+        );
     };
 
     const removeFile = (index) => {
@@ -46,6 +90,12 @@ function GuestDetails({ formData, setFormData, errors }) {
         }));
         toast.info("File removed.");
     };
+
+    // Calculate current total size for display
+    const currentTotalSize = formData.aptattach.reduce(
+        (sum, file) => sum + file.size,
+        0
+    );
 
     const formatInput = (e, type) => {
         switch (type) {
@@ -125,7 +175,7 @@ function GuestDetails({ formData, setFormData, errors }) {
                                     Choose
                                 </button>
                                 <span className="text-sm text-gray-500">
-                                    PDF, JPG, PNG (max 5MB each)
+                                    PDF, JPG, PNG (max 5MB each, 5MB total)
                                 </span>
                                 <input
                                     type="file"
@@ -135,6 +185,14 @@ function GuestDetails({ formData, setFormData, errors }) {
                                     className="hidden"
                                     onChange={handleFileChange}
                                 />
+                            </div>
+
+                            {/* Size indicator with fixed width */}
+                            <div className="w-full">
+                                <p className="text-xs text-gray-600">
+                                    Current total:{" "}
+                                    {formatFileSize(currentTotalSize)} / 5MB
+                                </p>
                             </div>
 
                             {/* File List */}
@@ -160,9 +218,16 @@ function GuestDetails({ formData, setFormData, errors }) {
                                                         />
                                                     </svg>
                                                 </div>
-                                                <span className="truncate text-sm font-medium text-gray-700">
-                                                    {file.name}
-                                                </span>
+                                                <div className="min-w-0">
+                                                    <p className="truncate text-sm font-medium text-gray-700">
+                                                        {file.name}
+                                                    </p>
+                                                    <p className="text-xs text-gray-500">
+                                                        {formatFileSize(
+                                                            file.size
+                                                        )}
+                                                    </p>
+                                                </div>
                                             </div>
                                             <button
                                                 type="button"
@@ -224,6 +289,12 @@ function GuestDetails({ formData, setFormData, errors }) {
                                             />
                                         </svg>
                                     ),
+                                    validation: (value) => {
+                                        if (!value) return "ID is required";
+                                        if (value.length < 3)
+                                            return "ID must be at least 3 characters";
+                                        return null;
+                                    },
                                 },
                                 {
                                     label: "Full Name",
@@ -245,6 +316,12 @@ function GuestDetails({ formData, setFormData, errors }) {
                                             />
                                         </svg>
                                     ),
+                                    validation: (value) => {
+                                        if (!value) return "Name is required";
+                                        if (value.length < 5)
+                                            return "Name must be at least 5 characters";
+                                        return null;
+                                    },
                                 },
                                 {
                                     label: "Contact Number",
@@ -262,6 +339,13 @@ function GuestDetails({ formData, setFormData, errors }) {
                                             <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                                         </svg>
                                     ),
+                                    validation: (value) => {
+                                        if (!value)
+                                            return "Phone number is required";
+                                        if (value.length < 11)
+                                            return "Phone number must be 11 digits";
+                                        return null;
+                                    },
                                 },
                                 {
                                     label: "Email Address",
@@ -280,45 +364,66 @@ function GuestDetails({ formData, setFormData, errors }) {
                                             <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                                         </svg>
                                     ),
+                                    validation: (value) => {
+                                        if (!value) return "Email is required";
+                                        if (
+                                            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+                                                value
+                                            )
+                                        )
+                                            return "Invalid email format";
+                                        return null;
+                                    },
                                 },
-                            ].map((field) => (
-                                <div key={field.name} className="space-y-1">
-                                    <label className="text-sm font-medium text-gray-700">
-                                        {field.label}
-                                    </label>
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            {field.icon}
+                            ].map((field) => {
+                                const error =
+                                    touched[field.name] &&
+                                    (errors[field.name] ||
+                                        (field.validation &&
+                                            field.validation(
+                                                formData[field.name]
+                                            )));
+
+                                return (
+                                    <div key={field.name} className="space-y-1">
+                                        <label className="text-sm font-medium text-gray-700">
+                                            {field.label}
+                                        </label>
+                                        <div className="relative">
+                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                {field.icon}
+                                            </div>
+                                            <input
+                                                className={`w-full pl-10 pr-3 py-2 border ${
+                                                    error
+                                                        ? "border-red-300"
+                                                        : "border-gray-300"
+                                                } rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                                                name={field.name}
+                                                value={formData[field.name]}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                type={field.type}
+                                                placeholder={field.placeholder}
+                                                onInput={(e) =>
+                                                    formatInput(e, field.format)
+                                                }
+                                                required={
+                                                    field.name === "aptstudnum"
+                                                }
+                                            />
                                         </div>
-                                        <input
-                                            className={`w-full pl-10 pr-3 py-2 border ${
-                                                errors[field.name] &&
-                                                touched[field.name]
-                                                    ? "border-red-300"
-                                                    : "border-gray-300"
-                                            } rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
-                                            name={field.name}
-                                            value={formData[field.name]}
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            type={field.type}
-                                            placeholder={field.placeholder}
-                                            onInput={(e) =>
-                                                formatInput(e, field.format)
-                                            }
-                                            required={
-                                                field.name === "aptstudnum"
-                                            }
-                                        />
+                                        {/* Fixed height error message container */}
+                                        <div className="h-5">
+                                            {error && (
+                                                <p className="text-red-500 text-xs mt-1">
+                                                    {error}
+                                                </p>
+                                            )}
+                                        </div>
                                     </div>
-                                    {touched[field.name] &&
-                                        errors[field.name] && (
-                                            <p className="text-red-500 text-xs mt-1">
-                                                {errors[field.name]}
-                                            </p>
-                                        )}
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     </div>
                 </div>
