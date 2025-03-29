@@ -7,6 +7,7 @@ import { useStudentAuth } from "../../Hooks/useStudentAuth";
 import { Navigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function Register() {
     const [formData, setFormData] = useState({
@@ -14,12 +15,14 @@ function Register() {
         student_number: "",
         contact_number: "",
         password: "",
+        confirm_password: "",
         full_name: "",
         role: "Student",
     });
 
     const { isStudentAuthenticated } = useStudentAuth();
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -31,9 +34,20 @@ function Register() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+
+        // Check if passwords match
+        if (formData.password !== formData.confirm_password) {
+            toast.error("Passwords do not match.");
+            setLoading(false);
+            return;
+        }
 
         try {
             const response = await axios.post(
@@ -69,7 +83,7 @@ function Register() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100 py-4 sm:py-8 px-4 font-roboto">
+        <div className="h-screen flex flex-col bg-gray-100 sm:justify-center p-4 font-roboto overflow-y-auto">
             <div className="mb-4 w-full flex justify-center">
                 <img
                     src={Logo}
@@ -78,7 +92,7 @@ function Register() {
                 />
             </div>
 
-            <div className="w-full max-w-[800px] bg-[#194F90] rounded-lg shadow-md p-4 sm:p-6 md:px-6 lg:px-8">
+            <div className="w-full max-w-[800px] bg-[#194F90] rounded-lg shadow-md p-4 sm:p-6 md:px-6 lg:px-8 mx-auto">
                 <form
                     onSubmit={handleSubmit}
                     className="space-y-3 sm:space-y-4"
@@ -159,18 +173,54 @@ function Register() {
                         </div>
 
                         {/* Password */}
-                        <div className="md:col-span-2">
+                        <div>
                             <label className="block text-white text-sm sm:text-base">
                                 Password:
+                                <div className="relative">
+                                    <input
+                                        type={
+                                            showPassword ? "text" : "password"
+                                        }
+                                        name="password"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        placeholder="Enter Password"
+                                        required
+                                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};:'\\|,.<>/?~`]).{8,}$"
+                                        title="Password must be at least 8 characters long, include uppercase, lowercase, a number, and a special character."
+                                        className="text-gray-800 bg-white w-full mt-1 py-2 px-3 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] transition text-sm sm:text-base"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={togglePasswordVisibility}
+                                        className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                                        aria-label={
+                                            showPassword
+                                                ? "Hide password"
+                                                : "Show password"
+                                        }
+                                    >
+                                        {showPassword ? (
+                                            <FaEyeSlash className="w-5 h-5" />
+                                        ) : (
+                                            <FaEye className="w-5 h-5" />
+                                        )}
+                                    </button>
+                                </div>
+                            </label>
+                        </div>
+
+                        {/* Confirm Password */}
+                        <div>
+                            <label className="block text-white text-sm sm:text-base">
+                                Confirm Password:
                                 <input
                                     type="password"
-                                    name="password"
-                                    value={formData.password}
+                                    name="confirm_password"
+                                    value={formData.confirm_password}
                                     onChange={handleChange}
-                                    placeholder="Enter Password"
+                                    placeholder="Confirm Password"
                                     required
-                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
-                                    title="Password must be at least 8 characters long, include uppercase, lowercase, a number, and a special character."
                                     className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] transition text-sm sm:text-base"
                                 />
                             </label>
@@ -180,7 +230,7 @@ function Register() {
                     {/* Submit Button */}
                     <button
                         type="submit"
-                        className="w-full py-2 px-4 bg-[#FFDB75] text-[#194F90] font-semibold rounded-lg hover:bg-[#f3cd64] transition duration-200 text-sm sm:text-base"
+                        className="w-full py-2 px-4 bg-[#FFDB75] text-[#194F90] font-semibold rounded-lg hover:bg-[#f3cd64] transition duration-200 text-sm sm:text-base disabled:opacity-50"
                         disabled={loading}
                     >
                         {loading ? "Processing..." : "Register"}
