@@ -10,16 +10,16 @@ class ConfirmAppointment extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $appointment; // Store the appointment data
-    public $pdfFilePath; // Store the PDF file path
+    public $appointment;  // Store the appointment data
+    public $pdfUrl;       // Store the public PDF URL
 
     /**
      * Create a new message instance.
      */
-    public function __construct($appointment, $pdfFilePath)
+    public function __construct($appointment, $pdfUrl)
     {
         $this->appointment = $appointment;
-        $this->pdfFilePath = $pdfFilePath;
+        $this->pdfUrl = $pdfUrl;
     }
 
     /**
@@ -29,13 +29,9 @@ class ConfirmAppointment extends Mailable
     {
         return $this->subject('Appointment Confirmation')
             ->view('emails.confirm-appointment') // Blade email template
-            // Attach the PDF file
-            ->attach($this->pdfFilePath, [
-                'as' => 'RTU-Appointment-Receipt.pdf',
-                'mime' => 'application/pdf',
-            ])
             ->with([
-                'appointment' => $this->appointment, // Pass the appointment data to the template
+                'appointment' => $this->appointment,
+                'pdfUrl' => $this->pdfUrl, // Pass public URL instead of file attachment
             ]);
     }
 }
