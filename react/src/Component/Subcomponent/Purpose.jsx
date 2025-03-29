@@ -214,7 +214,11 @@ const Purpose = ({ formData, setFormData, errors }) => {
                             rows="3"
                             onBlur={handleBlur}
                             name="aptother"
-                            className="text-gray-800 bg-white w-full mt-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75] resize-y"
+                            className={`text-gray-800 bg-white w-full mt-1 py-2 px-3 border ${
+                                touched.aptother && errors.aptother
+                                    ? "border-red-500"
+                                    : "border-gray-300"
+                            } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y`}
                             value={formData.aptother || ""}
                             onChange={(e) => {
                                 const newValue = e.target.value;
@@ -225,12 +229,15 @@ const Purpose = ({ formData, setFormData, errors }) => {
                             }}
                         />
                     </label>
-                    {touched.aptother && (
-                        <p className="text-red-500 text-xs">
-                            {errors.aptother}
-                        </p>
-                    )}
-                    <p className="text-white text-sm mt-2">
+                    {/* Fixed height container for validation message */}
+                    <div className="h-6">
+                        {touched.aptother && errors.aptother && (
+                            <p className="text-red-500 text-xs">
+                                {errors.aptother}
+                            </p>
+                        )}
+                    </div>
+                    <p className="text-black text-sm mt-1">
                         {200 - (formData.aptother?.length || 0)} characters
                         remaining
                     </p>
@@ -290,13 +297,6 @@ const Purpose = ({ formData, setFormData, errors }) => {
 
                         {/* Modal Footer */}
                         <div className="p-4 border-t border-gray-200 flex justify-end space-x-3">
-                            {/* Add a save button if you make it editable */}
-                            {/* <button
-          onClick={handleSaveInstructions}
-          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
-        >
-          Save Changes
-        </button> */}
                             <button
                                 onClick={() => setShowInstructionModal(false)}
                                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
