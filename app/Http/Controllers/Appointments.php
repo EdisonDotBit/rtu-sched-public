@@ -103,34 +103,15 @@ class Appointments extends Controller
         ]);
     }
 
-    // public function delapt($aptId)
-    // {
-    //     $apt = Appointment::find($aptId);
-    //     $apt->delete();
-    //     return response()->json([
-    //         'status' => 200,
-    //         'messages' => 'Successfully deleted appointment',
-    //     ]);
-    // }
-
-    // public function uptodone($aptId)
-    // {
-    //     $apt = Appointment::find($aptId);
-    //     $apt->aptstatus = 'done';
-    //     try {
-    //         $apt->save();
-    //         return response()->json([
-    //             'status' => 200,
-    //             'messages' => 'Successfully updated appointment',
-    //             'data' => $apt,
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         return response()->json([
-    //             'status' => 400,
-    //             'error' => 'Failed to update appointment',
-    //         ], 400);
-    //     }
-    // }
+    public function delapt($aptId)
+    {
+        $apt = Appointment::find($aptId);
+        $apt->delete();
+        return response()->json([
+            'status' => 200,
+            'messages' => 'Successfully deleted appointment',
+        ]);
+    }
 
     public function reschedule(Request $request, int $aptId)
     {
