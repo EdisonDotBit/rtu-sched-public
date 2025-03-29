@@ -237,7 +237,7 @@ const Purpose = ({ formData, setFormData, errors }) => {
                             </p>
                         )}
                     </div>
-                    <p className="text-black text-sm mt-1">
+                    <p className="text-black text-sm">
                         {200 - (formData.aptother?.length || 0)} characters
                         remaining
                     </p>
