@@ -97,14 +97,7 @@ const TableRow = ({
                 <td className="px-4 py-3 whitespace-nowrap text-sm text-center space-x-1">
                     <div className="flex flex-col sm:flex-row gap-1">
                         <ActionButton
-                            onClick={() =>
-                                handleAction(
-                                    apt.aptid,
-                                    "Confirm Appointment",
-                                    "Are you sure you want to confirm this appointment?",
-                                    confirmAppointment
-                                )
-                            }
+                            onClick={() => confirmAppointment(apt.aptid)}
                             disabled={apt.aptstatus !== "ongoing"}
                             label="Confirm"
                             color="green"

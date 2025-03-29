@@ -134,10 +134,7 @@ function AppointmentsAdmin() {
         setModalTitle(title);
         setConfirmationMessage(message);
         setSelectedAppointmentNum(id);
-        setAction(() => async () => {
-            await actionFn(id);
-            await getData();
-        });
+        setAction(() => () => actionFn(id));
         modalRef.current.showModal();
     };
 
