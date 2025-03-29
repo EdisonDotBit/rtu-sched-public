@@ -20,6 +20,7 @@ function ManageAccount() {
     const [showPassword, setShowPassword] = useState(false);
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
     const [updateMessage, setUpdateMessage] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -44,9 +45,11 @@ function ManageAccount() {
     const handleUpdate = async (e) => {
         e.preventDefault();
         setUpdateMessage("");
+        setLoading(true);
 
         if (password && password !== passwordConfirmation) {
             toast.error("Passwords do not match.");
+            setLoading(false);
             return;
         }
 
@@ -54,6 +57,7 @@ function ManageAccount() {
 
         if (!token) {
             toast.error("Authentication token not found. Please log in again.");
+            setLoading(false);
             return;
         }
 
@@ -88,6 +92,8 @@ function ManageAccount() {
                 error.response?.data?.message ||
                     "Failed to update account. Please try again."
             );
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -188,7 +194,7 @@ function ManageAccount() {
                                     onChange={(e) =>
                                         setPassword(e.target.value)
                                     }
-                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};:'\\|,.<>/?~`]).{8,}$"
                                     title="Password must be at least 8 characters long, include uppercase, lowercase, a number, and a special character."
                                     placeholder="Enter New Password"
                                     className="text-gray-800 bg-white w-full mt-1 py-2 px-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
@@ -232,11 +238,13 @@ function ManageAccount() {
                         </div>
                     </div>
 
+                    {/* Submit Button */}
                     <button
                         type="submit"
-                        className="w-full py-2 px-4 bg-[#FFDB75] text-[#194F90] font-semibold rounded-lg hover:bg-[#f3cd64] transition duration-200 mt-4"
+                        className="w-full py-2 px-4 bg-[#FFDB75] text-[#194F90] font-semibold rounded-lg hover:bg-[#f3cd64] transition duration-200 text-sm sm:text-base disabled:opacity-50"
+                        disabled={loading}
                     >
-                        Update Account
+                        {loading ? "Processing..." : "Update Account"}
                     </button>
                 </form>
             </div>

@@ -170,8 +170,6 @@ class Appointments extends Controller
         }
     }
 
-
-
     public function confirmAppointment($id)
     {
         Log::info('Starting appointment confirmation process for ID: ' . $id);
@@ -181,6 +179,7 @@ class Appointments extends Controller
             return response()->json(['error' => 'Appointment not found.'], 404);
         }
 
+        // Update appointment status
         $appointment->aptstatus = 'confirmed';
         try {
             $appointment->save();
@@ -190,12 +189,25 @@ class Appointments extends Controller
             return response()->json(['error' => 'Failed to save appointment status.'], 500);
         }
 
-        // Generate PDF using DomPDF
+        // Generate PDF using DomPDF with unique filename
+        $pdfFileName = 'RTU-Appointment-Receipt-' . $id . '-' . time() . '.pdf';
+        $pdfFilePath = storage_path('app/public/' . $pdfFileName);
+
         try {
+            // Ensure directory exists
+            if (!file_exists(dirname($pdfFilePath))) {
+                mkdir(dirname($pdfFilePath), 0755, true);
+            }
+
             $pdf = PDF::loadView('pdf.appointment', compact('appointment'));
-            $pdfFilePath = storage_path('app/public/RTU-Appointment-Receipt.pdf');
             $pdf->save($pdfFilePath);
+
+            // Verify PDF was created
+            if (!file_exists($pdfFilePath)) {
+                throw new \Exception('PDF file was not created');
+            }
             Log::info('PDF generated successfully for appointment ID: ' . $id);
+            Log::info('PDF generated at: ' . $pdfFilePath); // Add after successful PDF creation
         } catch (\Exception $e) {
             Log::error('Error generating PDF: ' . $e->getMessage());
             return response()->json(['error' => 'Failed to generate PDF.'], 500);
@@ -204,16 +216,27 @@ class Appointments extends Controller
         // Send confirmation email with PDF attachment
         try {
             Log::info('Sending confirmation email to: ' . $appointment->aptemail);
-            Mail::to($appointment->aptemail)->send(new ConfirmAppointment($appointment, $pdfFilePath));
+            Mail::to($appointment->aptemail)
+                ->send(new ConfirmAppointment($appointment, $pdfFilePath));
             Log::info('Confirmation email sent successfully to: ' . $appointment->aptemail);
         } catch (\Exception $e) {
             Log::error('Error sending confirmation email: ' . $e->getMessage());
+            // Delete the PDF if email fails
+            if (file_exists($pdfFilePath)) {
+                unlink($pdfFilePath);
+            }
             return response()->json(['error' => 'Failed to send confirmation email.'], 500);
+        }
+
+        // Clean up - delete the PDF after sending
+        if (file_exists($pdfFilePath)) {
+            unlink($pdfFilePath);
         }
 
         Log::info('Appointment confirmed and email sent for appointment ID: ' . $id);
         return response()->json(['success' => true, 'message' => 'Appointment confirmed and email sent.']);
     }
+
     public function doneAppointment($id)
     {
         $appointment = Appointment::find($id);

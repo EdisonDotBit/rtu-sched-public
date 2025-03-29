@@ -112,16 +112,11 @@ function GuestSetAppointment() {
             newErrors.aptpnumber = "Contact number must be 11 digits long.";
         }
 
-        // Validate Email (Ensure it's not empty and ends with gmail or yahoo.com)
+        // Validate Email (Ensure it's not empty and ends with gmail.com only)
         if (!formData.aptemail) {
-            newErrors.aptemail = "Personal email is required.";
-        } else if (
-            !/^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com)$/.test(
-                formData.aptemail
-            )
-        ) {
-            newErrors.aptemail =
-                "Personal email must be in gmail or yahoo format.";
+            newErrors.aptemail = "Email is required.";
+        } else if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(formData.aptemail)) {
+            newErrors.aptemail = "Please use a valid Gmail address.";
         }
 
         // Check if the form is valid
@@ -192,6 +187,7 @@ function GuestSetAppointment() {
             setIsSubmitting(false); // Reset after request completes
         }
     };
+
     const handleBranchSelect = () => {
         setIsBranchSelected(true);
         setIsOfficeSelected(false); // Reset office selection when changing branches
@@ -568,6 +564,17 @@ function GuestSetAppointment() {
                                 <h3 className="text-xl font-bold text-gray-900 mb-2">
                                     Appointment Scheduled
                                 </h3>
+                                {/* Display the appointment number here */}
+                                {succData && (
+                                    <div className="mb-4">
+                                        <p className="text-lg font-semibold text-gray-800">
+                                            Your Appointment Number:
+                                        </p>
+                                        <p className="text-2xl font-bold text-blue-600">
+                                            {succData.aptid}
+                                        </p>
+                                    </div>
+                                )}
                                 <p className="text-gray-700 mb-4">
                                     Your appointment has been scheduled
                                     successfully!
