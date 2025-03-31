@@ -74,7 +74,9 @@ function SetAppointment() {
 
     useEffect(() => {
         const getData = async () => {
-            const getRes = await fetch(`${apiBaseUrl}/api/allongoing`);
+            const getRes = await fetch(
+                `${apiBaseUrl}/api/allongoingandconfirmed`
+            );
             const getDataResult = await getRes.json();
             setAppointments(getDataResult);
         };
