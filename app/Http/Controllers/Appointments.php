@@ -20,6 +20,13 @@ class Appointments extends Controller
         return $apt;
     }
 
+    public function allOngoingAndConfirmedAppointments()
+    {
+        $apt = Appointment::whereIn('aptstatus', ['ongoing', 'confirmed'])->get();
+        return $apt;
+    }
+
+
     public function allRolesAndBranch(string $aptrole, string $aptbranch)
     {
         $apt = Appointment::where('aptoffice', $aptrole)

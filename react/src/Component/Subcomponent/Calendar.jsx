@@ -112,34 +112,26 @@ const Calendar = ({
         ]
     );
 
-    // Navigation handlers
-    const handlePrevYear = useCallback(() => {
-        setCurrentDate(
-            (prevDate) =>
-                new Date(prevDate.getFullYear() - 1, prevDate.getMonth())
-        );
-    }, []);
-
-    const handleNextYear = useCallback(() => {
-        setCurrentDate(
-            (prevDate) =>
-                new Date(prevDate.getFullYear() + 1, prevDate.getMonth())
-        );
-    }, []);
-
+    // Navigation handlers - modified to only allow current and next month
     const handlePrevMonth = useCallback(() => {
-        setCurrentDate(
-            (prevDate) =>
-                new Date(prevDate.getFullYear(), prevDate.getMonth() - 1)
-        );
-    }, []);
+        const now = new Date();
+        const prevMonth = new Date(currentYear, currentMonth - 1);
+
+        // Only allow navigation if not going before current month
+        if (prevMonth >= new Date(now.getFullYear(), now.getMonth())) {
+            setCurrentDate(prevMonth);
+        }
+    }, [currentYear, currentMonth]);
 
     const handleNextMonth = useCallback(() => {
-        setCurrentDate(
-            (prevDate) =>
-                new Date(prevDate.getFullYear(), prevDate.getMonth() + 1)
-        );
-    }, []);
+        const now = new Date();
+        const nextMonth = new Date(currentYear, currentMonth + 1);
+
+        // Only allow navigation if not going beyond next month
+        if (nextMonth <= new Date(now.getFullYear(), now.getMonth() + 1)) {
+            setCurrentDate(nextMonth);
+        }
+    }, [currentYear, currentMonth]);
 
     // Check if a date is disabled
     const isPastDate = useCallback(
@@ -156,14 +148,14 @@ const Calendar = ({
             // Disable past dates for everyone
             if (selectedDate < new Date()) return true;
 
-            // For Students/Guests only: Disable today + 2 days
+            // For Students/Guests only: Disable today + tomorrow (2 days total)
             if (userRole === "Student" || userRole === "Guest") {
                 const today = new Date();
-                const twoDaysLater = new Date();
-                twoDaysLater.setDate(today.getDate() + 2);
-                twoDaysLater.setHours(23, 59, 59, 0);
+                const tomorrow = new Date();
+                tomorrow.setDate(today.getDate() + 1); // Only +1 day (today + tomorrow)
+                tomorrow.setHours(23, 59, 59, 0);
 
-                if (selectedDate <= twoDaysLater) return true;
+                if (selectedDate <= tomorrow) return true;
             }
 
             // Disable weekends for everyone (optional for Admins)
@@ -317,64 +309,52 @@ const Calendar = ({
         handleDateClick,
     ]);
 
+    // Disable previous/next month buttons based on current date
+    const isPrevMonthDisabled =
+        new Date(currentYear, currentMonth - 1) <
+        new Date(new Date().getFullYear(), new Date().getMonth());
+    const isNextMonthDisabled =
+        new Date(currentYear, currentMonth + 1) >
+        new Date(new Date().getFullYear(), new Date().getMonth() + 1);
+
     return (
         <div className="mx-auto w-full max-w-xl p-2 sm:p-3 md:p-4 text-black">
             {isLoading ? (
                 <Loading />
             ) : (
                 <>
-                    {/* Year Navigation */}
-                    <div className="flex justify-between items-center mb-2 sm:mb-3 md:mb-4 gap-1 sm:gap-3 md:gap-4">
-                        <button
-                            type="button"
-                            onClick={handlePrevYear}
-                            className="bg-[#194F90] hover:bg-[#123A69] text-white px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-lg transition-colors duration-200 text-xs sm:text-sm md:text-base"
-                        >
-                            <span className="hidden sm:inline">Previous</span>
-                            <span className="sm:hidden">Prev</span>
-                        </button>
-                        <div className="text-center">
-                            <div className="mb-0 sm:mb-1 md:mb-2 font-semibold text-xs sm:text-sm md:text-lg">
-                                Year
-                            </div>
-                            <div className="text-sm sm:text-xl md:text-2xl font-bold">
-                                {currentYear}
-                            </div>
-                        </div>
-                        <button
-                            type="button"
-                            onClick={handleNextYear}
-                            className="bg-[#194F90] hover:bg-[#123A69] text-white px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-lg transition-colors duration-200 text-xs sm:text-sm md:text-base"
-                        >
-                            <span className="hidden sm:inline">Next</span>
-                            <span className="sm:hidden">Next</span>
-                        </button>
-                    </div>
-
-                    {/* Month Navigation */}
+                    {/* Month Navigation Only */}
                     <div className="flex justify-between items-center mb-2 sm:mb-3 md:mb-4 gap-1 sm:gap-3 md:gap-4">
                         <button
                             type="button"
                             onClick={handlePrevMonth}
-                            className="bg-[#194F90] hover:bg-[#123A69] text-white px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-lg transition-colors duration-200 text-xs sm:text-sm md:text-base"
+                            disabled={isPrevMonthDisabled}
+                            className={`${
+                                isPrevMonthDisabled
+                                    ? "bg-gray-400 cursor-not-allowed"
+                                    : "bg-[#194F90] hover:bg-[#123A69]"
+                            } text-white px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-lg transition-colors duration-200 text-xs sm:text-sm md:text-base`}
                         >
                             <span className="hidden sm:inline">Previous</span>
                             <span className="sm:hidden">Prev</span>
                         </button>
-                        <div className="text-center">
-                            <div className="mb-0 sm:mb-1 md:mb-2 font-semibold text-xs sm:text-sm md:text-lg">
-                                Month
-                            </div>
+                        <div className="text-center whitespace-nowrap">
                             <div className="text-sm sm:text-xl md:text-2xl font-bold">
                                 {currentDate.toLocaleString("default", {
                                     month: "long",
+                                    year: "numeric",
                                 })}
                             </div>
                         </div>
                         <button
                             type="button"
                             onClick={handleNextMonth}
-                            className="bg-[#194F90] hover:bg-[#123A69] text-white px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-lg transition-colors duration-200 text-xs sm:text-sm md:text-base"
+                            disabled={isNextMonthDisabled}
+                            className={`${
+                                isNextMonthDisabled
+                                    ? "bg-gray-400 cursor-not-allowed"
+                                    : "bg-[#194F90] hover:bg-[#123A69]"
+                            } text-white px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-lg transition-colors duration-200 text-xs sm:text-sm md:text-base`}
                         >
                             <span className="hidden sm:inline">Next</span>
                             <span className="sm:hidden">Next</span>
