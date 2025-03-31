@@ -12,30 +12,9 @@ export default function PurposeList({
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div className="w-full md:w-auto">
-                    <label
-                        htmlFor="office-select"
-                        className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                        Office Name
-                    </label>
-                    <select
-                        id="office-select"
-                        className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                        value={selectedOffice?.offid || ""}
-                        onChange={(e) => {
-                            const officeId = e.target.value;
-                            const office = offData.find(
-                                (o) => o.offid === officeId
-                            );
-                            setSelectedOffice(office);
-                        }}
-                    >
-                        {offData.map((office) => (
-                            <option key={office.offid} value={office.offid}>
-                                {office.offname} ({office.offabbr})
-                            </option>
-                        ))}
-                    </select>
+                    <h2 className="text-lg font-medium text-gray-900">
+                        Purposes
+                    </h2>
                 </div>
                 {selectedOffice && (
                     <button
