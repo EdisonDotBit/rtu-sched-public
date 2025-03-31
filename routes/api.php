@@ -28,6 +28,7 @@ Route::controller(Appointments::class)->group(function () {
     Route::post('setappt', 'newapt');
     Route::get('searchappt/{aptid}', 'getapt');
     Route::get('allongoing', 'allOngoingAppointments');
+    Route::get('allongoingandconfirmed', 'allOngoingAndConfirmedAppointments');
     Route::get('filteredapt/{aptrole}/{aptbranch}', 'allRolesAndBranch');
     Route::get('branchapt/{aptbranch}', 'allBranch');
     Route::get('all', 'allAppointments');
