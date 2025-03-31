@@ -366,9 +366,7 @@ function OfficeAdminManage() {
                         <h1 className="text-2xl font-bold text-gray-800">
                             Office Management
                         </h1>
-                        <p className="text-gray-600">
-                            Manage offices for {branch} branch
-                        </p>
+                        <p className="text-gray-600">Manage office details</p>
                     </div>
 
                     <OfficeList
