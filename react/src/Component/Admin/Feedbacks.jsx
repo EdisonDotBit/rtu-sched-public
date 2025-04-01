@@ -107,11 +107,11 @@ function Feedbacks() {
             {/* Header with stats */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">
-                        Customer Feedback
+                    <h1 className="text-2xl font-bold text-gray-800">
+                        User Feedbacks
                     </h1>
-                    <p className="text-gray-500 mt-1">
-                        Insights from your users and customers
+                    <p className="text-gray-600">
+                        Insights from student and guests
                     </p>
                 </div>
 
