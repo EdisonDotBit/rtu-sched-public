@@ -1,9 +1,7 @@
 export default function OfficeList({
-    offabbr,
-    setoffabbr,
     searchResults,
     isLoading,
-    toEdit,
+    openEditLimitModal,
     openDateTimeModal,
 }) {
     return (
@@ -89,13 +87,13 @@ export default function OfficeList({
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div className="flex justify-end space-x-2">
                                             <button
-                                                onClick={(e) =>
-                                                    toEdit(e, office.offid)
+                                                onClick={() =>
+                                                    openEditLimitModal(office)
                                                 }
                                                 className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-md text-sm font-medium transition-colors duration-200"
-                                                aria-label={`Edit ${office.offname}`}
+                                                aria-label={`Edit limit for ${office.offname}`}
                                             >
-                                                Edit
+                                                Edit Limit
                                             </button>
                                             <button
                                                 onClick={() =>
