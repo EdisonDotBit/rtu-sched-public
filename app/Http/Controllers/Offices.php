@@ -180,7 +180,7 @@ class Offices extends Controller
     {
         $validatedData = $request->validate([
             'purposeId' => 'required|exists:purposes,id',
-            'instruction' => 'required|string',
+            'instruction' => 'nullable|string',
         ]);
 
         $purpose = Purpose::find($validatedData['purposeId']);
@@ -206,6 +206,43 @@ class Offices extends Controller
         $purpose->delete();
 
         return response()->json(['status' => 200, 'message' => 'Purpose deleted successfully']);
+    }
+
+    public function updateLimit(Request $request, $offid)
+    {
+        try {
+            $validatedData = $request->validate([
+                'offlimit' => 'required|integer|min:1',
+            ]);
+
+            $off = Office::find($offid);
+
+            if (!$off) {
+                return response()->json([
+                    'status' => 404,
+                    'error' => 'Office not found',
+                ], 404);
+            }
+
+            $off->offlimit = $validatedData['offlimit'];
+            $off->save();
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Office limit updated successfully.',
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'status' => 422,
+                'error' => 'Validation failed.',
+                'messages' => $e->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'error' => 'Failed to update the office limit.',
+            ], 500);
+        }
     }
 
 
