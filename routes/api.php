@@ -51,10 +51,11 @@ Route::controller(Offices::class)->group(function () {
     Route::get('office/info/{offid}', 'getoff');
     Route::put('office/edit/{offid}', 'edoff');
     Route::get('office/find/{offabbr}', 'findAbbr');
+    Route::put('office/update-limit/{offid}',  'updateLimit');
     Route::post('office/addPurpose', 'addPurpose');
     Route::get('office/purposes/{offabbr}/{offBranch}', 'getPurposes');
-    Route::post('/office/updateInstruction', [Offices::class, 'updateInstruction']);
-    Route::delete('/office/deletePurpose/{purposeId}', [Offices::class, 'deletePurpose']);
+    Route::post('office/updateInstruction', 'updateInstruction');
+    Route::delete('office/deletePurpose/{purposeId}', 'deletePurpose');
     Route::post('office/toggle-date', 'toggleDisabledDate');
     Route::get('office/disabled-dates/{offabbr}/{branch}', 'getDisabledDates');
     Route::post('office/toggle-slot', 'toggleDisabledSlot');
