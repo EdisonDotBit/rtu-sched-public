@@ -1,46 +1,82 @@
+// src/Component/AppointmentsAdmin/SummaryCards.jsx
+import { useMemo } from "react";
+import { Card, CardContent, Typography, Box } from "@mui/material";
+
 const SummaryCards = ({ searchResults }) => {
+    const counts = useMemo(() => {
+        return {
+            total: searchResults.length,
+            ongoing: searchResults.filter((a) => a.aptstatus === "ongoing")
+                .length,
+            confirmed: searchResults.filter((a) => a.aptstatus === "confirmed")
+                .length,
+            done: searchResults.filter((a) => a.aptstatus === "done").length,
+            cancelled: searchResults.filter((a) => a.aptstatus === "cancelled")
+                .length,
+        };
+    }, [searchResults]);
+
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-            <div className="bg-white p-4 rounded-lg shadow border border-gray-200">
-                <h3 className="text-sm font-medium text-gray-500">
-                    Total Appointments
-                </h3>
-                <p className="text-2xl font-semibold">{searchResults.length}</p>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow border border-gray-200">
-                <h3 className="text-sm font-medium text-gray-500">Ongoing</h3>
-                <p className="text-2xl font-semibold text-yellow-600">
-                    {
-                        searchResults.filter((a) => a.aptstatus === "ongoing")
-                            .length
-                    }
-                </p>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow border border-gray-200">
-                <h3 className="text-sm font-medium text-gray-500">Confirmed</h3>
-                <p className="text-2xl font-semibold text-blue-600">
-                    {
-                        searchResults.filter((a) => a.aptstatus === "confirmed")
-                            .length
-                    }
-                </p>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow border border-gray-200">
-                <h3 className="text-sm font-medium text-gray-500">Completed</h3>
-                <p className="text-2xl font-semibold text-green-600">
-                    {searchResults.filter((a) => a.aptstatus === "done").length}
-                </p>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow border border-gray-200">
-                <h3 className="text-sm font-medium text-gray-500">Cancelled</h3>
-                <p className="text-2xl font-semibold text-red-600">
-                    {
-                        searchResults.filter((a) => a.aptstatus === "cancelled")
-                            .length
-                    }
-                </p>
-            </div>
-        </div>
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: 4 }}>
+            <Card sx={{ minWidth: 175, flexGrow: 1 }}>
+                <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                        Total Appointments
+                    </Typography>
+                    <Typography variant="h5" component="div">
+                        {counts.total}
+                    </Typography>
+                </CardContent>
+            </Card>
+            <Card sx={{ minWidth: 175, flexGrow: 1 }}>
+                <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                        Ongoing
+                    </Typography>
+                    <Typography
+                        variant="h5"
+                        component="div"
+                        color="warning.main"
+                    >
+                        {counts.ongoing}
+                    </Typography>
+                </CardContent>
+            </Card>
+            <Card sx={{ minWidth: 175, flexGrow: 1 }}>
+                <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                        Confirmed
+                    </Typography>
+                    <Typography variant="h5" component="div" color="info.main">
+                        {counts.confirmed}
+                    </Typography>
+                </CardContent>
+            </Card>
+            <Card sx={{ minWidth: 175, flexGrow: 1 }}>
+                <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                        Completed
+                    </Typography>
+                    <Typography
+                        variant="h5"
+                        component="div"
+                        color="success.main"
+                    >
+                        {counts.done}
+                    </Typography>
+                </CardContent>
+            </Card>
+            <Card sx={{ minWidth: 175, flexGrow: 1 }}>
+                <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                        Cancelled
+                    </Typography>
+                    <Typography variant="h5" component="div" color="error.main">
+                        {counts.cancelled}
+                    </Typography>
+                </CardContent>
+            </Card>
+        </Box>
     );
 };
 
