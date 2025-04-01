@@ -2,36 +2,25 @@ import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../../Hooks/useAuth";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FaSync, FaSearch, FaFilter, FaCalendarAlt } from "react-icons/fa";
 import useAppointments from "../../Hooks/useAppointments";
 import SummaryCards from "./Component/AppointmentsAdmin/SummaryCards";
-import TableHeader from "./Component/AppointmentsAdmin/TableHeader";
-import TableRow from "./Component/AppointmentsAdmin/TableRow";
 import ConfirmationModal from "./Component/AppointmentsAdmin/ConfirmationModal";
 import AttachmentModal from "./Component/AppointmentsAdmin/AttachmentModal";
 import OtherPurposeModal from "./Component/AppointmentsAdmin/OtherPurposeModal";
+import AppointmentsTable from "./Component/AppointmentsAdmin/AppointmentsTable";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 
 function AppointmentsAdmin() {
-    const [aptemail, setAptEmail] = useState("");
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-    const [filterStatus, setFilterStatus] = useState("");
-    const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
     const { role, branch } = useAuth();
-    const [selectedAppointmentNum, setSelectedAppointmentNum] = useState(null);
-    const [confirmationMessage, setConfirmationMessage] = useState("");
-    const [modalTitle, setModalTitle] = useState("");
-    const [action, setAction] = useState(null);
     const modalRef = useRef(null);
-    const [selectedAttachments, setSelectedAttachments] = useState([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isOtherPurposeModalOpen, setOtherPurposeModalOpen] = useState(false);
-    const [selectedOtherPurpose, setSelectedOtherPurpose] = useState("");
-    const [timeRange, setTimeRange] = useState("all");
-    const [showDateDropdown, setShowDateDropdown] = useState(false);
+    const bulkModalRef = useRef(null);
 
+    // Initialize with default empty array to prevent undefined errors
     const {
-        aptData,
-        searchResults,
+        aptData = [],
+        searchResults = [],
         setSearchResults,
         isProcessing,
         setIsProcessing,
@@ -40,87 +29,28 @@ function AppointmentsAdmin() {
         markAppointmentDone,
         cancelAppointment,
         deleteAppointment,
+        bulkConfirmAppointments,
+        bulkMarkAppointmentsDone,
+        bulkCancelAppointments,
+        bulkDeleteAppointments,
     } = useAppointments(role, branch, apiBaseUrl);
 
-    // Filter and sort data
-    useEffect(() => {
-        let filteredResults = [...aptData];
+    // State for filters
+    const [filterStatus, setFilterStatus] = useState("");
+    const [timeRange, setTimeRange] = useState("all");
+    const [dateFilterAnchorEl, setDateFilterAnchorEl] = useState(null);
 
-        // Apply email filter
-        if (aptemail) {
-            filteredResults = filteredResults.filter((apt) =>
-                apt.aptemail.toLowerCase().includes(aptemail.toLowerCase())
-            );
-        }
-
-        // Apply status filter
-        if (filterStatus) {
-            filteredResults = filteredResults.filter((apt) =>
-                apt.aptstatus.toLowerCase().includes(filterStatus.toLowerCase())
-            );
-        }
-
-        // Apply time range filter based on appointment date (aptdate)
-        if (timeRange !== "all") {
-            const now = new Date();
-            const today = new Date(now);
-            today.setHours(0, 0, 0, 0); // Start of today
-
-            filteredResults = filteredResults.filter((apt) => {
-                try {
-                    const aptDate = new Date(apt.aptdate);
-                    aptDate.setHours(0, 0, 0, 0); // Normalize to start of day
-
-                    switch (timeRange) {
-                        case "today":
-                            return aptDate.getTime() === today.getTime();
-                        case "week":
-                            // Get start of current week (Sunday)
-                            const startOfWeek = new Date(today);
-                            startOfWeek.setDate(
-                                today.getDate() - today.getDay()
-                            );
-                            // Get end of current week (Saturday)
-                            const endOfWeek = new Date(startOfWeek);
-                            endOfWeek.setDate(startOfWeek.getDate() + 6);
-                            return (
-                                aptDate >= startOfWeek && aptDate <= endOfWeek
-                            );
-                        case "month":
-                            // Get start of current month
-                            const startOfMonth = new Date(
-                                today.getFullYear(),
-                                today.getMonth(),
-                                1
-                            );
-                            // Get end of current month
-                            const endOfMonth = new Date(
-                                today.getFullYear(),
-                                today.getMonth() + 1,
-                                0
-                            );
-                            return (
-                                aptDate >= startOfMonth && aptDate <= endOfMonth
-                            );
-                        default:
-                            return true;
-                    }
-                } catch (error) {
-                    console.error("Error parsing date:", apt.aptdate, error);
-                    return false;
-                }
-            });
-        }
-
-        // Sort by appointment date (aptdate) - soonest first
-        filteredResults.sort((a, b) => {
-            const dateA = new Date(a.aptdate);
-            const dateB = new Date(b.aptdate);
-            return dateA - dateB; // For chronological order (soonest first)
-        });
-
-        setSearchResults(filteredResults);
-    }, [aptemail, aptData, filterStatus, timeRange]);
+    // Modal states
+    const [selectedAppointmentNum, setSelectedAppointmentNum] = useState(null);
+    const [selectedAppointmentIds, setSelectedAppointmentIds] = useState([]);
+    const [confirmationMessage, setConfirmationMessage] = useState("");
+    const [modalTitle, setModalTitle] = useState("");
+    const [action, setAction] = useState(null);
+    const [bulkAction, setBulkAction] = useState(null);
+    const [selectedAttachments, setSelectedAttachments] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isOtherPurposeModalOpen, setOtherPurposeModalOpen] = useState(false);
+    const [selectedOtherPurpose, setSelectedOtherPurpose] = useState("");
 
     // Handle manual refresh
     const handleReload = async () => {
@@ -138,33 +68,128 @@ function AppointmentsAdmin() {
         modalRef.current.showModal();
     };
 
-    // Sort data
-    const sortData = (key) => {
-        let direction = "asc";
-        if (sortConfig.key === key && sortConfig.direction === "asc") {
-            direction = "desc";
-        }
-        setSortConfig({ key, direction });
+    // Handle bulk actions
+    const handleBulkAction = (ids, title, message, actionFn) => {
+        setModalTitle(title);
+        setConfirmationMessage(message);
+        setSelectedAppointmentIds(ids);
+        setBulkAction(() => () => actionFn(ids));
+        bulkModalRef.current.showModal();
+    };
 
-        const sortedData = [...searchResults].sort((a, b) => {
-            // Special handling for date sorting
-            if (key === "aptdate") {
-                const dateA = new Date(a[key]);
-                const dateB = new Date(b[key]);
-                return direction === "asc" ? dateA - dateB : dateB - dateA;
-            }
-
-            if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
-            if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
-            return 0;
+    // Handle PDF export
+    const handleExportRows = (rows) => {
+        const doc = new jsPDF({
+            orientation: "landscape",
+            unit: "mm",
         });
-        setSearchResults(sortedData);
+
+        const title = "Appointments Report";
+        const date = new Date().toLocaleDateString();
+        doc.setFontSize(16);
+        doc.text(title, 14, 10);
+        doc.setFontSize(10);
+        doc.text(`Generated on: ${date}`, 14, 16);
+
+        const tableData = rows.map((row) => [
+            row.original.aptid,
+            row.original.apttype,
+            row.original.aptname,
+            row.original.aptbranch,
+            row.original.aptoffice,
+            formatDate(row.original.aptdate),
+            row.original.apttime,
+            row.original.aptpurpose,
+            truncateText(row.original.aptother || "N/A", 15),
+            row.original.aptstudnum,
+            row.original.aptstatus,
+            row.original.aptemail,
+            row.original.aptattach ? "Yes" : "No",
+        ]);
+
+        const tableHeaders = [
+            "Appt #",
+            "Type",
+            "Full Name",
+            "Branch",
+            "Office",
+            "Date",
+            "Time",
+            "Purpose",
+            "Other Purpose",
+            "ID Number",
+            "Status",
+            "Email",
+            "Attachments",
+        ];
+
+        autoTable(doc, {
+            head: [tableHeaders],
+            body: tableData,
+            startY: 20,
+            styles: {
+                fontSize: 8,
+                cellPadding: 2,
+                overflow: "linebreak",
+            },
+            headStyles: {
+                fillColor: [25, 79, 144],
+                textColor: 255,
+                fontStyle: "bold",
+            },
+            columnStyles: {
+                0: { cellWidth: 25 },
+                1: { cellWidth: 15 },
+                2: { cellWidth: 25 },
+                3: { cellWidth: 20 },
+                4: { cellWidth: 25 },
+                5: { cellWidth: 15 },
+                6: { cellWidth: 15 },
+                7: { cellWidth: 25 },
+                8: { cellWidth: 25 },
+                9: { cellWidth: 20 },
+                10: { cellWidth: 16 },
+                11: { cellWidth: 30 },
+                12: { cellWidth: 22 },
+            },
+            margin: { left: 10, right: 10 },
+            pageBreak: "auto",
+            tableWidth: "wrap",
+        });
+
+        doc.save(`appointments-${new Date().toISOString().slice(0, 10)}.pdf`);
+    };
+
+    // Helper function to truncate long text
+    const truncateText = (text, maxLength) => {
+        if (!text) return "N/A";
+        return text.length > maxLength
+            ? text.substring(0, maxLength) + "..."
+            : text;
+    };
+
+    // Format date for display
+    const formatDate = (dateString) => {
+        try {
+            const date = new Date(dateString);
+            return date.toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+            });
+        } catch {
+            return dateString;
+        }
     };
 
     // Open attachment modal
     const openAttachmentModal = (attachments) => {
-        setSelectedAttachments(JSON.parse(attachments));
-        setIsModalOpen(true);
+        try {
+            setSelectedAttachments(JSON.parse(attachments));
+            setIsModalOpen(true);
+        } catch (error) {
+            toast.error("Error loading attachments");
+        }
     };
 
     // Close attachment modal
@@ -188,193 +213,81 @@ function AppointmentsAdmin() {
     return (
         <div className="min-h-screen bg-gray-50 p-4 md:p-6">
             <div className="max-w-7xl mx-auto">
-                {/* Header and Controls */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <div className="mb-8">
                     <h1 className="text-2xl font-bold text-gray-800">
                         Appointment Management
                     </h1>
-
-                    <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-                        {/* Search Input */}
-                        <div className="relative flex-1">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <FaSearch className="text-gray-400" />
-                            </div>
-                            <input
-                                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                type="text"
-                                placeholder="Search by email..."
-                                value={aptemail}
-                                onChange={(e) => setAptEmail(e.target.value)}
-                            />
-                        </div>
-
-                        {/* Filter and Refresh */}
-                        <div className="flex items-center gap-3">
-                            <button
-                                onClick={handleReload}
-                                className="p-2 bg-white rounded-lg border border-gray-300 shadow-sm hover:bg-gray-50 transition-colors"
-                                title="Refresh data"
-                            >
-                                <FaSync className="text-blue-600" />
-                            </button>
-
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <FaFilter className="text-gray-400" />
-                                </div>
-                                <select
-                                    value={filterStatus}
-                                    onChange={(e) =>
-                                        setFilterStatus(e.target.value)
-                                    }
-                                    className="pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
-                                >
-                                    <option value="">All Statuses</option>
-                                    <option value="ongoing">Ongoing</option>
-                                    <option value="confirmed">Confirmed</option>
-                                    <option value="done">Done</option>
-                                    <option value="cancelled">Cancelled</option>
-                                </select>
-                            </div>
-
-                            {/* Date Filter Dropdown */}
-                            <div className="relative">
-                                <button
-                                    onClick={() =>
-                                        setShowDateDropdown(!showDateDropdown)
-                                    }
-                                    className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50"
-                                >
-                                    <FaCalendarAlt className="text-gray-600" />
-                                    <span className="text-sm">
-                                        {timeRange === "all"
-                                            ? "All Dates"
-                                            : timeRange
-                                                  .charAt(0)
-                                                  .toUpperCase() +
-                                              timeRange.slice(1)}
-                                    </span>
-                                </button>
-
-                                {showDateDropdown && (
-                                    <div className="absolute right-0 mt-1 z-10 bg-white p-2 rounded-lg shadow-lg border border-gray-200 w-40">
-                                        <button
-                                            onClick={() => {
-                                                setTimeRange("today");
-                                                setShowDateDropdown(false);
-                                            }}
-                                            className="block w-full text-left px-3 py-2 text-sm hover:bg-gray-100 rounded"
-                                        >
-                                            Today
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                setTimeRange("week");
-                                                setShowDateDropdown(false);
-                                            }}
-                                            className="block w-full text-left px-3 py-2 text-sm hover:bg-gray-100 rounded"
-                                        >
-                                            This Week
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                setTimeRange("month");
-                                                setShowDateDropdown(false);
-                                            }}
-                                            className="block w-full text-left px-3 py-2 text-sm hover:bg-gray-100 rounded"
-                                        >
-                                            This Month
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                setTimeRange("all");
-                                                setShowDateDropdown(false);
-                                            }}
-                                            className="block w-full text-left px-3 py-2 text-sm hover:bg-gray-100 rounded"
-                                        >
-                                            All Time
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
+                    <p className="text-gray-600">Manage appointment details</p>
                 </div>
 
                 {/* Summary Cards */}
                 <SummaryCards searchResults={searchResults} />
 
-                {/* Appointment Table */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    {searchResults.length > 0 ? (
-                        <div className="overflow-x-auto">
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <TableHeader
-                                    sortConfig={sortConfig}
-                                    sortData={sortData}
-                                    role={role}
-                                />
-                                <tbody className="bg-white divide-y divide-gray-200">
-                                    {searchResults.map((apt) => (
-                                        <TableRow
-                                            key={apt.aptid}
-                                            apt={apt}
-                                            role={role}
-                                            openOtherPurposeModal={
-                                                openOtherPurposeModal
-                                            }
-                                            openAttachmentModal={
-                                                openAttachmentModal
-                                            }
-                                            handleAction={handleAction}
-                                            confirmAppointment={
-                                                confirmAppointment
-                                            }
-                                            markAppointmentDone={
-                                                markAppointmentDone
-                                            }
-                                            cancelAppointment={
-                                                cancelAppointment
-                                            }
-                                            deleteAppointment={
-                                                deleteAppointment
-                                            }
-                                        />
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    ) : (
-                        <div className="p-8 text-center text-gray-500">
-                            No appointments found matching your criteria
-                        </div>
-                    )}
-                </div>
+                {/* Material React Table */}
+                <AppointmentsTable
+                    searchResults={searchResults}
+                    aptData={aptData}
+                    filterStatus={filterStatus}
+                    timeRange={timeRange}
+                    dateFilterAnchorEl={dateFilterAnchorEl}
+                    setFilterStatus={setFilterStatus}
+                    setTimeRange={setTimeRange}
+                    setDateFilterAnchorEl={setDateFilterAnchorEl}
+                    handleReload={handleReload}
+                    role={role}
+                    isProcessing={isProcessing}
+                    handleAction={handleAction}
+                    handleBulkAction={handleBulkAction}
+                    confirmAppointment={confirmAppointment}
+                    markAppointmentDone={markAppointmentDone}
+                    cancelAppointment={cancelAppointment}
+                    deleteAppointment={deleteAppointment}
+                    bulkConfirmAppointments={bulkConfirmAppointments}
+                    bulkMarkAppointmentsDone={bulkMarkAppointmentsDone}
+                    bulkCancelAppointments={bulkCancelAppointments}
+                    bulkDeleteAppointments={bulkDeleteAppointments}
+                    openAttachmentModal={openAttachmentModal}
+                    openOtherPurposeModal={openOtherPurposeModal}
+                    setSearchResults={setSearchResults}
+                    handleExportRows={handleExportRows}
+                />
+
+                {/* Modals */}
+                <ConfirmationModal
+                    modalRef={modalRef}
+                    modalTitle={modalTitle}
+                    confirmationMessage={confirmationMessage}
+                    selectedAppointmentNum={selectedAppointmentNum}
+                    isProcessing={isProcessing}
+                    action={action}
+                    setIsProcessing={setIsProcessing}
+                />
+
+                {/* Bulk Action Modal */}
+                <ConfirmationModal
+                    modalRef={bulkModalRef}
+                    modalTitle={modalTitle}
+                    confirmationMessage={confirmationMessage}
+                    selectedAppointmentNum={null}
+                    selectedAppointmentIds={selectedAppointmentIds}
+                    isProcessing={isProcessing}
+                    action={bulkAction}
+                    setIsProcessing={setIsProcessing}
+                    isBulkAction={true}
+                />
+
+                <AttachmentModal
+                    isModalOpen={isModalOpen}
+                    selectedAttachments={selectedAttachments}
+                    closeAttachmentModal={closeAttachmentModal}
+                />
+
+                <OtherPurposeModal
+                    isOtherPurposeModalOpen={isOtherPurposeModalOpen}
+                    selectedOtherPurpose={selectedOtherPurpose}
+                    closeOtherPurposeModal={closeOtherPurposeModal}
+                />
             </div>
-
-            {/* Modals */}
-            <ConfirmationModal
-                modalRef={modalRef}
-                modalTitle={modalTitle}
-                confirmationMessage={confirmationMessage}
-                selectedAppointmentNum={selectedAppointmentNum}
-                isProcessing={isProcessing}
-                action={action}
-                setIsProcessing={setIsProcessing}
-            />
-
-            <AttachmentModal
-                isModalOpen={isModalOpen}
-                selectedAttachments={selectedAttachments}
-                closeAttachmentModal={closeAttachmentModal}
-            />
-
-            <OtherPurposeModal
-                isOtherPurposeModalOpen={isOtherPurposeModalOpen}
-                selectedOtherPurpose={selectedOtherPurpose}
-                closeOtherPurposeModal={closeOtherPurposeModal}
-            />
         </div>
     );
 }
