@@ -8,7 +8,7 @@ const AttachmentModal = ({
     return (
         <dialog
             open
-            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] bg-[#194F90] rounded-lg shadow-lg p-6"
+            className="z-1000 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] bg-[#194F90] rounded-lg shadow-lg p-6"
             onKeyDown={(event) => {
                 if (event.key === "Escape") {
                     event.preventDefault();
