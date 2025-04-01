@@ -1,3 +1,4 @@
+// src/Hooks/useAppointments.js
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -20,7 +21,6 @@ const useAppointments = (role, branch, apiBaseUrl) => {
             const getRes = await fetch(endpoint);
             const getDataResult = await getRes.json();
             setAptData(getDataResult);
-            setSearchResults(getDataResult);
         } catch (error) {
             toast.error(
                 "Failed to fetch appointment data. Please try again later."
@@ -28,63 +28,152 @@ const useAppointments = (role, branch, apiBaseUrl) => {
         }
     };
 
-    // Appointment action functions
+    // Single appointment actions
     const confirmAppointment = async (id) => {
         try {
+            setIsProcessing(true);
             const response = await axios.post(
                 `${apiBaseUrl}/api/appointments/confirm/${id}`,
                 {}
             );
             if (response.status === 200) {
                 toast.success("Appointment confirmed.");
-                getData();
+                await getData();
             }
         } catch (error) {
             toast.error("Error confirming appointment.");
+        } finally {
+            setIsProcessing(false);
         }
     };
 
     const markAppointmentDone = async (id) => {
         try {
+            setIsProcessing(true);
             const response = await axios.post(
                 `${apiBaseUrl}/api/appointments/done/${id}`,
                 {}
             );
             if (response.status === 200) {
                 toast.success("Appointment marked as done.");
-                getData();
+                await getData();
             }
         } catch (error) {
             toast.error("Error marking appointment as done.");
+        } finally {
+            setIsProcessing(false);
         }
     };
 
     const cancelAppointment = async (id) => {
         try {
+            setIsProcessing(true);
             const response = await axios.post(
                 `${apiBaseUrl}/api/appointments/cancel/${id}`,
                 {}
             );
             if (response.status === 200) {
                 toast.success("Appointment cancelled.");
-                getData();
+                await getData();
             }
         } catch (error) {
             toast.error("Error cancelling appointment.");
+        } finally {
+            setIsProcessing(false);
         }
     };
 
     const deleteAppointment = async (id) => {
         try {
+            setIsProcessing(true);
             const response = await axios.delete(
                 `${apiBaseUrl}/api/appointments/${id}`
             );
             if (response.status === 200) {
                 toast.success("Appointment deleted.");
-                getData();
+                await getData();
             }
         } catch (error) {
             toast.error("Error deleting appointment.");
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
+    // Bulk actions
+    const bulkConfirmAppointments = async (ids) => {
+        try {
+            setIsProcessing(true);
+            const responses = await Promise.all(
+                ids.map(id => 
+                    axios.post(`${apiBaseUrl}/api/appointments/confirm/${id}`, {})
+                )
+            );
+            if (responses.every(res => res.status === 200)) {
+                toast.success(`${ids.length} appointments confirmed.`);
+                await getData();
+            }
+        } catch (error) {
+            toast.error("Error confirming appointments.");
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
+    const bulkMarkAppointmentsDone = async (ids) => {
+        try {
+            setIsProcessing(true);
+            const responses = await Promise.all(
+                ids.map(id => 
+                    axios.post(`${apiBaseUrl}/api/appointments/done/${id}`, {})
+                )
+            );
+            if (responses.every(res => res.status === 200)) {
+                toast.success(`${ids.length} appointments marked as done.`);
+                await getData();
+            }
+        } catch (error) {
+            toast.error("Error marking appointments as done.");
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
+    const bulkCancelAppointments = async (ids) => {
+        try {
+            setIsProcessing(true);
+            const responses = await Promise.all(
+                ids.map(id => 
+                    axios.post(`${apiBaseUrl}/api/appointments/cancel/${id}`, {})
+                )
+            );
+            if (responses.every(res => res.status === 200)) {
+                toast.success(`${ids.length} appointments cancelled.`);
+                await getData();
+            }
+        } catch (error) {
+            toast.error("Error cancelling appointments.");
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
+    const bulkDeleteAppointments = async (ids) => {
+        try {
+            setIsProcessing(true);
+            const responses = await Promise.all(
+                ids.map(id => 
+                    axios.delete(`${apiBaseUrl}/api/appointments/${id}`)
+                )
+            );
+            if (responses.every(res => res.status === 200)) {
+                toast.success(`${ids.length} appointments deleted.`);
+                await getData();
+            }
+        } catch (error) {
+            toast.error("Error deleting appointments.");
+        } finally {
+            setIsProcessing(false);
         }
     };
 
@@ -103,12 +192,16 @@ const useAppointments = (role, branch, apiBaseUrl) => {
         searchResults,
         setSearchResults,
         isProcessing,
-        setIsProcessing,
+        setIsProcessing, 
         getData,
         confirmAppointment,
         markAppointmentDone,
         cancelAppointment,
-        deleteAppointment
+        deleteAppointment,
+        bulkConfirmAppointments,
+        bulkMarkAppointmentsDone,
+        bulkCancelAppointments,
+        bulkDeleteAppointments
     };
 };
 
