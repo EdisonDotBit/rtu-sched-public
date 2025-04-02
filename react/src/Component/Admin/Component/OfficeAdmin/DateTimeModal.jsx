@@ -23,10 +23,10 @@ export default function DateTimeModal({
     return (
         <dialog
             ref={dateTimeModal}
-            className="modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 backdrop:bg-gray-900/50 backdrop:backdrop-blur-sm"
+            className="modal w-7xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 backdrop:bg-gray-900/50 backdrop:backdrop-blur-sm"
             aria-labelledby="datetime-modal-title"
         >
-            <div className="modal-box max-w-4xl bg-white rounded-xl shadow-xl p-6">
+            <div className="modal-box w-full bg-white rounded-xl shadow-xl p-6">
                 <div className="flex items-center justify-between mb-4">
                     <h3
                         id="datetime-modal-title"
