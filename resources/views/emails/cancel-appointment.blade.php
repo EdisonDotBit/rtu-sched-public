@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Appointment Cancelled</title>
+    <title>Appointment Cancellation Notification</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -21,7 +21,6 @@
             overflow: hidden;
         }
 
-        /* Header */
         .header {
             background-color: #194F90;
             color: white;
@@ -29,78 +28,90 @@
             font-weight: bold;
             padding: 15px 0;
             text-align: center;
-            text-transform: uppercase;
         }
 
         .content {
-            padding: 20px;
+            padding: 25px;
+            text-align: left;
         }
 
-        .message {
-            font-size: 16px;
-            color: #333;
-            margin-bottom: 15px;
+        .appointment-details {
+            background-color: #f9f9f9;
+            border-left: 4px solid #194F90;
+            padding: 15px;
+            margin: 15px 0;
         }
 
-        .thank-you {
-            font-size: 16px;
-            color: #333;
+        .reason-list {
+            margin: 20px 0 20px 20px;
+        }
+
+        .reason-item {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .reason-item:before {
+            content: "•";
+            color: #194F90;
             font-weight: bold;
-            margin-top: 15px;
-        }
-
-        .instructions {
-            font-size: 14px;
-            color: #777;
-            margin-top: 10px;
-            line-height: 1.5;
+            position: absolute;
+            left: 0;
         }
 
         .footer {
             background-color: #f9f9f9;
-            padding: 10px;
+            padding: 15px;
             font-size: 12px;
-            color: #999;
+            color: #777;
             border-top: 1px solid #ddd;
-            margin-top: 20px;
         }
     </style>
 </head>
 
 <body>
-
     <div class="email-container">
-        <!-- Header -->
         <div class="header">
-            Appointment Cancelled
+            Appointment Cancellation Notification
         </div>
 
         <div class="content">
-            <!-- Message -->
-            <p class="message">
-                Dear {{ $appointment->aptname }},
-            </p>
+            <p>Dear {{ $appointment->aptname }},</p>
 
-            <p class="message">
-                We regret to inform you that your appointment has been cancelled due to several reasons.
-            </p>
+            <p>We regret to inform you that your scheduled appointment has been cancelled. Please review the details below:</p>
 
-            <p class="thank-you">
-                Thank you for using our service.
-            </p>
+            <div class="appointment-details">
+                <strong>Appointment Details:</strong><br>
+                Appointment No: {{ $appointment->aptid }}<br>
+                ID No: {{ $appointment->aptstudnum }}<br>
+                Type: {{ $appointment->apttype }}<br>
+                Branch: {{ $appointment->aptbranch }}<br>
+                Office: {{ $appointment->aptoffice }}<br>
+                Purpose: {{ $appointment->aptpurpose }}<br>
+                Date: {{ $appointment->aptdate }}<br>
+                Time: {{ $appointment->apttime }}<br>
 
-            <!-- Instructions -->
-            <p class="instructions">
-                If you have any questions, please contact us.
-            </p>
+            </div>
+
+            <p><strong>Possible reasons for cancellation:</strong></p>
+            <div class="reason-list">
+                <div class="reason-item">Incomplete or invalid appointment information.</div>
+                <div class="reason-item">Unforeseen office closure or unavailability</div>
+                <div class="reason-item">Staff emergency or unavailability.</div>
+                <div class="reason-item">Technical or system issues preventing service delivery.</div>
+                <div class="reason-item">Duplicate appointment request.</div>
+                <div class="reason-item">University-wide closure or emergency.</div>
+            </div>
+
+            <p>We sincerely apologize for any inconvenience this may cause. You may now schedule your appointment at your earliest convenience through our online portal.</p>
         </div>
 
-        <!-- Footer -->
         <div class="footer">
-            &copy; {{ date('Y') }} RTU-SCHED. All rights reserved.
+            © {{ date('Y') }} Rizal Technological University - Appointment System. All rights reserved.<br>
+            This is an automated message - please do not reply directly to this email.
         </div>
     </div>
-
 </body>
 
 </html>

@@ -105,7 +105,8 @@
             <!-- Appointment Details -->
             <div class="details">
                 <ul>
-                    <li><strong>Appointment ID:</strong> {{ $appointment->aptid }}</li>
+                    <li><strong>Appointment No:</strong> {{ $appointment->aptid }}</li>
+                    <li><strong>ID No:</strong> {{ $appointment->aptstudnum }}</li>
                     <li><strong>Type:</strong> {{ $appointment->apttype }}</li>
                     <li><strong>Branch:</strong> {{ $appointment->aptbranch }}</li>
                     <li><strong>Office:</strong> {{ $appointment->aptoffice }}</li>
