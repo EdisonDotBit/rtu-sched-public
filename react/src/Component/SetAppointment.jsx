@@ -330,10 +330,7 @@ function SetAppointment() {
                             </div>
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                <div className="bg-gray-50 p-4 rounded-lg">
-                                    <h3 className="font-medium text-gray-700 mb-4">
-                                        Select Date
-                                    </h3>
+                                <div className="bg-gray-50 sm:p-4 rounded-lg">
                                     <Calendar
                                         formData={formData}
                                         setFormData={setFormData}
@@ -343,10 +340,7 @@ function SetAppointment() {
                                         setIsTimeSelected={setIsTimeSelected}
                                     />
                                 </div>
-                                <div className="bg-gray-50 p-4 rounded-lg">
-                                    <h3 className="font-medium text-gray-700 mb-4">
-                                        Select Time
-                                    </h3>
+                                <div className="bg-gray-50 sm:p-4 rounded-lg">
                                     <TimePicker
                                         formData={formData}
                                         setFormData={setFormData}
@@ -439,7 +433,7 @@ function SetAppointment() {
                             <div className="w-full">
                                 <Confirmation formData={formData} />
 
-                                <div className="mt-6 flex items-start">
+                                <div className="mt-2 flex items-start">
                                     <input
                                         type="checkbox"
                                         id="confirmation-checkbox"
@@ -484,9 +478,7 @@ function SetAppointment() {
                                         !formData.isConfirmed || isSubmitting
                                     }
                                 >
-                                    {isSubmitting
-                                        ? "Submitting..."
-                                        : "Confirm Appointment"}
+                                    {isSubmitting ? "Submitting..." : "Confirm"}
                                 </button>
                             </div>
                         </div>
