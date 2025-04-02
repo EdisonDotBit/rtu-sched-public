@@ -230,13 +230,42 @@ function DetailsInfo({ aptData, appointments, userRole }) {
             </div>
 
             {/* Reschedule Modal */}
-            <dialog ref={modalRef1} className="modal">
-                <div className="p-4 fixed rounded-lg top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] max-w-3xl h-[80vh] sm:h-auto min-h-[50vh] sm:min-h-[60vh] lg:min-h-[70vh] overflow-y-auto flex flex-col justify-start items-center bg-gray-100">
-                    <h1 className="font-bold text-xl sm:text-2xl lg:text-3xl text-black mb-4 sm:mb-6">
-                        Reschedule Appointment
-                    </h1>
-                    <div className="w-full flex flex-col lg:flex-row justify-center items-center gap-4">
-                        <div className="w-full lg:w-1/2">
+            <dialog
+                ref={modalRef1}
+                className="modal w-full max-w-7xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 backdrop:bg-gray-900/50 backdrop:backdrop-blur-sm"
+                aria-labelledby="reschedule-modal-title"
+            >
+                <div className="modal-box w-full bg-white rounded-xl shadow-xl p-6">
+                    <div className="flex items-center justify-between mb-6">
+                        <h3
+                            id="reschedule-modal-title"
+                            className="text-xl font-bold text-gray-900 text-center"
+                        >
+                            Reschedule Appointment
+                        </h3>
+                        <button
+                            onClick={() => modalRef1.current.close()}
+                            className="text-gray-400 hover:text-gray-500"
+                            aria-label="Close modal"
+                        >
+                            <svg
+                                className="h-6 w-6"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M6 18L18 6M6 6l12 12"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-6">
+                        <div className="flex flex-col">
                             <Calendar
                                 formData={formData}
                                 setFormData={setFormData}
@@ -246,7 +275,8 @@ function DetailsInfo({ aptData, appointments, userRole }) {
                                 setIsTimeSelected={setIsTimeSelected}
                             />
                         </div>
-                        <div className="w-full lg:w-1/2">
+
+                        <div className="flex flex-col">
                             <TimePicker
                                 formData={formData}
                                 setFormData={setFormData}
@@ -257,25 +287,26 @@ function DetailsInfo({ aptData, appointments, userRole }) {
                             />
                         </div>
                     </div>
-                    <div className="modal-action flex flex-row justify-center gap-4 mt-4 sm:mt-6 w-full">
+
+                    <div className="flex justify-center gap-4 mt-6">
                         <button
-                            className={`px-4 sm:px-6 py-2 text-sm sm:text-base font-semibold border-none rounded-md ${
+                            type="button"
+                            className="px-6 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            onClick={() => modalRef1.current.close()}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            className={`px-6 py-2 text-base font-medium text-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
                                 isTimeSelected
-                                    ? "bg-[#194F90] hover:bg-[#123A69]"
+                                    ? "bg-blue-600 hover:bg-blue-700"
                                     : "bg-gray-400 cursor-not-allowed"
-                            } text-white min-w-[100px]`}
+                            }`}
                             type="button"
                             onClick={(e) => handleReSched(e, aptData.aptid)}
                             disabled={!isTimeSelected}
                         >
                             Confirm
-                        </button>
-                        <button
-                            type="button"
-                            className="px-4 sm:px-6 py-2 text-sm sm:text-base font-semibold border-none rounded-md bg-[#194F90] hover:bg-[#123A69] text-white min-w-[100px]"
-                            onClick={() => modalRef1.current.close()}
-                        >
-                            Close
                         </button>
                     </div>
                 </div>
