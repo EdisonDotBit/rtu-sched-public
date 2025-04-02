@@ -1,3 +1,4 @@
+// TimePicker.jsx
 import React, { useState, useEffect } from "react";
 import { useDebouncedEffect } from "../../Hooks/useDebouncedEffect";
 
@@ -29,17 +30,11 @@ const TimePicker = ({
     const isTimePassed = (dateString, timeString) => {
         if (!dateString || !timeString) return false;
 
-        // Get current time in PH (UTC+8)
         const now = new Date();
         const phNow = new Date(now.getTime() + 8 * 60 * 60 * 1000);
-
-        // Parse the selected date (assuming format is YYYY-MM-DD)
         const [year, month, day] = dateString.split("-").map(Number);
-
-        // Parse the time (convert to 24-hour format)
         let [hours, minutes] = timeString.split(":").map(Number);
 
-        // Handle PM times (assuming times like "1:00" are PM)
         if (
             timeString.includes(":") &&
             hours < 8 &&
@@ -48,7 +43,6 @@ const TimePicker = ({
             hours += 12;
         }
 
-        // Create date object for the appointment in UTC+8
         const appointmentDate = new Date(
             Date.UTC(year, month - 1, day, hours, minutes || 0, 0, 0)
         );
@@ -76,7 +70,6 @@ const TimePicker = ({
                 (times) => counts[times] >= limits
             );
 
-            // Add time slots that have passed to disabled array
             timeSlots.forEach((time) => {
                 if (isTimePassed(formData.aptdate, time)) {
                     disabled.push(time);
@@ -98,9 +91,7 @@ const TimePicker = ({
                 setTimeSelected(!!availableTime);
             }
 
-            setTimeout(() => {
-                setLoading(false);
-            }, 1000);
+            setTimeout(() => setLoading(false), 1000);
         };
 
         getData();
@@ -131,7 +122,6 @@ const TimePicker = ({
 
                     setAdminDisabledTime([...fetchedTimes]);
 
-                    // Add passed times to regular disabled slots
                     const passedTimes = [];
                     timeSlots.forEach((time) => {
                         if (isTimePassed(formData.aptdate, time)) {
@@ -143,9 +133,7 @@ const TimePicker = ({
                 } catch (error) {
                     console.error("Error fetching disabled time slots:", error);
                 } finally {
-                    setTimeout(() => {
-                        setLoading(false);
-                    }, 1000);
+                    setTimeout(() => setLoading(false), 1000);
                 }
             };
 
@@ -161,15 +149,8 @@ const TimePicker = ({
             disabledTime.includes(time) && !adminDisabledTime.includes(time);
         const isAdmin = userRole !== "Student" && userRole !== "Guest";
 
-        // Prevent selection if time has passed or is at limit
-        if (isPassed || isAtLimit) {
-            return;
-        }
-
-        // Only prevent selection for non-admins if admin disabled the time
-        if (!isAdmin && adminDisabledTime.includes(time)) {
-            return;
-        }
+        if (isPassed || isAtLimit) return;
+        if (!isAdmin && adminDisabledTime.includes(time)) return;
 
         setFormData((prevFormData) => ({
             ...prevFormData,
@@ -178,7 +159,6 @@ const TimePicker = ({
         setTimeSelected(true);
     };
 
-    // Determine the display style for a time slot
     const getTimeSlotStyle = (time) => {
         const isPassed = isTimePassed(formData.aptdate, time);
         const isAtLimit =
@@ -187,33 +167,21 @@ const TimePicker = ({
         const isAdmin = userRole !== "Student" && userRole !== "Guest";
         const isSelected = formData.apttime === time;
 
-        if (isSelected) {
-            return "bg-blue-600 text-white";
-        }
-
-        if (isPassed) {
-            return "bg-red-100 text-gray-700 cursor-not-allowed";
-        }
-
-        if (isAtLimit) {
-            return "bg-gray-200 text-gray-500 cursor-not-allowed";
-        }
-
+        if (isSelected) return "bg-blue-600 text-white";
+        if (isPassed) return "bg-red-100 text-gray-700 cursor-not-allowed";
+        if (isAtLimit) return "bg-gray-200 text-gray-500 cursor-not-allowed";
         if (isAdminDisabled) {
             return isAdmin
-                ? "bg-yellow-300 text-gray-900 cursor-pointer"
-                : "bg-gray-200 text-gray-500 cursor-not-allowed";
+                ? "bg-yellow-300 text-gray-900 cursor-pointer hover:bg-yellow-400"
+                : "bg-yellow-100 text-gray-700 cursor-not-allowed";
         }
-
         return "bg-white text-gray-700 hover:bg-gray-100";
     };
 
-    // Determine if a time slot should be disabled
     const isTimeDisabled = (time) => {
         const isPassed = isTimePassed(formData.aptdate, time);
         const isAtLimit =
             disabledTime.includes(time) && !adminDisabledTime.includes(time);
-
         const isAdminDisabled = adminDisabledTime.includes(time);
         const isAdmin = userRole !== "Student" && userRole !== "Guest";
 
@@ -221,59 +189,120 @@ const TimePicker = ({
     };
 
     return (
-        <div className="container w-full mx-auto max-w-md p-4 text-black">
-            <h2 className="text-2xl font-semibold mb-4">Select a Time</h2>
+        <div className="w-full bg-white rounded-xl shadow-sm border border-gray-200 p-6 sm:h-[520px] flex flex-col">
+            <h2 className="text-lg font-semibold text-gray-800 mb-6">
+                Select Time Slot
+            </h2>
 
-            {loading ? (
-                <div className="text-gray-500 text-center p-9">
-                    Loading available times...
-                </div>
-            ) : formData.aptdate ? (
-                <div className="grid grid-cols-3 gap-4 xsm:text-xs sm:text-base">
-                    {timeSlots.map((time, index) => {
-                        const disabled = isTimeDisabled(time);
-                        const style = getTimeSlotStyle(time);
-                        const isAdminDisabled =
-                            adminDisabledTime.includes(time);
-                        const isAdmin =
-                            userRole !== "Student" && userRole !== "Guest";
+            <div className="flex-grow">
+                {loading ? (
+                    <div className="flex justify-center items-center h-full">
+                        <div className="animate-pulse flex space-x-4">
+                            <div className="flex-1 space-y-4 py-1">
+                                Loading Time Slot
+                            </div>
+                        </div>
+                    </div>
+                ) : formData.aptdate ? (
+                    <div className="grid grid-cols-2 gap-3">
+                        {timeSlots.map((time, index) => {
+                            const disabled = isTimeDisabled(time);
+                            const style = getTimeSlotStyle(time);
+                            const isAdminDisabled =
+                                adminDisabledTime.includes(time);
+                            const isAdmin =
+                                userRole !== "Student" && userRole !== "Guest";
 
-                        return (
-                            <button
-                                type="button"
-                                key={index}
-                                onClick={() => handleTimeClick(time)}
-                                disabled={loading || disabled}
-                                className={`flex justify-center items-center p-4 border border-gray-300 rounded-lg focus:outline-none transition-colors ${style}`}
-                                title={
-                                    isTimePassed(formData.aptdate, time)
-                                        ? "This time slot has already passed"
-                                        : isAdminDisabled
-                                        ? isAdmin
-                                            ? "Admin-disabled time (click to use anyway)"
-                                            : "This time slot has been disabled by admin"
-                                        : disabledTime.includes(time)
-                                        ? "This time slot has reached the appointment limit"
-                                        : ""
-                                }
-                            >
-                                {time}
-                                {isTimePassed(formData.aptdate, time) && (
-                                    <span className="sr-only"> (Passed)</span>
-                                )}
-                                {isAdminDisabled && isAdmin && (
-                                    <span className="sr-only">
-                                        {" "}
-                                        (Admin-disabled)
-                                    </span>
-                                )}
-                            </button>
-                        );
-                    })}
+                            return (
+                                <button
+                                    type="button"
+                                    key={index}
+                                    onClick={() => handleTimeClick(time)}
+                                    disabled={loading || disabled}
+                                    className={`relative flex items-center justify-center p-3 rounded-lg border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${style} ${
+                                        disabled
+                                            ? "cursor-not-allowed"
+                                            : "cursor-pointer hover:shadow-md"
+                                    }`}
+                                    title={
+                                        isTimePassed(formData.aptdate, time)
+                                            ? "This time slot has passed"
+                                            : isAdminDisabled
+                                            ? isAdmin
+                                                ? "Admin-disabled (click to use)"
+                                                : "Disabled by admin"
+                                            : disabledTime.includes(time)
+                                            ? "Fully booked"
+                                            : "Available"
+                                    }
+                                >
+                                    <span className="font-medium">{time}</span>
+                                    {formData.apttime === time && (
+                                        <span className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-blue-600 flex items-center justify-center">
+                                            <svg
+                                                className="h-3 w-3 text-white"
+                                                fill="currentColor"
+                                                viewBox="0 0 20 20"
+                                            >
+                                                <path
+                                                    fillRule="evenodd"
+                                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                    clipRule="evenodd"
+                                                />
+                                            </svg>
+                                        </span>
+                                    )}
+                                    {isAdminDisabled && (
+                                        <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-yellow-400 border border-yellow-500"></span>
+                                    )}
+                                </button>
+                            );
+                        })}
+                    </div>
+                ) : (
+                    <div className="flex flex-col justify-center items-center h-full text-center py-8 text-gray-500 bg-gray-50 rounded-lg">
+                        <svg
+                            className="mx-auto h-12 w-12 text-gray-400"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={1}
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
+                        </svg>
+                        <p className="mt-2 text-sm">
+                            Please select a date first
+                        </p>
+                    </div>
+                )}
+            </div>
+
+            <div className="mt-4 pt-4 border-t border-gray-100">
+                <div className="flex flex-wrap gap-3 text-xs text-gray-600">
+                    <div className="flex items-center">
+                        <span className="w-3 h-3 rounded-full bg-blue-600 mr-2"></span>
+                        <span>Selected</span>
+                    </div>
+                    {(userRole === "Student" || userRole === "Guest") && (
+                        <div className="flex items-center">
+                            <span className="w-3 h-3 bg-gray-300 rounded-full mr-2"></span>
+                            <span>Slot Reached</span>
+                        </div>
+                    )}
+                    <div className="flex items-center">
+                        <span className="w-3 h-3 bg-red-100 rounded mr-2"></span>
+                        <span>Time Passed</span>
+                    </div>
+                    <div className="flex items-center">
+                        <span className="w-3 h-3 bg-yellow-100 rounded mr-2"></span>
+                        <span>Disabled</span>
+                    </div>
                 </div>
-            ) : (
-                <div className="text-gray-500">Please select a date first.</div>
-            )}
+            </div>
         </div>
     );
 };
