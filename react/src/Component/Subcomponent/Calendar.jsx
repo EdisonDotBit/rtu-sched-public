@@ -12,8 +12,9 @@ const Calendar = ({
 }) => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-    const [disabledDates, setDisabledDates] = useState([]); // For holidays and appointment-limited dates
-    const [manuallyDisabledDates, setManuallyDisabledDates] = useState([]); // For manually disabled dates
+    const [holidayDates, setHolidayDates] = useState([]);
+    const [manuallyDisabledDates, setManuallyDisabledDates] = useState([]);
+    const [datesAtLimit, setDatesAtLimit] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const currentYear = currentDate.getFullYear();
@@ -23,15 +24,12 @@ const Calendar = ({
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
-
-            // Fetch holidays
             const holidays = await fetchHolidays(currentYear);
             const holidayDates = holidays.map(
                 (holiday) =>
                     holiday.start.date || holiday.start.dateTime.slice(0, 10)
             );
 
-            // Count appointments for the current office
             const counts = {};
             appointments.forEach((item) => {
                 const date = item.aptdate;
@@ -40,25 +38,19 @@ const Calendar = ({
                 }
             });
 
-            // Disable dates where the appointment count exceeds the limit
-            const datesToDisable = Object.keys(counts).filter(
+            const datesAtLimit = Object.keys(counts).filter(
                 (date) => counts[date] >= limit
             );
 
-            // Combine holidays and appointment-limited dates
-            setDisabledDates((prevDisabledDates) => {
-                return Array.from(
-                    new Set([...holidayDates, ...datesToDisable])
-                );
-            });
-
+            setHolidayDates(holidayDates);
+            setDatesAtLimit(datesAtLimit);
             setIsLoading(false);
         };
 
         fetchData();
-    }, [formData.aptoffice, limit, currentYear]); // Removed `appointments` from dependencies
+    }, [formData.aptoffice, limit, currentYear, appointments]);
 
-    // Fetch manually disabled dates from the backend API
+    // Fetch manually disabled dates
     useEffect(() => {
         const fetchDisabledDates = async () => {
             if (!formData.aptoffice || !formData.aptbranch) return;
@@ -67,8 +59,7 @@ const Calendar = ({
                 const res = await fetch(endpoint);
                 if (!res.ok) throw new Error(res.statusText);
                 const data = await res.json();
-                const fetchedDates = data.map((item) => item.date);
-                setManuallyDisabledDates(fetchedDates); // Store manually disabled dates separately
+                setManuallyDisabledDates(data.map((item) => item.date));
             } catch (error) {
                 console.error("Error fetching disabled dates:", error);
             }
@@ -77,65 +68,30 @@ const Calendar = ({
         fetchDisabledDates();
     }, [apiBaseUrl, formData.aptoffice, formData.aptbranch]);
 
-    // Handle date selection
-    const handleDateClick = useCallback(
-        (day) => {
-            const formattedDate = `${currentYear}-${(currentMonth + 1)
-                .toString()
-                .padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
-
-            // Prevent selection if the date is disabled for non-admin users
-            if (
-                (userRole === "Student" || userRole === "Guest") &&
-                (disabledDates.includes(formattedDate) ||
-                    manuallyDisabledDates.includes(formattedDate))
-            ) {
-                return;
-            }
-
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                aptdate: formattedDate,
-                apttime: "",
-            }));
-
-            setIsTimeSelected(false);
-        },
-        [
-            currentYear,
-            currentMonth,
-            userRole,
-            disabledDates,
-            manuallyDisabledDates,
-            setFormData,
-            setIsTimeSelected,
-        ]
-    );
-
-    // Navigation handlers - modified to only allow current and next month
+    // Navigation handlers
     const handlePrevMonth = useCallback(() => {
-        const now = new Date();
         const prevMonth = new Date(currentYear, currentMonth - 1);
-
-        // Only allow navigation if not going before current month
-        if (prevMonth >= new Date(now.getFullYear(), now.getMonth())) {
+        if (
+            prevMonth >=
+            new Date(new Date().getFullYear(), new Date().getMonth())
+        ) {
             setCurrentDate(prevMonth);
         }
     }, [currentYear, currentMonth]);
 
     const handleNextMonth = useCallback(() => {
-        const now = new Date();
         const nextMonth = new Date(currentYear, currentMonth + 1);
-
-        // Only allow navigation if not going beyond next month
-        if (nextMonth <= new Date(now.getFullYear(), now.getMonth() + 1)) {
+        if (
+            nextMonth <=
+            new Date(new Date().getFullYear(), new Date().getMonth() + 1)
+        ) {
             setCurrentDate(nextMonth);
         }
     }, [currentYear, currentMonth]);
 
     // Check if a date is disabled
-    const isPastDate = useCallback(
-        (day) => {
+    const getIsDateDisabled = useCallback(
+        (day, formattedDate) => {
             const selectedDate = new Date(
                 currentYear,
                 currentMonth,
@@ -144,37 +100,33 @@ const Calendar = ({
                 59,
                 59
             );
+            const today = new Date();
+            const tomorrow = new Date();
+            tomorrow.setDate(today.getDate() + 1);
+            tomorrow.setHours(23, 59, 59, 0);
 
-            // Disable past dates for everyone
-            if (selectedDate < new Date()) return true;
+            // Past dates
+            if (selectedDate < today) return true;
 
-            // For Students/Guests only: Disable today + tomorrow (2 days total)
-            if (userRole === "Student" || userRole === "Guest") {
-                const today = new Date();
-                const tomorrow = new Date();
-                tomorrow.setDate(today.getDate() + 1); // Only +1 day (today + tomorrow)
-                tomorrow.setHours(23, 59, 59, 0);
-
-                if (selectedDate <= tomorrow) return true;
+            // Today + tomorrow for Students/Guests
+            if (
+                (userRole === "Student" || userRole === "Guest") &&
+                selectedDate <= tomorrow
+            ) {
+                return true;
             }
 
-            // Disable weekends for everyone (optional for Admins)
+            // Weekends
             if (selectedDate.getDay() === 0 || selectedDate.getDay() === 6)
                 return true;
 
-            // Disable holidays for everyone (optional for Admins)
-            const formattedDate = `${selectedDate.getFullYear()}-${(
-                selectedDate.getMonth() + 1
-            )
-                .toString()
-                .padStart(2, "0")}-${selectedDate
-                .getDate()
-                .toString()
-                .padStart(2, "0")}`;
+            // Holidays
+            if (holidayDates.includes(formattedDate)) return true;
 
-            if (disabledDates.includes(formattedDate)) return true;
+            // Dates at limit
+            if (datesAtLimit.includes(formattedDate)) return true;
 
-            // For Students/Guests only: Disable manually blocked dates
+            // Manually disabled dates only for non-admin users
             if (
                 (userRole === "Student" || userRole === "Guest") &&
                 manuallyDisabledDates.includes(formattedDate)
@@ -188,77 +140,121 @@ const Calendar = ({
             currentYear,
             currentMonth,
             userRole,
-            disabledDates,
+            holidayDates,
+            datesAtLimit,
             manuallyDisabledDates,
         ]
     );
 
-    // Get the number of days in the current month
-    const getDaysInMonth = useCallback((month, year) => {
-        return new Date(year, month + 1, 0).getDate();
-    }, []);
+    // Handle date selection
+    const handleDateClick = useCallback(
+        (day) => {
+            const formattedDate = `${currentYear}-${(currentMonth + 1)
+                .toString()
+                .padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
 
-    // Render the calendar days
+            const isDisabled = getIsDateDisabled(day, formattedDate);
+
+            if (
+                (userRole === "Student" || userRole === "Guest") &&
+                (isDisabled || manuallyDisabledDates.includes(formattedDate))
+            ) {
+                return;
+            }
+
+            setFormData((prev) => ({
+                ...prev,
+                aptdate: formattedDate,
+                apttime: "",
+            }));
+            setIsTimeSelected(false);
+        },
+        [
+            currentYear,
+            currentMonth,
+            userRole,
+            getIsDateDisabled,
+            manuallyDisabledDates,
+            setFormData,
+            setIsTimeSelected,
+        ]
+    );
+
     const renderCalendarDays = useMemo(() => {
-        const totalDays = getDaysInMonth(currentMonth, currentYear);
+        const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
         const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+        const today = new Date();
+        const isCurrentMonth =
+            currentYear === today.getFullYear() &&
+            currentMonth === today.getMonth();
 
         let calendarDays = [];
 
-        // Add empty cells for days before the first day of the month
+        // Empty cells for days before the first day of the month
         for (let i = 0; i < firstDayOfMonth; i++) {
-            calendarDays.push(
-                <td
-                    key={`empty-${i}`}
-                    className="border border-gray-200 h-4"
-                ></td>
-            );
+            calendarDays.push(<td key={`empty-${i}`} className="h-10"></td>);
         }
 
-        // Add days of the month
+        // Days of the month
         for (let day = 1; day <= totalDays; day++) {
             const formattedDate = `${currentYear}-${(currentMonth + 1)
                 .toString()
                 .padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
 
-            let className =
-                "border border-gray-200 text-center transition-colors duration-200 h-10";
+            const isDisabled = getIsDateDisabled(day, formattedDate);
+            const isSelected = formData.aptdate === formattedDate;
+            const isToday = isCurrentMonth && day === today.getDate();
+            const isWeekend =
+                new Date(currentYear, currentMonth, day).getDay() % 6 === 0;
+            const isHoliday = holidayDates.includes(formattedDate);
+            const isManuallyDisabled =
+                manuallyDisabledDates.includes(formattedDate);
+            const isAtLimit = datesAtLimit.includes(formattedDate);
 
-            // Style weekends
-            if (
-                new Date(currentYear, currentMonth, day).getDay() === 0 ||
-                new Date(currentYear, currentMonth, day).getDay() === 6
-            ) {
+            let className =
+                "h-10 w-10 rounded-full text-center transition-colors duration-200 focus:outline-none";
+
+            if (isSelected) {
+                className += " bg-blue-600 text-white";
+            } else if (isToday) {
+                className += " border-2 border-blue-500";
+            }
+
+            if (isManuallyDisabled) {
+                className +=
+                    " bg-yellow-100 hover:bg-yellow-300 focus:bg-yellow-300 focus:text-black";
+            }
+
+            if (isAtLimit) {
+                className += " bg-purple-100";
+            }
+
+            if (isHoliday) {
+                className += " bg-red-100";
+            }
+
+            if (isWeekend && !isDisabled) {
                 className += " text-red-500";
             }
 
-            // Style selected date
-            if (formData.aptdate === formattedDate) {
-                className += " bg-blue-600 text-white";
+            if (isDisabled) {
+                className += " cursor-not-allowed opacity-50";
+            } else {
+                className += " hover:bg-blue-300";
             }
 
-            // Disable past dates and weekends
-            if (isPastDate(day)) {
-                className += " pointer-events-none opacity-50";
-            }
-
-            // Style manually disabled dates for non-admin users
-            if (manuallyDisabledDates.includes(formattedDate)) {
-                if (userRole === "Student" || userRole === "Guest") {
-                    className +=
-                        " bg-gray-300 text-gray-500 pointer-events-none cursor-not-allowed";
-                } else {
-                    className += " bg-yellow-300 text-gray-900";
-                }
-            }
+            const shouldDisableButton =
+                isDisabled ||
+                ((userRole === "Student" || userRole === "Guest") &&
+                    isManuallyDisabled);
 
             calendarDays.push(
-                <td key={day} className={className}>
+                <td key={day} className="p-1">
                     <button
                         type="button"
                         onClick={() => handleDateClick(day)}
-                        className="w-full h-full focus:outline-none hover:bg-blue-100"
-                        disabled={isPastDate(day)}
+                        disabled={shouldDisableButton}
+                        className={className}
                     >
                         {day}
                     </button>
@@ -266,50 +262,30 @@ const Calendar = ({
             );
         }
 
-        // Fill remaining cells to complete the calendar grid
-        while (calendarDays.length < 42) {
-            calendarDays.push(
-                <td
-                    key={`empty-${calendarDays.length}`}
-                    className="border border-gray-200 h-10"
-                ></td>
-            );
+        // Split into weeks
+        const weeks = [];
+        for (let i = 0; i < calendarDays.length; i += 7) {
+            weeks.push(calendarDays.slice(i, i + 7));
         }
 
-        // Split calendar days into rows
-        const rows = [];
-        let cells = [];
-
-        calendarDays.forEach((day, index) => {
-            if (index % 7 !== 0) {
-                cells.push(day);
-            } else {
-                rows.push(cells);
-                cells = [];
-                cells.push(day);
-            }
-            if (index === calendarDays.length - 1) {
-                rows.push(cells);
-            }
-        });
-
-        return rows.map((row, index) => (
-            <tr key={index} className="border border-gray-200">
-                {row}
+        return weeks.map((week, index) => (
+            <tr key={index} className="h-10">
+                {week}
             </tr>
         ));
     }, [
         currentYear,
         currentMonth,
         formData.aptdate,
-        isPastDate,
-        disabledDates,
+        getIsDateDisabled,
+        holidayDates,
+        datesAtLimit,
         manuallyDisabledDates,
-        userRole,
         handleDateClick,
+        userRole,
     ]);
 
-    // Disable previous/next month buttons based on current date
+    // Navigation button states
     const isPrevMonthDisabled =
         new Date(currentYear, currentMonth - 1) <
         new Date(new Date().getFullYear(), new Date().getMonth());
@@ -318,54 +294,74 @@ const Calendar = ({
         new Date(new Date().getFullYear(), new Date().getMonth() + 1);
 
     return (
-        <div className="mx-auto w-full max-w-xl p-2 sm:p-3 md:p-4 text-black">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 w-full h-[520px] flex flex-col">
             {isLoading ? (
-                <Loading />
+                <div className="flex justify-center items-center flex-grow">
+                    <Loading />
+                </div>
             ) : (
                 <>
-                    {/* Month Navigation Only */}
-                    <div className="flex justify-between items-center mb-2 sm:mb-3 md:mb-4 gap-1 sm:gap-3 md:gap-4">
+                    {/* Month Navigation */}
+                    <div className="flex items-center justify-between mb-6">
                         <button
-                            type="button"
                             onClick={handlePrevMonth}
                             disabled={isPrevMonthDisabled}
-                            className={`${
+                            className={`flex items-center justify-center p-2 rounded-lg ${
                                 isPrevMonthDisabled
-                                    ? "bg-gray-400 cursor-not-allowed"
-                                    : "bg-[#194F90] hover:bg-[#123A69]"
-                            } text-white px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-lg transition-colors duration-200 text-xs sm:text-sm md:text-base`}
+                                    ? "text-gray-400 cursor-not-allowed"
+                                    : "text-gray-700 hover:bg-gray-100"
+                            }`}
                         >
-                            <span className="hidden sm:inline">Previous</span>
-                            <span className="sm:hidden">Prev</span>
+                            <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M15 19l-7-7 7-7"
+                                />
+                            </svg>
                         </button>
-                        <div className="text-center whitespace-nowrap">
-                            <div className="text-sm sm:text-xl md:text-2xl font-bold">
-                                {currentDate.toLocaleString("default", {
-                                    month: "long",
-                                    year: "numeric",
-                                })}
-                            </div>
-                        </div>
+                        <h3 className="text-lg font-semibold text-gray-800">
+                            {currentDate.toLocaleString("default", {
+                                month: "long",
+                                year: "numeric",
+                            })}
+                        </h3>
                         <button
-                            type="button"
                             onClick={handleNextMonth}
                             disabled={isNextMonthDisabled}
-                            className={`${
+                            className={`flex items-center justify-center p-2 rounded-lg ${
                                 isNextMonthDisabled
-                                    ? "bg-gray-400 cursor-not-allowed"
-                                    : "bg-[#194F90] hover:bg-[#123A69]"
-                            } text-white px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-lg transition-colors duration-200 text-xs sm:text-sm md:text-base`}
+                                    ? "text-gray-400 cursor-not-allowed"
+                                    : "text-gray-700 hover:bg-gray-100"
+                            }`}
                         >
-                            <span className="hidden sm:inline">Next</span>
-                            <span className="sm:hidden">Next</span>
+                            <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M9 5l7 7-7 7"
+                                />
+                            </svg>
                         </button>
                     </div>
 
-                    {/* Calendar Table */}
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-xs sm:text-sm md:text-base">
+                    {/* Calendar Grid */}
+                    <div className="overflow-x-auto flex-grow">
+                        <table className="w-full">
                             <thead>
-                                <tr className="bg-[#194F90] text-white">
+                                <tr className="text-gray-500 text-sm">
                                     {[
                                         "Sun",
                                         "Mon",
@@ -377,17 +373,46 @@ const Calendar = ({
                                     ].map((day) => (
                                         <th
                                             key={day}
-                                            className="p-1 sm:p-2 border-r-2 border-r-white text-xs sm:text-sm"
+                                            className="pb-2 font-medium"
                                         >
-                                            {day.substring(0, 3)}
+                                            {day}
                                         </th>
                                     ))}
                                 </tr>
                             </thead>
-                            <tbody className="bg-white">
+                            <tbody className="text-gray-700">
                                 {renderCalendarDays}
                             </tbody>
                         </table>
+                    </div>
+
+                    {/* Legend */}
+                    <div className="mt-4 flex flex-wrap gap-4 text-xs text-gray-600">
+                        <div className="flex items-center">
+                            <span className="w-3 h-3 rounded-full bg-blue-600 mr-2"></span>
+                            <span>Selected</span>
+                        </div>
+                        <div className="flex items-center">
+                            <span className="w-3 h-3 border-2 border-blue-500 rounded-full mr-2"></span>
+                            <span>Today</span>
+                        </div>
+
+                        {(userRole === "Student" || userRole === "Guest") && (
+                            <div className="flex items-center">
+                                <span className="w-3 h-3 bg-purple-100 rounded-full mr-2"></span>
+                                <span>Slot Reached</span>
+                            </div>
+                        )}
+
+                        <div className="flex items-center">
+                            <span className="w-3 h-3 bg-red-100 rounded-full mr-2"></span>
+                            <span>Holiday</span>
+                        </div>
+
+                        <div className="flex items-center">
+                            <span className="w-3 h-3 bg-yellow-100 rounded-full mr-2"></span>
+                            <span>Disabled</span>
+                        </div>
                     </div>
                 </>
             )}
