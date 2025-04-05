@@ -194,7 +194,7 @@ function ManageAccount() {
                                     onChange={(e) =>
                                         setPassword(e.target.value)
                                     }
-                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};:'\\|,.<>/?~`]).{8,}$"
+                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$"
                                     title="Password must be at least 8 characters long, include uppercase, lowercase, a number, and a special character."
                                     placeholder="Enter New Password"
                                     className="text-gray-800 bg-white w-full mt-1 py-2 px-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FFDB75]"
