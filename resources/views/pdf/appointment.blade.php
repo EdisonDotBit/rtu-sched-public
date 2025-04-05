@@ -140,8 +140,7 @@
                 <div class="primaryText">Reminder:</div>
                 <div class="bulletList">
                     <div class="bulletItem">• Bring your specified Valid ID / Soft Copy Registration Form</div>
-                    <div class="bulletItem">• If you miss the appointment on the said date, it will be automatically cancelled.</div>
-                    <div class="bulletItem">• You may submit feedback at: rtu-online-appointment/feedback.com</div>
+                    <div class="bulletItem">• If you miss the appointment on the said date, it will be cancelled and disregarded.</div>
                 </div>
             </div>
         </div>

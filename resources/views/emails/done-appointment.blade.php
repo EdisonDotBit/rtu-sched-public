@@ -91,7 +91,7 @@
 
             <!-- Instructions -->
             <p class="instructions">
-                Please provide your feedback <a href="http://localhost:3000/feedback" target="_blank">here</a>
+                Please provide your feedback <a href="https://rtusched.com/feedback" target="_blank">here</a>
             </p>
         </div>
 

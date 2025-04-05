@@ -142,13 +142,7 @@ const PDFFile = ({ succData }) => {
                         </Text>
                         <Text style={styles.bulletItem}>
                             • If you miss the appointment on the said date, it
-                            will be automatically cancelled.
-                        </Text>
-                        <Text style={styles.bulletItem}>
-                            • You may submit feedback at:
-                        </Text>
-                        <Text style={styles.link}>
-                            rtu-online-appointment/feedback.com
+                            will be cancelled and disregarded.
                         </Text>
                     </View>
                 </View>
