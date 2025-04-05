@@ -17,6 +17,8 @@ function DetailsInfo({ aptData, appointments, userRole }) {
     const modalRef2 = useRef(null);
     const [limit, setLimit] = useState(null);
     const [isTimeSelected, setIsTimeSelected] = useState(false);
+    const [isProcessingReschedule, setIsProcessingReschedule] = useState(false);
+    const [isProcessingDelete, setIsProcessingDelete] = useState(false);
 
     // Fetch office limit only once on component mount
     useEffect(() => {
@@ -40,6 +42,7 @@ function DetailsInfo({ aptData, appointments, userRole }) {
     // Handle reschedule
     const handleReSched = async (e, id) => {
         e.preventDefault();
+        setIsProcessingReschedule(true);
         try {
             const response = await axios.put(
                 `${apiBaseUrl}/api/resched/${id}`,
@@ -54,12 +57,14 @@ function DetailsInfo({ aptData, appointments, userRole }) {
         } catch (error) {
             toast.error("Failed to reschedule appointment.");
             console.error("Error rescheduling appointment:", error);
+            setIsProcessingReschedule(false);
         }
     };
 
     // Handle delete
     const handleDelete = async (e, id) => {
         e.preventDefault();
+        setIsProcessingDelete(true);
         try {
             const response = await axios.delete(
                 `${apiBaseUrl}/api/delappt/${id}`
@@ -73,6 +78,7 @@ function DetailsInfo({ aptData, appointments, userRole }) {
         } catch (error) {
             toast.error("Failed to delete appointment.");
             console.error("Error deleting appointment:", error);
+            setIsProcessingDelete(false);
         }
     };
 
@@ -293,20 +299,47 @@ function DetailsInfo({ aptData, appointments, userRole }) {
                             type="button"
                             className="px-6 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                             onClick={() => modalRef1.current.close()}
+                            disabled={isProcessingReschedule}
                         >
                             Cancel
                         </button>
                         <button
                             className={`px-6 py-2 text-base font-medium text-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-                                isTimeSelected
+                                isTimeSelected && !isProcessingReschedule
                                     ? "bg-blue-600 hover:bg-blue-700"
                                     : "bg-gray-400 cursor-not-allowed"
                             }`}
                             type="button"
                             onClick={(e) => handleReSched(e, aptData.aptid)}
-                            disabled={!isTimeSelected}
+                            disabled={!isTimeSelected || isProcessingReschedule}
                         >
-                            Confirm
+                            {isProcessingReschedule ? (
+                                <span className="flex items-center gap-2">
+                                    <svg
+                                        className="animate-spin h-5 w-5 text-white"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <circle
+                                            className="opacity-25"
+                                            cx="12"
+                                            cy="12"
+                                            r="10"
+                                            stroke="currentColor"
+                                            strokeWidth="4"
+                                        ></circle>
+                                        <path
+                                            className="opacity-75"
+                                            fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                        ></path>
+                                    </svg>
+                                    Processing...
+                                </span>
+                            ) : (
+                                "Confirm"
+                            )}
                         </button>
                     </div>
                 </div>
@@ -325,15 +358,43 @@ function DetailsInfo({ aptData, appointments, userRole }) {
                         <div className="modal-action flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
                             <button
                                 type="button"
-                                className="w-full sm:w-auto mt-2 sm:mt-6 px-4 sm:px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90] text-sm sm:text-base"
+                                className="w-full sm:w-auto mt-2 sm:mt-6 px-4 sm:px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90] text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
                                 onClick={(e) => handleDelete(e, aptData.aptid)}
+                                disabled={isProcessingDelete}
                             >
-                                Confirm
+                                {isProcessingDelete ? (
+                                    <span className="flex items-center gap-2 justify-center">
+                                        <svg
+                                            className="animate-spin h-5 w-5 text-white"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <circle
+                                                className="opacity-25"
+                                                cx="12"
+                                                cy="12"
+                                                r="10"
+                                                stroke="currentColor"
+                                                strokeWidth="4"
+                                            ></circle>
+                                            <path
+                                                className="opacity-75"
+                                                fill="currentColor"
+                                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                            ></path>
+                                        </svg>
+                                        Processing...
+                                    </span>
+                                ) : (
+                                    "Confirm"
+                                )}
                             </button>
                             <button
                                 type="button"
-                                className="w-full sm:w-auto mt-2 sm:mt-6 px-4 sm:px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90] text-sm sm:text-base"
+                                className="w-full sm:w-auto mt-2 sm:mt-6 px-4 sm:px-6 py-2 border border-white text-white rounded-lg transition duration-100 ease-in-out hover:bg-white hover:text-[#194F90] text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
                                 onClick={() => modalRef2.current.close()}
+                                disabled={isProcessingDelete}
                             >
                                 Close
                             </button>
