@@ -97,6 +97,10 @@ function InputDetails({ formData, setFormData, errors }) {
                         <h3 className="text-lg font-semibold text-gray-800">
                             Purpose
                         </h3>
+                        <span className="text-sm text-gray-500">
+                            To view requirements, click the information icon
+                            next to selected purpose.
+                        </span>
                         <Purpose
                             formData={formData}
                             setFormData={setFormData}
@@ -109,8 +113,12 @@ function InputDetails({ formData, setFormData, errors }) {
                         <h3 className="text-lg font-semibold text-gray-800">
                             Attachments
                         </h3>
+                        <span className="text-sm text-gray-500">
+                            Please check requirements first for any needed
+                            attachments.
+                        </span>
                         <div className="space-y-3">
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-3 mt-1">
                                 <button
                                     type="button"
                                     onClick={() => fileInputRef.current.click()}
@@ -237,7 +245,7 @@ function InputDetails({ formData, setFormData, errors }) {
                                             viewBox="0 0 20 20"
                                             fill="currentColor"
                                         >
-                                            <path d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.715-5.349L11 6.477V16h2a1 1 0 110 2H7a1 1 0 110-2h2V6.477L6.237 7.582l1.715 5.349a1 1 0 01-.285 1.05A3.989 3.989 0 015 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.738-5.42-1.233-.617a1 1 0 01.894-1.788l1.599.799L9 4.323V3a1 1 0 011-1z" />
+                                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
                                         </svg>
                                     ),
                                 },
