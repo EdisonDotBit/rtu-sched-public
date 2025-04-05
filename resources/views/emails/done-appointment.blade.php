@@ -89,9 +89,9 @@
                 Thank you for using our service.
             </p>
 
-            <!-- Instructions -->
+            <!-- Inside the email template, modify just the feedback link: -->
             <p class="instructions">
-                Please provide your feedback <a href="http://localhost:3000/feedback" target="_blank">here</a>
+                Please provide your feedback <a href="https://rtusched.com/feedback?src=email&apt={{ $appointment->aptid }}" target="_blank">here</a>
             </p>
         </div>
 
