@@ -41,8 +41,6 @@ function AddAccount({ setShowAdd, onSuccess }) {
             return;
         }
 
-        console.log(formData);
-
         try {
             const res = await axios.post(
                 `${apiBaseUrl}/api/admin/add`,
