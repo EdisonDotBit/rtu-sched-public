@@ -4,12 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Mail\ForgotPasswordPin;
 use App\Mail\SendVerificationPin;
-use App\Mail\StudentNumberVerificationMail;
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 
@@ -46,11 +43,6 @@ class UserController extends Controller
             'verification_pin' => $pin,
         ]);
 
-        // Log stored PIN and session ID
-        Log::info('Stored PIN: ' . session('verification_pin'));
-        Log::info('Registration data: ' . json_encode(session('registration_data')));
-        Log::info('Session ID after storing PIN: ' . session()->getId());
-
         // Send email with PIN
         Mail::to($email)->send(new SendVerificationPin($pin));
 
@@ -72,12 +64,6 @@ class UserController extends Controller
         // Retrieve session data
         $sessionPin = session('verification_pin');
         $registrationData = session('registration_data');
-
-        // Log entered PIN, stored PIN, and session ID
-        Log::info('Entered PIN: ' . $enteredPin);
-        Log::info('Stored PIN: ' . session('verification_pin'));
-        Log::info('Registration data: ' . json_encode(session('registration_data')));
-        Log::info('Session ID during verification: ' . session()->getId());
 
         // Check if the PINs match
         if ($sessionPin && $registrationData && (string)$enteredPin === (string)$sessionPin) {
@@ -210,11 +196,6 @@ class UserController extends Controller
             ],
         ]);
 
-        // Log stored PIN and session ID
-        Log::info('Stored Password Reset PIN: ' . $pin);
-        Log::info('Session Data: ' . json_encode(session('password_reset_data')));
-        Log::info('Session ID: ' . session()->getId());
-
         // Send email with PIN
         Mail::to($validated['email'])->send(new ForgotPasswordPin($pin));
 
@@ -236,12 +217,6 @@ class UserController extends Controller
         // Retrieve session data
         $sessionPin = session('password_reset_data.pin');
         $resetEmail = session('password_reset_data.email');
-
-        // Log entered PIN, stored PIN, and session ID
-        Log::info('Entered PIN: ' . $enteredPin);
-        Log::info('Stored PIN: ' . $sessionPin);
-        Log::info('Session Data: ' . json_encode(session('password_reset_data')));
-        Log::info('Session ID: ' . session()->getId());
 
         // Check if the PINs match
         if ($sessionPin && $resetEmail && (string)$enteredPin === (string)$sessionPin) {

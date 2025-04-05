@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import rtu from "./Subcomponent/Asset/RTU_Pasig.jpg";
 import axios from "axios";
 
@@ -26,11 +26,27 @@ const StarRating = ({ rating, onRatingChange }) => {
 
 const Feedback = () => {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+    const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
         message: "",
         rating: 0,
     });
+
+    useEffect(() => {
+        // Check URL parameters when component mounts
+        const params = new URLSearchParams(window.location.search);
+        const source = params.get("src");
+        const aptId = params.get("apt");
+
+        // Only show form if coming from email with an appointment ID
+        const isValidAccess = source === "email" && aptId;
+        setShowForm(isValidAccess);
+
+        if (isValidAccess) {
+            setFormData((prev) => ({ ...prev, appointmentId: aptId }));
+        }
+    }, []);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -66,6 +82,22 @@ const Feedback = () => {
             }
         }
     };
+
+    if (!showForm) {
+        return (
+            <div className="min-h-screen flex items-center justify-center p-4 bg-gray-900">
+                <div className="bg-white p-8 rounded-lg shadow-lg max-w-md text-center">
+                    <h2 className="text-xl font-bold text-gray-800 mb-4">
+                        Access Restricted
+                    </h2>
+                    <p className="text-gray-600 mb-4">
+                        Please access this form using the link from your
+                        appointment completion email.
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="relative min-h-screen flex items-center justify-center p-2 sm:p-4 bg-gray-900">

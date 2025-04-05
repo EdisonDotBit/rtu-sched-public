@@ -91,7 +91,6 @@ function EditOffice({ selectedOffid, setShowEdit, onSuccess }) {
             );
 
             if (res.status === 200) {
-                console.log(res.data.message);
                 toast.success("Office edited successfully.");
                 setShowEdit(false); // Close the edit modal
                 onSuccess(); // Call the onSuccess callback to refetch data

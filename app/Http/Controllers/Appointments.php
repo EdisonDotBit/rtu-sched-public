@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Appointment;
-use Illuminate\Support\Facades\Log;
 use App\Mail\ConfirmAppointment;
 use App\Mail\DoneAppointment;
 use App\Mail\CancelAppointment;
@@ -160,11 +159,8 @@ class Appointments extends Controller
 
     public function confirmAppointment($id)
     {
-        Log::info('Starting appointment confirmation for ID: ' . $id);
-
         $appointment = Appointment::find($id);
         if (!$appointment) {
-            Log::error('Appointment not found');
             return response()->json(['error' => 'Appointment not found'], 404);
         }
 
@@ -172,9 +168,8 @@ class Appointments extends Controller
         try {
             $appointment->aptstatus = 'confirmed';
             $appointment->save();
-            Log::info('Status updated');
         } catch (\Exception $e) {
-            Log::error('Status update failed: ' . $e->getMessage());
+
             return response()->json(['error' => 'Status update failed'], 500);
         }
 
@@ -190,9 +185,8 @@ class Appointments extends Controller
 
             // Get absolute path for email attachment
             $pdfPath = storage_path('app/public/' . $pdfFileName);
-            Log::info('PDF stored at: ' . $pdfPath);
         } catch (\Exception $e) {
-            Log::error('PDF generation failed: ' . $e->getMessage());
+
             return response()->json(['error' => 'PDF generation failed'], 500);
         }
 
@@ -200,10 +194,9 @@ class Appointments extends Controller
         try {
             Mail::to($appointment->aptemail)
                 ->send(new ConfirmAppointment($appointment, $pdfPath));
-            Log::info('Email sent successfully');
         } catch (\Exception $e) {
             Storage::disk('public')->delete($pdfFileName);
-            Log::error('Email failed: ' . $e->getMessage());
+
             return response()->json([
                 'error' => 'Email sending failed',
                 'debug' => $e->getMessage() // Remove in production
