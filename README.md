@@ -16,4 +16,4 @@ Technology Stack:
 - Tools: Git, GitHub, Figma (for UI prototyping)
 
 Hosting: 
-- Currently hosted live at https://rtu-sched.com
+- Currently hosted live at https://rtusched.com
