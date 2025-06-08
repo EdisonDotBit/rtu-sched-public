@@ -148,4 +148,7 @@ export const StudentAuthProvider = ({ children }) => {
     );
 };
 
+
+// The authentication for admin side is hidden and kept in the private repository to avoid sensitive vulnerability.
+
 export const useStudentAuth = () => useContext(StudentAuthContext);
