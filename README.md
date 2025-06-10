@@ -1,7 +1,6 @@
 # RTU-SCHED
 
-RTU-SCHED: Online Appointment System for Rizal Technological University
-RTU-SCHED is a web-based appointment management system designed to streamline scheduling for various university offices at Rizal Technological University. The platform enhances administrative efficiency by automating appointment booking, tracking, and notifications.
+RTU-SCHED: Online Appointment System for Rizal Technological University. RTU-SCHED is a web-based appointment management system designed to streamline scheduling for various university offices at Rizal Technological University. The platform enhances administrative efficiency by automating appointment booking, tracking, and notifications.
 
 Key Features:
 - User authentication and role management for students and administrators
