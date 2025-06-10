@@ -18,3 +18,5 @@ Technology Stack:
 
 Hosting: 
 - Currently hosted live at https://rtusched.com
+
+Please **note** that this is a cloned or duplicated repository where some of the important files are deleted. This is to protect sensitive information and APIs that may harm the system. The original repository is set to private and is currently being hosted.
